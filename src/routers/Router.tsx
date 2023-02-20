@@ -1,12 +1,12 @@
-import { createBrowserRouter } from "react-router-dom";
+import HomePage from '../pages/HomePage/HomePage';
 
-export const Routers = createBrowserRouter([
-  {
-    path: "/",
-    element: <div></div>,
-  },
-  {
-    path: "/home",
-    element: <div className="">Homepage</div>,
-  },
-]);
+interface RouteProps {
+    path: string;
+    component: () => JSX.Element;
+    layout?: () => JSX.Element;
+}
+
+const publicRoutes: Array<RouteProps> = [{ path: '/', component: HomePage }];
+
+export { publicRoutes };
+

@@ -1,5 +1,25 @@
+:root {
+    --washouse-primary-blue: #396afc;
+    --washouse-primary-white: #ffffff;
+    --washouse-hover-blue: #0236d1;
+    --washouse-light-gray: #f2f3f3;
+    --washouse-black: #424242;
+    --washouse-gold: #ffc107;
+    --washouse-placeholder-gray: #b3b3b3;
+    --washouse-green: #019b45;
+    --washouse-red: #b60000;
+}
 .App {
     text-align: center;
+}
+
+textarea:focus,
+input:focus {
+    outline: none;
+}
+
+*:focus {
+    outline: none;
 }
 
 .App-logo {
@@ -26,6 +46,14 @@
 
 .App-link {
     color: #61dafb;
+}
+
+.text-primary {
+    color: var(--washouse-primary-blue);
+}
+
+.text-sub {
+    color: var(--washouse-black);
 }
 
 @keyframes App-logo-spin {

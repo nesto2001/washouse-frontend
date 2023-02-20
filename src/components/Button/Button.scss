@@ -1,0 +1,25 @@
+.btn {
+    border-radius: 10px;
+    font-family: 'Roboto';
+    font-weight: 700;
+    font-size: 16px;
+    text-align: center;
+    padding: 12px 24px;
+    min-width: 164px;
+}
+
+.primary {
+    background: var(--washouse-primary-blue);
+    color: var(--washouse-primary-white);
+    border: none;
+}
+
+.sub {
+    background: var(--washouse-primary-white);
+    color: var(--washouse-primary-blue);
+    box-shadow: inset 0 0 0 2px var(--washouse-primary-blue);
+}
+
+.btn-text-lg {
+    font-size: 24px;
+}
