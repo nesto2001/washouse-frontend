@@ -4,36 +4,27 @@ import Slider from 'react-slick';
 
 import React from 'react';
 import Card from '../ServiceCard';
-
-type CardData = {
-    thumbnail: string;
-    title: string;
-    description: string;
-};
+import ServiceCard from '../ServiceCard';
+import './Carousel.scss';
 
 type Props = {
-    children: React.ReactNode;
+    items: React.ReactNode[];
 };
 
-const Carousel = ({ children }: Props) => {
+const Carousel = ({ items }: Props) => {
     var settings = {
         dots: true,
         infinite: true,
         speed: 500,
         slidesToShow: 4,
         slidesToScroll: 4,
+        arrow: true,
     };
     return (
         <div className="slider-container">
             <Slider {...settings}>
-                {React.Children.map(children, (child) => {
-                    return (
-                        <div className="slider-item">
-                            {React.cloneElement(child as React.ReactElement<any>, {
-                                className: 'card',
-                            })}
-                        </div>
-                    );
+                {items.map((item) => {
+                    return <div className="slider-item my-5 ml-4">{item}</div>;
                 })}
             </Slider>
         </div>

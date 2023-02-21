@@ -44,7 +44,6 @@ const Navbar = () => {
 
     useEffect(() => {
         if (latitude && longitude) {
-            console.log(latitude, longitude);
             fetch(
                 `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=295e5cdc8a0d4db8afa13b83067c5d05`,
             )
