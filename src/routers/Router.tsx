@@ -6,7 +6,7 @@ interface RouteProps {
     layout?: () => JSX.Element;
 }
 
-const publicRoutes: Array<RouteProps> = [{ path: '/', component: HomePage }];
+const publicRoutes: Array<RouteProps> = [{ path: '/', component: HomePage },
+];
 
 export { publicRoutes };
-

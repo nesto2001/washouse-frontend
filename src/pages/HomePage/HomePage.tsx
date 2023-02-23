@@ -5,60 +5,15 @@ import Carousel from '../../components/Carousel';
 import ServiceCard from '../../components/ServiceCard';
 import Placeholder from '../../assets/images/placeholder.png';
 import LogoText from '../../assets/images/washouse-textonly.png';
+import Partnership from '../../assets/images/partnership.png';
 import { CardData } from '../../types/CardData';
+import HomeServices from '../../containers/HomeContainer/HomeServices';
+import HomeFeatures from '../../containers/HomeContainer/HomeFeatures';
+import HomeGuide from '../../containers/HomeContainer/HomeGuide';
+import './Homepage.scss';
+import HomeBlogs from '../../containers/HomeContainer/HomeBlogs';
 
 const HomePage = () => {
-    const cards: CardData[] = [
-        {
-            id: 1,
-            thumbnail: Placeholder,
-            title: 'Giặt & Gấp',
-            description: 'Dịch vu cơ bản bao gồm việc giặt, sấy khô và gấp quần áo.',
-        },
-        {
-            id: 2,
-            thumbnail: Placeholder,
-            title: 'Giặt & Gấp',
-            description: 'Dịch vu cơ bản bao gồm việc giặt, sấy khô và gấp quần áo.',
-        },
-        {
-            id: 3,
-            thumbnail: Placeholder,
-            title: 'Giặt & Gấp',
-            description: 'Dịch vu cơ bản bao gồm việc giặt, sấy khô và gấp quần áo.',
-        },
-        {
-            id: 4,
-            thumbnail: Placeholder,
-            title: 'Giặt & Gấp',
-            description: 'Dịch vu cơ bản bao gồm việc giặt, sấy khô và gấp quần áo.',
-        },
-        {
-            id: 5,
-            thumbnail: Placeholder,
-            title: 'Giặt & Gấp',
-            description: 'Dịch vu cơ bản bao gồm việc giặt, sấy khô và gấp quần áo.',
-        },
-        {
-            id: 6,
-            thumbnail: Placeholder,
-            title: 'Giặt & Gấp',
-            description: 'Dịch vu cơ bản bao gồm việc giặt, sấy khô và gấp quần áo.',
-        },
-        {
-            id: 7,
-            thumbnail: Placeholder,
-            title: 'Giặt & Gấp',
-            description: 'Dịch vu cơ bản bao gồm việc giặt, sấy khô và gấp quần áo.',
-        },
-        {
-            id: 8,
-            thumbnail: Placeholder,
-            title: 'Giặt & Gấp',
-            description: 'Dịch vu cơ bản bao gồm việc giặt, sấy khô và gấp quần áo.',
-        },
-    ];
-
     return (
         <>
             <div id="hero" className="homepage__section h-[768px] w-full">
@@ -85,32 +40,44 @@ const HomePage = () => {
                 </div>
             </div>
             <div className="homepage__section w-full container mx-auto pt-32 h-[768px]" id="service">
-                <div className="service__wrapper h-full">
-                    <div className="homepage__section--title flex flex-col items-center mb-10">
-                        <div className="service__title font-bold text-4xl text-sub mb-3">
-                            CÁC LOẠI HÌNH DỊCH VỤ GIẶT ỦI CÓ MẶT TRÊN
-                        </div>
-                        <div className="service__title--logo w-1/3 max-w-[303px] h-[44px] overflow-hidden">
-                            <img className="object-cover" src={LogoText} alt="" />
-                        </div>
-                    </div>
-                    <div className="homepage__section--content">
-                        <div className="service__slider-wrapper mx-40">
-                            <Carousel
-                                items={cards.map((card) => {
-                                    return (
-                                        <ServiceCard
-                                            id={card.id}
-                                            description={card.description}
-                                            thumbnail={card.thumbnail}
-                                            title={card.title}
-                                        ></ServiceCard>
-                                    );
-                                })}
-                            ></Carousel>
+                <HomeServices />
+            </div>
+            <div className="homepage__section w-full container mx-auto pt-32 h-[768px]" id="features">
+                <HomeFeatures />
+            </div>
+            <div className="homepage__section w-full container mx-auto pt-32 mb-9" id="guide">
+                <HomeGuide />
+            </div>
+            <div className="homepage__section w-full container mx-auto pt-32 h-[768px]" id="partnership">
+                <div className="partnership__wrapper h-full">
+                    <div className="homepage__section--content w-full h-full flex justify-center items-start">
+                        <div className="partnership__inner w-[77%] flex items-center mx-auto px-12 py-[75px] gap-12 rounded-2xl">
+                            <div className="partnership__content basis-3/5">
+                                <div className="partnership__content--title w-2/3 text-left font-extrabold text-4xl">
+                                    Trở thành đối tác của Washouse!
+                                </div>
+                                <div className="partnership__content--title mt-9 text-justify text-xl">
+                                    Washouse cung cấp công cụ quản lý đơn hàng cho các đối tác của nền tảng cung ứng
+                                    giải pháp dịch vụ giặt ủi. <br /> <br />
+                                    Washouse luôn sẵn sàng hợp tác với các tiệm, các trung tâm dịch vụ giặt ủi,... để mở
+                                    rộng kinh doanh cũng như gia tăng khách hàng. Hãy kết nối vào hệ thống đặt và giao
+                                    hàng để giảm bớt chi phí quản lý, vận hành, marketing, công nghệ.
+                                </div>
+                                <div className="partnership__content--action mt-9 text-left">
+                                    <Button type="primary" fontSize="20px">
+                                        Tham gia ngay
+                                    </Button>
+                                </div>
+                            </div>
+                            <div className="partnership__decoration basis-2/5 align-middle">
+                                <img src={Partnership} alt="" />
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div className="homepage__section w-full container mx-auto pt-32" id="blogs">
+                <HomeBlogs />
             </div>
         </>
     );

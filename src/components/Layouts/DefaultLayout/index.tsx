@@ -1,5 +1,6 @@
 import React from 'react';
-import Navbar from './Header/Navbar';
+import Navbar from './Header';
+import Footer from './Footer';
 
 import './DefaultLayout.scss';
 type Props = {
@@ -10,7 +11,8 @@ function DefaultLayout({ children }: Props) {
     return (
         <>
             <Navbar></Navbar>
-            <div>{children}</div>
+            <div className="main">{children}</div>
+            <Footer />
         </>
     );
 }
