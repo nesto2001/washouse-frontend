@@ -20,7 +20,8 @@ function App() {
                                 index: number,
                             ) => {
                                 const Page: () => JSX.Element = route.component;
-                                let Layout: ({ children }: { children?: JSX.Element }) => JSX.Element = DefaultLayout;
+                                let Layout: ({ children }: { children?: JSX.Element }) => JSX.Element =
+                                    route.layout ?? DefaultLayout;
 
                                 return (
                                     <Route

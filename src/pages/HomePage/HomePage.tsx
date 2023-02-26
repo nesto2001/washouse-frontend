@@ -12,8 +12,11 @@ import HomeFeatures from '../../containers/HomeContainer/HomeFeatures';
 import HomeGuide from '../../containers/HomeContainer/HomeGuide';
 import './Homepage.scss';
 import HomeBlogs from '../../containers/HomeContainer/HomeBlogs';
+import { useContext } from 'react';
+import { LocationContext } from '../../components/Header';
 
 const HomePage = () => {
+    const { district } = useContext(LocationContext);
     return (
         <>
             <div id="hero" className="homepage__section h-[768px] w-full">
@@ -31,7 +34,7 @@ const HomePage = () => {
                                 dịch vụ giặt ủi
                             </div>
                             <div className="hero__content--action mt-10">
-                                <Button type="primary" uppercase fontSize="24px">
+                                <Button type="primary" uppercase fontSize="24px" link="/centers">
                                     Đặt dịch vụ ngay
                                 </Button>
                             </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import LogoFull from '../../../../assets/images/washouse-tagline.png';
+import LogoFull from '../../assets/images/washouse-tagline.png';
 
 type Props = {};
 
