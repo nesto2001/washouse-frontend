@@ -1,4 +1,3 @@
-import React from 'react';
 
 function formatDateTime(date: Date): string {
     const paddedDate = (date.getUTCDate() < 10 ? '0' : '') + date.getUTCDate();

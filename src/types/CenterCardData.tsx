@@ -1,4 +1,5 @@
-import { ServiceTag } from "./ServiceTag";
+import { ServiceTag } from './ServiceTag';
+import { TimeRange } from './TimeRange';
 
 export interface CenterCardData {
     id: number;
@@ -11,13 +12,5 @@ export interface CenterCardData {
     numOfRating: number;
     phone: string;
     address: string;
-    operatingHours: {
-        sunday: TimeRanges;
-        monday: TimeRanges;
-        tuesday: TimeRanges;
-        wednesday: TimeRanges;
-        thursday: TimeRanges;
-        friday: TimeRanges;
-        saturday: TimeRanges;
-    }
+    operatingHours: Array<TimeRange>;
 }

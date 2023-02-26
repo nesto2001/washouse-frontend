@@ -1,0 +1,21 @@
+.servicesTag {
+    width: 100%;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    &:hover.primary {
+        transition: all 0.1s ease-in-out;
+        background: var(--washouse-primary-blue);
+        color: var(--washouse-primary-white);
+    }
+}
+.primary {
+    color: var(--washouse-primary-blue);
+    box-shadow: 0px 0px 0px 0.8px var(--washouse-primary-blue);
+    background: var(--washouse-primary-white);
+}
+
+.sub {
+    color: var(--washouse-black);
+    background: #e8e8e8;
+}

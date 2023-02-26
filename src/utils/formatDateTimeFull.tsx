@@ -1,4 +1,3 @@
-import React from 'react';
 
 function formatDateTimeFull(date: Date): string {
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];

@@ -1,4 +1,3 @@
-import React from 'react';
 import unorm from 'unorm';
 
 function formatLink(string: string) {
