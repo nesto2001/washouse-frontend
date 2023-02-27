@@ -8,14 +8,13 @@ type Props = {
 
 const StatusTag = ({ opening }: Props) => {
     const [tagContent, setTagContent] = useState('');
-    const [className, setClassName] = useState('');
     useEffect(() => {
         if (opening) {
             setTagContent('Mở cửa');
         } else {
             setTagContent('Đóng cửa');
         }
-    }, []);
+    }, [tagContent]);
 
     return (
         <>

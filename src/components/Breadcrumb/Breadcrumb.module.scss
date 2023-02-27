@@ -1,0 +1,15 @@
+.breadcrumb__item {
+    color: var(--washouse-black);
+    text-decoration: underline;
+    font-weight: 600;
+    &::first-letter {
+        text-transform: uppercase;
+    }
+    &:hover.trail {
+        color: var(--washouse-primary-blue);
+    }
+    &.last {
+        cursor: default;
+        color: var(--washouse-primary-blue);
+    }
+}

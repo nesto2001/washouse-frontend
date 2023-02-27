@@ -1,5 +1,6 @@
 import React from 'react';
 import CenterListing from '../../containers/CentersContainer/CentersListing';
+import CentersMap from '../../containers/CentersContainer/CentersMap';
 
 const CentersPage = () => {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -16,7 +17,9 @@ const CentersPage = () => {
                     <CenterListing />
                 </div>
             </div>
-            <div className="centers__map basis-2/5"></div>
+            <div className="centers__map basis-2/5">
+                <CentersMap />
+            </div>
         </>
     );
 };

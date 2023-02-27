@@ -1,11 +1,17 @@
-import React from 'react'
+import React from 'react';
+import Breadcrumb from '../../components/Breadcrumb';
+import CenterContainer from '../../containers/CenterContainer';
+import { CenterCardData } from '../../types/CenterCardData';
 
-type Props = {}
+type Props = {};
 
-const CenterPage = (props: Props) => {
-  return (
-    <div>CenterPage</div>
-  )
-}
+const CenterPage = () => {
+    return (
+        <>
+            <Breadcrumb />
+            <CenterContainer/>
+        </>
+    );
+};
 
-export default CenterPage
+export default CenterPage;

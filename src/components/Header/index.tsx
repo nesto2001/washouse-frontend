@@ -66,7 +66,6 @@ const Navbar = () => {
     const handleDistrictChange = (newDistrict: string) => {
         setDistrict(newDistrict);
     };
-    console.log(LocationContext);
     return (
         <LocationContext.Provider value={{ district, handleDistrictChange }}>
             <div className="w-full" id="navbar">

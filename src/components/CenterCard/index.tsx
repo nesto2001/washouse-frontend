@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { FaClock, FaPhone, FaPhoneAlt, FaRegClock } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import Placeholder from '../../assets/images/placeholder.png';
 import { CenterCardData } from '../../types/CenterCardData';
 import { Weekday } from '../../types/Weekday';
+import compareTime from '../../utils/compareTime';
 import formatTime from '../../utils/formatTime';
 import getToday from '../../utils/getToday';
 import RatingStars from '../RatingStars/RatingStars';
@@ -12,21 +14,20 @@ import Tags from '../Tag';
 type Props = {};
 
 const CenterCard = (center: CenterCardData) => {
-    const [opening, setOpening] = useState<boolean>(false);
+    const [status, setStatus] = useState<boolean>(false);
     const today = getToday();
     useEffect(() => {
-        const now = new Date();
-        if (now >= center.operatingHours[today].start && now <= center.operatingHours[today].end) {
-            setOpening(true);
-        }
-    }, []);
+        setStatus(compareTime(center.operatingHours[today].start, center.operatingHours[today].end));
+    }, [status]);
     return (
         <div className="center__card w-[400px] rounded-2xl border-[0.5px] border-[#B3B3B3] p-3 text-left">
             <div className="center__card--thumbnail rounded w-full max-h-[180px] overflow-hidden">
                 <img className="object-fill" src={Placeholder} alt="" />
             </div>
             <div className="center__card--name text-lg font-bold mt-2">
-                <h4>{center.title}</h4>
+                <h4>
+                    <Link to="/centers/center">{center.title}</Link>
+                </h4>
             </div>
             <div className="center__card--info">
                 <div className="center__card--address">
@@ -37,8 +38,8 @@ const CenterCard = (center: CenterCardData) => {
                         <FaRegClock className="mr-2 self-center" />
                         <span className="leading-7">{`${formatTime(center.operatingHours[today].start)} - ${formatTime(
                             center.operatingHours[today].end,
-                        )}`}</span>{' '}
-                        <StatusTag opening={opening} />
+                        )}`}</span>
+                        <StatusTag opening={status} />
                     </div>
                     <div className="center__card--phone flex items-center">
                         <FaPhoneAlt className="mr-2" />
