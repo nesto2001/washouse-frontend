@@ -1,0 +1,28 @@
+.center__details--slider {
+    .service__slider--wrapper {
+        .servicecard {
+            box-shadow: none;
+            border: 1px solid var(--washouse-placeholder-gray);
+        }
+    }
+}
+
+.rating--overall {
+    background-color: var(--washouse-primary-blue);
+}
+
+.service__slider--tab {
+    cursor: pointer;
+    transition: 0.1s all ease-in-out;
+    &:hover {
+        transition: 0.1s all ease-in-out;
+        color: var(--washouse-primary-blue);
+        border-bottom: 2px solid var(--washouse-primary-blue);
+    }
+}
+
+.service__slider--active {
+    transition: 0.1s all ease-in-out;
+    color: var(--washouse-primary-blue);
+    border-bottom: 2px solid var(--washouse-primary-blue);
+}

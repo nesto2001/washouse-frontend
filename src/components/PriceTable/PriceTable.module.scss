@@ -1,0 +1,21 @@
+.pricetable__wrapper {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--washouse-placeholder-gray);
+    overflow: hidden;
+}
+
+.pricetable {
+    width: 100%;
+    .pricetable__header {
+        border-bottom: 1px solid var(--washouse-placeholder-gray);
+        background-color: var(--washouse-light-gray);
+    }
+
+    .pricetable__data {
+        padding: 8px 16px;
+    }
+    .pricetable__body .pricetable__body__row:not(.pricetable__body__row:last-child) {
+        border-bottom: 1px solid var(--washouse-placeholder-gray);
+    }
+}

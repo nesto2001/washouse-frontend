@@ -9,15 +9,16 @@ import './Carousel.scss';
 
 type Props = {
     items: React.ReactNode[];
+    showItem?: number;
 };
 
-const Carousel = ({ items }: Props) => {
+const Carousel = ({ items, showItem }: Props) => {
     var settings = {
         dots: true,
         infinite: true,
         speed: 500,
-        slidesToShow: 4,
-        slidesToScroll: 4,
+        slidesToShow: showItem || 4,
+        slidesToScroll: showItem || 4,
         arrow: true,
     };
     return (

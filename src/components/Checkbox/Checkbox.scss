@@ -1,11 +1,12 @@
 .checkbox-container {
     color: var(--washouse-black);
-    display: block;
+    display: flex;
     position: relative;
     padding-left: 24px;
     margin-bottom: 16px;
     cursor: pointer;
-    line-height: 15px;
+    line-height: 18px;
+    align-items: center;
     font-size: 16px;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -44,6 +45,9 @@
             -ms-transform: rotate(45deg);
             transform: rotate(45deg);
         }
+    }
+    .checkbox-label {
+        padding-top: 1px;
     }
 }
 

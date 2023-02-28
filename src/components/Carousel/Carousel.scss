@@ -1,5 +1,7 @@
 .slick-arrow {
+    opacity: 0;
     z-index: 1;
+    transition: 0.2s all ease-in-out;
     &::before {
         color: var(--washouse-black);
         font-size: 32px;
@@ -7,6 +9,7 @@
 }
 
 .slider-item {
+    margin: 20px auto;
     width: unset !important;
 }
 
@@ -29,5 +32,20 @@
                 color: var(--washouse-primary-blue);
             }
         }
+    }
+}
+
+.slick-track {
+    margin: auto;
+}
+
+.slick-prev {
+    left: -38px;
+}
+
+.slick-slider {
+    &:hover .slick-arrow {
+        opacity: 0.75;
+        transition: 0.2s all ease-in-out;
     }
 }
