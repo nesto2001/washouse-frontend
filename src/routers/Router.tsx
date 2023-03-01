@@ -4,6 +4,7 @@ import SidebarLayout from '../components/Layouts/SidebarLayout';
 import CenterPage from '../pages/CenterPage/CenterPage';
 import CenteredLayout from '../components/Layouts/CenteredLayout';
 import CenterServicePage from '../pages/CenterServicePage/CenterServicePage';
+import CartPage from '../pages/CartPage/CartPage';
 
 interface RouteProps {
     path: string;
@@ -27,6 +28,11 @@ const publicRoutes: Array<RouteProps> = [
         path: '/centers/center/service', //fix to :id
         layout: CenteredLayout,
         component: CenterServicePage,
+    },
+    {
+        path: '/cart', //fix to :id
+        layout: CenteredLayout,
+        component: CartPage,
     },
 ];
 

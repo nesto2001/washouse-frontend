@@ -1,5 +1,5 @@
-import { ServiceCategoryData } from './ServiceCategoryData';
-import { ServiceTag } from './ServiceTag';
+import { ServiceCategoryData } from './ServiceType/ServiceCategoryData';
+import { ServiceTag } from './ServiceType/ServiceTag';
 import { TimeRange } from './TimeRange';
 
 export interface CenterData {

@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React from 'react';
-import { ServiceTag } from '../../types/ServiceTag';
+import { ServiceTag } from '../../types/ServiceType/ServiceTag';
 import style from './Tag.module.scss';
 
 type Props = {

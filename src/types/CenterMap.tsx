@@ -1,4 +1,4 @@
-import { ServiceTag } from './ServiceTag';
+import { ServiceTag } from './ServiceType/ServiceTag';
 import { TimeRange } from './TimeRange';
 
 export interface CenterMap {

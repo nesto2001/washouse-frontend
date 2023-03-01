@@ -1,4 +1,4 @@
-import { PriceRange } from './PriceRange';
+import { PriceRange } from '../PriceRange';
 
 export interface SubService {
     id: number;

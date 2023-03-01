@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { ServiceData } from '../../types/ServiceData';
-import { SubService } from '../../types/SubService';
+import { ServiceData } from '../../types/ServiceType/ServiceData';
+import { SubService } from '../../types/ServiceType/SubService';
 import Placeholder from '../../assets/images/placeholder.png';
 import Button from '../../components/Button';
 import PriceTable from '../../components/PriceTable';
