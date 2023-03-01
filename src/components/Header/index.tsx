@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import Selectbox from '../Selectbox';
 import Button from '../Button';
-import { FaSearch } from 'react-icons/fa';
+import { FaSearch, FaShoppingCart } from 'react-icons/fa';
 import Logo from '../../assets/images/washouse-tagline.png';
 import './Navbar.scss';
 import { LocationContextValue } from '../../types/LocationContext';
@@ -89,6 +89,11 @@ const Navbar = () => {
                                 <FaSearch size={30} />
                             </button>
                         </form>
+                    </div>
+                    <div className="nav__action--cart">
+                        <Link to="/cart">
+                            <FaShoppingCart size={28} />
+                        </Link>
                     </div>
                     <div className="guest__action flex gap-5">
                         <div className="guest__action--signup">

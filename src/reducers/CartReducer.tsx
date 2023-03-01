@@ -1,7 +1,4 @@
-import { configureStore, createReducer, createSlice } from '@reduxjs/toolkit';
-import { ADD_TO_CART, REMOVE_FROM_CART } from '../actions/ActionTypes';
-import { PayloadAction } from '../actions/PayloadAction';
-import { addItem } from '../types/CartType/CartAction';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CartItem } from '../types/CartType/CartItem';
 import { CartState } from '../types/CartType/CartState';
 type Props = {};
@@ -12,7 +9,7 @@ const initialState: CartState = {
     totalPrice: 0,
 };
 
-export const CartReducer = createSlice({
+const CartReducer = createSlice({
     name: 'cart',
     initialState,
     reducers: {
@@ -53,6 +50,6 @@ export const CartReducer = createSlice({
     },
 });
 
-export const { removeItem } = CartReducer.actions;
+export const { addItem, removeItem } = CartReducer.actions;
 
-export default CartReducer;
+export default CartReducer.reducer;

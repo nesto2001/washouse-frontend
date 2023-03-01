@@ -1,33 +1,74 @@
-import React, { useState } from 'react';
-import { ServiceData } from '../../types/ServiceType/ServiceData';
-import { SubService } from '../../types/ServiceType/SubService';
+import React, { useEffect, useState, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import Placeholder from '../../assets/images/placeholder.png';
 import Button from '../../components/Button';
 import PriceTable from '../../components/PriceTable';
 import RatingStars from '../../components/RatingStars/RatingStars';
+import { addItem } from '../../reducers/CartReducer';
+import { CartItem } from '../../types/CartType/CartItem';
+import { SubService } from '../../types/ServiceType/SubService';
+import calculatePrice from '../../utils/calculatePrice';
 import getRating from '../../utils/getRating';
 
 type Props = {};
 
 const CenterServiceContainer = (props: Props) => {
+    const service: SubService = useMemo(
+        () => ({
+            id: 1,
+            thumbnail: Placeholder,
+            title: 'Giặt ủi quần áo',
+            description:
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vel sem accumsan, commodo velit ac, dictum sem. Proin pharetra lectus ac dolor dictum, eget tempor nulla efficitur. Nam eget euismod odio. Nunc euismod, eros ac dapibus interdum, magna libero placerat dui, ac commodo ante magna et mi.',
+            minTime: 2,
+            maxTime: 3,
+            rating: 4.5,
+            priceChart: [
+                { maxValue: 3, price: 30000 },
+                { maxValue: 4, price: 35000 },
+                { maxValue: 5, price: 40000 },
+                { maxValue: 6, price: 45000 },
+                { maxValue: 7, price: 50000 },
+            ],
+        }),
+        [],
+    );
+
     const [weightInput, setWeightInput] = useState<string>('');
 
-    const service: SubService = {
-        id: 1,
-        thumbnail: 'https://example.com/images/clothing.jpg',
-        title: 'Giặt ủi quần áo',
-        description:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vel sem accumsan, commodo velit ac, dictum sem. Proin pharetra lectus ac dolor dictum, eget tempor nulla efficitur. Nam eget euismod odio. Nunc euismod, eros ac dapibus interdum, magna libero placerat dui, ac commodo ante magna et mi.',
-        minTime: 2,
-        maxTime: 3,
-        rating: 4.5,
-        priceChart: [
-            { maxValue: 3, price: 30000 },
-            { maxValue: 4, price: 35000 },
-            { maxValue: 5, price: 40000 },
-            { maxValue: 6, price: 45000 },
-            { maxValue: 7, price: 50000 },
-        ],
+    const [servicePrice, setServicePrice] = useState<string>(
+        `${service.priceChart[0].price.toString()} - ${service.priceChart[
+            service.priceChart.length - 1
+        ].price.toString()}`,
+    );
+
+    useEffect(() => {
+        if (weightInput) {
+            const calculatedPrice = calculatePrice(service, parseFloat(weightInput));
+            calculatedPrice && setServicePrice(calculatedPrice.toString());
+        }
+    }, [weightInput, service]);
+
+    const dispatch = useDispatch();
+
+    const handleAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+        if (weightInput) {
+            const cartItem: CartItem = {
+                id: service.id,
+                name: service.title,
+                thumbnail: service.thumbnail,
+                price: parseFloat(servicePrice),
+                weight: parseInt(weightInput),
+                unit: 'kg',
+            };
+            try {
+                dispatch(addItem(cartItem));
+                console.log('Đã thêm vào giỏ hàng!');
+            } catch (error) {
+                console.error('Không thể thêm vào giỏ hàng:', error);
+            }
+        }
     };
 
     const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -35,7 +76,9 @@ const CenterServiceContainer = (props: Props) => {
         const { value, maxLength } = event.target;
         if (regex.test(value)) setWeightInput(value.slice(0, maxLength));
     };
+
     const ratingText = getRating(service.rating);
+
     return (
         <div className="service__wrapper flex justify-between gap-[40px] mt-9">
             <div className="service__details text-left basis-2/3">
@@ -57,19 +100,20 @@ const CenterServiceContainer = (props: Props) => {
                         </div>
                     </div>
                     <div className="service__details--content basis-7/12 p-6 pl-10 ml-10 border border-[#B3B3B3] rounded-2xl">
-                        <h1 className="text-3xl font-bold">{service.title}</h1>
-                        <h3 className="mt-2 text-2xl font-bold text-primary">
-                            {service.priceChart[0].price}đ - {service.priceChart[service.priceChart.length - 1].price}đ
-                        </h3>
-                        <p className="text-justify text-sm mt-3">{service.description}</p>
-                        <h4 className="text-sm mt-3">
-                            <span className="font-bold">Thời gian xử lý:</span> {service.minTime * 60}' -{' '}
-                            {service.maxTime * 60}'
-                        </h4>
-                        <div className="service__inputgroup mt-3">
-                            <h3 className="text-sm font-bold">Khối lượng</h3>
-                            <div className="inputgroup flex items-center mt-1">
-                                <form action="">
+                        <form action="" id="addcartForm">
+                            <h1 className="text-3xl font-bold">{service.title}</h1>
+                            <h3 className="mt-2 text-2xl font-bold text-primary">
+                                {service.priceChart[0].price}đ -{' '}
+                                {service.priceChart[service.priceChart.length - 1].price}đ
+                            </h3>
+                            <p className="text-justify text-sm mt-3">{service.description}</p>
+                            <h4 className="text-sm mt-3">
+                                <span className="font-bold">Thời gian xử lý:</span> {service.minTime * 60}' -{' '}
+                                {service.maxTime * 60}'
+                            </h4>
+                            <div className="service__inputgroup mt-3">
+                                <h3 className="text-sm font-bold">Khối lượng</h3>
+                                <div className="inputgroup flex items-center mt-1">
                                     <input
                                         className="border border-[#424242] pl-2 py-1 rounded w-[100px] mr-1"
                                         type="number"
@@ -81,18 +125,18 @@ const CenterServiceContainer = (props: Props) => {
                                         onChange={handleChangeInput}
                                         max={service.priceChart[service.priceChart.length - 1].maxValue}
                                     />
-                                </form>
-                                KG
+                                    KG
+                                </div>
                             </div>
-                        </div>
-                        <div className="service__actiongroup mt-6 flex justify-between">
-                            <Button type="sub" minWidth="180px">
-                                Thêm vào giỏ
-                            </Button>
-                            <Button type="primary" minWidth="180px">
-                                Đặt dịch vụ
-                            </Button>
-                        </div>
+                            <div className="service__actiongroup mt-6 flex justify-between">
+                                <Button type="sub" minWidth="180px" form="addcartForm" onClick={handleAddToCart}>
+                                    Thêm vào giỏ
+                                </Button>
+                                <Button type="primary" minWidth="180px">
+                                    Đặt dịch vụ
+                                </Button>
+                            </div>
+                        </form>
                     </div>
                 </div>
                 <div className="service__details--description mt-14 md:w-[820px]">
