@@ -6,9 +6,11 @@ import './Selectbox.scss';
 interface SelectboxProps {
     options: Option[];
     id: string;
+    name?: string;
+    ref?: React.MutableRefObject<HTMLSelectElement>;
 }
 
-const Selectbox = ({ options, id }: SelectboxProps) => {
+const Selectbox = ({ options, id, name, ref }: SelectboxProps) => {
     const [selectedValue, setSelectedValue] = useState<number>();
 
     const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -16,7 +18,7 @@ const Selectbox = ({ options, id }: SelectboxProps) => {
     };
 
     return (
-        <select value={selectedValue} onChange={handleSelectChange} name="" id={id} className="selectbox">
+        <select value={selectedValue} onChange={handleSelectChange} name={name} id={id} className="selectbox" ref={ref}>
             <option value="">Select an option</option>
             {options.map((option) => (
                 <option key={option.value} value={option.value}>

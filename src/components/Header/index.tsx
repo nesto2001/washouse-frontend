@@ -85,13 +85,13 @@ const Navbar = () => {
                                 className="w-full basis-full grow"
                                 placeholder="Tìm kiếm"
                             />
-                            <button onClick={handleSearch} className="ml-2 px-2 w-[50px]">
+                            <button onClick={handleSearch} className="ml-2 px-2 w-[50px] text-sub ">
                                 <FaSearch size={30} />
                             </button>
                         </form>
                     </div>
                     <div className="nav__action--cart">
-                        <Link to="/cart">
+                        <Link to="/cart" className="text-sub">
                             <FaShoppingCart size={28} />
                         </Link>
                     </div>

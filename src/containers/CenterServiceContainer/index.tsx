@@ -43,9 +43,15 @@ const CenterServiceContainer = (props: Props) => {
     );
 
     useEffect(() => {
-        if (weightInput) {
+        if (weightInput && parseFloat(weightInput) > 0) {
             const calculatedPrice = calculatePrice(service, parseFloat(weightInput));
             calculatedPrice && setServicePrice(calculatedPrice.toString());
+        } else {
+            setServicePrice(
+                `${service.priceChart[0].price.toString()} - ${service.priceChart[
+                    service.priceChart.length - 1
+                ].price.toString()}`,
+            );
         }
     }, [weightInput, service]);
 
@@ -53,7 +59,7 @@ const CenterServiceContainer = (props: Props) => {
 
     const handleAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
-        if (weightInput) {
+        if (weightInput && parseFloat(weightInput) > 0) {
             const cartItem: CartItem = {
                 id: service.id,
                 name: service.title,
@@ -102,10 +108,7 @@ const CenterServiceContainer = (props: Props) => {
                     <div className="service__details--content basis-7/12 p-6 pl-10 ml-10 border border-[#B3B3B3] rounded-2xl">
                         <form action="" id="addcartForm">
                             <h1 className="text-3xl font-bold">{service.title}</h1>
-                            <h3 className="mt-2 text-2xl font-bold text-primary">
-                                {service.priceChart[0].price}đ -{' '}
-                                {service.priceChart[service.priceChart.length - 1].price}đ
-                            </h3>
+                            <h3 className="mt-2 text-2xl font-bold text-primary">{servicePrice}đ</h3>
                             <p className="text-justify text-sm mt-3">{service.description}</p>
                             <h4 className="text-sm mt-3">
                                 <span className="font-bold">Thời gian xử lý:</span> {service.minTime * 60}' -{' '}
@@ -185,7 +188,9 @@ const CenterServiceContainer = (props: Props) => {
                         <div className="service--distribution basis-2/5 flex-grow"></div>
                     </div>
                 </div>
-                <div className="service__sideinfo--center mt-6 p-6 border border-[#B3B3B3] rounded-2xl"></div>
+                <div className="service__sideinfo--center mt-6 p-6 border border-[#B3B3B3] rounded-2xl">
+                    <h2 className="text-left font-bold text-2xl">Trung tâm</h2>
+                </div>
             </div>
         </div>
     );

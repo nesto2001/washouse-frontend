@@ -1,10 +1,5 @@
-import HomePage from '../pages/HomePage/HomePage';
-import CentersPage from '../pages/CentersPage/CentersPage';
-import SidebarLayout from '../components/Layouts/SidebarLayout';
-import CenterPage from '../pages/CenterPage/CenterPage';
-import CenteredLayout from '../components/Layouts/CenteredLayout';
-import CenterServicePage from '../pages/CenterServicePage/CenterServicePage';
-import CartPage from '../pages/CartPage/CartPage';
+import { CenteredLayout, BlankCenteredLayout, SidebarLayout } from '../components/Layouts/';
+import { CartPage, CenterPage, CenterServicePage, CentersPage, CheckoutPage, HomePage } from '../pages/';
 
 interface RouteProps {
     path: string;
@@ -33,6 +28,11 @@ const publicRoutes: Array<RouteProps> = [
         path: '/cart', //fix to :id
         layout: CenteredLayout,
         component: CartPage,
+    },
+    {
+        path: '/cart/checkout', //fix to :id
+        layout: BlankCenteredLayout,
+        component: CheckoutPage,
     },
 ];
 

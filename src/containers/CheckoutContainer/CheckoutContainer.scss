@@ -1,0 +1,17 @@
+.checkout__sidebar {
+    position: relative;
+    &::after {
+        content: '';
+        display: block;
+        width: 300%;
+        max-width: 896px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        background: var(--washouse-light-gray);
+        z-index: -1;
+        left: 0;
+        background-position: left top;
+        box-shadow: 1px 0 0 #e1e1e1 inset;
+    }
+}
