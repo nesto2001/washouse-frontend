@@ -1,9 +1,10 @@
 import { FaPhoneAlt, FaRegClock, FaTrashAlt } from 'react-icons/fa';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import EmptyCart from '../../assets/images/empty-cart.png';
 import Placeholder from '../../assets/images/placeholder.png';
 import Button from '../../components/Button';
 import StatusTag from '../../components/StatusTag';
+import { removeItem } from '../../reducers/CartReducer';
 import { RootState } from '../../store/CartStore';
 
 type Props = {};
@@ -12,6 +13,22 @@ const CartContainer = () => {
     const cartItems = useSelector((state: RootState) => state.cart.items);
     const cartQuantity = useSelector((state: RootState) => state.cart.totalQuantity);
     const cartTotal = useSelector((state: RootState) => state.cart.totalPrice);
+
+    const dispatch = useDispatch();
+
+    const handleRemoveFromCart = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        console.log(event);
+        const itemId = (event.target as HTMLDivElement).getAttribute('data-id');
+        if (itemId) {
+            try {
+                dispatch(removeItem(parseInt(itemId)));
+                console.log('Đã xóa khỏi giỏ hàng!');
+            } catch (error) {
+                console.error('Không thể xóa khỏi giỏ hàng:', error);
+            }
+        }
+    };
 
     return (
         <div className="sitecart__wrapper flex justify-between gap-[40px] mt-9">
@@ -38,8 +55,12 @@ const CartContainer = () => {
                                                 {item.price}đ
                                             </h1>
                                         </div>
-                                        <div className="sitecart__item--action self-start text-red pt-2 pr-2">
-                                            <FaTrashAlt size={24} />
+                                        <div
+                                            className="sitecart__item--action self-start text-red pt-2 pr-2 cursor-pointer"
+                                            data-id={item.id.toString()}
+                                            onClick={(e) => handleRemoveFromCart(e)}
+                                        >
+                                            <FaTrashAlt className="pointer-events-none" size={24} />
                                         </div>
                                     </div>
                                 ))}

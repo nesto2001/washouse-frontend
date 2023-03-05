@@ -75,7 +75,7 @@ const Navbar = () => {
                             <img src={Logo} alt="logo" className="cursor-pointer" />
                         </div>
                     </Link>
-                    <Selectbox id="navbarsb" options={districtUser}></Selectbox>
+                    <Selectbox type="vị trí" id="navbarsb" options={districtUser}></Selectbox>
                     <div className="nav__searchbar w-[450px] h-[55px] grow justify-end hidden md:flex items-center">
                         <form className="md:flex" action="">
                             <input
@@ -97,10 +97,14 @@ const Navbar = () => {
                     </div>
                     <div className="guest__action flex gap-5">
                         <div className="guest__action--signup">
-                            <Button type="primary">Đăng ký</Button>
+                            <Button type="primary" link="/register">
+                                Đăng ký
+                            </Button>
                         </div>
                         <div className="guest__action--login">
-                            <Button type="sub">Đăng nhập</Button>
+                            <Button type="sub" link="/login">
+                                Đăng nhập
+                            </Button>
                         </div>
                     </div>
                 </div>

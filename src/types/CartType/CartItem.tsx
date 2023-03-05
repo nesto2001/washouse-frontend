@@ -1,3 +1,5 @@
+import { PriceRange } from "../PriceRange";
+
 export interface CartItem {
     id: number;
     name: string;
@@ -5,5 +7,6 @@ export interface CartItem {
     price: number;
     weight?: number;
     quantity?: number;
+    priceChart?: Array<PriceRange>;
     unit: 'kg' | 'pcs';
 }

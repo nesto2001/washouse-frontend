@@ -11,9 +11,10 @@ type Props = {
     fontSize?: string;
     form?: string;
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
+    isSubmit?: boolean;
 };
 
-const Button = ({ children, type, link, uppercase, minWidth, fontSize, form, onClick }: Props) => {
+const Button = ({ children, type, link, uppercase, minWidth, fontSize, form, onClick, isSubmit }: Props) => {
     const style = {
         minWidth: minWidth || '164px',
         fontSize: fontSize || '16px',
@@ -22,6 +23,7 @@ const Button = ({ children, type, link, uppercase, minWidth, fontSize, form, onC
         <>
             <button
                 className={clsx('btn', type ? type : '', uppercase && 'uppercase')}
+                type={isSubmit ? 'submit' : 'button'}
                 style={style}
                 form={form ?? ''}
                 onClick={onClick}

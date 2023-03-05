@@ -1,5 +1,14 @@
-import { CenteredLayout, BlankCenteredLayout, SidebarLayout } from '../components/Layouts/';
-import { CartPage, CenterPage, CenterServicePage, CentersPage, CheckoutPage, HomePage } from '../pages/';
+import { CenteredLayout, BlankCenteredLayout, SidebarLayout, BlankRightLayout } from '../components/Layouts/';
+import {
+    CartPage,
+    CenterPage,
+    CenterServicePage,
+    CentersPage,
+    CheckoutPage,
+    HomePage,
+    CheckoutConfirmPage,
+} from '../pages/';
+import LoginPage from '../pages/LoginPage/LoginPage';
 
 interface RouteProps {
     path: string;
@@ -33,6 +42,16 @@ const publicRoutes: Array<RouteProps> = [
         path: '/cart/checkout', //fix to :id
         layout: BlankCenteredLayout,
         component: CheckoutPage,
+    },
+    {
+        path: '/cart/checkout/confirm', //fix to :id
+        layout: BlankCenteredLayout,
+        component: CheckoutConfirmPage,
+    },
+    {
+        path: '/login', //fix to :id
+        layout: BlankRightLayout,
+        component: LoginPage,
     },
 ];
 

@@ -55,3 +55,34 @@
         display: none;
     }
 }
+
+.formradio--item {
+    .radio-container input {
+        &:checked ~ .checkmark {
+            border: none;
+            &:after {
+                display: block;
+            }
+            &:checked ~ .form-radio-label {
+                font-weight: 400 !important;
+            }
+        }
+    }
+    .checkmark {
+        margin-top: 4px;
+        height: 15px;
+        width: 15px;
+        &::after {
+            top: 0px;
+            left: 0px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: none;
+        }
+    }
+    .radio-container {
+        margin-bottom: 0;
+        padding-left: 40px;
+    }
+}

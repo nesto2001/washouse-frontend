@@ -1,6 +1,3 @@
-import Footer from '../../Footer';
-import Navbar from '../../Header';
-import Sidebar from '../../Sidebar';
 
 type Props = {
     children?: JSX.Element;

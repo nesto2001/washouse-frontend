@@ -32,12 +32,12 @@ const CartReducer = createSlice({
             state.totalQuantity += item.quantity ?? 1;
             state.totalPrice += item.price * (item.quantity ?? 1);
         },
-        removeItem: (state, action: PayloadAction<CartItem>) => {
-            const item = action.payload;
-            if (!item) {
+        removeItem: (state, action: PayloadAction<number>) => {
+            const itemId = action.payload;
+            if (!itemId) {
                 return state;
             }
-            const index = state.items.findIndex((i) => i.id === item.id && i.unit === item.unit);
+            const index = state.items.findIndex((i) => i.id === itemId);
 
             if (index >= 0) {
                 const itemToRemove = state.items[index];
