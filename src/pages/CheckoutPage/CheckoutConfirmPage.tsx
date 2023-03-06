@@ -5,6 +5,8 @@ import Successful from '../../assets/images/check.png';
 import Button from '../../components/Button';
 
 const CheckoutConfirmPage = () => {
+    const id = '31401263';
+    const p = '0975926021';
     return (
         <>
             <div className={style.modal_overlay}></div>
@@ -22,7 +24,7 @@ const CheckoutConfirmPage = () => {
                         <img src={Successful} alt="" />
                     </div>
                     <h2 className="font-semibold text-3xl text-primary">Đơn hàng của bạn đã được đặt thành công!</h2>
-                    <h3 className="font-semibold text-2xl text-sub mt-2">Mã đơn hàng: 1900xxx</h3>
+                    <h3 className="font-semibold text-2xl text-sub mt-2">Mã đơn hàng: {id}</h3>
                     <p className="text-xl text-sub mt-3 w-3/5 max-w-[434px] ">
                         Chúng tôi sẽ gửi xác nhận đặt hàng thành công cùng với thông tin đơn hàng qua email.
                     </p>
@@ -30,7 +32,12 @@ const CheckoutConfirmPage = () => {
                         <Button type="sub" link="/" fontSize="20px" minWidth="224px">
                             Trang chủ
                         </Button>
-                        <Button type="primary" link="/order/details" fontSize="20px" minWidth="224px">
+                        <Button
+                            type="primary"
+                            link={`/orders/details?id=${id}&p=${p}`}
+                            fontSize="20px"
+                            minWidth="224px"
+                        >
                             Thông tin đơn hàng
                         </Button>
                     </div>

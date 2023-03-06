@@ -1,0 +1,43 @@
+.progressbar {
+    background-color: var(--washouse-placeholder-gray);
+    height: 5px;
+    border-radius: 20px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    .progressbar_fill {
+        position: absolute;
+        height: inherit;
+        border-radius: inherit;
+        background-color: var(--washouse-primary-blue);
+    }
+    .progressbar_milestone {
+        position: relative;
+        z-index: 1;
+        margin: 0px -6px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: var(--washouse-primary-white);
+        border: 4px solid var(--washouse-placeholder-gray);
+        box-shadow: 0 0 2px 0px rgba(#424242, 0.7);
+        &.active {
+            width: 56px;
+            height: 56px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-color: var(--washouse-primary-blue);
+            box-shadow: none;
+        }
+        &.completed {
+            border-color: var(--washouse-primary-blue);
+        }
+    }
+}
+.progressbar_tracking {
+    width: 115%;
+    .tracking_details {
+    }
+}

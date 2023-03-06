@@ -65,6 +65,10 @@ input:focus {
     color: var(--washouse-red);
 }
 
+.text-green {
+    color: var(--washouse-green);
+}
+
 .border-wh-gray {
     border-color: var(--washouse-placeholder-gray);
 }

@@ -94,7 +94,7 @@ const RegisterContainer = () => {
                 <h3 className="font-semibold">
                     Bạn đã có tài khoản?{' '}
                     <span className="text-primary font-bold">
-                        <Link to="/register">Đăng nhập</Link>
+                        <Link to="/login">Đăng nhập</Link>
                     </span>{' '}
                 </h3>
             </div>

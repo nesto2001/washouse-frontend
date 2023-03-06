@@ -9,6 +9,7 @@ import {
     CheckoutConfirmPage,
     LoginPage,
     RegisterPage,
+    OrderDetailsPage,
 } from '../pages/';
 
 interface RouteProps {
@@ -58,6 +59,10 @@ const publicRoutes: Array<RouteProps> = [
         path: '/register', //fix to :id
         layout: AuthenticateLayout,
         component: RegisterPage,
+    },{
+        path: '/orders/details', //fix to :id
+        layout: CenteredLayout,
+        component: OrderDetailsPage,
     },
 ];
 
