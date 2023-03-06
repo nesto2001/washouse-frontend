@@ -43,15 +43,11 @@ export const Step1 = ({ formData, onNext }: Step1Props) => {
             <div className="checkout__customer--form grid text-left mt-4 gap-x-6 gap-y-5">
                 <div className="customer__input--name grid grid-cols-2 gap-x-6">
                     <div className="customer__input--lastname col-span-1">
-                        <label htmlFor="customer_lname" className="text-base font-medium block">
-                            Họ của bạn
-                        </label>
-                        <input
+                        <Input
                             required
                             type="text"
                             name="customer_lname"
-                            id=""
-                            className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
+                            label="Họ của bạn"
                             placeholder="Họ"
                             value={lastName}
                             onChange={(e) => {
@@ -60,15 +56,11 @@ export const Step1 = ({ formData, onNext }: Step1Props) => {
                         />
                     </div>
                     <div className="customer__input--firstname col-span-1">
-                        <label htmlFor="customer_fname" className="text-base font-medium block">
-                            Tên của bạn
-                        </label>
-                        <input
+                        <Input
+                            label="Tên của bạn"
                             required
                             type="text"
                             name="customer_fname"
-                            id=""
-                            className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
                             placeholder="Tên"
                             value={firstName}
                             onChange={(e) => {
@@ -79,15 +71,11 @@ export const Step1 = ({ formData, onNext }: Step1Props) => {
                 </div>
                 <div className="customer__input--location grid grid-cols-3 gap-x-6 gap-y-5">
                     <div className="customer__input--address col-span-3">
-                        <label htmlFor="customer_lname" className="text-base font-medium block">
-                            Địa chỉ
-                        </label>
-                        <input
+                        <Input
+                            label="Địa chỉ"
                             required
                             type="text"
                             name="customer_lname"
-                            id=""
-                            className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
                             placeholder="Địa chỉ"
                             value={address}
                             onChange={(e) => {
@@ -150,14 +138,11 @@ export const Step1 = ({ formData, onNext }: Step1Props) => {
 
                 <div className="customer__input--contact grid grid-cols-2 gap-x-6 gap-y-5">
                     <div className="customer__input--email col-span-1">
-                        <label htmlFor="customer_email" className="text-base font-medium block">
-                            Email
-                        </label>
-                        <input
+                        <Input
+                            label="Email"
                             required
                             type="text"
                             name="customer_email"
-                            className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
                             placeholder="Email"
                             value={email}
                             onChange={(e) => {

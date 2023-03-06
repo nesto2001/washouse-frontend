@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './Button.scss';
 
 type Props = {
-    children?: string;
+    children?: string | JSX.Element;
     type?: string;
     link?: string;
     uppercase?: boolean;

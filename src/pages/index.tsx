@@ -5,3 +5,5 @@ export { default as CentersPage } from './CentersPage/CentersPage';
 export { default as CheckoutPage } from './CheckoutPage/CheckoutPage';
 export { default as CheckoutConfirmPage } from './CheckoutPage/CheckoutConfirmPage';
 export { default as HomePage } from './HomePage/HomePage';
+export { default as LoginPage } from './LoginPage/LoginPage';
+export { default as RegisterPage } from './RegisterPage/RegisterPage';
