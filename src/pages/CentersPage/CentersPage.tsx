@@ -11,7 +11,7 @@ const CentersPage = () => {
         <>
             <div className="centers__listing basis-3/5 pt-8 px-10">
                 <div className="centers__listing--searching text-left mb-16">
-                    <h2 className="text-2xl font-bold">Tìm kiếm dịch vụ giặt ủi trong khu vực xung quanh</h2>
+                    <h2 className="text-2xl font-bold">Tìm kiếm dịch vụ giặt ủi khu vực xung quanh</h2>
                 </div>
                 <div className="centers__listing--main">
                     <CenterListing />

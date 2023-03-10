@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import React, { useState, useEffect } from 'react';
 import { TrackingState } from '../../types/Tracking/TrackingState';
+import formatDateTime from '../../utils/formatDateTime';
 import style from './ProgressBar.module.scss';
 
 type Props = {};
@@ -90,7 +91,7 @@ const ProgressBar = (props: Props) => {
                             <h4 className={clsx('text-sm font-bold', state.completed ? 'text-sub' : 'text-primary')}>
                                 {state.title}
                             </h4>
-                            <h4 className="text-sm text-sub-gray">{state.time?.toLocaleString()}</h4>
+                            <h4 className="text-sm text-sub-gray">{state.time && formatDateTime(state.time)}</h4>
                         </div>
                     </>
                 ))}
