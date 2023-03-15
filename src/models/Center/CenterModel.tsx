@@ -1,7 +1,7 @@
-import { ServiceTag } from './ServiceType/ServiceTag';
-import { TimeRange } from './TimeRange';
+import { ServiceTag } from '../../types/ServiceType/ServiceTag';
+import { TimeRange } from '../../types/TimeRange';
 
-export interface CenterCardData {
+export interface CenterModel {
     id: number;
     thumbnail: string;
     title: string;
@@ -13,4 +13,9 @@ export interface CenterCardData {
     phone: string;
     address: string;
     operatingHours: Array<TimeRange>;
+    alias: string;
+    location: {
+        latitude: number;
+        longitude: number;
+    };
 }

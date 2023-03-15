@@ -18,7 +18,6 @@ const CartContainer = () => {
 
     const handleRemoveFromCart = (event: React.MouseEvent<HTMLDivElement>) => {
         event.preventDefault();
-        console.log(event);
         const itemId = (event.target as HTMLDivElement).getAttribute('data-id');
         if (itemId) {
             try {

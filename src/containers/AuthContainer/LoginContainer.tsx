@@ -2,20 +2,34 @@ import { useRef, useState } from 'react';
 import Button from '../../components/Button';
 import Input from '../../components/Input/Input';
 import Google from '../../assets/images/google.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
+import { BiErrorAlt } from 'react-icons/bi';
+import { login } from '../../repositories/AuthRepository';
 
 type Props = {};
 
 const LoginContainer = () => {
     const [loginSMS, setLoginSMS] = useState<boolean>(false);
+    const [loginError, setLoginError] = useState<string>('');
     const userPhoneRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
+    const navigate = useNavigate();
 
     const handleSubmit = () => {
         const phone = userPhoneRef.current?.value ?? '';
         const password = passwordRef.current?.value ?? '';
-        console.log(phone, password);
+        const fetchData = async () => {
+            return await login({ phone: phone, password: password });
+        };
+        fetchData().then((res) => {
+            if (res.status == 200 && res.data.success) {
+                localStorage.setItem('accessToken', res.data.data);
+                navigate('/centers');
+            } else {
+                setLoginError('Số điện thoại hoặc mật khẩu chưa chính xác!');
+            }
+        });
     };
 
     return (
@@ -43,7 +57,13 @@ const LoginContainer = () => {
                     />
                 </div>
             )}
-            <div className="login__form--action mt-8">
+            <div className={clsx('login__form--action', loginError ? 'mt-6' : 'mt-8')}>
+                {loginError && (
+                    <div className="mb-2">
+                        <BiErrorAlt className="inline align-text-bottom text-red" size={20} />
+                        <span className="text-red ml-1">{loginError}</span>
+                    </div>
+                )}
                 <Button minWidth="100%" type="primary" onClick={handleSubmit}>
                     {loginSMS ? 'Tiếp theo' : 'Đăng nhập'}
                 </Button>

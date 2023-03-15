@@ -1,10 +1,8 @@
-import React from 'react';
-import BlogCard from '../../../components/BlogCard';
 import Placeholder from '../../../assets/images/placeholder.png';
+import BlogCard from '../../../components/BlogCard';
 import { BlogCardData } from '../../../types/BlogCardData';
 import { BlogType } from '../../../types/BlogType';
 import './HomeBlogs.scss';
-import formatDate from '../../../utils/formatDate';
 
 type Props = {};
 

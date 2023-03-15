@@ -7,8 +7,8 @@ import RatingStars from '../../components/RatingStars/RatingStars';
 import { addItem } from '../../reducers/CartReducer';
 import { CartItem } from '../../types/CartType/CartItem';
 import { SubService } from '../../types/ServiceType/SubService';
-import calculatePrice from '../../utils/calculatePrice';
-import getRating from '../../utils/getRating';
+import { calculatePrice, getRating } from '../../utils/CommonUtils';
+
 
 type Props = {};
 

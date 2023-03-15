@@ -1,17 +1,11 @@
-import { API_LOGIN } from "../common/Constant";
-import { LoginModel } from "../models/AuthModel";
-import { Response } from "../models/CommonModel";
-import instance from "../services/axios/AxiosInstance";
+import { API_LOGIN } from '../common/Constant';
+import { LoginResponse } from '../models/LoginResponse';
+import { Response } from '../models/CommonModel';
+import instance from '../services/axios/AxiosInstance';
 
-export async function loginAPI({
-  username,
-  password,
-}: {
-  username: string;
-  password: string;
-}) {
-  return await instance.post<Response<LoginModel>>(API_LOGIN, {
-    username: username,
-    password: password,
-  });
+export async function login({ phone, password }: { phone: string; password: string }) {
+    return await instance.post<LoginResponse>(API_LOGIN, {
+        phone: phone,
+        password: password,
+    });
 }

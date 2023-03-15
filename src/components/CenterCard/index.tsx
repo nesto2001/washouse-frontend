@@ -1,19 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { FaClock, FaPhone, FaPhoneAlt, FaRegClock } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
+import { FaPhoneAlt, FaRegClock } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import Placeholder from '../../assets/images/placeholder.png';
-import { CenterCardData } from '../../types/CenterCardData';
-import { Weekday } from '../../types/Weekday';
-import compareTime from '../../utils/compareTime';
-import formatTime from '../../utils/formatTime';
-import getToday from '../../utils/getToday';
+import { CenterModel } from '../../models/Center/CenterModel';
+import { compareTime, formatTime, getToday } from '../../utils/TimeUtils';
 import RatingStars from '../RatingStars/RatingStars';
 import StatusTag from '../StatusTag';
 import Tags from '../Tag';
 
-type Props = {};
+type CenterCardProps = {
+    center: CenterModel;
+};
 
-const CenterCard = (center: CenterCardData) => {
+const CenterCard = ({ center }: CenterCardProps) => {
     const [status, setStatus] = useState<boolean>(false);
     const today = getToday();
     useEffect(() => {

@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080/api";
-const API_LOGIN = "/v1/auth/login";
+const BASE_URL = "https://washouse.azurewebsites.net/";
+const API_LOGIN = "/api/account/login";
 
 export { BASE_URL, API_LOGIN };

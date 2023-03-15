@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Carousel from '../../../components/Carousel';
 import ServiceCard from '../../../components/ServiceCard';
 import Placeholder from '../../../assets/images/placeholder.png';
 import { CardData } from '../../../types/CardData';
 import LogoText from '../../../assets/images/washouse-textonly.png';
+import { getAllCenter } from '../../../repositories/CenterRepository';
 
 const HomeServices = () => {
     const cards: CardData[] = [
@@ -56,6 +57,7 @@ const HomeServices = () => {
             description: 'Dịch vu cơ bản bao gồm việc giặt, sấy khô và gấp quần áo.',
         },
     ];
+
     return (
         <div className="service__wrapper h-full">
             <div className="homepage__section--title flex flex-col items-center mb-10">

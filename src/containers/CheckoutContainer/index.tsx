@@ -46,7 +46,6 @@ const CheckoutContainer = (props: Props) => {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        console.log(formData);
         navigate('/cart/checkout/confirm');
     };
 

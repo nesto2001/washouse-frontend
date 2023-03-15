@@ -7,6 +7,10 @@ import { FaSearch, FaShoppingCart } from 'react-icons/fa';
 import Logo from '../../assets/images/washouse-tagline.png';
 import './Navbar.scss';
 import { LocationContextValue } from '../../types/LocationContext';
+import { DistrictType } from '../../types/DistrictType';
+import { getDistricts, getUserDistricts } from '../../repositories/LocationRepository';
+import { Option } from '../../types/Options';
+import { getCurrentLocation } from '../../utils/CommonUtils';
 
 export const LocationContext = createContext<LocationContextValue>({
     district: '',
@@ -16,100 +20,105 @@ export const LocationContext = createContext<LocationContextValue>({
 const Navbar = () => {
     const [latitude, setLatitude] = useState<number>();
     const [longitude, setLongitude] = useState<number>();
-    const [district, setDistrict] = useState<string>('');
+    const [district, setDistrict] = useState<DistrictType>();
     const [searchValue, setSearchValue] = useState('');
-
+    const [districts, setDistricts] = useState<DistrictType[]>([]);
     const handleSearch = (e: { preventDefault: () => void }) => {
         e.preventDefault();
         if (searchValue) {
         }
     };
 
-    const districtUser = [
-        {
-            value: 1,
-            label: district,
-        },
-    ];
-
     useEffect(() => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    setLatitude(position.coords.latitude);
-                    setLongitude(position.coords.longitude);
-                },
-                (error) => {
-                    console.error(`Gặp lỗi khi lấy vị trí: ${error.message}`);
-                },
-            );
-        } else {
-            console.error('Geolocation không được hỗ trợ trên trình duyệt này.');
-        }
+        getCurrentLocation(setState);
     }, []);
+
+    const setState = ({ latitude, longitude }: { latitude: number; longitude: number }) => {
+        setLatitude(latitude);
+        setLongitude(longitude);
+    };
 
     useEffect(() => {
         if (latitude && longitude) {
-            fetch(
-                `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=295e5cdc8a0d4db8afa13b83067c5d05`,
-            )
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.results.length > 0) {
-                        const components = data.results[0].components;
-                        setDistrict(components.city_district);
-                    }
-                })
-                .catch((error) => console.error(`Lỗi khi cố gắng truy xuất Quận / huyện: ${error.message}`));
+            const fetchData = async () => {
+                return await getUserDistricts({ lat: latitude, long: longitude });
+            };
+            fetchData().then((res) => {
+                setDistrict({ id: res.id, name: res.name });
+            });
         }
     }, [latitude, longitude]);
-    const handleDistrictChange = (newDistrict: string) => {
-        setDistrict(newDistrict);
+
+    const handleDistrictChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const value = parseInt(event.target.value);
+        const label = districts.find((option) => option.id === value)?.name;
+        if (label) {
+            const newDistrict = { id: value, name: label };
+            setDistrict(newDistrict);
+        }
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            return await getDistricts();
+        };
+        fetchData().then((res) => {
+            setDistricts(res);
+        });
+    }, []);
     return (
-        <LocationContext.Provider value={{ district, handleDistrictChange }}>
-            <div className="w-full" id="navbar">
-                <div className="mx-auto flex gap-8 justify-between items-center px-4 py-4 container w-full">
-                    <Link to="/">
-                        <div className="w-[221px] h-[75px]">
-                            <img src={Logo} alt="logo" className="cursor-pointer" />
-                        </div>
+        <div className="w-full" id="navbar">
+            <div className="mx-auto flex gap-8 justify-between items-center px-4 py-4 container w-full">
+                <Link to="/">
+                    <div className="w-[221px] h-[75px]">
+                        <img src={Logo} alt="logo" className="cursor-pointer" />
+                    </div>
+                </Link>
+                <Selectbox
+                    type="vị trí"
+                    id="navbarsb"
+                    options={districts.map((district): Option => {
+                        return {
+                            label: district.name,
+                            value: district.id,
+                        };
+                    })}
+                    onChange={handleDistrictChange}
+                    selectedValue={district?.id}
+                ></Selectbox>
+                <div className="nav__searchbar w-[450px] h-[55px] grow justify-end hidden md:flex items-center">
+                    <form className="md:flex" action="">
+                        <input
+                            type="text"
+                            value={searchValue}
+                            onChange={(e) => setSearchValue(e.target.value)}
+                            className="w-full basis-full grow"
+                            placeholder="Tìm kiếm"
+                        />
+                        <button onClick={handleSearch} className="ml-2 px-2 w-[50px] text-sub ">
+                            <FaSearch size={30} />
+                        </button>
+                    </form>
+                </div>
+                <div className="nav__action--cart">
+                    <Link to="/cart" className="text-sub">
+                        <FaShoppingCart size={28} />
                     </Link>
-                    <Selectbox type="vị trí" id="navbarsb" options={districtUser}></Selectbox>
-                    <div className="nav__searchbar w-[450px] h-[55px] grow justify-end hidden md:flex items-center">
-                        <form className="md:flex" action="">
-                            <input
-                                type="text"
-                                value={searchValue}
-                                onChange={(e) => setSearchValue(e.target.value)}
-                                className="w-full basis-full grow"
-                                placeholder="Tìm kiếm"
-                            />
-                            <button onClick={handleSearch} className="ml-2 px-2 w-[50px] text-sub ">
-                                <FaSearch size={30} />
-                            </button>
-                        </form>
+                </div>
+                <div className="guest__action flex gap-5">
+                    <div className="guest__action--signup">
+                        <Button type="primary" link="/register">
+                            Đăng ký
+                        </Button>
                     </div>
-                    <div className="nav__action--cart">
-                        <Link to="/cart" className="text-sub">
-                            <FaShoppingCart size={28} />
-                        </Link>
-                    </div>
-                    <div className="guest__action flex gap-5">
-                        <div className="guest__action--signup">
-                            <Button type="primary" link="/register">
-                                Đăng ký
-                            </Button>
-                        </div>
-                        <div className="guest__action--login">
-                            <Button type="sub" link="/login">
-                                Đăng nhập
-                            </Button>
-                        </div>
+                    <div className="guest__action--login">
+                        <Button type="sub" link="/login">
+                            Đăng nhập
+                        </Button>
                     </div>
                 </div>
             </div>
-        </LocationContext.Provider>
+        </div>
     );
 };
 

@@ -1,7 +1,8 @@
 import clsx from 'clsx';
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { TrackingState } from '../../types/Tracking/TrackingState';
-import formatDateTime from '../../utils/formatDateTime';
+import { formatDateTime } from '../../utils/TimeUtils';
+
 import style from './ProgressBar.module.scss';
 
 type Props = {};

@@ -6,10 +6,9 @@ import RatingStars from '../../components/RatingStars/RatingStars';
 import ServiceCard from '../../components/ServiceCard';
 import StatusTag from '../../components/StatusTag';
 import { CenterData } from '../../types/CenterData';
-import compareTime from '../../utils/compareTime';
-import formatTime from '../../utils/formatTime';
-import getRating from '../../utils/getRating';
-import getToday from '../../utils/getToday';
+import { getRating } from '../../utils/CommonUtils';
+import { compareTime, formatTime, getToday } from '../../utils/TimeUtils';
+
 import './CenterContainer.scss';
 
 type Props = {};

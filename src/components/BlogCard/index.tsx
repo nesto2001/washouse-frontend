@@ -1,6 +1,5 @@
-import React from 'react';
 import { BlogCardData } from '../../types/BlogCardData';
-import formatDate from '../../utils/formatDate';
+import { formatDate } from '../../utils/TimeUtils';
 
 const BlogCard = ({ id, type, thumbnail, title, description, date }: BlogCardData) => {
     return (
