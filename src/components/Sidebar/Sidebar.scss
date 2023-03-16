@@ -1,0 +1,14 @@
+.sidenav__nav--link.active {
+    color: var(--washouse-primary-blue);
+}
+
+#account-nav ul {
+    height: 0;
+    overflow: hidden;
+    transition: height 10s ease-out;
+}
+
+#account-nav.active ul {
+    transition: height 10s ease-out;
+    height: auto;
+}

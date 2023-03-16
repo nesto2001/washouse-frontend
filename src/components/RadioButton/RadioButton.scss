@@ -11,6 +11,9 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    &.radio-inline {
+        margin-bottom: 0;
+    }
     input {
         position: absolute;
         opacity: 0;

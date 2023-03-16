@@ -40,11 +40,13 @@ const Navbar = () => {
 
     useEffect(() => {
         if (latitude && longitude) {
+            console.log(latitude, longitude);
             const fetchData = async () => {
                 return await getUserDistricts({ lat: latitude, long: longitude });
             };
             fetchData().then((res) => {
                 setDistrict({ id: res.id, name: res.name });
+                console.log(district);
             });
         }
     }, [latitude, longitude]);

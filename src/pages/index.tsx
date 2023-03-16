@@ -9,3 +9,6 @@ export { default as LoginPage } from './LoginPage/LoginPage';
 export { default as RegisterPage } from './RegisterPage/RegisterPage';
 export { default as OrderDetailsPage } from './OrderPage/OrderDetailsPage';
 export { default as OrdersPage } from './OrderPage/OrdersPage';
+export { default as ProfilePage } from './CustomerPage/ProfilePage';
+export { default as AddressPage } from './CustomerPage/AddressPage';
+export { default as CustomerOrdersPage } from './CustomerPage/CustomerOrdersPage';

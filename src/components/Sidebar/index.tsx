@@ -3,7 +3,6 @@ import { Option } from '../../types/Options';
 import Button from '../Button';
 import Checkbox from '../Checkbox';
 import Radio from '../RadioButton';
-import './Sidebar.scss';
 
 type Props = {};
 
