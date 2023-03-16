@@ -42,7 +42,7 @@ const items: MenuItem[] = [
         ],
     ),
     getItem(
-        <Link to="/user/order">Thông báo</Link>,
+        <Link to="/user/order">Đơn hàng</Link>,
         'order',
         <div className="sidenav__nav--icon max-h-[22px] h-6">
             <img className="object-contain h-full" src={Order} alt="" />
