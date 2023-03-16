@@ -1,14 +1,13 @@
-import clsx from 'clsx';
-import { Link } from 'react-router-dom';
-import Noti from '../../assets/images/noti-pf.png';
-import Order from '../../assets/images/order-pf.png';
-import Placeholder from '../../assets/images/placeholder.png';
-import User from '../../assets/images/user-pf.png';
-import { useEffect, useState } from 'react';
-import './Sidebar.scss';
-import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
+import clsx from 'clsx';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Order from '../../assets/images/order-pf.png';
+import Noti from '../../assets/images/noti-pf.png';
+import Placeholder from '../../assets/images/placeholder.png';
+import User from '../../assets/images/user-pf.png';
+import './Sidebar.scss';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -28,52 +27,75 @@ function getItem(
     } as MenuItem;
 }
 
-const items: MenuItem[] = [
-    getItem(
-        <Link to="/user/account/profile">Tài khoản</Link>,
-        'account',
-        <div className="sidenav__nav--icon max-h-[22px] h-6">
-            <img className="object-contain h-full" src={User} alt="" />
-        </div>,
-        [
-            getItem(<Link to="/user/account/profile">Hồ sơ</Link>, 'profile'),
-            getItem(<Link to="/user/account/address">Địa chỉ</Link>, 'address'),
-            getItem(<Link to="/user/account/password">Đổi mật khẩu</Link>, 'password'),
+type MenuItemData = {
+    label: string;
+    key: string;
+    url: string;
+    icon?: string;
+    children?: MenuItemData[];
+};
+
+const datas: MenuItemData[] = [
+    {
+        label: 'Tài khoản',
+        key: 'account',
+        url: '/user/account/profile',
+        icon: User,
+        children: [
+            {
+                label: 'Hồ sơ',
+                url: '/user/account/profile',
+                key: 'profile',
+            },
+            {
+                label: 'Địa chỉ',
+                url: '/user/account/address',
+                key: 'address',
+            },
+            {
+                label: 'Đổi mật khẩu',
+                url: '/user/account/password',
+                key: 'password',
+            },
         ],
-    ),
-    getItem(
-        <Link to="/user/order">Đơn hàng</Link>,
-        'order',
-        <div className="sidenav__nav--icon max-h-[22px] h-6">
-            <img className="object-contain h-full" src={Order} alt="" />
-        </div>,
-    ),
-    getItem(
-        <Link to="/user/noti">Thông báo</Link>,
-        'noti',
-        <div className="sidenav__nav--icon max-h-[22px] h-6">
-            <img className="object-contain h-full" src={Noti} alt="" />
-        </div>,
-    ),
+    },
+    {
+        label: 'Đơn hàng',
+        url: '/user/order',
+        key: 'order',
+        icon: Order,
+    },
+    {
+        label: 'Thông báo',
+        url: '/user/notification',
+        key: 'noti',
+        icon: Noti,
+    },
 ];
+
+const items: MenuItem[] = datas.map((data) => {
+    return getItem(
+        <Link to={data.url}>{data.label}</Link>,
+        data.key,
+        <div className="sidenav__nav--icon max-h-[22px] h-6">
+            <img className="object-contain h-full" src={data.icon} alt="" />
+        </div>,
+        data.children?.map((child) => {
+            return getItem(<Link to={child.url}>{child.label}</Link>, child.key);
+        }),
+    );
+});
 
 type UserSidebarProps = {
     basis: string;
     activeNav: string;
 };
-const rootSubmenuKeys = ['account', 'order', 'noti'];
-
-interface Map {
-    [key: string]: string;
-}
-
-const mapSubmenu: Map = {
-    account: 'profile',
-};
+const rootSubmenuKeys = datas.map((data) => data.key);
 
 const UserSidebar = ({ basis, activeNav }: UserSidebarProps) => {
     const [openKeys, setOpenKeys] = useState(['account']);
     const [selectedKey, setSelectedKey] = useState<Array<string>>(['profile']);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const curr = document.querySelectorAll<HTMLElement>('.sidenav__nav--link');
@@ -93,14 +115,24 @@ const UserSidebar = ({ basis, activeNav }: UserSidebarProps) => {
 
     const onOpenChange: MenuProps['onOpenChange'] = (keys) => {
         const latestOpenKey: string | undefined = keys.find((key) => openKeys.indexOf(key) === -1);
+        const openedKey: MenuItemData | undefined = datas.find(
+            (data) => data.key === openKeys[0] && data.children && data.children?.length !== 0,
+        );
         if (rootSubmenuKeys.indexOf(latestOpenKey!) === -1) {
-            setOpenKeys(keys);
+            if (!openedKey?.children?.find((child) => child.key === selectedKey[0])) {
+                setOpenKeys(keys);
+            }
         } else {
             setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
         }
 
-        if (latestOpenKey && mapSubmenu[latestOpenKey]) {
-            setSelectedKey([mapSubmenu[latestOpenKey]]);
+        const targetParent: MenuItemData | undefined = datas.find(
+            (data) => data.key === latestOpenKey && data.children && data.children?.length !== 0,
+        );
+
+        if (targetParent && targetParent.children) {
+            setSelectedKey([targetParent.children[0].key]);
+            navigate(targetParent.children[0].url);
         }
     };
 

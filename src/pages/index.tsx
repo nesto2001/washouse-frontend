@@ -12,3 +12,4 @@ export { default as OrdersPage } from './OrderPage/OrdersPage';
 export { default as ProfilePage } from './CustomerPage/ProfilePage';
 export { default as AddressPage } from './CustomerPage/AddressPage';
 export { default as CustomerOrdersPage } from './CustomerPage/CustomerOrdersPage';
+export { default as CustomerPasswordPage } from './CustomerPage/CustomerPasswordPage';

@@ -19,12 +19,14 @@ import {
     ProfilePage,
     AddressPage,
     CustomerOrdersPage,
+    CustomerPasswordPage,
 } from '../pages/';
 
 interface RouteProps {
     path: string;
     component: () => JSX.Element;
     layout?: ({ children }?: any) => JSX.Element;
+    redirectUrl?: string;
 }
 
 const publicRoutes: Array<RouteProps> = [
@@ -80,9 +82,19 @@ const publicRoutes: Array<RouteProps> = [
         component: ProfilePage,
     },
     {
+        path: '/user/account/',
+        component: ProfilePage,
+        redirectUrl: '/user/account/profile',
+    },
+    {
         path: '/user/account/address', //fix to :id
         layout: CustomerSidebarLayout,
         component: AddressPage,
+    },
+    {
+        path: '/user/account/password', //fix to :id
+        layout: CustomerSidebarLayout,
+        component: CustomerPasswordPage,
     },
     {
         path: '/user/order', //fix to :id

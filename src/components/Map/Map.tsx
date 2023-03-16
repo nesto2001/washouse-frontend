@@ -12,17 +12,20 @@ import { getCurrentLocation } from '../../utils/CommonUtils';
 
 type Props = {
     selectedCenter?: CenterMap;
-    locations: CenterMap[];
+    locations?: CenterMap[];
     userLocation: { latitude: number; longitude: number };
+    style?: React.CSSProperties;
+    iconSize?: L.PointExpression;
+    iconAnchor?: L.PointExpression;
 };
 
-const Map = ({ selectedCenter, locations, userLocation }: Props) => {
+const Map = ({ selectedCenter, locations, userLocation, style, iconSize, iconAnchor }: Props) => {
     const center: L.LatLngExpression = [userLocation.latitude, userLocation.longitude];
 
     const userIcon = L.icon({
         iconUrl: Target,
-        iconSize: [40, 40],
-        iconAnchor: [20, 20],
+        iconSize: iconSize ?? [40, 40],
+        iconAnchor: iconAnchor ?? [20, 20],
         className: 'user-marker',
     });
 
@@ -56,37 +59,42 @@ const Map = ({ selectedCenter, locations, userLocation }: Props) => {
     // }, [map, center]);
 
     return (
-        <MapContainer center={center} zoom={16} style={mapStyles}>
+        <MapContainer center={center} zoom={16} style={style ?? mapStyles}>
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             {center && (
                 <Marker position={center} icon={userIcon}>
                     <Popup>Bạn đang ở đây</Popup>
                 </Marker>
             )}
-            {locations.map((location) => (
-                <Marker
-                    key={location.id}
-                    position={[location.location.latitude, location.location.longitude]}
-                    icon={centerIcon}
-                >
-                    <Popup>
-                        <div>
-                            <Link to="/centers/center" className="text-sub">
-                                <div className="w-[200px] h-[150px] max-w-[200px] max-h-[150px] rounded overflow-hidden">
-                                    <img className="max-h-full w-full object-cover" src={location.thumbnail} alt="" />
-                                </div>
-                                <h3 className="text-left font-bold text-base max-w-[200px] mt-2 text-sub">
-                                    {location.alias ?? location.title}
-                                </h3>
-                                <div className="flex items-center mt-3">
-                                    <RatingStars rating={location.rating} />{' '}
-                                    <span className="ml-2 text-base text-sub">{location.numOfRating}</span>
-                                </div>
-                            </Link>
-                        </div>
-                    </Popup>
-                </Marker>
-            ))}
+            {locations &&
+                locations.map((location) => (
+                    <Marker
+                        key={location.id}
+                        position={[location.location.latitude, location.location.longitude]}
+                        icon={centerIcon}
+                    >
+                        <Popup>
+                            <div>
+                                <Link to="/centers/center" className="text-sub">
+                                    <div className="w-[200px] h-[150px] max-w-[200px] max-h-[150px] rounded overflow-hidden">
+                                        <img
+                                            className="max-h-full w-full object-cover"
+                                            src={location.thumbnail}
+                                            alt=""
+                                        />
+                                    </div>
+                                    <h3 className="text-left font-bold text-base max-w-[200px] mt-2 text-sub">
+                                        {location.alias ?? location.title}
+                                    </h3>
+                                    <div className="flex items-center mt-3">
+                                        <RatingStars rating={location.rating} />{' '}
+                                        <span className="ml-2 text-base text-sub">{location.numOfRating}</span>
+                                    </div>
+                                </Link>
+                            </div>
+                        </Popup>
+                    </Marker>
+                ))}
         </MapContainer>
     );
 };

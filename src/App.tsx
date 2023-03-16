@@ -19,6 +19,7 @@ function App() {
                                         path: string;
                                         component: () => JSX.Element;
                                         layout?: () => JSX.Element;
+                                        redirectUrl?: string;
                                     },
                                     index: number,
                                 ) => {

@@ -11,7 +11,7 @@ const ProfilePage = () => {
                     <div className="userprofile__update--form">
                         <UpdateProfileContainer />
                     </div>
-                    <div className="mx-6 border border-wh-gray w-[1px]"></div>
+                    <div className="mx-6 bg-wh-gray w-[0.5px]"></div>
                     <div className="userprofile__update--avatar pl-10 pr-2">
                         <UpdateAvatarContainer />
                     </div>

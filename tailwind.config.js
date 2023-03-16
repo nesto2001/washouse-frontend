@@ -1,12 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-    content: [
-        './src/**/*.{js,jsx,ts,tsx}',
-        './node_modules/flowbite/**/*.js',
-        './node_modules/tailwind-datepicker-react/dist/**/*.js',
-    ],
+    content: ['./src/**/*.{js,jsx,ts,tsx}', './node_modules/tailwind-datepicker-react/dist/**/*.js'],
     theme: {
         extend: {},
     },
-    plugins: [require('@tailwindcss/line-clamp'), require('flowbite/plugin')],
+    plugins: [require('@tailwindcss/line-clamp')],
+    darkMode: 'class',
 };
