@@ -17,7 +17,7 @@ export const getDistricts = async (): Promise<DistrictType[]> => {
     });
 };
 
-export const getUserDistricts = async ({ lat, long }: { lat: number; long: number }): Promise<DistrictType> => {
+export const getUserDistrict = async ({ lat, long }: { lat: number; long: number }): Promise<DistrictType> => {
     const { data } = await instance.get<DistrictReponse>('/api/googleMaps/getDistrictFromLatLong', {
         params: {
             latitude: lat,

@@ -41,3 +41,39 @@ export const getAllCenter = async (): Promise<CenterModel[]> => {
         };
     });
 };
+
+export const getCenter = async (id : number): Promise<CenterModel> => {
+    const { data } = await instance.get<CenterResponse>(`/api/center/${id}`, {
+        headers: {
+            Accept: 'application/json',
+        },
+    });
+    return {
+        id: data.id,
+        thumbnail: data.thumbnail,
+        title: data.title,
+        description: data.description,
+        service: data.centerServices.map((service): ServiceTag => {
+            return {
+                id: service.serviceCategoryID,
+                title: service.serviceCategoryName,
+            };
+        }),
+        additions: [],
+        rating: data.rating,
+        numOfRating: data.numOfRating,
+        phone: data.phone,
+        address: data.centerAddress,
+        alias: data.alias,
+        location: data.centerLocation,
+        operatingHours: [
+            { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
+            { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
+            { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
+            { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
+            { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
+            { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
+            { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
+        ],
+    };
+};

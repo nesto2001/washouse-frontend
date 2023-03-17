@@ -37,47 +37,47 @@ const publicRoutes: Array<RouteProps> = [
         component: CentersPage,
     },
     {
-        path: '/centers/center', //fix to :id
+        path: '/centers/center/:id',
         layout: CenteredLayout,
         component: CenterPage,
     },
     {
-        path: '/centers/center/service', //fix to :id
+        path: '/centers/center/service',
         layout: CenteredLayout,
         component: CenterServicePage,
     },
     {
-        path: '/cart', //fix to :id
+        path: '/cart',
         layout: CenteredLayout,
         component: CartPage,
     },
     {
-        path: '/cart/checkout', //fix to :id
+        path: '/cart/checkout',
         layout: BlankCenteredLayout,
         component: CheckoutPage,
     },
     {
-        path: '/cart/checkout/confirm', //fix to :id
+        path: '/cart/checkout/confirm',
         layout: BlankCenteredLayout,
         component: CheckoutConfirmPage,
     },
     {
-        path: '/login', //fix to :id
+        path: '/login',
         layout: AuthenticateLayout,
         component: LoginPage,
     },
     {
-        path: '/register', //fix to :id
+        path: '/register',
         layout: AuthenticateLayout,
         component: RegisterPage,
     },
     {
-        path: '/orders/details', //fix to :id
+        path: '/orders/details',
         layout: CenteredLayout,
         component: OrderDetailsPage,
     },
     {
-        path: '/user/account/profile', //fix to :id
+        path: '/user/account/profile',
         layout: CustomerSidebarLayout,
         component: ProfilePage,
     },
@@ -87,17 +87,17 @@ const publicRoutes: Array<RouteProps> = [
         redirectUrl: '/user/account/profile',
     },
     {
-        path: '/user/account/address', //fix to :id
+        path: '/user/account/address',
         layout: CustomerSidebarLayout,
         component: AddressPage,
     },
     {
-        path: '/user/account/password', //fix to :id
+        path: '/user/account/password',
         layout: CustomerSidebarLayout,
         component: CustomerPasswordPage,
     },
     {
-        path: '/user/order', //fix to :id
+        path: '/user/order',
         layout: CustomerSidebarLayout,
         component: CustomerOrdersPage,
     },

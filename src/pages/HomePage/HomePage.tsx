@@ -1,22 +1,14 @@
+import Partnership from '../../assets/images/partnership.png';
 import VectorBG from '../../assets/images/vector-bg.png';
 import Banner from '../../assets/images/washouse-banner.png';
 import Button from '../../components/Button';
-import Carousel from '../../components/Carousel';
-import ServiceCard from '../../components/ServiceCard';
-import Placeholder from '../../assets/images/placeholder.png';
-import LogoText from '../../assets/images/washouse-textonly.png';
-import Partnership from '../../assets/images/partnership.png';
-import { CardData } from '../../types/CardData';
-import HomeServices from '../../containers/HomeContainer/HomeServices';
+import HomeBlogs from '../../containers/HomeContainer/HomeBlogs';
 import HomeFeatures from '../../containers/HomeContainer/HomeFeatures';
 import HomeGuide from '../../containers/HomeContainer/HomeGuide';
+import HomeServices from '../../containers/HomeContainer/HomeServices';
 import './Homepage.scss';
-import HomeBlogs from '../../containers/HomeContainer/HomeBlogs';
-import { useContext } from 'react';
-import { LocationContext } from '../../components/Header';
 
 const HomePage = () => {
-    const { district } = useContext(LocationContext);
     return (
         <>
             <div id="hero" className="homepage__section h-[768px] w-full">

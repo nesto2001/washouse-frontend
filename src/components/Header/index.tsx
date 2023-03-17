@@ -1,21 +1,15 @@
-import React, { useEffect, useState, useContext, createContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-
-import Selectbox from '../Selectbox';
-import Button from '../Button';
-import { FaSearch, FaShoppingCart } from 'react-icons/fa';
-import Logo from '../../assets/images/washouse-tagline.png';
-import './Navbar.scss';
-import { LocationContextValue } from '../../types/LocationContext';
 import { DistrictType } from '../../types/DistrictType';
-import { getDistricts, getUserDistricts } from '../../repositories/LocationRepository';
+import { getDistricts, getUserDistrict } from '../../repositories/LocationRepository';
 import { Option } from '../../types/Options';
 import { getCurrentLocation } from '../../utils/CommonUtils';
-
-export const LocationContext = createContext<LocationContextValue>({
-    district: '',
-    handleDistrictChange: () => {},
-});
+import { FaAngleDown, FaSearch, FaShoppingCart } from 'react-icons/fa';
+import Selectbox from '../Selectbox';
+import Button from '../Button';
+import Logo from '../../assets/images/washouse-tagline.png';
+import Placeholder from '../../assets/images/placeholder.png';
+import './Navbar.scss';
 
 const Navbar = () => {
     const [latitude, setLatitude] = useState<number>();
@@ -23,6 +17,8 @@ const Navbar = () => {
     const [district, setDistrict] = useState<DistrictType>();
     const [searchValue, setSearchValue] = useState('');
     const [districts, setDistricts] = useState<DistrictType[]>([]);
+    const [user, setUser] = useState(true);
+
     const handleSearch = (e: { preventDefault: () => void }) => {
         e.preventDefault();
         if (searchValue) {
@@ -42,7 +38,7 @@ const Navbar = () => {
         if (latitude && longitude) {
             console.log(latitude, longitude);
             const fetchData = async () => {
-                return await getUserDistricts({ lat: latitude, long: longitude });
+                return await getUserDistrict({ lat: latitude, long: longitude });
             };
             fetchData().then((res) => {
                 setDistrict({ id: res.id, name: res.name });
@@ -68,10 +64,11 @@ const Navbar = () => {
             setDistricts(res);
         });
     }, []);
+
     return (
         <div className="w-full" id="navbar">
             <div className="mx-auto flex gap-8 justify-between items-center px-4 py-4 container w-full">
-                <Link to="/">
+                <Link to={user ? '/centers' : '/'}>
                     <div className="w-[221px] h-[75px]">
                         <img src={Logo} alt="logo" className="cursor-pointer" />
                     </div>
@@ -107,18 +104,32 @@ const Navbar = () => {
                         <FaShoppingCart size={28} />
                     </Link>
                 </div>
-                <div className="guest__action flex gap-5">
-                    <div className="guest__action--signup">
-                        <Button type="primary" link="/register">
-                            Đăng ký
-                        </Button>
+                {user ? (
+                    <>
+                        <div className="user__navbar--action flex">
+                            <div className="user__navbar--profile flex items-center">
+                                <div className="user__navbar--avatar w-[50px] h-[50px] rounded-full overflow-hidden">
+                                    <img className="h-full w-full object-cover" src={Placeholder} alt="" />
+                                </div>
+                                <div className="user__navbar--name font-bold ml-3 mr-2">Trần Tân Long</div>
+                                <FaAngleDown />
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <div className="guest__action flex gap-5">
+                        <div className="guest__action--signup">
+                            <Button type="primary" link="/register">
+                                Đăng ký
+                            </Button>
+                        </div>
+                        <div className="guest__action--login">
+                            <Button type="sub" link="/login">
+                                Đăng nhập
+                            </Button>
+                        </div>
                     </div>
-                    <div className="guest__action--login">
-                        <Button type="sub" link="/login">
-                            Đăng nhập
-                        </Button>
-                    </div>
-                </div>
+                )}
             </div>
         </div>
     );

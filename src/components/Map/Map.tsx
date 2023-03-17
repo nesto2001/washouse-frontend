@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { CenterMap } from '../../types/CenterMap';
 import Target from '../../assets/images/target.png';
 import CenterMarker from '../../assets/images/center-marker.png';
+import Placeholder from '../../assets/images/placeholder.png';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L, { LatLngTuple } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -13,14 +14,19 @@ import { getCurrentLocation } from '../../utils/CommonUtils';
 type Props = {
     selectedCenter?: CenterMap;
     locations?: CenterMap[];
-    userLocation: { latitude: number; longitude: number };
+    userLocation?: { latitude: number; longitude: number };
+    centerLocation?: { latitude: number; longitude: number };
     style?: React.CSSProperties;
     iconSize?: L.PointExpression;
     iconAnchor?: L.PointExpression;
 };
 
-const Map = ({ selectedCenter, locations, userLocation, style, iconSize, iconAnchor }: Props) => {
-    const center: L.LatLngExpression = [userLocation.latitude, userLocation.longitude];
+const Map = ({ selectedCenter, locations, userLocation, style, iconSize, iconAnchor, centerLocation }: Props) => {
+    const center: L.LatLngExpression = userLocation
+        ? [userLocation.latitude, userLocation.longitude]
+        : centerLocation
+        ? [centerLocation.latitude, centerLocation.longitude]
+        : [0, 0];
 
     const userIcon = L.icon({
         iconUrl: Target,
@@ -79,7 +85,7 @@ const Map = ({ selectedCenter, locations, userLocation, style, iconSize, iconAnc
                                     <div className="w-[200px] h-[150px] max-w-[200px] max-h-[150px] rounded overflow-hidden">
                                         <img
                                             className="max-h-full w-full object-cover"
-                                            src={location.thumbnail}
+                                            src={location.thumbnail ?? Placeholder}
                                             alt=""
                                         />
                                     </div>
@@ -95,6 +101,34 @@ const Map = ({ selectedCenter, locations, userLocation, style, iconSize, iconAnc
                         </Popup>
                     </Marker>
                 ))}
+            {centerLocation && selectedCenter && (
+                <Marker
+                    key={selectedCenter.id}
+                    position={[selectedCenter.location.latitude, selectedCenter.location.longitude]}
+                    icon={centerIcon}
+                >
+                    <Popup>
+                        <div>
+                            <Link to="/centers/center" className="text-sub">
+                                <div className="w-[200px] h-[150px] max-w-[200px] max-h-[150px] rounded overflow-hidden">
+                                    <img
+                                        className="max-h-full w-full object-cover"
+                                        src={selectedCenter.thumbnail ?? Placeholder}
+                                        alt=""
+                                    />
+                                </div>
+                                <h3 className="text-left font-bold text-base max-w-[200px] mt-2 text-sub">
+                                    {selectedCenter.alias ?? selectedCenter.title}
+                                </h3>
+                                <div className="flex items-center mt-3">
+                                    <RatingStars rating={selectedCenter.rating} />{' '}
+                                    <span className="ml-2 text-base text-sub">{selectedCenter.numOfRating}</span>
+                                </div>
+                            </Link>
+                        </div>
+                    </Popup>
+                </Marker>
+            )}
         </MapContainer>
     );
 };
