@@ -5,11 +5,7 @@ import instance from '../services/axios/AxiosInstance';
 import { ServiceTag } from '../types/ServiceType/ServiceTag';
 
 export const getAllCenter = async (): Promise<CenterModel[]> => {
-    const { data } = await instance.get<List<CenterResponse>>('/api/center/getAll', {
-        headers: {
-            Accept: 'application/json',
-        },
-    });
+    const { data } = await instance.get<List<CenterResponse>>('/api/center/getAll', {});
     return data.map((item): CenterModel => {
         return {
             id: item.id,
@@ -42,12 +38,8 @@ export const getAllCenter = async (): Promise<CenterModel[]> => {
     });
 };
 
-export const getCenter = async (id : number): Promise<CenterModel> => {
-    const { data } = await instance.get<CenterResponse>(`/api/center/${id}`, {
-        headers: {
-            Accept: 'application/json',
-        },
-    });
+export const getCenter = async (id: number): Promise<CenterModel> => {
+    const { data } = await instance.get<CenterResponse>(`/api/center/${id}`, {});
     return {
         id: data.id,
         thumbnail: data.thumbnail,

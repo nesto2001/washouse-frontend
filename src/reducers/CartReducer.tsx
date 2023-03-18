@@ -3,11 +3,15 @@ import { CartItem } from '../types/CartType/CartItem';
 import { CartState } from '../types/CartType/CartState';
 type Props = {};
 
-const initialState: CartState = {
-    items: [],
-    totalQuantity: 0,
-    totalPrice: 0,
-};
+const cartJson = localStorage.getItem('userCart');
+
+const initialState: CartState = cartJson
+    ? JSON.parse(cartJson)
+    : {
+          items: [],
+          totalQuantity: 0,
+          totalPrice: 0,
+      };
 
 const CartReducer = createSlice({
     name: 'cart',
@@ -31,6 +35,7 @@ const CartReducer = createSlice({
             }
             state.totalQuantity += item.quantity ?? 1;
             state.totalPrice += item.price * (item.quantity ?? 1);
+            localStorage.setItem('userCart', JSON.stringify(state));
         },
         removeItem: (state, action: PayloadAction<number>) => {
             const itemId = action.payload;
@@ -46,6 +51,7 @@ const CartReducer = createSlice({
 
                 state.items.splice(index, 1);
             }
+            localStorage.setItem('userCart', JSON.stringify(state));
         },
     },
 });

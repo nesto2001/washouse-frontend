@@ -4,6 +4,9 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 const instance = axios.create({
     baseURL: BASE_URL,
     timeout: 1000,
+    headers: {
+        Accept: 'application/json',
+    },
 });
 
 // Add a response interceptor

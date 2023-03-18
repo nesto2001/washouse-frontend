@@ -5,7 +5,7 @@ import Google from '../../assets/images/google.png';
 import { Link, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { BiErrorAlt } from 'react-icons/bi';
-import { login } from '../../repositories/AuthRepository';
+import { getMe, login } from '../../repositories/AuthRepository';
 
 type Props = {};
 
@@ -25,7 +25,13 @@ const LoginContainer = () => {
         fetchData().then((res) => {
             if (res.status == 200 && res.data.success) {
                 localStorage.setItem('accessToken', res.data.data);
-                navigate('/centers');
+                const fetchData = async () => {
+                    return await getMe();
+                };
+                fetchData().then((res) => {
+                    localStorage.setItem('currentUser', JSON.stringify(res));
+                    navigate('/centers');
+                });
             } else {
                 setLoginError('Số điện thoại hoặc mật khẩu chưa chính xác!');
             }

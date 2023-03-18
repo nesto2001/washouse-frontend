@@ -4,14 +4,10 @@ import instance from '../services/axios/AxiosInstance';
 import { DistrictType } from '../types/DistrictType';
 
 export const getDistricts = async (): Promise<DistrictType[]> => {
-    const { data } = await instance.get<List<DistrictReponse>>('/api/district/getAll', {
-        headers: {
-            Accept: 'application/json',
-        },
-    });
+    const { data } = await instance.get<List<DistrictReponse>>('/api/district/getAll', {});
     return data.map((item): DistrictType => {
         return {
-            id: item.districtID,
+            id: item.districtId,
             name: item.districtName,
         };
     });

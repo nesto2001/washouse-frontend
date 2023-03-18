@@ -12,6 +12,9 @@ const Loading = ({ screen }: Props) => {
         if (screen) {
             document.body.style.overflow = 'hidden';
         }
+        return () => {
+            document.body.style.overflow = 'visible';
+        };
     }, []);
     return (
         <div

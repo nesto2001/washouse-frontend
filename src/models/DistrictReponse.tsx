@@ -1,4 +1,4 @@
 export type DistrictReponse = {
-    districtID: number;
+    districtId: number;
     districtName: string;
 };

@@ -21,7 +21,7 @@ const CenterCard = ({ center }: CenterCardProps) => {
     return (
         <div className="center__card w-[400px] rounded-2xl border-[0.5px] border-[#B3B3B3] p-3 text-left">
             <div className="center__card--thumbnail rounded w-full max-h-[180px] overflow-hidden">
-                <img className="object-fill" src={Placeholder} alt="" />
+                <img className="object-fill" src={center.thumbnail ?? Placeholder} alt="" />
             </div>
             <div className="center__card--name text-lg font-bold mt-2">
                 <h4>
