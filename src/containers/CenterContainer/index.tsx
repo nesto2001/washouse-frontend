@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import Placeholder from '../../assets/images/placeholder.png';
 import Carousel from '../../components/Carousel';
 import ErrorScreen from '../../components/ErrorScreen/ErrorScreen';
+import Loading from '../../components/Loading/Loading';
 import Map from '../../components/Map/Map';
 import RatingStars from '../../components/RatingStars/RatingStars';
 import ServiceCard from '../../components/ServiceCard';
@@ -122,9 +123,9 @@ const CenterContainer = (props: Props) => {
 
     if (isLoading) {
         return (
-            <>
-                <div className="">Loading...</div>
-            </>
+            <div>
+                <Loading />
+            </div>
         );
     }
 

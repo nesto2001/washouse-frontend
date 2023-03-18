@@ -1,0 +1,43 @@
+@keyframes shake {
+    0% {
+        transform: rotateZ(0deg);
+    }
+    25% {
+        transform: rotateZ(-15deg);
+    }
+    50% {
+        transform: rotateZ(0deg);
+    }
+    75% {
+        transform: rotateZ(15deg);
+    }
+    100% {
+        transform: rotateZ(0deg);
+    }
+}
+@keyframes shake {
+    0% {
+        transform: rotateZ(0deg);
+        transform-origin: bottom center;
+    }
+    25% {
+        transform: rotateZ(-10deg) translateY(-5%);
+        transform-origin: bottom center;
+    }
+    50% {
+        transform: rotateZ(0deg);
+        transform-origin: bottom center;
+    }
+    75% {
+        transform: rotateZ(10deg) translateY(-5%);
+        transform-origin: bottom center;
+    }
+    100% {
+        transform: rotateZ(0deg);
+        transform-origin: bottom center;
+    }
+}
+
+.loading_machine {
+    animation: shake 1s infinite;
+}
