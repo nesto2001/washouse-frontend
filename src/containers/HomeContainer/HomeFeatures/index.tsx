@@ -65,6 +65,7 @@ const HomeFeatures = () => {
                 <div className="features__list--wrapper w-[77%] flex items-center justify-center mx-auto mt-20 px-11 py-4 gap-12">
                     {features.map((feature) => (
                         <ContentCard
+                            key={feature.id}
                             id={feature.id}
                             description={feature.description}
                             thumbnail={feature.thumbnail}

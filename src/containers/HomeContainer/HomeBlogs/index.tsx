@@ -46,7 +46,7 @@ const HomeBlogs = (props: Props) => {
             date: new Date('02/23/2023'),
         },
         {
-            id: 3,
+            id: 4,
             type: 2,
             thumbnail: Placeholder,
             title: 'abc',
@@ -54,7 +54,7 @@ const HomeBlogs = (props: Props) => {
             date: new Date('02/23/2023'),
         },
         {
-            id: 3,
+            id: 5,
             type: 2,
             thumbnail: Placeholder,
             title: 'abc',
@@ -62,7 +62,7 @@ const HomeBlogs = (props: Props) => {
             date: new Date('02/23/2023'),
         },
         {
-            id: 3,
+            id: 6,
             type: 1,
             thumbnail: Placeholder,
             title: 'abc',
@@ -79,18 +79,19 @@ const HomeBlogs = (props: Props) => {
                 {blogTypes.map((type) => {
                     const blogsFiltered = blogs.filter((blog) => blog.type === type.id);
                     return (
-                        <>
-                            <div className="homepage__section--content w-full flex flex-col justify-start items-start gap-8 mb-12">
-                                <div className="blogs__type" id={`blog-type-${type.id}`}>
-                                    <div className="blogs__type--header text-3xl font-bold w1">{type.type}</div>
-                                </div>
-                                <div className="blogs__list--wrapper w-full flex items-center justify-between">
-                                    {blogsFiltered.splice(0, 3).map((blog) => (
-                                        <BlogCard key={blog.id} {...blog} />
-                                    ))}
-                                </div>
+                        <div
+                            className="homepage__section--content w-full flex flex-col justify-start items-start gap-8 mb-12"
+                            key={`blog-type-${type.id}`}
+                        >
+                            <div className="blogs__type" id={`blog-type-${type.id}`}>
+                                <div className="blogs__type--header text-3xl font-bold w1">{type.type}</div>
                             </div>
-                        </>
+                            <div className="blogs__list--wrapper w-full flex items-center justify-between">
+                                {blogsFiltered.splice(0, 3).map((blog) => (
+                                    <BlogCard key={blog.id} {...blog} />
+                                ))}
+                            </div>
+                        </div>
                     );
                 })}
             </div>

@@ -20,7 +20,7 @@ const HomePage = () => {
             setTimeout(() => {
                 setIsLoading(false);
                 sessionStorage.setItem('hasVisited', JSON.stringify(true));
-            }, 3000);
+            }, 2000);
         } else {
             setIsLoading(false);
         }

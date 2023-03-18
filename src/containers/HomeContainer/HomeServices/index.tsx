@@ -74,6 +74,7 @@ const HomeServices = () => {
                         items={cards.map((card) => {
                             return (
                                 <ServiceCard
+                                    key={card.id}
                                     id={card.id}
                                     description={card.description}
                                     thumbnail={card.thumbnail}

@@ -29,7 +29,7 @@ const HomeGuide = (props: Props) => {
             ),
         },
         {
-            id: 3,  
+            id: 3,
             thumbnail: Step3,
             title: 'Tiến hành dịch vụ',
             description: (
@@ -61,6 +61,7 @@ const HomeGuide = (props: Props) => {
                 <div className="guide__steps--wrapper w-[70%] max-w-[960px] flex flex-wrap items-center justify-center mx-auto mt-20 py-4 gap-12">
                     {steps.map((step) => (
                         <HorizontalContentCard
+                            key={step.id}
                             id={step.id}
                             description={step.description}
                             thumbnail={step.thumbnail}

@@ -21,9 +21,13 @@ const Loading = ({ screen }: Props) => {
                 screen && 'absolute bg-white top-0 h-[929px] w-full left-0 z-[9999]',
             )}
         >
-            <WashingMachine className={clsx('w-[80px] mb-4', style.loading_machine, screen && '-mt-10')} />
-            Đang tải trang... <br />
-            Bạn chờ chút nhé!
+            <WashingMachine
+                className={clsx('mb-4', !screen && 'w-[80px]', style.loading_machine, screen && '-mt-10 w-[100px]')}
+            />
+            <div className="text-xl">
+                Đang tải trang... <br />
+                Bạn chờ chút nhé!
+            </div>
         </div>
     );
 };

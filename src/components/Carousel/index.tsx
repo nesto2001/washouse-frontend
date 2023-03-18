@@ -24,8 +24,12 @@ const Carousel = ({ items, showItem }: Props) => {
     return (
         <div className="slider-container">
             <Slider {...settings}>
-                {items.map((item) => {
-                    return <div className="slider-item my-5 ml-4">{item}</div>;
+                {items.map((item, index) => {
+                    return (
+                        <div className="slider-item my-5 ml-4" key={index}>
+                            {item}
+                        </div>
+                    );
                 })}
             </Slider>
         </div>

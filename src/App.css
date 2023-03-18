@@ -72,6 +72,9 @@ input:focus {
 .bg-wh-gray {
     background-color: var(--washouse-placeholder-gray);
 }
+.bg-wh-lightgray {
+    background-color: var(--washouse-light-gray);
+}
 
 .border-wh-gray {
     border-color: var(--washouse-placeholder-gray);

@@ -29,16 +29,20 @@ const Selectbox = ({
 }: SelectboxProps) => {
     return (
         <select
+            key={id}
             onChange={onChange}
             name={name}
             id={id}
             className={clsx(className, 'selectbox')}
             ref={ref}
             required={isRequired}
+            value={selectedValue}
         >
-            <option value="0">Chọn {type ?? 'một tùy chọn'}</option>
-            {options.map((option) => (
-                <option key={option.value} value={option.value} selected={selectedValue === option.value}>
+            <option key="0" value="0">
+                Chọn {type ?? 'một tùy chọn'}
+            </option>
+            {options.map((option, index) => (
+                <option key={index} value={option.value}>
                     {option.label}
                 </option>
             ))}
