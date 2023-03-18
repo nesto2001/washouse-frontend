@@ -1,7 +1,10 @@
+import { useState } from 'react';
+
 import Partnership from '../../assets/images/partnership.png';
 import VectorBG from '../../assets/images/vector-bg.png';
 import Banner from '../../assets/images/washouse-banner.png';
 import Button from '../../components/Button';
+import Loading from '../../components/Loading/Loading';
 import HomeBlogs from '../../containers/HomeContainer/HomeBlogs';
 import HomeFeatures from '../../containers/HomeContainer/HomeFeatures';
 import HomeGuide from '../../containers/HomeContainer/HomeGuide';
@@ -9,6 +12,23 @@ import HomeServices from '../../containers/HomeContainer/HomeServices';
 import './Homepage.scss';
 
 const HomePage = () => {
+    const [loading, setLoading] = useState(true);
+    const hasVisited = sessionStorage.getItem('hasVisited');
+
+    if (!hasVisited) {
+        setTimeout(() => {
+            setLoading(false);
+            sessionStorage.setItem('hasVisited', JSON.stringify(true));
+        }, 3000);
+    } else {
+        setLoading(false);
+    }
+    if (loading)
+        return (
+            <div>
+                <Loading screen />
+            </div>
+        );
     return (
         <>
             <div id="hero" className="homepage__section h-[768px] w-full">

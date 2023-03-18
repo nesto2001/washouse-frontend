@@ -13,3 +13,25 @@
         box-shadow: inset 0 -10px 0px -4px var(--washouse-light-gray);
     }
 }
+
+.user__navbar--profile {
+    cursor: pointer;
+    &:hover {
+        color: var(--washouse-primary-blue);
+    }
+}
+
+.ant-dropdown-menu {
+    width: 180px;
+    transform: translateX(-64px) translateY(20px);
+}
+
+// .navbar__dropdown--item {
+//     &:hover {
+//         color: var(--washouse-primary-blue) !important;
+//     }
+// }
+
+#logout {
+    color: var(--washouse-red);
+}

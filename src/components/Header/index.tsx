@@ -4,12 +4,17 @@ import { DistrictType } from '../../types/DistrictType';
 import { getDistricts, getUserDistrict } from '../../repositories/LocationRepository';
 import { Option } from '../../types/Options';
 import { getCurrentLocation } from '../../utils/CommonUtils';
-import { FaAngleDown, FaSearch, FaShoppingCart } from 'react-icons/fa';
+import { MenuProps } from 'antd';
+import { FaSearch, FaShoppingCart } from 'react-icons/fa';
 import Selectbox from '../Selectbox';
 import Button from '../Button';
 import Logo from '../../assets/images/washouse-tagline.png';
+import User from '../../assets/images/user-pf.png';
+import Order from '../../assets/images/order-pf.png';
 import Placeholder from '../../assets/images/placeholder.png';
+import DropdownMenu from '../Dropdown/DropdownMenu';
 import './Navbar.scss';
+import { BiPowerOff } from 'react-icons/bi';
 
 const Navbar = () => {
     const [latitude, setLatitude] = useState<number>();
@@ -17,7 +22,7 @@ const Navbar = () => {
     const [district, setDistrict] = useState<DistrictType>();
     const [searchValue, setSearchValue] = useState('');
     const [districts, setDistricts] = useState<DistrictType[]>([]);
-    const [user, setUser] = useState(true);
+    const [user, setUser] = useState(false);
 
     const handleSearch = (e: { preventDefault: () => void }) => {
         e.preventDefault();
@@ -65,6 +70,44 @@ const Navbar = () => {
         });
     }, []);
 
+    const items: MenuProps['items'] = [
+        {
+            label: (
+                <>
+                    <Link to="user/account/profile" className="navbar__dropdown--item flex text-sm py-3 px-2 pl-1">
+                        <img className="w-5 object-scale-down mr-5" src={User} alt="" />
+                        Tài khoản
+                    </Link>
+                </>
+            ),
+            key: '0',
+        },
+        {
+            label: (
+                <>
+                    <Link to="user/order" className="navbar__dropdown--item flex text-sm py-3 px-2 pl-1">
+                        <img className="w-5 object-scale-down mr-5" src={Order} alt="" /> Đơn hàng
+                    </Link>
+                </>
+            ),
+            key: '1',
+        },
+        {
+            type: 'divider',
+        },
+        {
+            label: (
+                <>
+                    <Link to="user/order" className="navbar__dropdown--item flex text-sm py-3 px-2 pl-1" id="logout">
+                        <BiPowerOff size={20} className="mr-5" />
+                        Đăng xuất
+                    </Link>
+                </>
+            ),
+            key: '3',
+        },
+    ];
+
     return (
         <div className="w-full" id="navbar">
             <div className="mx-auto flex gap-8 justify-between items-center px-4 py-4 container w-full">
@@ -107,12 +150,13 @@ const Navbar = () => {
                 {user ? (
                     <>
                         <div className="user__navbar--action flex">
-                            <div className="user__navbar--profile flex items-center">
-                                <div className="user__navbar--avatar w-[50px] h-[50px] rounded-full overflow-hidden">
-                                    <img className="h-full w-full object-cover" src={Placeholder} alt="" />
+                            <div className="user__navbar--profile flex items-center font-medium">
+                                <div className="user__navbar--avatar w-[50px] h-[50px] rounded-full overflow-hidden mr-3">
+                                    <Link to="/user/account/profile">
+                                        <img className="h-full w-full object-cover" src={Placeholder} alt="" />
+                                    </Link>
                                 </div>
-                                <div className="user__navbar--name font-bold ml-3 mr-2">Trần Tân Long</div>
-                                <FaAngleDown />
+                                <DropdownMenu items={items} menuText={'Trần Tân Long'} className="" />
                             </div>
                         </div>
                     </>
