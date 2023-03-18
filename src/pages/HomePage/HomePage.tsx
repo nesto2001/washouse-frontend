@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Partnership from '../../assets/images/partnership.png';
 import VectorBG from '../../assets/images/vector-bg.png';
@@ -12,23 +12,23 @@ import HomeServices from '../../containers/HomeContainer/HomeServices';
 import './Homepage.scss';
 
 const HomePage = () => {
-    const [loading, setLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
     const hasVisited = sessionStorage.getItem('hasVisited');
 
-    if (!hasVisited) {
-        setTimeout(() => {
-            setLoading(false);
-            sessionStorage.setItem('hasVisited', JSON.stringify(true));
-        }, 3000);
-    } else {
-        setLoading(false);
+    useEffect(() => {
+        if (!hasVisited) {
+            setTimeout(() => {
+                setIsLoading(false);
+                sessionStorage.setItem('hasVisited', JSON.stringify(true));
+            }, 3000);
+        } else {
+            setIsLoading(false);
+        }
+    }, []);
+
+    if (isLoading) {
+        return <Loading screen />;
     }
-    if (loading)
-        return (
-            <div>
-                <Loading screen />
-            </div>
-        );
     return (
         <>
             <div id="hero" className="homepage__section h-[768px] w-full">
