@@ -1,8 +1,9 @@
 import clsx from 'clsx';
-import React, { useState } from 'react';
 import { CardData } from '../../types/CardData';
+import { formatCurrency } from '../../utils/FormatUtils';
 import Button from '../Button';
 import './ServiceCard.scss';
+import Placeholder from '../../assets/images/placeholder.png';
 
 const ServiceCard = ({
     thumbnail,
@@ -14,6 +15,7 @@ const ServiceCard = ({
     minHeight,
     cardHeight,
     actionLink,
+    price,
 }: CardData) => {
     const style = {
         minHeight: minHeight || '135px',
@@ -24,15 +26,27 @@ const ServiceCard = ({
     };
     return (
         <div
-            className="servicecard flex flex-col max-w-[265px] max-h-[380px] h-[380px] p-5 rounded-2xl mx-2"
+            className={clsx(
+                'servicecard flex flex-col max-w-[265px] p-5 rounded-2xl mx-2',
+                cardStyle ? '' : ' h-[380px] max-h-[380px]',
+            )}
             style={cardStyle}
         >
-            <img className="rounded-2xl" src={thumbnail} alt={title} />
-            <h3 className="font-bold text-xl w-full pt-2">{title}</h3>
+            <img
+                className="rounded md:min-h-[126px] md:max-h-[126px] object-cover object-center"
+                src={thumbnail ?? Placeholder}
+                alt={title}
+            />
+            <h3 className="font-bold text-xl w-full pt-2 text-left">{title}</h3>
+            <h3 className={'font-bold text-xl w-full pt-2 text-primary text-left'}>{formatCurrency(price ?? 0)}</h3>
             <p className={clsx('flex-grow text-justify w-full mt-4')} style={style}>
                 {description}
             </p>
-            {action && <Button type={actionType} link={actionLink}>{actionContent}</Button>}
+            {action && (
+                <Button type={actionType} link={actionLink}>
+                    {actionContent}
+                </Button>
+            )}
         </div>
     );
 };

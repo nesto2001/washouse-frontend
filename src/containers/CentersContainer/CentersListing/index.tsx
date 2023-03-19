@@ -9,7 +9,7 @@ const CenterListing = ({ centerList }: CenterListingProps) => {
     return (
         <div className="flex flex-wrap gap-9">
             {centerList.map((center) => {
-                return <CenterCard center={center}></CenterCard>;
+                return <CenterCard key={center.id} center={center}></CenterCard>;
             })}
         </div>
     );

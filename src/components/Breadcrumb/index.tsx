@@ -27,17 +27,17 @@ const Breadcrumb = () => {
                 <li className={clsx(style.breadcrumb__item, style.trail)}>
                     <Link to="/">Trang chủ</Link>
                 </li>
-                {breadcrumbs.map((crumb) => (
-                    <>
+                {breadcrumbs.map((crumb, index) => (
+                    <li className="flex items-center" key={index}>
                         <FaAngleRight className="m-0 inline-block" />
-                        <li
+                        <div
                             className={clsx(style.breadcrumb__item, crumb.isLast ? style.last : style.trail)}
                             key={crumb.path}
                             aria-current={crumb.isLast ? 'page' : undefined}
                         >
                             {crumb.isLast ? crumb.label : <Link to={crumb.path}>{crumb.label}</Link>}
-                        </li>
-                    </>
+                        </div>
+                    </li>
                 ))}
             </ol>
         </nav>

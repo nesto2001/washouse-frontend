@@ -9,32 +9,46 @@ import Map from '../../components/Map/Map';
 import RatingStars from '../../components/RatingStars/RatingStars';
 import ServiceCard from '../../components/ServiceCard';
 import StatusTag from '../../components/StatusTag';
+import { CenterDetailsModel } from '../../models/Center/CenterDetailsModel';
 import { CenterModel } from '../../models/Center/CenterModel';
 import { getCenter } from '../../repositories/CenterRepository';
 import { CenterData } from '../../types/CenterData';
 import { getRating } from '../../utils/CommonUtils';
 import { compareTime, formatTime, getToday } from '../../utils/TimeUtils';
 
+import { Tabs } from 'antd';
+import type { TabsProps } from 'antd';
+
 import './CenterContainer.scss';
 
 type Props = {};
 
 const CenterContainer = (props: Props) => {
+    const [selectedKey, setSelectedKey] = useState<string>('0');
     const [status, setStatus] = useState<boolean>(false);
-    const [center, setCenter] = useState<CenterModel>();
+    const [center, setCenter] = useState<CenterDetailsModel>();
     const [isLoading, setIsLoading] = useState(true);
     const { id } = useParams();
+
+    const onChange = (key: string) => {
+        setSelectedKey(key);
+    };
 
     const today = getToday();
     useEffect(() => {
         if (center) {
-            setStatus(compareTime(center.operatingHours[today].start, center.operatingHours[today].end));
+            const opening: string = center.operatingHours[today].start ?? '';
+            const closing: string = center.operatingHours[today].end ?? '';
+            if (opening && closing) {
+                setStatus(compareTime(opening, closing));
+            } else {
+                setStatus(false);
+            }
         }
     }, [status]);
 
     const mapStyles: React.CSSProperties = { height: '420px' };
 
-    // const center: CenterData = {
     //     id: 1,
     //     thumbnail: Placeholder,
     //     title: 'The Clean House',
@@ -110,16 +124,39 @@ const CenterContainer = (props: Props) => {
             });
     }, []);
 
-    const handleChangeTabs = (event: React.MouseEvent<HTMLLIElement>) => {
-        const tabs = document.querySelectorAll<HTMLElement>('.service__slider--tab');
-        tabs.forEach((element) => {
-            element.classList.remove('service__slider--active');
-        });
-
-        const clickedTab = event.target as HTMLElement;
-        clickedTab.classList.add('service__slider--active');
-    };
     const ratingText = center?.numOfRating != 0 ? getRating(center ? center.rating : 0) : 'Chưa có';
+
+    const items: TabsProps['items'] = center?.service.map((category, index) => {
+        return {
+            key: index.toString(),
+            label: category.categoryName,
+            children: category.services && (
+                <>
+                    <Carousel
+                        showItem={category.services.length < 4 ? category.services.length : 4}
+                        items={category.services.map((service) => {
+                            return (
+                                <ServiceCard
+                                    key={service.id}
+                                    id={service.id}
+                                    thumbnail={service.image}
+                                    title={service.name}
+                                    description={service.description}
+                                    price={service.price}
+                                    action={true}
+                                    actionContent="Xem dịch vụ"
+                                    actionType="primary"
+                                    minHeight="132px"
+                                    cardHeight="464px"
+                                    actionLink="/centers/center/service"
+                                ></ServiceCard>
+                            );
+                        })}
+                    ></Carousel>
+                </>
+            ),
+        };
+    });
 
     if (isLoading) {
         return (
@@ -147,12 +184,10 @@ const CenterContainer = (props: Props) => {
                         </div>
                         <div className="center__details--content basis-7/12 p-6 ml-10 border border-[#B3B3B3] rounded-2xl">
                             <h1 className="text-2xl font-bold">{center.title}</h1>
-                            <h3 className="mt-2 text-base">{center.address}</h3>
+                            <h3 className="mt-2 text-base">{center.centerAddress}</h3>
                             <h3 className="mt-4 text-base flex items-center">
                                 <FaRegClock className="inline-block mr-2" />
-                                {`${formatTime(center.operatingHours[today].start)} - ${formatTime(
-                                    center.operatingHours[today].end,
-                                )}`}
+                                {`${center.operatingHours[today].start} - ${center.operatingHours[today].end}`}
                                 <StatusTag opening={status} />
                             </h3>
                             <h3 className="mt-1 text-base">
@@ -164,42 +199,7 @@ const CenterContainer = (props: Props) => {
                     <div className="center__details--services mt-16 text-center">
                         <h1 className="center__details-header font-bold text-3xl">Dịch vụ</h1>
                         <div className="service__slider--tabs mt-8 px-2">
-                            <div className="ol flex list-none font-semibold justify-center h-10 border-b border-[#B3B3B3]">
-                                {center.service.map((service, index) => (
-                                    <li
-                                        onClick={handleChangeTabs}
-                                        className={`px-6 service__slider--tab ${
-                                            index == 0 && 'service__slider--active'
-                                        } item__${index}} `}
-                                        key={service.id}
-                                    >
-                                        {service.title}
-                                    </li>
-                                ))}
-                            </div>
-                        </div>
-                        <div className="center__details--slider max-w-[820px] mt-4 mb-10">
-                            <div className="service__slider--wrapper">
-                                {/* <Carousel
-                                        showItem={3}
-                                        items={center.service.map((card) => {
-                                            return (
-                                                <ServiceCard
-                                                    id={card.id}
-                                                    thumbnail={card.thumbnail}
-                                                    title={card.title}
-                                                    description={card.description}
-                                                    action={true}
-                                                    actionContent="Xem dịch vụ"
-                                                    actionType="primary"
-                                                    minHeight="132px"
-                                                    cardHeight="436px"
-                                                    actionLink="/centers/center/service"
-                                                ></ServiceCard>
-                                            );
-                                        })}
-                                    ></Carousel> */}
-                            </div>
+                            <Tabs items={items} onChange={onChange} activeKey={selectedKey} />
                         </div>
                     </div>
                     <div className="center__details--gallery"></div>
@@ -215,8 +215,8 @@ const CenterContainer = (props: Props) => {
                                     <svg width={40} height={40} viewBox="2 1 16 16">
                                         <path
                                             fill="white"
-                                            fill-rule="evenodd"
-                                            clip-rule="evenodd"
+                                            fillRule="evenodd"
+                                            clipRule="evenodd"
                                             d="M10 13.3736L12.5949 14.7111C12.7378 14.7848 12.9006 14.8106 13.0593 14.7847C13.4681 14.718 13.7454 14.3325 13.6787 13.9237L13.2085 11.0425L15.2824 8.98796C15.3967 8.8748 15.4715 8.72792 15.4959 8.569C15.5588 8.15958 15.2779 7.77672 14.8685 7.71384L11.983 7.2707L10.6699 4.66338C10.5975 4.51978 10.481 4.40322 10.3374 4.33089C9.96742 4.14458 9.51648 4.29344 9.33017 4.66338L8.01705 7.2707L5.13157 7.71384C4.97265 7.73825 4.82577 7.81309 4.71261 7.92731C4.42109 8.22158 4.42332 8.69645 4.71759 8.98796L6.79152 11.0425L6.32131 13.9237C6.29541 14.0824 6.3212 14.2452 6.39486 14.3881C6.58464 14.7563 7.03696 14.9009 7.40514 14.7111L10 13.3736Z"
                                         ></path>
                                     </svg>
@@ -233,7 +233,7 @@ const CenterContainer = (props: Props) => {
                     <div className="center__sideinfo--map mt-6 p-6 border border-[#B3B3B3] rounded-2xl">
                         <h2 className="text-left font-bold text-2xl">Bản đồ</h2>
                         <div className="center__map--wrapper w-full min-h-[420px] border border-[#B3B3B3] rounded-lg mt-6 overflow-hidden">
-                            <Map centerLocation={center.location} selectedCenter={center} style={mapStyles}></Map>
+                            <Map centerLocation={center.centerLocation} style={mapStyles}></Map>
                         </div>
                     </div>
                 </div>

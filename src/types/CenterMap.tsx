@@ -1,6 +1,3 @@
-import { ServiceTag } from './ServiceType/ServiceTag';
-import { TimeRange } from './TimeRange';
-
 export interface CenterMap {
     id: number;
     thumbnail: string;

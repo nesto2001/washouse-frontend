@@ -1,4 +1,5 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
+
 import { Option } from '../../types/Options';
 import Button from '../Button';
 import Checkbox from '../Checkbox';
@@ -7,6 +8,7 @@ import Radio from '../RadioButton';
 type Props = {};
 
 const Sidebar = (props: Props) => {
+    const [sorting, setSorting] = useState<string>('nearby');
     const radios: Option[] = [
         {
             value: 'nearby',
@@ -59,12 +61,19 @@ const Sidebar = (props: Props) => {
             label: 'Loại bỏ vết bẩn',
         },
     ];
+
+    const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedValue = event.target.value;
+        const sortType = selectedValue;
+        setSorting(sortType);
+    };
+
     return (
         <div className="sidebar basis-1/6 pt-8 px-10 text-left h-screen">
             <div className="sidebar__sort">
                 <div className="sidebar__section--header font-bold text-base mb-3 text-sub">Sắp xếp</div>
                 <div className="sidebar__section--content">
-                    <Radio name="sorting" optionsList={radios} />
+                    <Radio name="sorting" optionsList={radios} defaultValue={sorting} onChange={handleRadioChange} />
                 </div>
             </div>
             <hr className="my-5" />

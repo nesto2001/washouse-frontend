@@ -42,7 +42,7 @@ const Selectbox = ({
                 Chọn {type ?? 'một tùy chọn'}
             </option>
             {options.map((option, index) => (
-                <option key={index} value={option.value}>
+                <option key={`option-${index}`} value={option.value}>
                     {option.label}
                 </option>
             ))}

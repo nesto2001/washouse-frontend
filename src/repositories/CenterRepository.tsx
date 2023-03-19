@@ -3,9 +3,18 @@ import { CenterModel } from '../models/Center/CenterModel';
 import { CenterResponse } from '../models/Center/CenterResponse';
 import instance from '../services/axios/AxiosInstance';
 import { ServiceTag } from '../types/ServiceType/ServiceTag';
+import { OperatingDay } from '../types/OperatingDay';
+import { ServiceModel } from '../models/Service/ServiceModel';
+import { ServiceCategoryModel } from '../models/Service/ServiceCategoryModel';
+import { CenterDetailsModel } from '../models/Center/CenterDetailsModel';
 
-export const getAllCenter = async (): Promise<CenterModel[]> => {
-    const { data } = await instance.get<List<CenterResponse>>('/api/center/getAll', {});
+export const getAllCenter = async ({ lat, long }: { lat?: number; long?: number }): Promise<CenterModel[]> => {
+    const { data } = await instance.get<List<CenterResponse>>('/api/center/getAll', {
+        params: {
+            UserLatitude: lat,
+            UserLongitude: long,
+        },
+    });
     return data.map((item): CenterModel => {
         return {
             id: item.id,
@@ -24,48 +33,58 @@ export const getAllCenter = async (): Promise<CenterModel[]> => {
             phone: item.phone,
             address: item.centerAddress,
             alias: item.alias,
+            distance: item.distance,
             location: item.centerLocation,
-            operatingHours: [
-                { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
-                { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
-                { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
-                { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
-                { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
-                { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
-                { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
-            ],
+            centerOperatingHours: item.centerOperatingHours.map((day): OperatingDay => {
+                return {
+                    day: day.day,
+                    start: day.openTime,
+                    end: day.closeTime,
+                };
+            }),
         };
     });
 };
 
-export const getCenter = async (id: number): Promise<CenterModel> => {
+export const getCenter = async (id: number): Promise<CenterDetailsModel> => {
     const { data } = await instance.get<CenterResponse>(`/api/center/${id}`, {});
     return {
         id: data.id,
         thumbnail: data.thumbnail,
         title: data.title,
         description: data.description,
-        service: data.centerServices.map((service): ServiceTag => {
+        service: data.centerServices.map((serviceCategory): ServiceCategoryModel => {
             return {
-                id: service.serviceCategoryID,
-                title: service.serviceCategoryName,
+                categoryID: serviceCategory.serviceCategoryID,
+                categoryName: serviceCategory.serviceCategoryName,
+                services: serviceCategory.services.map((service): ServiceModel => {
+                    return {
+                        id: service.serviceId,
+                        categoryId: service.categoryId,
+                        description: service.description,
+                        image: service.image,
+                        name: service.serviceName,
+                        numOfRating: service.numOfRating,
+                        price: service.price,
+                        rating: service.rating,
+                        timeEstimate: service.timeEstimate,
+                    };
+                }),
             };
         }),
-        additions: [],
         rating: data.rating,
         numOfRating: data.numOfRating,
         phone: data.phone,
-        address: data.centerAddress,
+        centerAddress: data.centerAddress,
         alias: data.alias,
-        location: data.centerLocation,
-        operatingHours: [
-            { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
-            { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
-            { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
-            { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
-            { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
-            { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
-            { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
-        ],
+        distance: data.distance,
+        centerLocation: data.centerLocation,
+        operatingHours: data.centerOperatingHours.map((day): OperatingDay => {
+            return {
+                day: day.day,
+                start: day.openTime,
+                end: day.closeTime,
+            };
+        }),
     };
 };

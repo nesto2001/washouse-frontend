@@ -1,11 +1,25 @@
-import React from 'react';
-import './ErrorScreen.scss';
+import { useEffect } from 'react';
+
 import Error from '../../assets/images/error.png';
 import Button from '../Button';
+import './ErrorScreen.scss';
 
 type Props = {};
 
 const ErrorScreen = (props: Props) => {
+    useEffect(() => {
+        const style = document.createElement('style');
+        style.innerHTML = `
+        .breadcrumb {
+            display: none;
+        }        
+        `;
+        document.head.appendChild(style);
+
+        return () => {
+            document.head.removeChild(style);
+        };
+    }, []);
     return (
         <div className="w-full flex flex-col justify-center items-center p-12">
             <div className="font-bold text-3xl">Rất tiếc, trang này không tồn tại</div>

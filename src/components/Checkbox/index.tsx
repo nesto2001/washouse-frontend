@@ -12,13 +12,11 @@ const Checkbox = ({ optionsList, name }: Props) => {
         <>
             {optionsList.map((option) => {
                 return (
-                    <>
-                        <label className="checkbox-container">
-                            <input type="checkbox" name={name} value={option.value} />
-                            <span className="checkbox-checkmark"></span>
-                            <span className="checkbox-label">{option.label}</span>
-                        </label>
-                    </>
+                    <label className="checkbox-container" key={`checkbox-${option.value}`}>
+                        <input type="checkbox" name={name} value={option.value} />
+                        <span className="checkbox-checkmark"></span>
+                        <span className="checkbox-label">{option.label}</span>
+                    </label>
                 );
             })}
         </>

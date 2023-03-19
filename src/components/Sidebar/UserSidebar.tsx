@@ -88,30 +88,13 @@ const items: MenuItem[] = datas.map((data) => {
 
 type UserSidebarProps = {
     basis: string;
-    activeNav: string;
 };
 const rootSubmenuKeys = datas.map((data) => data.key);
 
-const UserSidebar = ({ basis, activeNav }: UserSidebarProps) => {
+const UserSidebar = ({ basis }: UserSidebarProps) => {
     const [openKeys, setOpenKeys] = useState(['account']);
     const [selectedKey, setSelectedKey] = useState<Array<string>>(['profile']);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const curr = document.querySelectorAll<HTMLElement>('.sidenav__nav--link');
-        curr.forEach((element) => {
-            element.classList.remove('active');
-        });
-
-        const activeElement = document.getElementById(`nav-${activeNav}`);
-        activeElement?.classList.add('active');
-
-        if (activeNav == 'profile' || activeNav == 'address' || activeNav == 'password') {
-            document.getElementById('account-nav')?.classList.add('active');
-        } else {
-            document.getElementById('account-nav')?.classList.remove('active');
-        }
-    }, [activeNav]);
 
     const onOpenChange: MenuProps['onOpenChange'] = (keys) => {
         const latestOpenKey: string | undefined = keys.find((key) => openKeys.indexOf(key) === -1);
@@ -143,6 +126,8 @@ const UserSidebar = ({ basis, activeNav }: UserSidebarProps) => {
         }
     };
 
+    
+
     return (
         <div className={clsx('userpage__sidenav text-left px-7 mt-16', basis ?? '')}>
             <div className="userpage__sidenav--user flex items-center">
@@ -156,45 +141,6 @@ const UserSidebar = ({ basis, activeNav }: UserSidebarProps) => {
             </div>
             <hr className="my-4 border-wh-gray" />
             <div className="userpage__sidenav--nav">
-                {/* <div className="sidenav__nav--account" id="account-nav">
-                    <Link to="/user/account/profile" className="sidenav__nav--header flex items-center mb-2">
-                        <div className="sidenav__nav--icon max-h-[22px] h-6">
-                            <img className="object-contain h-full" src={User} alt="" />
-                        </div>
-                        <div className="sidenav__nav--link font-bold ml-2">Tài khoản</div>
-                    </Link>
-                    <ul className="sidenav__nav--sub pl-8">
-                        <li className="sidenav__nav--link" id="nav-profile">
-                            <Link to="/user/account/profile">Hồ sơ</Link>
-                        </li>
-                        <li className="sidenav__nav--link" id="nav-address">
-                            <Link to="/user/account/address">Địa chỉ</Link>
-                        </li>
-                        <li className="sidenav__nav--link" id="nav-password">
-                            <Link to="/user/account/password">Đổi mật khẩu</Link>
-                        </li>
-                    </ul>
-                </div>
-                <div className="sidenav__nav--order mt-4">
-                    <Link to="/user/order" className="sidenav__nav--header flex items-center mb-2">
-                        <div className="sidenav__nav--icon max-h-[22px] h-6">
-                            <img className="object-contain h-full" src={Order} alt="" />
-                        </div>
-                        <div className="sidenav__nav--link font-bold ml-2" id="nav-order">
-                            Đơn hàng
-                        </div>
-                    </Link>
-                </div>
-                <div className="sidenav__nav--notification mt-4">
-                    <Link to="/user/notification" className="sidenav__nav--header flex items-center mb-2">
-                        <div className="sidenav__nav--icon max-h-[22px] h-6">
-                            <img className="object-contain h-full" src={Noti} alt="" />
-                        </div>
-                        <div className="sidenav__nav--link font-bold ml-2" id="nav-noti">
-                            Thông báo
-                        </div>
-                    </Link>
-                </div> */}
                 <Menu
                     mode="inline"
                     openKeys={openKeys}

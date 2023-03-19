@@ -73,28 +73,28 @@ const ProgressBar = (props: Props) => {
         <>
             <div className={clsx(style.progressbar, 'w-full')}>
                 <div className={clsx(style.progressbar_fill)} style={{ width: `${progress}%` }}></div>
-                {states.map((state) => (
-                    <>
-                        <div
-                            className={clsx(
-                                style.progressbar_milestone,
-                                currentState?.order === state.order && style.active,
-                                orderState.find((e) => e.order === state.order)?.completed ? style.completed : '',
-                            )}
-                        ></div>
-                    </>
+                {states.map((state, index) => (
+                    <div
+                        key={`state-${index}`}
+                        className={clsx(
+                            style.progressbar_milestone,
+                            currentState?.order === state.order && style.active,
+                            orderState.find((e) => e.order === state.order)?.completed ? style.completed : '',
+                        )}
+                    ></div>
                 ))}
             </div>
             <div className={clsx(style.progressbar_tracking, 'mt-10 flex justify-between w-full')}>
-                {mergedStates.map((state) => (
-                    <>
-                        <div className={clsx(style.tracking_details, 'min-w-[96px] max-w-[96px]')}>
-                            <h4 className={clsx('text-sm font-bold', state.completed ? 'text-sub' : 'text-primary')}>
-                                {state.title}
-                            </h4>
-                            <h4 className="text-sm text-sub-gray">{state.time && formatDateTime(state.time)}</h4>
-                        </div>
-                    </>
+                {mergedStates.map((state, index) => (
+                    <div
+                        key={`mergestate-${index}`}
+                        className={clsx(style.tracking_details, 'min-w-[96px] max-w-[96px]')}
+                    >
+                        <h4 className={clsx('text-sm font-bold', state.completed ? 'text-sub' : 'text-primary')}>
+                            {state.title}
+                        </h4>
+                        <h4 className="text-sm text-sub-gray">{state.time && formatDateTime(state.time)}</h4>
+                    </div>
                 ))}
             </div>
         </>

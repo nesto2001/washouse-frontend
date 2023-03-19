@@ -21,7 +21,7 @@ import { UserModel } from '../../models/User/UserModel';
 const Navbar = () => {
     const [latitude, setLatitude] = useState<number>();
     const [longitude, setLongitude] = useState<number>();
-    const districtJson = localStorage.getItem('userDistrict');
+    const districtJson = sessionStorage.getItem('userDistrict');
     const [district, setDistrict] = useState<DistrictType | null>(districtJson ? JSON.parse(districtJson) : null);
     const [searchValue, setSearchValue] = useState('');
     const [districts, setDistricts] = useState<DistrictType[]>([]);
@@ -47,7 +47,7 @@ const Navbar = () => {
     }, []);
 
     useEffect(() => {
-        const userDistrictJson = localStorage.getItem('userDistrict');
+        const userDistrictJson = sessionStorage.getItem('userDistrict');
         const userDistrict: DistrictType = userDistrictJson ? JSON.parse(userDistrictJson) : null;
         if (userDistrict) {
             setDistrict(userDistrict);
@@ -59,7 +59,7 @@ const Navbar = () => {
                 };
                 fetchData().then((res) => {
                     setDistrict({ id: res.id, name: res.name });
-                    localStorage.setItem('userDistrict', JSON.stringify(res));
+                    sessionStorage.setItem('userDistrict', JSON.stringify(res));
                     console.log(district);
                 });
             }
@@ -73,7 +73,7 @@ const Navbar = () => {
         if (label) {
             const newDistrict = { id: value, name: label };
             setDistrict(newDistrict);
-            localStorage.setItem('userDistrict', JSON.stringify(newDistrict));
+            sessionStorage.setItem('userDistrict', JSON.stringify(newDistrict));
         }
     };
 
@@ -90,7 +90,7 @@ const Navbar = () => {
         {
             label: (
                 <>
-                    <Link to="user/account/profile" className="navbar__dropdown--item flex text-sm py-3 px-2 pl-1">
+                    <Link to="/user/account/profile" className="navbar__dropdown--item flex text-sm py-3 px-2 pl-1">
                         <img className="w-5 object-scale-down mr-5" src={User} alt="" />
                         Tài khoản
                     </Link>
@@ -101,7 +101,7 @@ const Navbar = () => {
         {
             label: (
                 <>
-                    <Link to="user/order" className="navbar__dropdown--item flex text-sm py-3 px-2 pl-1">
+                    <Link to="/user/order" className="navbar__dropdown--item flex text-sm py-3 px-2 pl-1">
                         <img className="w-5 object-scale-down mr-5" src={Order} alt="" /> Đơn hàng
                     </Link>
                 </>
@@ -115,7 +115,7 @@ const Navbar = () => {
             label: (
                 <>
                     <Link
-                        to="/login"
+                        to="/"
                         onClick={() => {
                             localStorage.removeItem('currentUser');
                         }}
@@ -150,6 +150,7 @@ const Navbar = () => {
                     })}
                     onChange={handleDistrictChange}
                     selectedValue={district?.id}
+                    className=""
                 ></Selectbox>
                 <div className="nav__searchbar w-[450px] h-[55px] grow justify-end hidden md:flex items-center">
                     <form className="md:flex" action="">

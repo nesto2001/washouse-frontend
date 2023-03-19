@@ -1,14 +1,13 @@
 import { OperatingDay } from '../../types/OperatingDay';
-import { OperatingHoursResponse } from '../OperatingHours/OperatingHoursResponse';
-import { ServiceCategoryResponse } from '../Service/ServiceCategoryResponse';
+import { ServiceCategoryModel } from '../Service/ServiceCategoryModel';
 
-export type CenterResponse = {
+export interface CenterDetailsModel {
     id: number;
     thumbnail: string;
     title: string;
     alias: string;
     description: string;
-    centerServices: ServiceCategoryResponse[];
+    service: ServiceCategoryModel[];
     rating: number;
     numOfRating: number;
     phone: string;
@@ -18,5 +17,5 @@ export type CenterResponse = {
         latitude: number;
         longitude: number;
     };
-    centerOperatingHours: OperatingHoursResponse[];
-};
+    operatingHours: OperatingDay[];
+}

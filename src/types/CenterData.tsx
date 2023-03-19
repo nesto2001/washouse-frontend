@@ -1,6 +1,5 @@
+import { OperatingDay } from './OperatingDay';
 import { ServiceCategoryData } from './ServiceType/ServiceCategoryData';
-import { ServiceTag } from './ServiceType/ServiceTag';
-import { TimeRange } from './TimeRange';
 
 export interface CenterData {
     id: number;
@@ -13,5 +12,5 @@ export interface CenterData {
     numOfRating: number;
     phone: string;
     address: string;
-    operatingHours: Array<TimeRange>;
+    operatingHours: Array<OperatingDay>;
 }

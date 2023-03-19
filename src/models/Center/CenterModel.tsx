@@ -1,5 +1,5 @@
+import { OperatingDay } from '../../types/OperatingDay';
 import { ServiceTag } from '../../types/ServiceType/ServiceTag';
-import { TimeRange } from '../../types/TimeRange';
 
 export interface CenterModel {
     id: number;
@@ -12,10 +12,11 @@ export interface CenterModel {
     numOfRating: number;
     phone: string;
     address: string;
-    operatingHours: Array<TimeRange>;
     alias: string;
+    distance: number;
     location: {
         latitude: number;
         longitude: number;
     };
+    centerOperatingHours: OperatingDay[];
 }

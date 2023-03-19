@@ -37,8 +37,9 @@ const CartContainer = () => {
                         <div className="sitecart text-left border border-wh-gray rounded-2xl p-6">
                             <h2 className="font-bold text-xl">Giỏ hàng của bạn ({cartQuantity}): </h2>
                             <div className="sitecart--itemslist flex flex-col gap-4 mt-6">
-                                {cartItems.map((item) => (
+                                {cartItems.map((item, index) => (
                                     <div
+                                        key={`cartitem-${index}`}
                                         className="sitecart--item flex justify-between items-center p-3 gap-4 border border-wh-gray rounded-2xl"
                                         id={item.id.toString()}
                                     >

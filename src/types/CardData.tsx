@@ -3,6 +3,7 @@ export interface CardData {
     thumbnail: string;
     title: string;
     description?: string | React.ReactNode;
+    price?: number;
     action?: boolean;
     actionContent?: string;
     actionType?: string;

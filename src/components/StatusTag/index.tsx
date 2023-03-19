@@ -4,9 +4,10 @@ import { FaCircle } from 'react-icons/fa';
 import style from './StatusTag.module.scss';
 type Props = {
     opening: boolean;
+    isBreakDay?: boolean;
 };
 
-const StatusTag = ({ opening }: Props) => {
+const StatusTag = ({ opening, isBreakDay }: Props) => {
     const [tagContent, setTagContent] = useState('');
     useEffect(() => {
         if (opening) {
@@ -18,7 +19,13 @@ const StatusTag = ({ opening }: Props) => {
 
     return (
         <>
-            <div className={clsx(opening ? style.open : style.closed, 'flex items-center ml-3 font-bold')}>
+            <div
+                className={clsx(
+                    opening ? style.open : style.closed,
+                    'flex items-center font-bold',
+                    isBreakDay ? '' : 'ml-3',
+                )}
+            >
                 <FaCircle size="10px" className="mr-1" /> {tagContent}
             </div>
         </>

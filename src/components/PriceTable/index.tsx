@@ -18,8 +18,8 @@ const PriceTable = ({ priceChart, unitType }: Props) => {
                     </tr>
                 </thead>
                 <tbody className={style.pricetable__body}>
-                    {priceChart.map((range) => (
-                        <tr className={style.pricetable__body__row}>
+                    {priceChart.map((range, index) => (
+                        <tr key={`range-${index}`} className={style.pricetable__body__row}>
                             <td className={style.pricetable__data}>
                                 Dưới {range.maxValue} {unitType}
                             </td>

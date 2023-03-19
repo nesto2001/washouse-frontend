@@ -111,8 +111,11 @@ const CheckoutContainer = (props: Props) => {
                         <h2 className="font-bold text-xl">Chi tiết đơn hàng</h2>
                         <div className="checkout__order--details mt-5">
                             {cartItems &&
-                                cartItems.map((item) => (
-                                    <div className="checkout__order--item py-3 flex gap-4 border-b border-wh-gray">
+                                cartItems.map((item, index) => (
+                                    <div
+                                        key={`cartitem-${index}`}
+                                        className="checkout__order--item py-3 flex gap-4 border-b border-wh-gray"
+                                    >
                                         <div className="checkout__order--item order__item--thumb flex-shrink rounded-2xl overflow-hidden">
                                             <img className="max-h-[120px]" src={Placeholder} alt="" />
                                         </div>
