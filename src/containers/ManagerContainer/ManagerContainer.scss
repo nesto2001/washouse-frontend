@@ -1,0 +1,27 @@
+.ant-tabs-nav-list {
+    display: flex;
+    align-items: center;
+    justify-content: start !important;
+    width: 100%;
+}
+.ant-tabs-tab {
+    width: 50%;
+    justify-content: center;
+}
+.ant-tabs {
+    &-nav {
+        display: flex;
+
+        .ant-tabs-tab {
+            flex-grow: 0;
+            margin-right: 0px;
+            margin-left: 0px !important;
+            padding: 12px 20px;
+            width: unset;
+            text-align: center;
+            &:first-of-type {
+                margin-left: 24px !important;
+            }
+        }
+    }
+}

@@ -76,6 +76,10 @@ input:focus {
     background-color: var(--washouse-light-gray);
 }
 
+.bg-primary {
+    background-color: var(--washouse-primary-blue);
+}
+
 .border-wh-gray {
     border-color: var(--washouse-placeholder-gray);
 }

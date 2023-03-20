@@ -4,6 +4,7 @@ import {
     SidebarLayout,
     AuthenticateLayout,
     CustomerSidebarLayout,
+    ManagerDashboardLayout,
 } from '../components/Layouts/';
 import {
     CartPage,
@@ -20,6 +21,9 @@ import {
     AddressPage,
     CustomerOrdersPage,
     CustomerPasswordPage,
+    ManagerDashboardPage,
+    ManagerCenterPage,
+    ManagerCenterRegistrationPage,
 } from '../pages/';
 
 interface RouteProps {
@@ -100,6 +104,20 @@ const publicRoutes: Array<RouteProps> = [
         path: '/user/order',
         layout: CustomerSidebarLayout,
         component: CustomerOrdersPage,
+    },
+    {
+        path: '/provider/dashboard',
+        layout: ManagerDashboardLayout,
+        component: ManagerDashboardPage,
+    },
+    {
+        path: '/provider/settings/center/profile',
+        layout: ManagerDashboardLayout,
+        component: ManagerCenterPage,
+    },{
+        path: '/provider/registration',
+        layout: ManagerDashboardLayout,
+        component: ManagerCenterRegistrationPage,
     },
 ];
 

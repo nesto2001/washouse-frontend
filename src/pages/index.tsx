@@ -13,3 +13,6 @@ export { default as ProfilePage } from './CustomerPage/ProfilePage';
 export { default as AddressPage } from './CustomerPage/AddressPage';
 export { default as CustomerOrdersPage } from './CustomerPage/CustomerOrdersPage';
 export { default as CustomerPasswordPage } from './CustomerPage/CustomerPasswordPage';
+export { default as ManagerDashboardPage } from './StaffPage/ManagerDashboardPage';
+export { default as ManagerCenterPage } from './StaffPage/ManagerCenterPage';
+export { default as ManagerCenterRegistrationPage } from './StaffPage/ManagerCenterRegistrationPage';
