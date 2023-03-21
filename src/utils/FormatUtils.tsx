@@ -4,8 +4,18 @@ export function formatLink(string: string) {
     const formattedString = unorm
         .nfc(string)
         .replace(/[\u0300-\u036f]/g, '')
-        .replace(' ', '-')
+        .replace(/ /g, '-')
         .toLowerCase();
+    return formattedString;
+}
+
+export function decodeURILink(string: string) {
+    const formattedString = decodeURIComponent(string);
+    return formattedString;
+}
+
+export function decodeURI(string: string) {
+    const formattedString = decodeURIComponent(string).replace(/-/g, ' ');
     return formattedString;
 }
 

@@ -48,3 +48,15 @@ export function getCurrentLocation(
         console.error('Geolocation không được hỗ trợ trên trình duyệt này.');
     }
 }
+
+export function getURLId(string: string): string {
+    const url = 'http://localhost:3000//trung-tâm/giặt-sấy-dr.clean-c.2';
+    const path = url.split('/').pop();
+    const part = path?.split('-').pop();
+    const id = part?.split('.').pop();
+    if (id) {
+        return id;
+    } else {
+        return '';
+    }
+}

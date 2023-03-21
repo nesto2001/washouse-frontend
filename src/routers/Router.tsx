@@ -36,17 +36,17 @@ interface RouteProps {
 const publicRoutes: Array<RouteProps> = [
     { path: '/', component: HomePage },
     {
-        path: '/centers',
+        path: '/trung-tâm',
         layout: SidebarLayout,
         component: CentersPage,
     },
     {
-        path: '/centers/center/:id',
+        path: '/trung-tâm/:name',
         layout: CenteredLayout,
         component: CenterPage,
     },
     {
-        path: '/centers/center/service',
+        path: '/centers/center/:id/service/:id',
         layout: CenteredLayout,
         component: CenterServicePage,
     },
@@ -114,7 +114,8 @@ const publicRoutes: Array<RouteProps> = [
         path: '/provider/settings/center/profile',
         layout: ManagerDashboardLayout,
         component: ManagerCenterPage,
-    },{
+    },
+    {
         path: '/provider/registration',
         layout: ManagerDashboardLayout,
         component: ManagerCenterRegistrationPage,

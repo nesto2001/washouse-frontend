@@ -7,15 +7,16 @@ import { OperatingDay } from '../types/OperatingDay';
 import { ServiceModel } from '../models/Service/ServiceModel';
 import { ServiceCategoryModel } from '../models/Service/ServiceCategoryModel';
 import { CenterDetailsModel } from '../models/Center/CenterDetailsModel';
+import { PaginationResponse } from '../models/CommonModel';
 
 export const getAllCenter = async ({ lat, long }: { lat?: number; long?: number }): Promise<CenterModel[]> => {
-    const { data } = await instance.get<List<CenterResponse>>('/api/center/getAll', {
+    const { data } = await instance.get<PaginationResponse<CenterResponse>>('/api/centers', {
         params: {
-            UserLatitude: lat,
-            UserLongitude: long,
+            CurrentUserLatitude: lat,
+            CurrentUserLongitude: long,
         },
     });
-    return data.map((item): CenterModel => {
+    return data.data.items.map((item): CenterModel => {
         return {
             id: item.id,
             thumbnail: item.thumbnail,
@@ -47,7 +48,7 @@ export const getAllCenter = async ({ lat, long }: { lat?: number; long?: number 
 };
 
 export const getCenter = async (id: number): Promise<CenterDetailsModel> => {
-    const { data } = await instance.get<CenterResponse>(`/api/center/${id}`, {});
+    const { data } = await instance.get<CenterResponse>(`/api/centers/${id}`, {});
     return {
         id: data.id,
         thumbnail: data.thumbnail,

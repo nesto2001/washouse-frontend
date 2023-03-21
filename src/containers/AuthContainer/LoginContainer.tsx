@@ -30,7 +30,7 @@ const LoginContainer = () => {
                 };
                 fetchData().then((res) => {
                     localStorage.setItem('currentUser', JSON.stringify(res));
-                    navigate('/centers');
+                    navigate('/trung-tâm');
                 });
             } else {
                 setLoginError('Số điện thoại hoặc mật khẩu chưa chính xác!');

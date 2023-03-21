@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FaPhoneAlt, FaRegClock } from 'react-icons/fa';
-import { useParams } from 'react-router-dom';
+import { useParams, RouteMatch, useLocation } from 'react-router-dom';
 import Placeholder from '../../assets/images/placeholder.png';
 import Carousel from '../../components/Carousel';
 import ErrorScreen from '../../components/ErrorScreen/ErrorScreen';
@@ -13,7 +13,7 @@ import { CenterDetailsModel } from '../../models/Center/CenterDetailsModel';
 import { CenterModel } from '../../models/Center/CenterModel';
 import { getCenter } from '../../repositories/CenterRepository';
 import { CenterData } from '../../types/CenterData';
-import { getRating } from '../../utils/CommonUtils';
+import { getRating, getURLId } from '../../utils/CommonUtils';
 import { compareTime, formatTime, getToday } from '../../utils/TimeUtils';
 
 import { Tabs } from 'antd';
@@ -24,11 +24,12 @@ import './CenterContainer.scss';
 type Props = {};
 
 const CenterContainer = (props: Props) => {
+    const location = useLocation();
     const [selectedKey, setSelectedKey] = useState<string>('0');
     const [status, setStatus] = useState<boolean>(false);
     const [center, setCenter] = useState<CenterDetailsModel>();
     const [isLoading, setIsLoading] = useState(true);
-    const { id } = useParams();
+    const id = getURLId(location.pathname);
 
     const onChange = (key: string) => {
         setSelectedKey(key);
@@ -148,7 +149,7 @@ const CenterContainer = (props: Props) => {
                                     actionType="primary"
                                     minHeight="132px"
                                     cardHeight="464px"
-                                    actionLink="/centers/center/service"
+                                    actionLink={`/centers/center/${center.id}/service/${service.id}`}
                                 ></ServiceCard>
                             );
                         })}

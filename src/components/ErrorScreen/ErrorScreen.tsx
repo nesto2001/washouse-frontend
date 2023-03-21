@@ -30,7 +30,7 @@ const ErrorScreen = (props: Props) => {
                 <img src={Error} alt="" />
             </div>
             <div className=" mt-5">
-                <Button link="/centers" type="primary">
+                <Button link="/trung-tâm" type="primary">
                     Quay lại trang chủ
                 </Button>
             </div>

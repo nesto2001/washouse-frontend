@@ -10,9 +10,10 @@ type Props = {
     onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
     inputRef?: React.RefObject<HTMLInputElement>;
     autocomplete?: string;
+    className?: string;
 };
 
-const Input = ({ label, name, type, value, onChange, placeholder, required, inputRef, autocomplete }: Props) => {
+const Input = ({ label, name, type, value, onChange, placeholder, required, inputRef, autocomplete, className }: Props) => {
     return (
         <>
             {label && (
@@ -25,7 +26,7 @@ const Input = ({ label, name, type, value, onChange, placeholder, required, inpu
                 required={required}
                 type={type}
                 name={name}
-                className={`border border-wh-gray py-2 pl-3 ${label && 'mt-3'} rounded w-full`}
+                className={className??`border border-wh-gray py-2 pl-3 ${label && 'mt-3'} rounded w-full`}
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}

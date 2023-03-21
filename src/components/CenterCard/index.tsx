@@ -3,6 +3,7 @@ import { FaPhoneAlt, FaRegClock } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import Placeholder from '../../assets/images/placeholder.png';
 import { CenterModel } from '../../models/Center/CenterModel';
+import { formatLink } from '../../utils/FormatUtils';
 import { compareTime, formatTime, getToday } from '../../utils/TimeUtils';
 import RatingStars from '../RatingStars/RatingStars';
 import StatusTag from '../StatusTag';
@@ -34,7 +35,7 @@ const CenterCard = ({ center }: CenterCardProps) => {
             </div>
             <div className="center__card--name text-lg font-bold mt-2">
                 <h4>
-                    <Link to={`/centers/center/${center.id}`}>{center.title}</Link>
+                    <Link to={`/trung-tâm/${formatLink(center.title)}-c.${center.id}`}>{center.title}</Link>
                 </h4>
             </div>
             <div className="center__card--info">

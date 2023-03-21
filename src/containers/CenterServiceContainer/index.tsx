@@ -1,10 +1,16 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import Placeholder from '../../assets/images/placeholder.png';
 import Button from '../../components/Button';
+import ErrorScreen from '../../components/ErrorScreen/ErrorScreen';
+import Input from '../../components/Input/Input';
+import Loading from '../../components/Loading/Loading';
 import PriceTable from '../../components/PriceTable';
 import RatingStars from '../../components/RatingStars/RatingStars';
+import { ServiceDetailsModel } from '../../models/Service/ServiceDetailsModel';
 import { addItem } from '../../reducers/CartReducer';
+import { getService } from '../../repositories/ServiceRepository';
 import { CartItem } from '../../types/CartType/CartItem';
 import { SubService } from '../../types/ServiceType/SubService';
 import { calculatePrice, getRating } from '../../utils/CommonUtils';
@@ -12,60 +18,92 @@ import { calculatePrice, getRating } from '../../utils/CommonUtils';
 type Props = {};
 
 const CenterServiceContainer = (props: Props) => {
-    const service: SubService = useMemo(
-        () => ({
-            id: 1,
-            thumbnail: Placeholder,
-            title: 'Giặt ủi quần áo',
-            description:
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vel sem accumsan, commodo velit ac, dictum sem. Proin pharetra lectus ac dolor dictum, eget tempor nulla efficitur. Nam eget euismod odio. Nunc euismod, eros ac dapibus interdum, magna libero placerat dui, ac commodo ante magna et mi.',
-            minTime: 2,
-            maxTime: 3,
-            rating: 4.5,
-            priceChart: [
-                { maxValue: 3, price: 30000 },
-                { maxValue: 4, price: 35000 },
-                { maxValue: 5, price: 40000 },
-                { maxValue: 6, price: 45000 },
-                { maxValue: 7, price: 50000 },
-            ],
-        }),
-        [],
-    );
-
+    const [service, setService] = useState<ServiceDetailsModel>();
     const [weightInput, setWeightInput] = useState<string>('');
+    const [quantityInput, setQuantityInput] = useState<number>(0);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const [servicePrice, setServicePrice] = useState<string>(
-        `${service.priceChart[0].price.toString()} - ${service.priceChart[
-            service.priceChart.length - 1
-        ].price.toString()}`,
-    );
+    // const ServiceDetailsModel = useMemo(
+    //     () => ({
+    //         id: 1,
+    //         thumbnail: Placeholder,
+    //         title: 'Giặt ủi quần áo',
+    //         description:
+    //             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vel sem accumsan, commodo velit ac, dictum sem. Proin pharetra lectus ac dolor dictum, eget tempor nulla efficitur. Nam eget euismod odio. Nunc euismod, eros ac dapibus interdum, magna libero placerat dui, ac commodo ante magna et mi.',
+    //         minTime: 2,
+    //         maxTime: 3,
+    //         rating: 4.5,
+    //         priceChart: [
+    //             { maxValue: 3, price: 30000 },
+    //             { maxValue: 4, price: 35000 },
+    //             { maxValue: 5, price: 40000 },
+    //             { maxValue: 6, price: 45000 },
+    //             { maxValue: 7, price: 50000 },
+    //         ],
+    //     }),
+    //     [],
+    // );
+
+    const { id } = useParams();
 
     useEffect(() => {
-        if (weightInput && parseFloat(weightInput) > 0) {
-            const calculatedPrice = calculatePrice(service, parseFloat(weightInput));
-            calculatedPrice && setServicePrice(calculatedPrice.toString());
-        } else {
-            setServicePrice(
-                `${service.priceChart[0].price.toString()} - ${service.priceChart[
-                    service.priceChart.length - 1
-                ].price.toString()}`,
-            );
-        }
-    }, [weightInput, service]);
+        const fetchData = async () => {
+            if (id) return await getService(parseInt(id));
+        };
+        fetchData()
+            .then((res) => {
+                setService(res);
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                console.error(error);
+                setIsLoading(false);
+            });
+    }, []);
 
     const dispatch = useDispatch();
 
+    if (isLoading) {
+        return (
+            <div>
+                <Loading />
+            </div>
+        );
+    }
+
+    if (!service) {
+        return <ErrorScreen />;
+    }
+
+    // const [servicePrice, setServicePrice] = useState(service?.servicePrices ?? service?.servicePrices);
+    // (`${service.priceChart[0].price.toString()} - ${service.priceChart[service.priceChart.length - 1].price.toString()}`) : null,
+    // useEffect(() => {
+    //     servicePrice &&
+
+    //         if (weightInput && parseFloat(weightInput) > 0) {
+    //         const calculatedPrice = calculatePrice(service, parseFloat(weightInput));
+    //         calculatedPrice && setServicePrice(calculatedPrice.toString());
+    //     } else {
+    //         setServicePrice(
+    //             `${service.priceChart[0].price.toString()} - ${service.priceChart[
+    //                 service.priceChart.length - 1
+    //             ].price.toString()}`,
+    //         );
+    //     }
+
+    // }, [weightInput, service]);
+
     const handleAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
-        if (weightInput && parseFloat(weightInput) > 0) {
+        if (weightInput && parseFloat(weightInput) || quantityInput > 0) {
             const cartItem: CartItem = {
                 id: service.id,
-                name: service.title,
-                thumbnail: service.thumbnail,
-                price: parseFloat(servicePrice),
-                weight: parseInt(weightInput),
-                unit: 'kg',
+                name: service.serviceName,
+                thumbnail: service.image,
+                price: service.price,
+                weight: parseInt(weightInput) ?? null,
+                quantity: quantityInput ?? null,
+                unit: 'pcs',
             };
             try {
                 dispatch(addItem(cartItem));
@@ -82,8 +120,7 @@ const CenterServiceContainer = (props: Props) => {
         if (regex.test(value)) setWeightInput(value.slice(0, maxLength));
     };
 
-    const ratingText = getRating(service.rating);
-
+    const ratingText = getRating(service?.rating);
     return (
         <div className="service__wrapper flex justify-between gap-[40px] mt-9">
             <div className="service__details text-left basis-2/3">
@@ -106,28 +143,42 @@ const CenterServiceContainer = (props: Props) => {
                     </div>
                     <div className="service__details--content basis-7/12 p-6 pl-10 ml-10 border border-[#B3B3B3] rounded-2xl">
                         <form action="" id="addcartForm">
-                            <h1 className="text-3xl font-bold">{service.title}</h1>
-                            <h3 className="mt-2 text-2xl font-bold text-primary">{servicePrice}đ</h3>
+                            <h1 className="text-3xl font-bold">{service.serviceName}</h1>
+                            <h3 className="mt-2 text-2xl font-bold text-primary">
+                                {service.priceType ? '' : service.price}đ
+                            </h3>
                             <p className="text-justify text-sm mt-3">{service.description}</p>
                             <h4 className="text-sm mt-3">
-                                <span className="font-bold">Thời gian xử lý:</span> {service.minTime * 60}' -{' '}
-                                {service.maxTime * 60}'
+                                <span className="font-bold">Thời gian xử lý:</span> {service.timeEstimate}'
+                                {/* {service.minTime * 60}' - {service.maxTime * 60}' */}
                             </h4>
                             <div className="service__inputgroup mt-3">
-                                <h3 className="text-sm font-bold">Khối lượng</h3>
+                                <h3 className="text-sm font-bold">{service.priceType ? 'Khối lượng' : 'Số lượng'}</h3>
                                 <div className="inputgroup flex items-center mt-1">
-                                    <input
-                                        className="border border-[#424242] pl-2 py-1 rounded w-[100px] mr-1"
-                                        type="number"
-                                        name=""
-                                        id=""
-                                        value={weightInput}
-                                        placeholder="KG"
-                                        maxLength={8}
-                                        onChange={handleChangeInput}
-                                        max={service.priceChart[service.priceChart.length - 1].maxValue}
-                                    />
-                                    KG
+                                    {service.priceType ? (
+                                        <>
+                                            <input
+                                                className="border border-[#424242] pl-2 py-1 rounded w-[100px] mr-1"
+                                                type="number"
+                                                name=""
+                                                id=""
+                                                value={weightInput}
+                                                placeholder="KG"
+                                                maxLength={8}
+                                                onChange={handleChangeInput}
+                                                // max={service.priceChart[service.priceChart.length - 1].maxValue}
+                                            />
+                                            KG
+                                        </>
+                                    ) : (
+                                        <Input
+                                            className="border border-[#424242] pl-2 py-1 rounded w-[100px] mr-1"
+                                            type="number"
+                                            name="item-quantity"
+                                            value={quantityInput}
+                                            onChange={(e) => setQuantityInput(parseInt(e.target.value))}
+                                        />
+                                    )}
                                 </div>
                             </div>
                             <div className="service__actiongroup mt-6 flex justify-between">
@@ -149,16 +200,18 @@ const CenterServiceContainer = (props: Props) => {
                             <h3 className="text-xl font-bold">Thông tin dịch vụ</h3>
                             <p className="text-sm mt-3 text-justify">{service.description}</p>
                             <h4 className="text-sm mt-2">
-                                <span className="font-bold">Thời gian xử lý:</span> {service.minTime * 60}' -{' '}
-                                {service.maxTime * 60}'
+                                <span className="font-bold">Thời gian xử lý:</span> {service.timeEstimate}'
+                                {/* {service.minTime * 60}' - {service.maxTime * 60}' */}
                             </h4>
                         </div>
-                        <div className="basis-1/2">
-                            <h3 className="text-xl font-bold">Bảng giá dịch vụ</h3>
-                            <div className="service__priceTable mt-3">
-                                <PriceTable priceChart={service.priceChart} unitType="ký"></PriceTable>
+                        {service.priceType && (
+                            <div className="basis-1/2">
+                                <h3 className="text-xl font-bold">Bảng giá dịch vụ</h3>
+                                <div className="service__priceTable mt-3">
+                                    {/* <PriceTable priceChart={service.priceChart} unitType="ký"></PriceTable> */}
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
             </div>

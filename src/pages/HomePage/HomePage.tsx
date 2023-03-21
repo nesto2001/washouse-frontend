@@ -46,7 +46,7 @@ const HomePage = () => {
                                 dịch vụ giặt ủi
                             </div>
                             <div className="hero__content--action mt-10">
-                                <Button type="primary" uppercase fontSize="24px" link="/centers">
+                                <Button type="primary" uppercase fontSize="24px" link="/trung-tâm">
                                     Đặt dịch vụ ngay
                                 </Button>
                             </div>

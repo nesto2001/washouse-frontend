@@ -12,19 +12,17 @@ type Props = {
     form?: string;
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
     isSubmit?: boolean;
+    style?: React.CSSProperties;
 };
 
-const Button = ({ children, type, link, uppercase, minWidth, fontSize, form, onClick, isSubmit }: Props) => {
-    const style = {
-        minWidth: minWidth || '164px',
-        fontSize: fontSize || '16px',
-    };
+const Button = ({ children, type, link, uppercase, minWidth, fontSize, form, onClick, isSubmit, style }: Props) => {
+    const btnStyle = { ...(style ?? ''), minWidth: minWidth || '164px', fontSize: fontSize || '16px' };
     return (
         <>
             <button
                 className={clsx('btn', type ? type : '', uppercase && 'uppercase')}
                 type={isSubmit ? 'submit' : 'button'}
-                style={style}
+                style={btnStyle}
                 form={form ?? ''}
                 onClick={onClick}
             >

@@ -1,0 +1,28 @@
+export type ServiceDetailsResponse = {
+    id: number;
+    serviceName: string;
+    alias: string;
+    categoryId: number;
+    description: string;
+    priceType: boolean;
+    image: string;
+    price: number;
+    timeEstimate: number;
+    isAvailable: boolean;
+    status: string;
+    homeFlag: boolean;
+    hotFlag: boolean;
+    rating: number;
+    numOfRating: number;
+    centerId: number;
+    category: null;
+    center: null;
+    orderDetails: [];
+    serviceGalleries: [];
+    servicePrices: [];
+    serviceRequests: [];
+    createdDate: string;
+    createdBy: string;
+    updatedDate: string;
+    updatedBy: string;
+};
