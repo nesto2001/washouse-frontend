@@ -1,4 +1,4 @@
-export type DistrictType = {
+export type LocationModel = {
     id: number;
     name: string;
 };

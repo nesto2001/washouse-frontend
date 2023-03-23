@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { DistrictType } from '../../types/DistrictType';
+import { LocationModel } from '../../models/LocationModel';
 import { getDistricts, getUserDistrict } from '../../repositories/LocationRepository';
 import { Option } from '../../types/Options';
 import { getCurrentLocation } from '../../utils/CommonUtils';
@@ -22,9 +22,9 @@ const Navbar = () => {
     const [latitude, setLatitude] = useState<number>();
     const [longitude, setLongitude] = useState<number>();
     const districtJson = sessionStorage.getItem('userDistrict');
-    const [district, setDistrict] = useState<DistrictType | null>(districtJson ? JSON.parse(districtJson) : null);
+    const [district, setDistrict] = useState<LocationModel | null>(districtJson ? JSON.parse(districtJson) : null);
     const [searchValue, setSearchValue] = useState('');
-    const [districts, setDistricts] = useState<DistrictType[]>([]);
+    const [districts, setDistricts] = useState<LocationModel[]>([]);
     const userJson = localStorage.getItem('currentUser');
     const [user, setUser] = useState<UserModel>(userJson ? JSON.parse(userJson) : null);
     const handleSearch = (e: { preventDefault: () => void }) => {
@@ -48,7 +48,7 @@ const Navbar = () => {
 
     useEffect(() => {
         const userDistrictJson = sessionStorage.getItem('userDistrict');
-        const userDistrict: DistrictType = userDistrictJson ? JSON.parse(userDistrictJson) : null;
+        const userDistrict: LocationModel = userDistrictJson ? JSON.parse(userDistrictJson) : null;
         if (userDistrict) {
             setDistrict(userDistrict);
         } else {
@@ -161,7 +161,7 @@ const Navbar = () => {
                             className="w-full basis-full grow"
                             placeholder="Tìm kiếm"
                         />
-                        <button onClick={handleSearch} className="ml-2 px-2 w-[50px] text-sub ">
+                        <button onClick={handleSearch} className="ml-2 px-2 w-[50px] text-sub bg-transparent">
                             <FaSearch size={30} />
                         </button>
                     </form>

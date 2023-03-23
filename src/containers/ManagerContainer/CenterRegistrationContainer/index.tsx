@@ -1,41 +1,94 @@
 import React, { useState } from 'react';
-import { message, Steps, theme } from 'antd';
+import { Form, message, Steps, theme } from 'antd';
 import { EnvironmentOutlined, SmileOutlined, ShopOutlined, SendOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { GrDeliver } from 'react-icons/gr';
 import Button from '../../../components/Button';
 import CenterBasicForm from './CenterBasicForm';
+import CenterContactForm from './CenterContactForm';
+import CenterServiceForm from './CenterServiceForm';
+import CenterDeliveryForm from './CenterDeliveryForm';
+import { StringLiteral } from 'typescript';
+import { OperatingDay } from '../../../types/OperatingDay';
+import { LocationType } from '../../../types/LocationType';
 
-const steps = [
-    {
-        title: 'Thông tin cơ bản',
-        content: <CenterBasicForm />,
-        icon: <InfoCircleOutlined style={{ verticalAlign: '0.2rem' }} />,
-    },
-    {
-        title: 'Địa chỉ & liên hệ',
-        content: 'Second-content',
-        icon: <EnvironmentOutlined style={{ verticalAlign: '0.2rem' }} />,
-    },
-    {
-        title: 'Dịch vụ',
-        content: 'Last-content',
-        icon: <ShopOutlined style={{ verticalAlign: '0.2rem' }} />,
-    },
-    {
-        title: 'Vận chuyển',
-        content: 'Last-content',
-        icon: <SendOutlined style={{ verticalAlign: '0.2rem' }} />,
-    },
-];
+export type CreateCenterFormData = {
+    name: string;
+    phone: string;
+    image: string;
+    description: string;
+    operationHours: OperatingDay[];
+    address: string;
+    districtId: number;
+    wardId: number;
+    location: LocationType;
+    hasDelivery: boolean;
+};
 
 type Props = {};
 
 const CenterRegistrationContainer = (props: Props) => {
     const { token } = theme.useToken();
-    const [current, setCurrent] = useState(0);
+    const [form] = Form.useForm();
+    const [current, setCurrent] = useState(1);
+    const [isValidated, setIsValidated] = useState(false);
+    const [formData, setFormData] = useState<CreateCenterFormData>({
+        name: '',
+        phone: '',
+        image: '',
+        description: '',
+        operationHours: [
+            { day: 0, start: null, end: null },
+            { day: 1, start: null, end: null },
+            { day: 2, start: null, end: null },
+            { day: 3, start: null, end: null },
+            { day: 4, start: null, end: null },
+            { day: 5, start: null, end: null },
+            { day: 6, start: null, end: null },
+        ],
+        address: '',
+        districtId: 0,
+        wardId: 0,
+        location: { latitude: 0, longitude: 0 },
+        hasDelivery: false,
+    });
+
+    const steps = [
+        {
+            title: 'Thông tin cơ bản',
+            content: (
+                <CenterBasicForm
+                    formInstance={form}
+                    setFormData={setFormData}
+                    formData={formData}
+                    setIsValidated={setIsValidated}
+                />
+            ),
+            icon: <InfoCircleOutlined style={{ verticalAlign: '-0.1rem' }} />,
+        },
+        {
+            title: 'Địa chỉ',
+            content: (
+                <CenterContactForm
+                    formInstance={form}
+                    setFormData={setFormData}
+                    formData={formData}
+                    setIsValidated={setIsValidated}
+                />
+            ),
+            icon: <EnvironmentOutlined style={{ verticalAlign: '-0.1rem' }} />,
+        },
+        {
+            title: 'Vận chuyển & Thanh toán',
+            content: <CenterDeliveryForm />,
+            icon: <SendOutlined style={{ verticalAlign: '-0.1rem' }} />,
+        },
+    ];
 
     const next = () => {
-        setCurrent(current + 1);
+        form.submit();
+        if (isValidated) {
+            setCurrent(current + 1);
+        }
     };
 
     const prev = () => {
@@ -43,8 +96,9 @@ const CenterRegistrationContainer = (props: Props) => {
     };
 
     const onChange = (value: number) => {
-        console.log('onChange:', value);
-        setCurrent(value);
+        if (isValidated) {
+            setCurrent(value);
+        }
     };
 
     const items = steps.map((item) => ({

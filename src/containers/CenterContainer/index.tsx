@@ -29,6 +29,8 @@ const CenterContainer = (props: Props) => {
     const [status, setStatus] = useState<boolean>(false);
     const [center, setCenter] = useState<CenterDetailsModel>();
     const [isLoading, setIsLoading] = useState(true);
+    const [isBreakDay, setIsBreakDay] = useState<boolean>(false);
+
     const id = getURLId(location.pathname);
 
     const onChange = (key: string) => {
@@ -36,17 +38,6 @@ const CenterContainer = (props: Props) => {
     };
 
     const today = getToday();
-    useEffect(() => {
-        if (center) {
-            const opening: string = center.operatingHours[today].start ?? '';
-            const closing: string = center.operatingHours[today].end ?? '';
-            if (opening && closing) {
-                setStatus(compareTime(opening, closing));
-            } else {
-                setStatus(false);
-            }
-        }
-    }, [status]);
 
     const mapStyles: React.CSSProperties = { height: '420px' };
 
@@ -118,6 +109,18 @@ const CenterContainer = (props: Props) => {
             .then((res) => {
                 setCenter(res);
                 setIsLoading(false);
+                if (res) {
+                    const opening: string = res.operatingHours[today]?.start ?? '';
+                    const closing: string = res.operatingHours[today]?.end ?? '';
+                    console.log(opening, closing);
+                    if (opening && closing) {
+                        setStatus(compareTime(opening, closing));
+                        setIsBreakDay(false);
+                    } else {
+                        setStatus(false);
+                        setIsBreakDay(true);
+                    }
+                }
             })
             .catch((error) => {
                 console.error(error);
@@ -159,6 +162,10 @@ const CenterContainer = (props: Props) => {
         };
     });
 
+    useEffect(() => {
+        console.log(center);
+    }, []);
+
     if (isLoading) {
         return (
             <div>
@@ -187,9 +194,14 @@ const CenterContainer = (props: Props) => {
                             <h1 className="text-2xl font-bold">{center.title}</h1>
                             <h3 className="mt-2 text-base">{center.centerAddress}</h3>
                             <h3 className="mt-4 text-base flex items-center">
-                                <FaRegClock className="inline-block mr-2" />
-                                {`${center.operatingHours[today].start} - ${center.operatingHours[today].end}`}
-                                <StatusTag opening={status} />
+                                {center.operatingHours[today]?.start && center.operatingHours[today]?.end && (
+                                    <>
+                                        <FaRegClock className="inline-block mr-2" />
+                                        {center.operatingHours[today].start?.substring(0, 5)} -{' '}
+                                        {center.operatingHours[today].end?.substring(0, 5)}
+                                    </>
+                                )}
+                                <StatusTag opening={status} isBreakDay={isBreakDay} />
                             </h3>
                             <h3 className="mt-1 text-base">
                                 <FaPhoneAlt className="inline-block mr-2" />

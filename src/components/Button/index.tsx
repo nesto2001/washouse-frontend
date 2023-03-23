@@ -13,9 +13,22 @@ type Props = {
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
     isSubmit?: boolean;
     style?: React.CSSProperties;
+    disable?: boolean;
 };
 
-const Button = ({ children, type, link, uppercase, minWidth, fontSize, form, onClick, isSubmit, style }: Props) => {
+const Button = ({
+    children,
+    type,
+    link,
+    uppercase,
+    minWidth,
+    fontSize,
+    form,
+    onClick,
+    isSubmit,
+    style,
+    disable,
+}: Props) => {
     const btnStyle = { ...(style ?? ''), minWidth: minWidth || '164px', fontSize: fontSize || '16px' };
     return (
         <>
@@ -25,6 +38,7 @@ const Button = ({ children, type, link, uppercase, minWidth, fontSize, form, onC
                 style={btnStyle}
                 form={form ?? ''}
                 onClick={onClick}
+                disabled={disable}
             >
                 {link ? <Link to={link}>{children}</Link> : children}
             </button>

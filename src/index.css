@@ -1,4 +1,16 @@
 @tailwind base;
+
+@layer base {
+    button,
+    [type='button'],
+    [type='reset'],
+    [type='submit'] {
+        -webkit-appearance: button;
+        background-color: #396afc;
+        background-image: none;
+    }
+}
+
 @tailwind components;
 @tailwind utilities;
 body {

@@ -73,34 +73,38 @@ const Map = ({ selectedCenter, locations, userLocation, style, iconSize, iconAnc
                 </Marker>
             )}
             {locations &&
-                locations.map((location) => (
-                    <Marker
-                        key={location.id}
-                        position={[location.location.latitude, location.location.longitude]}
-                        icon={centerIcon}
-                    >
-                        <Popup>
-                            <div>
-                                <Link to="/trung-tâm/center" className="text-sub">
-                                    <div className="w-[200px] h-[150px] max-w-[200px] max-h-[150px] rounded overflow-hidden">
-                                        <img
-                                            className="max-h-full w-full object-cover"
-                                            src={location.thumbnail ?? Placeholder}
-                                            alt=""
-                                        />
+                locations.map(
+                    (location) =>
+                        location.location.latitude &&
+                        location.location.longitude && (
+                            <Marker
+                                key={location.id}
+                                position={[location.location.latitude, location.location.longitude]}
+                                icon={centerIcon}
+                            >
+                                <Popup>
+                                    <div>
+                                        <Link to="/trung-tâm/center" className="text-sub">
+                                            <div className="w-[200px] h-[150px] max-w-[200px] max-h-[150px] rounded overflow-hidden">
+                                                <img
+                                                    className="max-h-full w-full object-cover"
+                                                    src={location.thumbnail ?? Placeholder}
+                                                    alt=""
+                                                />
+                                            </div>
+                                            <h3 className="text-left font-bold text-base max-w-[200px] mt-2 text-sub">
+                                                {location.alias ?? location.title}
+                                            </h3>
+                                            <div className="flex items-center mt-3">
+                                                <RatingStars rating={location.rating} />{' '}
+                                                <span className="ml-2 text-base text-sub">{location.numOfRating}</span>
+                                            </div>
+                                        </Link>
                                     </div>
-                                    <h3 className="text-left font-bold text-base max-w-[200px] mt-2 text-sub">
-                                        {location.alias ?? location.title}
-                                    </h3>
-                                    <div className="flex items-center mt-3">
-                                        <RatingStars rating={location.rating} />{' '}
-                                        <span className="ml-2 text-base text-sub">{location.numOfRating}</span>
-                                    </div>
-                                </Link>
-                            </div>
-                        </Popup>
-                    </Marker>
-                ))}
+                                </Popup>
+                            </Marker>
+                        ),
+                )}
             {centerLocation && selectedCenter && (
                 <Marker
                     key={selectedCenter.id}

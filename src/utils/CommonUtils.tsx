@@ -50,7 +50,7 @@ export function getCurrentLocation(
 }
 
 export function getURLId(string: string): string {
-    const url = 'http://localhost:3000//trung-tâm/giặt-sấy-dr.clean-c.2';
+    const url = string;
     const path = url.split('/').pop();
     const part = path?.split('-').pop();
     const id = part?.split('.').pop();
