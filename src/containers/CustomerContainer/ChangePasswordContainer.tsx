@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import Datepicker from 'tailwind-datepicker-react';
-import Button from '../../components/Button';
+import WHButton from '../../components/Button';
 import Input from '../../components/Input/Input';
 import Radio from '../../components/RadioButton';
 import { Option } from '../../types/Options';
@@ -30,9 +30,9 @@ const ChangePasswordContainer = () => {
             <div className="col-span-1"></div>
             <div className="col-span-1"></div>
             <div className="col-span-3 mt-6">
-                <Button type="primary" minWidth="124px">
+                <WHButton type="primary" minWidth="124px">
                     Đổi mật khẩu
-                </Button>
+                </WHButton>
             </div>
         </div>
     );

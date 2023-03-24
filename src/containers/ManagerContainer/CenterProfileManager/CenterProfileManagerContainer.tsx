@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 import '../ManagerContainer.scss';
-import Button from '../../../components/Button';
+import WHButton from '../../../components/Button';
 
 const onChange = (key: string) => {
     console.log(key);
@@ -77,9 +77,9 @@ const CenterProfileManagerContainer = (props: Props) => {
                 <div className="flex flex-col justify-center items-center">
                     Bạn chưa đăng ký bất kỳ trung tâm nào
                     <div className="provider__page--action center__action--register">
-                        <Button type="primary" link="/provider/registration">
+                        <WHButton type="primary" link="/provider/registration">
                             Đăng ký trung tâm
-                        </Button>
+                        </WHButton>
                     </div>
                 </div>
             )}

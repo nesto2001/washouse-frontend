@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 import CartStore from './store/CartStore';
 import { ConfigProvider } from 'antd';
 import themeConfig from './antd-theme.json';
+import ScrollToTop from './components/ScrollTop/ScrollToTop';
 
 function App() {
     return (
@@ -14,6 +15,7 @@ function App() {
             <ConfigProvider theme={themeConfig}>
                 <Provider store={CartStore}>
                     <BrowserRouter>
+                        <ScrollToTop />
                         <div className="App">
                             <Routes>
                                 {publicRoutes.map(

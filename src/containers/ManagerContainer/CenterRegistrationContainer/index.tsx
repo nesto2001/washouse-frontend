@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form, message, Steps, theme } from 'antd';
 import { EnvironmentOutlined, SmileOutlined, ShopOutlined, SendOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { GrDeliver } from 'react-icons/gr';
-import Button from '../../../components/Button';
+import WHButton from '../../../components/Button';
 import CenterBasicForm from './CenterBasicForm';
 import CenterContactForm from './CenterContactForm';
 import CenterServiceForm from './CenterServiceForm';
@@ -10,11 +10,15 @@ import CenterDeliveryForm from './CenterDeliveryForm';
 import { StringLiteral } from 'typescript';
 import { OperatingDay } from '../../../types/OperatingDay';
 import { LocationType } from '../../../types/LocationType';
+import { CenterRequest } from '../../../models/Center/CreateCenterRequest';
+import { createCenter } from '../../../repositories/CenterRepository';
+import { useNavigate } from 'react-router-dom';
 
 export type CreateCenterFormData = {
     name: string;
     phone: string;
     image: string;
+    savedImage: string;
     description: string;
     operationHours: OperatingDay[];
     address: string;
@@ -29,12 +33,14 @@ type Props = {};
 const CenterRegistrationContainer = (props: Props) => {
     const { token } = theme.useToken();
     const [form] = Form.useForm();
-    const [current, setCurrent] = useState(1);
+    const [current, setCurrent] = useState(0);
     const [isValidated, setIsValidated] = useState(false);
+    const navigate = useNavigate();
     const [formData, setFormData] = useState<CreateCenterFormData>({
         name: '',
         phone: '',
         image: '',
+        savedImage: '',
         description: '',
         operationHours: [
             { day: 0, start: null, end: null },
@@ -79,7 +85,14 @@ const CenterRegistrationContainer = (props: Props) => {
         },
         {
             title: 'Vận chuyển & Thanh toán',
-            content: <CenterDeliveryForm />,
+            content: (
+                <CenterDeliveryForm
+                    formInstance={form}
+                    setFormData={setFormData}
+                    formData={formData}
+                    setIsValidated={setIsValidated}
+                />
+            ),
             icon: <SendOutlined style={{ verticalAlign: '-0.1rem' }} />,
         },
     ];
@@ -96,9 +109,48 @@ const CenterRegistrationContainer = (props: Props) => {
     };
 
     const onChange = (value: number) => {
+        form.submit();
         if (isValidated) {
             setCurrent(value);
         }
+    };
+
+    const handleCreateCenter = () => {
+        console.log(formData);
+        const centerRequest: CenterRequest = {
+            center: {
+                centerName: formData.name,
+                description: formData.description,
+                hasDelivery: true,
+                phone: formData.phone,
+                savedFileName: formData.savedImage,
+            },
+            location: {
+                addressString: formData.address,
+                wardId: formData.wardId,
+                latitude: formData.location.latitude,
+                longitude: formData.location.longitude,
+            },
+            centerOperatingHours: formData.operationHours.map((operationDay) => {
+                return {
+                    day: operationDay.day,
+                    openTime: operationDay.start,
+                    closeTime: operationDay.end,
+                };
+            }),
+        };
+        console.log(JSON.stringify(centerRequest));
+        const fetchData = async () => {
+            return await createCenter(centerRequest);
+        };
+        fetchData().then((res) => {
+            if (res.code == 200) {
+                message.success('Đã đăng ký trung tâm thành công, vui lòng chờ duyệt bởi quản trị viên.');
+                navigate('/provider/settings/center/profile');
+            } else {
+                message.error('Xảy ra lỗi trong hoàn tất quá trình đăng ký, vui lòng thử lại sau.');
+            }
+        });
     };
 
     const items = steps.map((item) => ({
@@ -123,19 +175,19 @@ const CenterRegistrationContainer = (props: Props) => {
             <div style={contentStyle}>{steps[current].content}</div>
             <div style={{ marginTop: 24, display: 'flex', justifyContent: 'end', marginBottom: 24 }}>
                 {current > 0 && (
-                    <Button type="sub" style={{ margin: '0 8px' }} onClick={() => prev()}>
+                    <WHButton type="sub" style={{ margin: '0 8px' }} onClick={() => prev()}>
                         Previous
-                    </Button>
+                    </WHButton>
                 )}
                 {current < steps.length - 1 && (
-                    <Button type="primary" onClick={() => next()}>
+                    <WHButton type="primary" onClick={() => next()}>
                         Next
-                    </Button>
+                    </WHButton>
                 )}
                 {current === steps.length - 1 && (
-                    <Button type="primary" onClick={() => message.success('Processing complete!')}>
+                    <WHButton type="primary" onClick={handleCreateCenter}>
                         Done
-                    </Button>
+                    </WHButton>
                 )}
             </div>
         </>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Button from '../../components/Button';
+import WHButton from '../../components/Button';
 import FormRadioDelivery from '../../components/RadioButton/FormRadioDelivery';
 import FormRadioPayment from '../../components/RadioButton/FormRadioPayment';
 import Selectbox from '../../components/Selectbox';
@@ -183,9 +183,9 @@ export const Step1 = ({ formData, onNext }: Step1Props) => {
                 <Link to="/cart" className="font-bold">
                     Quay về giỏ hàng
                 </Link>
-                <Button type="primary" onClick={handleNext}>
+                <WHButton type="primary" onClick={handleNext}>
                     Tiếp tục đến phương thức vận chuyển
-                </Button>
+                </WHButton>
             </div>
         </>
     );

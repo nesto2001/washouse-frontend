@@ -1,28 +1,39 @@
-import { Button, Form, FormListFieldData, Input, Space, Switch } from 'antd';
+import { Button, Form, FormInstance, FormListFieldData, Input, Space, Switch } from 'antd';
 import { useState, useCallback } from 'react';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import '../ManagerContainer.scss';
+import { CreateCenterFormData } from '.';
 
-type Props = {};
-
-const onFinish = (values: any) => {
-    console.log('Received values of form: ', values);
+type Props = {
+    formData: CreateCenterFormData;
+    setFormData: React.Dispatch<React.SetStateAction<CreateCenterFormData>>;
+    setIsValidated: React.Dispatch<React.SetStateAction<boolean>>;
+    formInstance: FormInstance;
 };
-const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-};
 
-const CenterDeliveryForm = (props: Props) => {
+const CenterDeliveryForm = ({ setFormData, setIsValidated, formData, formInstance }: Props) => {
     const [hasDelivery, sethasDelivery] = useState<boolean>(false);
     const [, updateState] = useState({});
     const forceUpdate = useCallback(() => updateState({}), []);
 
     const handleSwitchChange = (checked: boolean) => {
         sethasDelivery(checked);
+        setFormData((prevFormData) => ({ ...prevFormData, hasDelivery: checked }));
     };
-
+    const onFinish = (values: any) => {
+        setIsValidated(true);
+        console.log(formData);
+        console.log('Received values of form: ', values);
+    };
+    const onFinishFailed = (errorInfo: any) => {
+        setIsValidated(true);
+        console.log(formData);
+        console.log('Failed:', errorInfo);
+    };
     return (
         <div className="p-6 text-sub text-base">
             <Form
+                form={formInstance}
                 name="basic"
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}

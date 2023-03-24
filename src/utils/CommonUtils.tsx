@@ -60,3 +60,8 @@ export function getURLId(string: string): string {
         return '';
     }
 }
+
+export function maskEmail(email: string): string {
+    const parts = email.split('@');
+    return '*'.repeat(parts[0].length) + '@' + parts[1];
+}

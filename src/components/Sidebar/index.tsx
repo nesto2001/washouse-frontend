@@ -5,13 +5,15 @@ import Button from '../Button';
 import Checkbox from '../Checkbox';
 import Radio from '../RadioButton';
 
-type Props = {};
+type Props = {
+    sorting: string;
+    setSorting: React.Dispatch<React.SetStateAction<string>>;
+};
 
-const Sidebar = (props: Props) => {
-    const [sorting, setSorting] = useState<string>('nearby');
+const Sidebar = ({ setSorting, sorting }: Props) => {
     const radios: Option[] = [
         {
-            value: 'nearby',
+            value: 'location',
             label: 'Gần tôi',
         },
         {

@@ -1,0 +1,8 @@
+.ant-switch:not(.ant-switch.ant-switch-checked) {
+    background: rgba(66, 66, 66, 0.25) !important;
+}
+button.ant-btn.ant-btn-icon-only {
+    background-image: none !important;
+    background-color: transparent !important;
+    border: 1px solid transparent !important;
+}

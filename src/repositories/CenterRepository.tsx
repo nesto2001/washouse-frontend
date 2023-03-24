@@ -7,13 +7,35 @@ import { OperatingDay } from '../types/OperatingDay';
 import { ServiceModel } from '../models/Service/ServiceModel';
 import { ServiceCategoryModel } from '../models/Service/ServiceCategoryModel';
 import { CenterDetailsModel } from '../models/Center/CenterDetailsModel';
-import { PaginationResponse } from '../models/CommonModel';
+import { PaginationResponse, Response } from '../models/CommonModel';
+import { LoginResponse } from '../models/LoginResponse';
+import { API_CENTER } from '../common/Constant';
+import { CenterRequest } from '../models/Center/CreateCenterRequest';
+import { CreateCenterResponse } from '../models/Center/CreateCenterResponse';
 
-export const getAllCenter = async ({ lat, long }: { lat?: number; long?: number }): Promise<CenterModel[]> => {
+export const getAllCenter = async ({
+    lat,
+    long,
+    searchString,
+    categoryServices,
+    budgetRange,
+    sort,
+}: {
+    lat?: number;
+    long?: number;
+    searchString?: string;
+    categoryServices?: string;
+    budgetRange?: string;
+    sort: string;
+}): Promise<CenterModel[]> => {
     const { data } = await instance.get<PaginationResponse<CenterResponse>>('/api/centers', {
         params: {
             CurrentUserLatitude: lat,
             CurrentUserLongitude: long,
+            Sort: sort,
+            BudgetRange: budgetRange,
+            CategoryServices: categoryServices,
+            SearchString: searchString,
         },
     });
     return data.data.items.map((item): CenterModel => {
@@ -48,13 +70,13 @@ export const getAllCenter = async ({ lat, long }: { lat?: number; long?: number 
 };
 
 export const getCenter = async (id: number): Promise<CenterDetailsModel> => {
-    const { data } = await instance.get<CenterResponse>(`/api/centers/${id}`, {});
+    const { data } = await instance.get<Response<CenterResponse>>(`/api/centers/${id}`, {});
     return {
-        id: data.id,
-        thumbnail: data.thumbnail,
-        title: data.title,
-        description: data.description,
-        service: data.centerServices.map((serviceCategory): ServiceCategoryModel => {
+        id: data.data.id,
+        thumbnail: data.data.thumbnail,
+        title: data.data.title,
+        description: data.data.description,
+        service: data.data.centerServices.map((serviceCategory): ServiceCategoryModel => {
             return {
                 categoryID: serviceCategory.serviceCategoryID,
                 categoryName: serviceCategory.serviceCategoryName,
@@ -73,14 +95,14 @@ export const getCenter = async (id: number): Promise<CenterDetailsModel> => {
                 }),
             };
         }),
-        rating: data.rating,
-        numOfRating: data.numOfRating,
-        phone: data.phone,
-        centerAddress: data.centerAddress,
-        alias: data.alias,
-        distance: data.distance,
-        centerLocation: data.centerLocation,
-        operatingHours: data.centerOperatingHours.map((day): OperatingDay => {
+        rating: data.data.rating,
+        numOfRating: data.data.numOfRating,
+        phone: data.data.phone,
+        centerAddress: data.data.centerAddress,
+        alias: data.data.alias,
+        distance: data.data.distance,
+        centerLocation: data.data.centerLocation,
+        operatingHours: data.data.centerOperatingHours.map((day): OperatingDay => {
             return {
                 day: day.day,
                 start: day.openTime,
@@ -88,4 +110,13 @@ export const getCenter = async (id: number): Promise<CenterDetailsModel> => {
             };
         }),
     };
+};
+
+export const createCenter = async (center: CenterRequest): Promise<Response<CreateCenterResponse>> => {
+    const response = await instance.post<Response<CreateCenterResponse>>(API_CENTER, center, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    return response.data;
 };

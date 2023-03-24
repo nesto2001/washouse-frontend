@@ -1,8 +1,9 @@
+import { Space } from 'antd';
 import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import Placeholder from '../../assets/images/placeholder.png';
-import Button from '../../components/Button';
+import WHButton from '../../components/Button';
 import ErrorScreen from '../../components/ErrorScreen/ErrorScreen';
 import Input from '../../components/Input/Input';
 import Loading from '../../components/Loading/Loading';
@@ -95,7 +96,7 @@ const CenterServiceContainer = (props: Props) => {
 
     const handleAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
-        if (weightInput && parseFloat(weightInput) || quantityInput > 0) {
+        if ((weightInput && parseFloat(weightInput)) || quantityInput > 0) {
             const cartItem: CartItem = {
                 id: service.id,
                 name: service.serviceName,
@@ -171,23 +172,25 @@ const CenterServiceContainer = (props: Props) => {
                                             KG
                                         </>
                                     ) : (
-                                        <Input
-                                            className="border border-[#424242] pl-2 py-1 rounded w-[100px] mr-1"
-                                            type="number"
-                                            name="item-quantity"
-                                            value={quantityInput}
-                                            onChange={(e) => setQuantityInput(parseInt(e.target.value))}
-                                        />
+                                        <Space.Compact>
+                                            <Input
+                                                className="border border-[#424242] pl-2 py-1 rounded w-[100px] mr-1"
+                                                type="number"
+                                                name="item-quantity"
+                                                value={quantityInput}
+                                                onChange={(e) => setQuantityInput(parseInt(e.target.value))}
+                                            />
+                                        </Space.Compact>
                                     )}
                                 </div>
                             </div>
                             <div className="service__actiongroup mt-6 flex justify-between">
-                                <Button type="sub" minWidth="180px" form="addcartForm" onClick={handleAddToCart}>
+                                <WHButton type="sub" minWidth="180px" form="addcartForm" onClick={handleAddToCart}>
                                     Thêm vào giỏ
-                                </Button>
-                                <Button type="primary" minWidth="180px">
+                                </WHButton>
+                                <WHButton type="primary" minWidth="180px">
                                     Đặt dịch vụ
-                                </Button>
+                                </WHButton>
                             </div>
                         </form>
                     </div>

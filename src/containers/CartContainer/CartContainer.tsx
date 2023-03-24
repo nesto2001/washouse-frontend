@@ -2,7 +2,7 @@ import { FaPhoneAlt, FaRegClock, FaTrashAlt } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import EmptyCart from '../../assets/images/empty-cart.png';
 import Placeholder from '../../assets/images/placeholder.png';
-import Button from '../../components/Button';
+import WHButton from '../../components/Button';
 import StatusTag from '../../components/StatusTag';
 import { removeItem } from '../../reducers/CartReducer';
 import { RootState } from '../../store/CartStore';
@@ -80,9 +80,9 @@ const CartContainer = () => {
                                 <li>Phí vận chuyển sẽ được tính ở trang thanh toán.</li>
                                 <li>Bạn cũng có thể nhập mã giảm giá ở trang thanh toán.</li>
                             </ul>
-                            <Button type="primary" minWidth="330px" link="/cart/checkout">
+                            <WHButton type="primary" minWidth="330px" link="/cart/checkout">
                                 Thanh toán
-                            </Button>
+                            </WHButton>
                         </div>
                         <div className="sitecart__sideinfo--center mt-6 p-6 border border-[#B3B3B3] rounded-2xl">
                             <h2 className="text-left font-bold text-2xl">Trung tâm</h2>
@@ -116,9 +116,9 @@ const CartContainer = () => {
                             <img className="max-w-[420px]" src={EmptyCart} alt="empty-cart" />
                         </div>
                         <h1 className="font-bold text-3xl mt-10 text-sub mb-6">Giỏ hàng của bạn hiện đang trống.</h1>
-                        <Button type="primary" fontSize="24px" link="/centers">
+                        <WHButton type="primary" fontSize="24px" link="/centers">
                             Đặt dịch vụ ngay
-                        </Button>
+                        </WHButton>
                     </div>
                 </>
             )}

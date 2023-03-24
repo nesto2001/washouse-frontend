@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '../../components/Button';
+import WHButton from '../../components/Button';
 import Map from '../../components/Map/Map';
 
 const AddressPage = () => {
@@ -45,7 +45,7 @@ const AddressPage = () => {
                         </div>
                     </div>
                     <div className="useraddress--update">
-                        <Button type="primary">Cập nhật</Button>
+                        <WHButton type="primary">Cập nhật</WHButton>
                     </div>
                 </div>
                 <div className="mx-6 bg-wh-gray w-[0.5px] max-h-[224px]"></div>

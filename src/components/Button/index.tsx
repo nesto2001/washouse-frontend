@@ -16,7 +16,7 @@ type Props = {
     disable?: boolean;
 };
 
-const Button = ({
+const WHButton = ({
     children,
     type,
     link,
@@ -46,4 +46,4 @@ const Button = ({
     );
 };
 
-export default Button;
+export default WHButton;

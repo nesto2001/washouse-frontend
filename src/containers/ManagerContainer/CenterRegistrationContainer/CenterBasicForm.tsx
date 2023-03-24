@@ -7,6 +7,8 @@ import TextArea from 'antd/es/input/TextArea';
 import dayjs from 'dayjs';
 import { CreateCenterFormData } from '.';
 import { DayMap } from '../../../mapping/DayMap';
+import '../ManagerContainer.scss';
+import { uploadSingle } from '../../../repositories/MediaRepository';
 
 const format = 'HH:mm';
 
@@ -62,6 +64,15 @@ const CenterBasicForm = ({ setFormData, setIsValidated, formData, formInstance }
     };
 
     const onFinish = (values: any) => {
+        const file = fileList[0]?.originFileObj;
+        if (file) {
+            const uploadFile = async () => {
+                return await uploadSingle(file);
+            };
+            uploadFile().then((res) => {
+                setFormData({ ...formData, savedImage: res.data.data.savedFileName, image: res.data.data.signedUrl });
+            });
+        }
         console.log('Success:', values);
         setIsValidated(true);
     };
@@ -141,11 +152,26 @@ const CenterBasicForm = ({ setFormData, setIsValidated, formData, formInstance }
                 </Form.Item>
                 <Form.Item label="Hình ảnh trung tâm" valuePropName="fileList">
                     <Upload
-                        action={`${process.env.REACT_APP_API_URL}/api/homeTest/uploadImage`}
+                        // action={`${process.env.REACT_APP_API_URL}/api/homeTest/uploadImage`}
                         listType="picture-card"
                         fileList={[...fileList]}
                         onChange={handleChange}
                         multiple={false}
+                        beforeUpload={(file) => false}
+                        showUploadList={{ showPreviewIcon: false }}
+                        accept={'.jpg, .jpeg, .png'}
+                        defaultFileList={
+                            formData.image
+                                ? [
+                                      {
+                                          uid: '1',
+                                          name: 'centerImage',
+                                          status: 'done',
+                                          url: formData.image,
+                                      },
+                                  ]
+                                : undefined
+                        }
                     >
                         <div>
                             <PlusOutlined />

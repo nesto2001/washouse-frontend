@@ -1,14 +1,24 @@
-import { useState } from 'react';
+import { message } from 'antd';
+import { useState, useEffect } from 'react';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import Datepicker from 'tailwind-datepicker-react';
-import Button from '../../components/Button';
+import WHButton from '../../components/Button';
 import Input from '../../components/Input/Input';
+import Loading from '../../components/Loading/Loading';
 import Radio from '../../components/RadioButton';
+import { AccountModel } from '../../models/Account/AccountModel';
+import { getUserProfile } from '../../repositories/AccountRepository';
 import { Option } from '../../types/Options';
+import { maskEmail } from '../../utils/CommonUtils';
 
 type Props = {};
 
 const UpdateProfileContainer = () => {
+    const [messageApi, contextHolder] = message.useMessage();
+    const [userProfile, setUserProfile] = useState<AccountModel>();
+    const [isLoading, setIsLoading] = useState(true);
+    const navigate = useNavigate();
     const options = {
         title: '',
         autoHide: false,
@@ -68,23 +78,38 @@ const UpdateProfileContainer = () => {
         },
     ];
 
+    useEffect(() => {
+        const userJson = localStorage.getItem('currentUser');
+        const user: AccountModel = userJson && JSON.parse(userJson);
+
+        const fetchData = async () => {
+            return await getUserProfile(user.accountId);
+        };
+        fetchData()
+            .then((res) => {
+                setUserProfile(res);
+                setIsLoading(true);
+            })
+            .catch(() => {
+                message.error('Vui lòng đăng nhập để xem trang này');
+                navigate('/login');
+            });
+    }, []);
+
+    if (isLoading) {
+        return <Loading screen />;
+    }
+
     return (
         <div className="grid grid-cols-4 items-center gap-y-2">
-            <div className="col-span-1 text-right mr-6">Họ</div>
-            <div className="col-span-1">
-                <Input type="text" name="user-fn"></Input>
+            <div className="col-span-1 text-right mr-6">Họ và tên</div>
+            <div className="col-span-3">
+                <Input type="text" name="user-fullname" value={userProfile?.fullName}></Input>
             </div>
-            <div className="col-span-2 grid grid-cols-4 items-center">
-                <div className="col-span-1 ml-3 w-">Tên</div>
-                <div className="col-span-3">
-                    <Input type="text" name="user-fn"></Input>
-                </div>
-            </div>
-
             <div className="col-span-1 text-right mr-6">Số điện thoại</div>
-            <div className="col-span-3 py-2">********21</div>
+            <div className="col-span-3 py-2">{userProfile?.phone.toString().replace(/.(?=.{2})/g, '*')}</div>
             <div className="col-span-1 text-right mr-6">Email</div>
-            <div className="col-span-3 py-2">********@gmail.com</div>
+            <div className="col-span-3 py-2">{userProfile && maskEmail(userProfile.email)}</div>
             <div className="col-span-1 text-right mr-6">Ngày sinh</div>
             <div className="col-span-3 grid grid-cols-5">
                 <div className="col-span-3 max-w-[192px]">
@@ -98,9 +123,9 @@ const UpdateProfileContainer = () => {
             </div>
             <div className="col-span-1 text-right mr-6"></div>
             <div className="col-span-3 mt-6">
-                <Button type="primary" minWidth="124px">
+                <WHButton type="primary" minWidth="124px">
                     Lưu
-                </Button>
+                </WHButton>
             </div>
         </div>
     );

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Partnership from '../../assets/images/partnership.png';
 import VectorBG from '../../assets/images/vector-bg.png';
 import Banner from '../../assets/images/washouse-banner.png';
-import Button from '../../components/Button';
+import WHButton from '../../components/Button';
 import Loading from '../../components/Loading/Loading';
 import HomeBlogs from '../../containers/HomeContainer/HomeBlogs';
 import HomeFeatures from '../../containers/HomeContainer/HomeFeatures';
@@ -46,9 +46,9 @@ const HomePage = () => {
                                 dịch vụ giặt ủi
                             </div>
                             <div className="hero__content--action mt-10">
-                                <Button type="primary" uppercase fontSize="24px" link="/trung-tâm">
+                                <WHButton type="primary" uppercase fontSize="24px" link="/trung-tâm">
                                     Đặt dịch vụ ngay
-                                </Button>
+                                </WHButton>
                             </div>
                         </div>
                     </div>
@@ -79,9 +79,9 @@ const HomePage = () => {
                                     hàng để giảm bớt chi phí quản lý, vận hành, marketing, công nghệ.
                                 </div>
                                 <div className="partnership__content--action mt-9 text-left">
-                                    <Button type="primary" fontSize="20px">
+                                    <WHButton type="primary" fontSize="20px">
                                         Tham gia ngay
-                                    </Button>
+                                    </WHButton>
                                 </div>
                             </div>
                             <div className="partnership__decoration basis-2/5 align-middle">

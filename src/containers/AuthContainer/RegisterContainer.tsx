@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Google from '../../assets/images/google.png';
-import Button from '../../components/Button';
+import WHButton from '../../components/Button';
 import Input from '../../components/Input/Input';
 
 type Props = {};
@@ -75,20 +75,20 @@ const RegisterContainer = () => {
                 </Link> */}
             </div>
             <div className="register__form--action mt-3">
-                <Button minWidth="100%" type="primary" onClick={handleSubmit}>
+                <WHButton minWidth="100%" type="primary" onClick={handleSubmit}>
                     Đăng ký
-                </Button>
+                </WHButton>
                 <div className="action--separator flex justify-between items-center my-3">
                     <div className="border-b border-wh-gray w-full"></div>
                     <div className="px-2 text-sub-gray font-medium">hoặc</div>
                     <div className="border-b border-wh-gray w-full"></div>
                 </div>
-                <Button minWidth="100%" type="sub">
+                <WHButton minWidth="100%" type="sub">
                     <>
                         <img className="max-w-[24px] inline-block mr-2" src={Google} alt="" />
                         Đăng nhập với Google
                     </>
-                </Button>
+                </WHButton>
             </div>
             <div className="register__form--redirect mt-3">
                 <h3 className="font-semibold">

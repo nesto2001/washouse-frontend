@@ -5,6 +5,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { LocationModel } from '../../../models/LocationModel';
 import { getDistricts, getWards, searchLocation } from '../../../repositories/LocationRepository';
 import { CreateCenterFormData } from '.';
+import { LocationType } from '../../../types/LocationType';
+import LocationMap from '../../../components/Map/LocationMap';
 
 const { Option } = Select;
 
@@ -21,6 +23,7 @@ const CenterContactForm = ({ setFormData, setIsValidated, formData, formInstance
     const [city, setCity] = useState<LocationModel>({ id: 0, name: 'TP. Hồ Chí Minh' });
     const [district, setDistrict] = useState<LocationModel>();
     const [openMap, setOpenMap] = useState<boolean>(false);
+    const [location, setLocation] = useState<LocationType>({ latitude: 0, longitude: 0 });
 
     const onFinish = (values: any) => {
         console.log('Success:', values);
@@ -95,7 +98,12 @@ const CenterContactForm = ({ setFormData, setIsValidated, formData, formInstance
                     rules={[{ required: true, message: 'Vui lòng nhập địa chỉ trung tâm' }]}
                     style={{ maxWidth: 700 }}
                 >
-                    <Input style={{ maxWidth: 413 }} />
+                    <Input
+                        style={{ maxWidth: 413 }}
+                        onChange={(e) => {
+                            setFormData((prevFormData) => ({ ...prevFormData, address: e.target.value }));
+                        }}
+                    />
                 </Form.Item>
                 <Form.Item label="Khu vực" style={{ maxWidth: 700 }}>
                     <Space.Compact>
@@ -167,7 +175,9 @@ const CenterContactForm = ({ setFormData, setIsValidated, formData, formInstance
             </Form>
             {/* <div className="col-span-2">Tên trung tâm</div>
     <div className="col-span-3"></div> */}
-            <Modal open={openMap} title="Chọn vị trí" okText="Create" cancelText="Cancel" onOk={() => {}}></Modal>
+            <Modal open={openMap} title="Chọn vị trí" okText="Create" cancelText="Cancel" onOk={() => {}}>
+                <LocationMap setLocation={setLocation} addressLocation={formData.location} />
+            </Modal>
         </div>
     );
 };

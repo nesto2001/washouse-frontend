@@ -12,8 +12,7 @@ const SidebarLayout = ({ children }: Props) => {
         <>
             <Navbar></Navbar>
             <div className="main mt-[107px] flex">
-                <Sidebar />
-                <div className="main__listing basis-5/6 flex mb-20">{children}</div>
+                <div className="main__listing w-full flex mb-20">{children}</div>
             </div>
             <Footer />
         </>

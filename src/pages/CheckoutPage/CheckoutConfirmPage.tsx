@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import style from './Checkout.module.scss';
 import Logo from '../../assets/images/washouse-tagline.png';
 import Successful from '../../assets/images/check.png';
-import Button from '../../components/Button';
+import WHButton from '../../components/Button';
 
 const CheckoutConfirmPage = () => {
     const id = '31401263';
@@ -29,17 +29,17 @@ const CheckoutConfirmPage = () => {
                         Chúng tôi sẽ gửi xác nhận đặt hàng thành công cùng với thông tin đơn hàng qua email.
                     </p>
                     <div className="checkout__confirm--action mt-16 flex gap-10">
-                        <Button type="sub" link="/" fontSize="20px" minWidth="224px">
+                        <WHButton type="sub" link="/" fontSize="20px" minWidth="224px">
                             Trang chủ
-                        </Button>
-                        <Button
+                        </WHButton>
+                        <WHButton
                             type="primary"
                             link={`/orders/details?id=${id}&p=${p}`}
                             fontSize="20px"
                             minWidth="224px"
                         >
                             Thông tin đơn hàng
-                        </Button>
+                        </WHButton>
                     </div>
                 </div>
             </div>
