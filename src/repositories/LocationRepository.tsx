@@ -6,9 +6,10 @@ import { LocationModel } from '../models/LocationModel';
 import { WardReponse } from '../models/WardResponse';
 import { LocationType } from '../types/LocationType';
 import { LocationResponse } from '../models/Location/LocationResponse';
+import { API_DISTRICT, API_DISTRICT_SEARCH, API_DISTRICT_WARDS, API_LOCATION_SEARCH } from '../common/Constant';
 
 export const getDistricts = async (): Promise<LocationModel[]> => {
-    const { data } = await instance.get<Response<List<DistrictReponse>>>('/api/district/getAll', {});
+    const { data } = await instance.get<Response<List<DistrictReponse>>>(API_DISTRICT, {});
     return data.data.map((item): LocationModel => {
         return {
             id: item.districtId,
@@ -18,7 +19,7 @@ export const getDistricts = async (): Promise<LocationModel[]> => {
 };
 
 export const getUserDistrict = async ({ lat, long }: { lat: number; long: number }): Promise<LocationModel> => {
-    const { data } = await instance.get<Response<DistrictReponse>>('/api/district/getDistrictByLatLong', {
+    const { data } = await instance.get<Response<DistrictReponse>>(API_DISTRICT_SEARCH, {
         params: {
             latitude: lat,
             longitude: long,
@@ -28,7 +29,12 @@ export const getUserDistrict = async ({ lat, long }: { lat: number; long: number
 };
 
 export const getWards = async (id: number): Promise<LocationModel[]> => {
-    const { data } = await instance.get<Response<List<WardReponse>>>(`/api/ward/getWardListByDistrict/${id}`, {});
+    const { data } = await instance.get<Response<List<WardReponse>>>(
+        API_DISTRICT_WARDS.replace('${id}', id.toString()),
+        {
+            params: { id: id },
+        },
+    );
     return data.data.map((item): LocationModel => {
         return {
             id: item.wardId,
@@ -38,7 +44,7 @@ export const getWards = async (id: number): Promise<LocationModel[]> => {
 };
 
 export const searchLocation = async (address: string, wardId: number): Promise<LocationType> => {
-    const { data } = await instance.get<Response<LocationResponse>>(`/api/locations/search`, {
+    const { data } = await instance.get<Response<LocationResponse>>(API_LOCATION_SEARCH, {
         params: {
             AddressString: address,
             WardId: wardId,

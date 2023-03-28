@@ -1,22 +1,23 @@
-import DashboardMenu from '../../DashboardMenu/DashboardMenu';
-
-import { Layout, Menu, theme } from 'antd';
-import React, { Children, useState } from 'react';
 import {
-    LineChartOutlined,
-    SolutionOutlined,
     CalendarOutlined,
+    CarOutlined,
+    HeartOutlined,
+    LineChartOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     ShopOutlined,
+    SolutionOutlined,
     UserOutlined,
 } from '@ant-design/icons';
-import { GrClipboard, GrDeliver } from 'react-icons/gr';
-import { MdOutlineDeliveryDining } from 'react-icons/md';
-import { VscCalendar } from 'react-icons/vsc';
-import Logo from '../../../assets//images/washouse-notag.png';
-import LogoSmall from '../../../assets//images/washouse-notext.png';
+import { Layout, Menu, theme } from 'antd';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Logo from '../../../assets//images/washouse-notag.png';
+import LogoSmall from '../../../assets/images/washouse-notext.png';
+import UserPlaceholder from '../../../assets/images/user-placeholder.png';
+import style from './DashboardLayout.module.scss';
+import clsx from 'clsx';
+import DropdownMenu from '../../Dropdown/DropdownMenu';
 
 type Props = {
     children?: JSX.Element;
@@ -26,6 +27,7 @@ const { Header, Sider, Content } = Layout;
 
 const ManagerDashboardLayout = ({ children }: Props) => {
     const [collapsed, setCollapsed] = useState(false);
+    const [user, setUser] = useState({ name: 'Le thanh Dat' });
     const {
         token: { colorBgContainer },
     } = theme.useToken();
@@ -42,7 +44,7 @@ const ManagerDashboardLayout = ({ children }: Props) => {
         },
         {
             key: '3',
-            icon: <GrDeliver />,
+            icon: <CarOutlined />,
             label: 'Vận chuyển',
         },
         {
@@ -51,15 +53,21 @@ const ManagerDashboardLayout = ({ children }: Props) => {
             label: 'Đặt lịch',
         },
         {
-            key: '5',
-            icon: <ShopOutlined />,
-            label: 'Trung tâm',
-            children: [{ key: '6', label: <Link to="/provider/settings/center/profile">Hồ sơ trung tâm</Link> }],
+            key: '6',
+            icon: <HeartOutlined />,
+            label: 'Dịch vụ',
+            children: [{ key: '7', label: <Link to="/provider/services">Tất cả dịch vụ</Link> }],
         },
         {
-            key: '7',
+            key: '8',
+            icon: <ShopOutlined />,
+            label: 'Trung tâm',
+            children: [{ key: '9', label: <Link to="/provider/settings/center/profile">Hồ sơ trung tâm</Link> }],
+        },
+        {
+            key: '10',
             icon: <UserOutlined />,
-            label: 'Khách hàng',
+            label: <Link to="/provider/customers">Khách hàng</Link>,
         },
     ];
     return (
@@ -86,13 +94,34 @@ const ManagerDashboardLayout = ({ children }: Props) => {
                 <Menu className="mt-5" theme="light" mode="inline" defaultSelectedKeys={['1']} items={items} />
             </Sider>
             <Layout className="site-layout" style={collapsed ? { marginLeft: 80 } : { marginLeft: 256 }}>
-                <Header style={{ padding: 0, paddingLeft: 20, background: colorBgContainer }}>
+                <Header
+                    style={{
+                        padding: 0,
+                        paddingLeft: 20,
+                        background: colorBgContainer,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        paddingRight: 200,
+                    }}
+                >
                     {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
                         className: 'trigger',
                         onClick: () => setCollapsed(!collapsed),
                     })}
+                    <div className={style.active__staff}>
+                        <div
+                            className={clsx(
+                                'w-[50px] h-[50px] rounded-full overflow-hidden',
+                                style.active__staff_avatar,
+                            )}
+                        >
+                            <img className="w-full h-full object-cover" src={UserPlaceholder} alt="" />
+                        </div>
+                        <DropdownMenu items={items} menuText={user.name} className="" />
+                    </div>
                 </Header>
-                <Content style={{ margin: '24px 16px 0', overflow: 'initial', minHeight: `calc(100vh - 88px)` }}>
+                <Content style={{ margin: '24px 16px 24px', overflow: 'initial', minHeight: `calc(100vh - 88px)` }}>
                     {children}
                 </Content>
             </Layout>

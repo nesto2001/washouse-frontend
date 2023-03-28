@@ -61,6 +61,10 @@ input:focus {
     color: var(--washouse-placeholder-gray);
 }
 
+.text-sub-lightgray {
+    color: var(--washouse-light-gray);
+}
+
 .text-red {
     color: var(--washouse-red);
 }
@@ -87,6 +91,11 @@ input:focus {
 .border-wh-lightgray {
     border-color: var(--washouse-light-gray);
 }
+
+.border-wh-primary {
+    border-color: var(--washouse-primary-blue);
+}
+
 .ant-tabs-tab {
     font-size: 16px !important;
 }

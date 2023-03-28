@@ -40,14 +40,17 @@ const CenterCard = ({ center }: CenterCardProps) => {
             </div>
             <div className="center__card--info">
                 <div className="center__card--address">
-                    <h5>{center.address}</h5>
+                    <h5>{center.address}, TP. Hồ Chí Minh</h5>
                 </div>
                 <div className="center__card--details flex justify-between">
                     <div className="center__card--opeHour flex items-center">
                         {center.centerOperatingHours[today].start && center.centerOperatingHours[today].end && (
                             <>
                                 <FaRegClock className="mr-2 self-center" />
-                                <span className="leading-7">{`${center.centerOperatingHours[today].start} - ${center.centerOperatingHours[today].end}`}</span>
+                                <span className="leading-7">
+                                    {center.centerOperatingHours[today].start?.substring(0, 5)} -{' '}
+                                    {center.centerOperatingHours[today].end?.substring(0, 5)}
+                                </span>
                             </>
                         )}
                         <StatusTag opening={status} isBreakDay={isBreakDay} />

@@ -14,6 +14,7 @@ type Props = {
     isSubmit?: boolean;
     style?: React.CSSProperties;
     disable?: boolean;
+    className?: string;
 };
 
 const WHButton = ({
@@ -28,12 +29,13 @@ const WHButton = ({
     isSubmit,
     style,
     disable,
+    className,
 }: Props) => {
     const btnStyle = { ...(style ?? ''), minWidth: minWidth || '164px', fontSize: fontSize || '16px' };
     return (
         <>
             <button
-                className={clsx('btn', type ? type : '', uppercase && 'uppercase')}
+                className={clsx('btn', type ? type : '', uppercase && 'uppercase', className ?? '')}
                 type={isSubmit ? 'submit' : 'button'}
                 style={btnStyle}
                 form={form ?? ''}

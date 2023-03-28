@@ -11,7 +11,7 @@ const BlankRightLayout = ({ children }: Props) => {
             <div className="main flex justify-end">
                 <>
                     <div className="login__banner absolute left-0 h-screen w-full -z-10">
-                        <div className="login__banner--background max-h-[929px] h-full w-2/3">
+                        <div className="login__banner--background max-h-[931px] h-full w-2/3">
                             <img className="h-full" src={Background} alt="" />
                         </div>
                         <div className="login__banner--decoration absolute z-10 top-1/4 translate-y-10 left-32 my-auto w-1/3 max-w-[622px]">

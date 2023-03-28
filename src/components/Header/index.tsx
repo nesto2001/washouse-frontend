@@ -134,7 +134,7 @@ const Navbar = () => {
     return (
         <div className="w-full" id="navbar">
             <div className="mx-auto flex gap-8 justify-between items-center px-4 py-4 container w-full">
-                <Link to={user ? '/centers' : '/'}>
+                <Link to={user ? '/trung-tâm' : '/'}>
                     <div className="w-[221px] h-[75px]">
                         <img src={Logo} alt="logo" className="cursor-pointer" />
                     </div>

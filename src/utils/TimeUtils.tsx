@@ -40,6 +40,13 @@ export function formatDate(date: Date): string {
     return formattedDate;
 }
 
+export function formatDateString(date: string): string {
+    const dateType = new Date(date);
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    const formattedDate = dateType.toLocaleDateString('vi-VN');
+    return formattedDate;
+}
+
 export function formatDateTime(date: Date): string {
     const paddedDate = (date.getUTCDate() < 10 ? '0' : '') + date.getUTCDate();
     const paddedMonth = (date.getUTCMonth() < 9 ? '0' : '') + (date.getUTCMonth() + 1);

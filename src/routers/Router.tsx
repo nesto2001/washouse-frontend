@@ -5,6 +5,7 @@ import {
     AuthenticateLayout,
     CustomerSidebarLayout,
     ManagerDashboardLayout,
+    AdminDashboardLayout,
 } from '../components/Layouts/';
 import {
     CartPage,
@@ -17,13 +18,18 @@ import {
     LoginPage,
     RegisterPage,
     OrderDetailsPage,
-    ProfilePage,
-    AddressPage,
+    CustomerProfilePage,
+    CustomerAddressPage,
     CustomerOrdersPage,
     CustomerPasswordPage,
     ManagerDashboardPage,
     ManagerCenterPage,
     ManagerCenterRegistrationPage,
+    ManagerServicePage,
+    ManagerCreateServicePage,
+    StaffCustomerPage,
+    AdminDashboardPage,
+    AdminCenterPage,
 } from '../pages/';
 
 interface RouteProps {
@@ -83,17 +89,17 @@ const publicRoutes: Array<RouteProps> = [
     {
         path: '/user/account/profile',
         layout: CustomerSidebarLayout,
-        component: ProfilePage,
+        component: CustomerProfilePage,
     },
     {
         path: '/user/account/',
-        component: ProfilePage,
+        component: CustomerProfilePage,
         redirectUrl: '/user/account/profile',
     },
     {
         path: '/user/account/address',
         layout: CustomerSidebarLayout,
-        component: AddressPage,
+        component: CustomerAddressPage,
     },
     {
         path: '/user/account/password',
@@ -119,6 +125,36 @@ const publicRoutes: Array<RouteProps> = [
         path: '/provider/registration',
         layout: ManagerDashboardLayout,
         component: ManagerCenterRegistrationPage,
+    },
+    {
+        path: '/provider/services',
+        layout: ManagerDashboardLayout,
+        component: ManagerServicePage,
+    },
+    {
+        path: '/provider/services/create',
+        layout: ManagerDashboardLayout,
+        component: ManagerCreateServicePage,
+    },
+    {
+        path: '/provider/customers',
+        layout: ManagerDashboardLayout,
+        component: StaffCustomerPage,
+    },
+    {
+        path: '/admin/dashboard',
+        layout: AdminDashboardLayout,
+        component: AdminDashboardPage,
+    },
+    {
+        path: '/admin/centers/request',
+        layout: AdminDashboardLayout,
+        component: AdminCenterPage,
+    },
+    {
+        path: '/admin/centers/',
+        layout: AdminDashboardLayout,
+        component: AdminCenterPage,
     },
 ];
 

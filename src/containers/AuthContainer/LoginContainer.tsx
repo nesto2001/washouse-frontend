@@ -10,33 +10,45 @@ import { getMe, login } from '../../repositories/AuthRepository';
 type Props = {};
 
 const LoginContainer = () => {
+    const [loginForm, setLoginForm] = useState({
+        phone: '',
+        password: '',
+    });
     const [loginSMS, setLoginSMS] = useState<boolean>(false);
     const [loginError, setLoginError] = useState<string>('');
-    const userPhoneRef = useRef<HTMLInputElement>(null);
-    const passwordRef = useRef<HTMLInputElement>(null);
+    const [isFetching, setIsFetching] = useState<boolean>(false);
     const navigate = useNavigate();
 
     const handleSubmit = () => {
-        const phone = userPhoneRef.current?.value ?? '';
-        const password = passwordRef.current?.value ?? '';
-        const fetchData = async () => {
-            return await login({ phone: phone, password: password });
-        };
-        fetchData().then((res) => {
-            console.log(res);
-            if (res.status == 200) {
-                localStorage.setItem('accessToken', res.data.data.accessToken);
-                const fetchData = async () => {
-                    return await getMe();
-                };
-                fetchData().then((res) => {
-                    localStorage.setItem('currentUser', JSON.stringify(res));
-                    navigate('/trung-tâm');
-                });
-            } else {
-                setLoginError('Số điện thoại hoặc mật khẩu chưa chính xác!');
-            }
-        });
+        setIsFetching(true);
+        if (loginForm.phone && loginForm.password) {
+            const fetchData = async () => {
+                return await login({ phone: loginForm.phone.trim(), password: loginForm.password.trim() });
+            };
+            fetchData().then((res) => {
+                console.log(res);
+                if (res.status == 200) {
+                    localStorage.setItem('accessToken', res.data.data.accessToken);
+                    const fetchData = async () => {
+                        return await getMe();
+                    };
+                    fetchData().then((res) => {
+                        setIsFetching(false);
+                        localStorage.setItem('currentUser', JSON.stringify(res));
+                        if (res.roleType.toLowerCase() === 'admin') {
+                            navigate('/admin/dashboard');
+                        } else {
+                            navigate('/trung-tâm');
+                        }
+                    });
+                } else {
+                    setLoginError('Số điện thoại hoặc mật khẩu chưa chính xác!');
+                }
+            });
+        } else {
+            setLoginError('Vui lòng nhập đầy đủ thông tin đăng nhập!');
+            setIsFetching(false);
+        }
     };
 
     return (
@@ -46,7 +58,10 @@ const LoginContainer = () => {
                     label="Số điện thoại"
                     name="user_phone"
                     type="tel"
-                    inputRef={userPhoneRef}
+                    onChange={(e) => {
+                        setLoginForm((prev) => ({ ...prev, phone: e.target.value }));
+                    }}
+                    value={loginForm.phone}
                     required
                     placeholder="Nhập số điện thoại"
                 />
@@ -57,7 +72,10 @@ const LoginContainer = () => {
                         label="Mật khẩu"
                         name="user_password"
                         type="password"
-                        inputRef={passwordRef}
+                        onChange={(e) => {
+                            setLoginForm((prev) => ({ ...prev, password: e.target.value }));
+                        }}
+                        value={loginForm.password}
                         required
                         placeholder="Nhập mật khẩu"
                         autocomplete="on"
@@ -72,7 +90,15 @@ const LoginContainer = () => {
                     </div>
                 )}
                 <WHButton minWidth="100%" type="primary" onClick={handleSubmit}>
-                    {loginSMS ? 'Tiếp theo' : 'Đăng nhập'}
+                    {isFetching ? (
+                        <div
+                            className={isFetching ? 'flex justify-center my-[7px] text-center dot-flashing' : ''}
+                        ></div>
+                    ) : loginSMS ? (
+                        'Tiếp theo'
+                    ) : (
+                        'Đăng nhập'
+                    )}
                 </WHButton>
                 <div className={clsx(loginSMS ? 'justify-end' : 'justify-between', 'login__form--addition flex mt-2')}>
                     {loginSMS ? (

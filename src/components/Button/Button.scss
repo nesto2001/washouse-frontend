@@ -24,3 +24,53 @@
 .btn-text-lg {
     font-size: 24px;
 }
+
+.dot-flashing {
+    position: relative;
+    width: 10px;
+    height: 10px;
+    left: 50%;
+    transform: translateX(calc(-50% - 2px));
+    border-radius: 5px;
+    background-color: var(--washouse-primary-white);
+    color: var(--washouse-primary-white);
+    animation: dot-flashing 0.5s infinite linear alternate;
+    animation-delay: 0.25s;
+    &::after,
+    &::before {
+        content: '';
+        display: inline-block;
+        position: absolute;
+        top: 0;
+    }
+    &::before {
+        left: -20px;
+        width: 10px;
+        height: 10px;
+        border-radius: 5px;
+        background-color: var(--washouse-primary-white);
+        color: var(--washouse-primary-white);
+        animation: dot-flashing 0.5s infinite alternate;
+        animation-delay: 0s;
+    }
+    &::after {
+        left: 20px;
+        width: 10px;
+        height: 10px;
+        border-radius: 5px;
+        background-color: var(--washouse-primary-white);
+        color: var(--washouse-primary-white);
+        animation: dot-flashing 0.5s infinite alternate;
+        animation-delay: 0.5s;
+    }
+}
+
+@keyframes dot-flashing {
+    0% {
+        background-color: var(--washouse-primary-white);
+    }
+    50%,
+    100% {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+}

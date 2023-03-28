@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FaPhoneAlt, FaRegClock } from 'react-icons/fa';
-import { useParams, RouteMatch, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import Placeholder from '../../assets/images/placeholder.png';
 import Carousel from '../../components/Carousel';
 import ErrorScreen from '../../components/ErrorScreen/ErrorScreen';
@@ -10,14 +10,12 @@ import RatingStars from '../../components/RatingStars/RatingStars';
 import ServiceCard from '../../components/ServiceCard';
 import StatusTag from '../../components/StatusTag';
 import { CenterDetailsModel } from '../../models/Center/CenterDetailsModel';
-import { CenterModel } from '../../models/Center/CenterModel';
 import { getCenter } from '../../repositories/CenterRepository';
-import { CenterData } from '../../types/CenterData';
 import { getRating, getURLId } from '../../utils/CommonUtils';
-import { compareTime, formatTime, getToday } from '../../utils/TimeUtils';
+import { compareTime, getToday } from '../../utils/TimeUtils';
 
-import { Tabs } from 'antd';
 import type { TabsProps } from 'antd';
+import { Tabs } from 'antd';
 
 import './CenterContainer.scss';
 
@@ -40,66 +38,6 @@ const CenterContainer = (props: Props) => {
     const today = getToday();
 
     const mapStyles: React.CSSProperties = { height: '420px' };
-
-    //     id: 1,
-    //     thumbnail: Placeholder,
-    //     title: 'The Clean House',
-    //     description: 'This is a great place to do your laundry.',
-    //     service: [
-    //         {
-    //             id: 1,
-    //             thumbnail: Placeholder,
-    //             title: 'Giặt sấy',
-    //             description: 'Dịch vu giặt cơ bản bao gồm việc giặt, sấy khô và gấp quần áo.',
-    //         },
-    //         {
-    //             id: 2,
-    //             thumbnail: Placeholder,
-    //             title: 'Giặt hấp',
-    //             description:
-    //                 'Phương pháp làm sạch sử dụng dung môi thay vì nước để loại bỏ bụi bẩn và vết bẩn khỏi quần áo.',
-    //         },
-    //         {
-    //             id: 3,
-    //             thumbnail: Placeholder,
-    //             title: 'Ủi đồ',
-    //             description:
-    //                 'Dịch vụ ủi quần áo để loại bỏ các nếp nhăn và làm cho quần áo trông sạch sẽ và tinh tươm.',
-    //         },
-    //         {
-    //             id: 4,
-    //             thumbnail: Placeholder,
-    //             title: 'Chỉnh sửa',
-    //             description: 'Dịch vụ sửa đổi các loại quần áo, chẳng hạn như may viền quần hoặc lấy váy.',
-    //         },
-    //         {
-    //             id: 5,
-    //             thumbnail: Placeholder,
-    //             title: 'Giặt công nghiệp',
-    //             description:
-    //                 'Dịch vụ ủi quần áo để loại bỏ các nếp nhăn và làm cho quần áo trông sạch sẽ và tinh tươm.',
-    //         },
-    //         {
-    //             id: 6,
-    //             thumbnail: Placeholder,
-    //             title: 'Giặt thảm',
-    //             description: 'Dịch vụ sửa đổi các loại quần áo, chẳng hạn như may viền quần hoặc lấy váy.',
-    //         },
-    //     ],
-    //     rating: 4.5,
-    //     numOfRating: 100,
-    //     phone: '0975926021',
-    //     address: '518 Lê Văn Sỹ, Phường 14, Quận 3, TP. HCM',
-    //     operatingHours: [
-    //         { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
-    //         { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
-    //         { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
-    //         { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
-    //         { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
-    //         { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
-    //         { start: new Date('2023-02-26T01:00:00Z'), end: new Date('2023-02-26T13:00:00Z') },
-    //     ],
-    // };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -137,7 +75,7 @@ const CenterContainer = (props: Props) => {
             children: category.services && (
                 <>
                     <Carousel
-                        showItem={category.services.length < 4 ? category.services.length : 4}
+                        showItem={category.services.length < 3 ? category.services.length : 3}
                         items={category.services.map((service) => {
                             return (
                                 <ServiceCard
@@ -183,7 +121,7 @@ const CenterContainer = (props: Props) => {
             <div className="center__wrapper flex justify-between gap-[40px] mt-9">
                 <div className="center__details text-left basis-2/3">
                     <div className="center__details--main flex">
-                        <div className="center__details--thumbnail max-h-[280px] basis-5/12 overflow-hidden">
+                        <div className="center__details--thumbnail max-w-[306px] max-h-[280px] basis-5/12 overflow-hidden">
                             <img
                                 className="h-full w-full object-cover object-center inline-block"
                                 src={center.thumbnail ?? Placeholder}
@@ -209,9 +147,9 @@ const CenterContainer = (props: Props) => {
                             </h3>
                         </div>
                     </div>
-                    <div className="center__details--services mt-16 text-center">
+                    <div className="center__details--services mt-16 text-center overflow-visible">
                         <h1 className="center__details-header font-bold text-3xl">Dịch vụ</h1>
-                        <div className="service__slider--tabs mt-8 px-2">
+                        <div className="service__slider--tabs mt-8 px-2 max-w-[780px]">
                             <Tabs items={items} onChange={onChange} activeKey={selectedKey} />
                         </div>
                     </div>

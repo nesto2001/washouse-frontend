@@ -7,6 +7,9 @@
         "colorInfo": "#396afc",
         "colorTextBase": "#424242",
         "fontSize": 14,
-        "borderRadius": 6
+        "borderRadius": 6,
+        "colorPrimaryHover": "#0236D1",
+        "colorPrimaryTextHover": "#0236D1",
+        "colorInfoHover": "#0236D1"
     }
 }

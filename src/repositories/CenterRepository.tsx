@@ -9,7 +9,7 @@ import { ServiceCategoryModel } from '../models/Service/ServiceCategoryModel';
 import { CenterDetailsModel } from '../models/Center/CenterDetailsModel';
 import { PaginationResponse, Response } from '../models/CommonModel';
 import { LoginResponse } from '../models/LoginResponse';
-import { API_CENTER } from '../common/Constant';
+import { API_CENTER, API_CENTER_DETAILS } from '../common/Constant';
 import { CenterRequest } from '../models/Center/CreateCenterRequest';
 import { CreateCenterResponse } from '../models/Center/CreateCenterResponse';
 
@@ -28,7 +28,7 @@ export const getAllCenter = async ({
     budgetRange?: string;
     sort: string;
 }): Promise<CenterModel[]> => {
-    const { data } = await instance.get<PaginationResponse<CenterResponse>>('/api/centers', {
+    const { data } = await instance.get<PaginationResponse<CenterResponse>>(API_CENTER, {
         params: {
             CurrentUserLatitude: lat,
             CurrentUserLongitude: long,
@@ -70,7 +70,10 @@ export const getAllCenter = async ({
 };
 
 export const getCenter = async (id: number): Promise<CenterDetailsModel> => {
-    const { data } = await instance.get<Response<CenterResponse>>(`/api/centers/${id}`, {});
+    const { data } = await instance.get<Response<CenterResponse>>(
+        API_CENTER_DETAILS.replace('${id}', id.toString()),
+        {},
+    );
     return {
         id: data.data.id,
         thumbnail: data.data.thumbnail,

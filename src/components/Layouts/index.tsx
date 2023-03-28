@@ -5,3 +5,4 @@ export { default as BlankCenteredLayout } from './CenteredLayout/BlankCenteredLa
 export { default as AuthenticateLayout } from './AuthenticateLayout/AuthenticateLayout';
 export { default as CustomerSidebarLayout } from './CustomerSidebarLayout/CustomerSidebarLayout';
 export { default as ManagerDashboardLayout } from './DashboardLayout/ManagerDashboardLayout';
+export { default as AdminDashboardLayout } from './DashboardLayout/AdminDashboardLayout';

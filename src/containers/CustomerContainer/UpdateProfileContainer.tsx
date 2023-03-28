@@ -11,6 +11,7 @@ import { AccountModel } from '../../models/Account/AccountModel';
 import { getUserProfile } from '../../repositories/AccountRepository';
 import { Option } from '../../types/Options';
 import { maskEmail } from '../../utils/CommonUtils';
+import UpdateAvatarContainer from './UpdateAvatarContainer';
 
 type Props = {};
 
@@ -88,7 +89,7 @@ const UpdateProfileContainer = () => {
         fetchData()
             .then((res) => {
                 setUserProfile(res);
-                setIsLoading(true);
+                setIsLoading(false);
             })
             .catch(() => {
                 message.error('Vui lòng đăng nhập để xem trang này');
@@ -97,35 +98,55 @@ const UpdateProfileContainer = () => {
     }, []);
 
     if (isLoading) {
-        return <Loading screen />;
+        const wrap = document.querySelector('.userpage__main');
+        return <Loading />;
     }
 
     return (
-        <div className="grid grid-cols-4 items-center gap-y-2">
-            <div className="col-span-1 text-right mr-6">Họ và tên</div>
-            <div className="col-span-3">
-                <Input type="text" name="user-fullname" value={userProfile?.fullName}></Input>
-            </div>
-            <div className="col-span-1 text-right mr-6">Số điện thoại</div>
-            <div className="col-span-3 py-2">{userProfile?.phone.toString().replace(/.(?=.{2})/g, '*')}</div>
-            <div className="col-span-1 text-right mr-6">Email</div>
-            <div className="col-span-3 py-2">{userProfile && maskEmail(userProfile.email)}</div>
-            <div className="col-span-1 text-right mr-6">Ngày sinh</div>
-            <div className="col-span-3 grid grid-cols-5">
-                <div className="col-span-3 max-w-[192px]">
-                    <Datepicker options={options} onChange={handleChange} show={show} setShow={handleClose} />
+        <div className="userprofile w-full border border-wh-gray rounded-2xl mb-10">
+            <div className="userprofile--header pt-4 pl-6 font-bold text-xl">Hồ sơ của tôi</div>
+            <hr className="mt-3 mb-8" />
+            <div className="userprofile--content flex justify-between px-14 mb-16">
+                <div className="userprofile__update--form">
+                    <div className="grid grid-cols-4 items-center gap-y-2">
+                        <div className="col-span-1 text-right mr-6">Họ và tên</div>
+                        <div className="col-span-3">
+                            <Input type="text" name="user-fullname" value={userProfile?.fullName}></Input>
+                        </div>
+                        <div className="col-span-1 text-right mr-6">Số điện thoại</div>
+                        <div className="col-span-3 py-2">
+                            {userProfile?.phone.toString().replace(/.(?=.{2})/g, '*')}
+                        </div>
+                        <div className="col-span-1 text-right mr-6">Email</div>
+                        <div className="col-span-3 py-2">{userProfile && maskEmail(userProfile.email)}</div>
+                        <div className="col-span-1 text-right mr-6">Ngày sinh</div>
+                        <div className="col-span-3 grid grid-cols-5">
+                            <div className="col-span-3 max-w-[192px]">
+                                <Datepicker
+                                    options={options}
+                                    onChange={handleChange}
+                                    show={show}
+                                    setShow={handleClose}
+                                />
+                            </div>
+                            <div className="col-span-2"></div>
+                        </div>
+                        <div className="col-span-1 text-right mr-6">Giới tính</div>
+                        <div className="col-span-3 py-2 flex items-center gap-6">
+                            <Radio optionsList={genderOptions} name="gender" inline></Radio>
+                        </div>
+                        <div className="col-span-1 text-right mr-6"></div>
+                        <div className="col-span-3 mt-6">
+                            <WHButton type="primary" minWidth="124px">
+                                Lưu
+                            </WHButton>
+                        </div>
+                    </div>
                 </div>
-                <div className="col-span-2"></div>
-            </div>
-            <div className="col-span-1 text-right mr-6">Giới tính</div>
-            <div className="col-span-3 py-2 flex items-center gap-6">
-                <Radio optionsList={genderOptions} name="gender" inline></Radio>
-            </div>
-            <div className="col-span-1 text-right mr-6"></div>
-            <div className="col-span-3 mt-6">
-                <WHButton type="primary" minWidth="124px">
-                    Lưu
-                </WHButton>
+                <div className="mx-6 bg-wh-gray w-[0.5px]"></div>
+                <div className="userprofile__update--avatar pl-10 pr-2">
+                    <UpdateAvatarContainer />
+                </div>
             </div>
         </div>
     );

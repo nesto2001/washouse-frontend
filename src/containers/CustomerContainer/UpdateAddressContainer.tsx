@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import WHButton from '../../components/Button';
+import Loading from '../../components/Loading/Loading';
 import Map from '../../components/Map/Map';
 
-const AddressPage = () => {
+type Props = {};
+
+const UpdateAddressContainer = (props: Props) => {
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const location = useLocation();
+    const userAccountabc = location.state?.id;
     const userAddress = {
         latitude: 10.746564906708516,
         longitude: 106.6452826711652,
@@ -13,8 +20,18 @@ const AddressPage = () => {
         width: '100%',
     };
 
+    useEffect(() => {
+        console.log(location.state?.id, 'abc');
+        setIsLoading(false);
+    }, []);
+
     const iconSize: L.PointExpression = [30, 30];
     const iconAnchor: L.PointExpression = [15, 15];
+
+    if (isLoading) {
+        return <Loading />;
+    }
+
     return (
         <div className="useraddress w-full border border-wh-gray rounded-2xl mb-10">
             <div className="useraddress--header pt-4 pl-6 font-bold text-xl">Địa chỉ của tôi</div>
@@ -64,4 +81,4 @@ const AddressPage = () => {
     );
 };
 
-export default AddressPage;
+export default UpdateAddressContainer;

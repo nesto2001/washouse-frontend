@@ -1,5 +1,5 @@
 import React from 'react';
-import CenterRegistrationContainer from '../../containers/ManagerContainer/CenterRegistrationContainer';
+import CenterRegistrationContainer from '../../../containers/ManagerContainer/CenterRegistrationContainer';
 
 type Props = {};
 

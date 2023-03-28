@@ -1,0 +1,16 @@
+.active__staff {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    .active__staff_avatar {
+        border: 1px solid var(--washouse-primary-white);
+        box-shadow: 0 0 0 0.75px var(--washouse-placeholder-gray);
+        transition: 0.1s all ease-in-out;
+        margin-right: 20px;
+    }
+    &:hover {
+        .active__staff_avatar {
+            box-shadow: 0 0 0 1px var(--washouse-primary-blue);
+        }
+    }
+}

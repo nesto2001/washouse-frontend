@@ -18,9 +18,7 @@ const RegisterPage = () => {
                     <h1 className="font-bold text-4xl mt-6">Đăng ký</h1>
                     <h2 className="text-xl font-semibold mt-1">Hãy tham gia cùng chúng tôi!</h2>
                     <div className="login__form--input mt-3">
-                        <form>
-                            <RegisterContainer />
-                        </form>
+                        <RegisterContainer />
                     </div>
                 </div>
                 <div className="login__form--decoration right-0 bottom-0 absolute -z-10">

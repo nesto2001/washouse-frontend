@@ -1,9 +1,12 @@
+import { API_SERVICE_DETAILS } from '../common/Constant';
 import { ServiceDetailsModel } from '../models/Service/ServiceDetailsModel';
 import { ServiceDetailsResponse } from '../models/Service/ServiceDetailsResponse';
 import instance from '../services/axios/AxiosInstance';
 
 export const getService = async (id: number): Promise<ServiceDetailsModel> => {
-    const { data } = await instance.get<ServiceDetailsResponse>(`/api/service/${id}`, {});
+    const { data } = await instance.get<ServiceDetailsResponse>(API_SERVICE_DETAILS.replace('${id}', id.toString()), {
+        params: { id: id },
+    });
     return {
         id: data.id,
         image: data.image,

@@ -1,4 +1,4 @@
-import { API_LOGIN, API_ME } from '../common/Constant';
+import { API_LOGIN, API_ME, API_REGISTER_CUSTOMER } from '../common/Constant';
 import { LoginResponse } from '../models/LoginResponse';
 import { Response } from '../models/CommonModel';
 import instance from '../services/axios/AxiosInstance';
@@ -14,21 +14,21 @@ export const login = async ({ phone, password }: { phone: string; password: stri
 };
 
 export const registerCustomer = async ({
-    Phone,
-    Password,
+    phone,
+    password,
     confirmPass,
-    Email,
+    email,
 }: {
-    Phone: string;
-    Password: string;
-    Email: string;
+    phone: string;
+    password: string;
+    email: string;
     confirmPass: string;
 }) => {
-    const response = await instance.post<LoginResponse>(API_LOGIN, {
-        Phone,
-        Password,
+    const response = await instance.post<LoginResponse>(API_REGISTER_CUSTOMER, {
+        phone,
+        password,
         confirmPass,
-        Email,
+        email,
     });
     return response;
 };

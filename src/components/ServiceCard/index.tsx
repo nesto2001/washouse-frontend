@@ -27,13 +27,13 @@ const ServiceCard = ({
     return (
         <div
             className={clsx(
-                'servicecard flex flex-col max-w-[265px] p-5 rounded-2xl mx-2',
+                'servicecard flex flex-col max-w-[265px] md:min-w-[240px] p-5 rounded-2xl mx-2',
                 cardStyle ? '' : ' h-[380px] max-h-[380px]',
             )}
             style={cardStyle}
         >
             <img
-                className="rounded md:min-h-[126px] md:max-h-[126px] object-cover object-center"
+                className="rounded md:min-h-[126px] md:max-h-[126px] max-w-[200px] object-cover object-center"
                 src={thumbnail ?? Placeholder}
                 alt={title}
             />

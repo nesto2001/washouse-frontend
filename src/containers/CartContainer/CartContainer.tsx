@@ -116,7 +116,7 @@ const CartContainer = () => {
                             <img className="max-w-[420px]" src={EmptyCart} alt="empty-cart" />
                         </div>
                         <h1 className="font-bold text-3xl mt-10 text-sub mb-6">Giỏ hàng của bạn hiện đang trống.</h1>
-                        <WHButton type="primary" fontSize="24px" link="/centers">
+                        <WHButton type="primary" fontSize="24px" link="/trung-tâm">
                             Đặt dịch vụ ngay
                         </WHButton>
                     </div>

@@ -1,13 +1,15 @@
-import type { MenuProps } from 'antd';
+import { MenuProps, message } from 'antd';
 import { Menu } from 'antd';
 import clsx from 'clsx';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Order from '../../assets/images/order-pf.png';
 import Noti from '../../assets/images/noti-pf.png';
 import Placeholder from '../../assets/images/placeholder.png';
 import User from '../../assets/images/user-pf.png';
 import './Sidebar.scss';
+import { AccountModel } from '../../models/Account/AccountModel';
+import { getUserProfile } from '../../repositories/AccountRepository';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -35,66 +37,59 @@ type MenuItemData = {
     children?: MenuItemData[];
 };
 
-const datas: MenuItemData[] = [
-    {
-        label: 'Tài khoản',
-        key: 'account',
-        url: '/user/account/profile',
-        icon: User,
-        children: [
-            {
-                label: 'Hồ sơ',
-                url: '/user/account/profile',
-                key: 'profile',
-            },
-            {
-                label: 'Địa chỉ',
-                url: '/user/account/address',
-                key: 'address',
-            },
-            {
-                label: 'Đổi mật khẩu',
-                url: '/user/account/password',
-                key: 'password',
-            },
-        ],
-    },
-    {
-        label: 'Đơn hàng',
-        url: '/user/order',
-        key: 'order',
-        icon: Order,
-    },
-    {
-        label: 'Thông báo',
-        url: '/user/notification',
-        key: 'noti',
-        icon: Noti,
-    },
-];
-
-const items: MenuItem[] = datas.map((data) => {
-    return getItem(
-        <Link to={data.url}>{data.label}</Link>,
-        data.key,
-        <div className="sidenav__nav--icon max-h-[22px] h-6">
-            <img className="object-contain h-full" src={data.icon} alt="" />
-        </div>,
-        data.children?.map((child) => {
-            return getItem(<Link to={child.url}>{child.label}</Link>, child.key);
-        }),
-    );
-});
-
 type UserSidebarProps = {
     basis: string;
 };
-const rootSubmenuKeys = datas.map((data) => data.key);
 
 const UserSidebar = ({ basis }: UserSidebarProps) => {
     const [openKeys, setOpenKeys] = useState(['account']);
     const [selectedKey, setSelectedKey] = useState<Array<string>>(['profile']);
+    const [userProfile, setUserProfile] = useState<AccountModel>();
+
     const navigate = useNavigate();
+
+    const datas: MenuItemData[] = useMemo(
+        () => [
+            {
+                label: 'Tài khoản',
+                key: 'account',
+                url: '/user/account/profile',
+                icon: User,
+                children: [
+                    {
+                        label: 'Hồ sơ',
+                        url: '/user/account/profile',
+                        key: 'profile',
+                    },
+                    {
+                        label: 'Địa chỉ',
+                        url: '/user/account/address',
+                        key: 'address',
+                    },
+                    {
+                        label: 'Đổi mật khẩu',
+                        url: '/user/account/password',
+                        key: 'password',
+                    },
+                ],
+            },
+            {
+                label: 'Đơn hàng',
+                url: '/user/order',
+                key: 'order',
+                icon: Order,
+            },
+            {
+                label: 'Thông báo',
+                url: '/user/notification',
+                key: 'noti',
+                icon: Noti,
+            },
+        ],
+        [],
+    );
+
+    const rootSubmenuKeys = datas.map((data) => data.key);
 
     const onOpenChange: MenuProps['onOpenChange'] = (keys) => {
         const latestOpenKey: string | undefined = keys.find((key) => openKeys.indexOf(key) === -1);
@@ -126,7 +121,48 @@ const UserSidebar = ({ basis }: UserSidebarProps) => {
         }
     };
 
-    
+    useEffect(() => {
+        const userJson = localStorage.getItem('currentUser');
+        const user: AccountModel = userJson && JSON.parse(userJson);
+
+        const fetchData = async () => {
+            return await getUserProfile(user.accountId);
+        };
+        fetchData()
+            .then((res) => {
+                setUserProfile(res);
+            })
+            .catch(() => {
+                message.error('Vui lòng đăng nhập để xem trang này');
+                navigate('/login');
+            });
+    }, []);
+
+    const items: MenuItem[] = useMemo(
+        () =>
+            datas.map((data) => {
+                return getItem(
+                    <Link to={data.url}>{data.label}</Link>,
+                    data.key,
+                    <div className="sidenav__nav--icon max-h-[22px] h-6">
+                        <img className="object-contain h-full" src={data.icon} alt="" />
+                    </div>,
+                    data.children?.map((child) => {
+                        return getItem(
+                            <div
+                                onClick={() => {
+                                    navigate(child.url, { state: { id: userProfile?.accountId } });
+                                }}
+                            >
+                                {child.label}
+                            </div>,
+                            child.key,
+                        );
+                    }),
+                );
+            }),
+        [],
+    );
 
     return (
         <div className={clsx('userpage__sidenav text-left px-7 mt-16', basis ?? '')}>
@@ -135,8 +171,10 @@ const UserSidebar = ({ basis }: UserSidebarProps) => {
                     <img className="object-cover h-full" src={Placeholder} alt="" />
                 </div>
                 <div className="sidenav__user--info ml-4">
-                    <div className="user__info--name font-bold">Trần Tân Long</div>
-                    <div className="user__info--action font-medium text-sub-gray">Sửa hồ sơ</div>
+                    <div className="user__info--name font-bold">{userProfile?.fullName}</div>
+                    <div className="user__info--action font-medium text-sub-gray">
+                        <Link to="/user/account/profile">Sửa hồ sơ</Link>
+                    </div>
                 </div>
             </div>
             <hr className="my-4 border-wh-gray" />
