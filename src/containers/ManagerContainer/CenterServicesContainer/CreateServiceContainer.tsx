@@ -94,7 +94,7 @@ const CreateServiceContainer = ({ setFormData }: Props) => {
             >
                 <Form.Item label="Hình ảnh dịch vụ" valuePropName="fileList">
                     <Upload
-                        action={`${process.env.REACT_APP_API_URL}/api/homeTest/uploadImage`}
+                        action={`${process.env.REACT_APP_FIREBASE_API_URL}/api/homeTest/uploadImage`}
                         listType="picture-card"
                         fileList={[...fileList]}
                         onChange={handleChange}

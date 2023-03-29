@@ -1,4 +1,4 @@
-const BASE_URL = process.env.REACT_APP_API_URL;
+const BASE_URL = process.env.REACT_APP_FIREBASE_API_URL;
 
 //AUTH API
 const API_LOGIN = "/api/accounts/login";
