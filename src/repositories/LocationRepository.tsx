@@ -10,6 +10,7 @@ import { API_DISTRICT, API_DISTRICT_SEARCH, API_DISTRICT_WARDS, API_LOCATION_SEA
 
 export const getDistricts = async (): Promise<LocationModel[]> => {
     const { data } = await instance.get<Response<List<DistrictReponse>>>(API_DISTRICT, {});
+    console.log(data);
     return data.data.map((item): LocationModel => {
         return {
             id: item.districtId,
