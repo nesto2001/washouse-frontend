@@ -3,13 +3,16 @@ import { CenterMap } from '../../types/CenterMap';
 import Target from '../../assets/images/target.png';
 import CenterMarker from '../../assets/images/center-marker.png';
 import Placeholder from '../../assets/images/placeholder.png';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import L, { LatLngTuple } from 'leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl, useMapEvents } from 'react-leaflet';
+import L, { LatLngTuple, LeafletEvent } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './Map.scss';
 import RatingStars from '../RatingStars/RatingStars';
 import { Link } from 'react-router-dom';
 import { getCurrentLocation } from '../../utils/CommonUtils';
+import { LocationType } from '../../types/LocationType';
+import MapZoom from './MapZoom';
+import { formatLink } from '../../utils/FormatUtils';
 
 type Props = {
     selectedCenter?: CenterMap;
@@ -21,12 +24,19 @@ type Props = {
     iconAnchor?: L.PointExpression;
 };
 
+const defaultLocation = {
+    latitude: 10.8085022,
+    longitude: 106.7123715,
+};
+
 const Map = ({ selectedCenter, locations, userLocation, style, iconSize, iconAnchor, centerLocation }: Props) => {
+    const [mapZoom, setMapZoom] = useState(userLocation || centerLocation ? 16 : 11);
+
     const center: L.LatLngExpression = userLocation
         ? [userLocation.latitude, userLocation.longitude]
         : centerLocation
         ? [centerLocation.latitude, centerLocation.longitude]
-        : [0, 0];
+        : [defaultLocation.latitude, defaultLocation.longitude];
 
     const userIcon = L.icon({
         iconUrl: Target,
@@ -46,11 +56,6 @@ const Map = ({ selectedCenter, locations, userLocation, style, iconSize, iconAnc
         height: '100vh',
         width: '100%',
     };
-
-    const defaultCenter = {
-        center,
-    };
-
     // const handleMarkerClick = (center: CenterMap) => {
     //     setCenter({ lat: center.location.latitude, lng: center.location.longitude });
     // };
@@ -65,9 +70,9 @@ const Map = ({ selectedCenter, locations, userLocation, style, iconSize, iconAnc
     // }, [map, center]);
 
     return (
-        <MapContainer center={center} zoom={16} style={style ?? mapStyles}>
+        <MapContainer center={center} zoom={mapZoom} style={style ?? mapStyles}>
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            {center && (
+            {center && userLocation && (
                 <Marker position={center} icon={userIcon}>
                     <Popup>Bạn đang ở đây</Popup>
                 </Marker>
@@ -82,7 +87,7 @@ const Map = ({ selectedCenter, locations, userLocation, style, iconSize, iconAnc
                                 position={[location.location.latitude, location.location.longitude]}
                                 icon={centerIcon}
                             >
-                                <Popup>
+                                <Popup className="z-[9999] absolute">
                                     <div>
                                         <Link to="/trung-tâm/center" className="text-sub">
                                             <div className="w-[200px] h-[150px] max-w-[200px] max-h-[150px] rounded overflow-hidden">
@@ -113,7 +118,10 @@ const Map = ({ selectedCenter, locations, userLocation, style, iconSize, iconAnc
                 >
                     <Popup>
                         <div>
-                            <Link to="/centers/center" className="text-sub">
+                            <Link
+                                to={`/trung-tâm/${formatLink(selectedCenter.title)}-c.${selectedCenter.id}`}
+                                className="text-sub"
+                            >
                                 <div className="w-[200px] h-[150px] max-w-[200px] max-h-[150px] rounded overflow-hidden">
                                     <img
                                         className="max-h-full w-full object-cover"
@@ -132,6 +140,11 @@ const Map = ({ selectedCenter, locations, userLocation, style, iconSize, iconAnc
                         </div>
                     </Popup>
                 </Marker>
+            )}
+            {userLocation || centerLocation ? (
+                <MapZoom center={center} mapZoom={16} />
+            ) : (
+                <MapZoom center={center} mapZoom={11} />
             )}
         </MapContainer>
     );

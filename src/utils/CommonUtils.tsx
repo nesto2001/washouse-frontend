@@ -1,18 +1,23 @@
+import { ServiceDetailsModel } from '../models/Service/ServiceDetailsModel';
 import { SubService } from '../types/ServiceType/SubService';
 
-export function calculatePrice(service: SubService, weightOrQuantity: number): number | null {
-    if (!service.priceChart) {
-        return null;
-    }
-
-    for (let i = 0; i < service.priceChart.length; i++) {
-        const { maxValue, price } = service.priceChart[i];
-        if (weightOrQuantity <= maxValue) {
-            return price;
+export function calculatePrice(service: ServiceDetailsModel, weight: number): number {
+    // if (!service.priceType) {
+    //     return 0;
+    // }
+    if (service.priceType && service.servicePrices) {
+        for (let i = 0; i < service.servicePrices.length; i++) {
+            const { maxValue, price } = service.servicePrices[i];
+            if (weight <= maxValue) {
+                if (service.minPrice && weight * price <= service.minPrice) {
+                    return service.minPrice;
+                } else {
+                    return weight * price;
+                }
+            }
         }
     }
-
-    return null; // Return null if the weight or quantity exceeds the maximum value in the price chart
+    return 0;
 }
 
 export function getRating(rating: number): string {
@@ -32,20 +37,21 @@ export function getRating(rating: number): string {
 }
 
 export function getCurrentLocation(
-    callback: ({ latitude, longitude }: { latitude: number; longitude: number }) => void,
+    successCallback: ({ latitude, longitude }: { latitude: number; longitude: number }) => void,
+    errorCallback: (error: any) => void,
 ): void {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                callback({ latitude: position.coords.latitude, longitude: position.coords.longitude });
+                successCallback({ latitude: position.coords.latitude, longitude: position.coords.longitude });
             },
             (error) => {
-                console.error(`Gặp lỗi khi lấy vị trí: ${error.message}`);
-                return null;
+                errorCallback(`Gặp lỗi khi lấy vị trí: ${error.message}`);
             },
         );
     } else {
         console.error('Geolocation không được hỗ trợ trên trình duyệt này.');
+        errorCallback(new Error('Geolocation không được hỗ trợ trên trình duyệt này.'));
     }
 }
 

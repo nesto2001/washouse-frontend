@@ -50,7 +50,6 @@ export const getAllCenter = async ({
                     title: service.serviceCategoryName,
                 };
             }),
-            additions: [],
             rating: item.rating,
             numOfRating: item.numOfRating,
             phone: item.phone,
@@ -106,6 +105,42 @@ export const getCenter = async (id: number): Promise<CenterDetailsModel> => {
         distance: data.data.distance,
         centerLocation: data.data.centerLocation,
         operatingHours: data.data.centerOperatingHours.map((day): OperatingDay => {
+            return {
+                day: day.day,
+                start: day.openTime,
+                end: day.closeTime,
+            };
+        }),
+    };
+};
+
+export const getCenterBrief = async (id: number): Promise<CenterModel> => {
+    const { data } = await instance.get<Response<CenterResponse>>(
+        API_CENTER_DETAILS.replace('${id}', id.toString()),
+        {},
+    );
+    return {
+        id: data.data.id,
+        thumbnail: data.data.thumbnail,
+        title: data.data.title,
+        description: data.data.description,
+        service: data.data.centerServices.map((serviceCategory): ServiceTag => {
+            return {
+                id: serviceCategory.serviceCategoryID,
+                title: serviceCategory.serviceCategoryName,
+            };
+        }),
+        rating: data.data.rating,
+        numOfRating: data.data.numOfRating,
+        phone: data.data.phone,
+        location: {
+            latitude: data.data.centerLocation.latitude,
+            longitude: data.data.centerLocation.longitude,
+        },
+        alias: data.data.alias,
+        distance: data.data.distance,
+        address: data.data.centerAddress,
+        centerOperatingHours: data.data.centerOperatingHours.map((day): OperatingDay => {
             return {
                 day: day.day,
                 start: day.openTime,

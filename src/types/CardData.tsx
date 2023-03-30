@@ -10,4 +10,5 @@ export interface CardData {
     actionLink?: string;
     minHeight?: string;
     cardHeight?: string;
+    minPrice?: number;
 }

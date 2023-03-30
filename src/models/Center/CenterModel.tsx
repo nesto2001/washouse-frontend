@@ -7,7 +7,6 @@ export interface CenterModel {
     title: string;
     description?: string | React.ReactNode;
     service: ServiceTag[];
-    additions: ServiceTag[];
     rating: number;
     numOfRating: number;
     phone: string;

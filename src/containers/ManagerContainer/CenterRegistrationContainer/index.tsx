@@ -173,17 +173,17 @@ const CenterRegistrationContainer = (props: Props) => {
             <div style={{ marginTop: 24, display: 'flex', justifyContent: 'end', marginBottom: 24 }}>
                 {current > 0 && (
                     <WHButton type="sub" style={{ margin: '0 8px' }} onClick={() => prev()}>
-                        Previous
+                        Quay lại
                     </WHButton>
                 )}
                 {current < steps.length - 1 && (
                     <WHButton type="primary" onClick={() => next()}>
-                        Next
+                        Tiếp theo
                     </WHButton>
                 )}
                 {current === steps.length - 1 && (
                     <WHButton type="primary" onClick={handleCreateCenter}>
-                        Done
+                        Hoàn thành
                     </WHButton>
                 )}
             </div>

@@ -18,8 +18,23 @@ import type { TabsProps } from 'antd';
 import { Tabs } from 'antd';
 
 import './CenterContainer.scss';
+import { CenterMap } from '../../types/CenterMap';
 
 type Props = {};
+
+function mapCenterDetailsToMap(center: CenterDetailsModel): CenterMap {
+    return {
+        id: center.id,
+        title: center.alias ?? center.title,
+        rating: center.rating,
+        numOfRating: center.numOfRating,
+        location: {
+            latitude: center.centerLocation.latitude,
+            longitude: center.centerLocation.longitude,
+        },
+        thumbnail: center.thumbnail,
+    };
+}
 
 const CenterContainer = (props: Props) => {
     const location = useLocation();
@@ -85,6 +100,7 @@ const CenterContainer = (props: Props) => {
                                     title={service.name}
                                     description={service.description}
                                     price={service.price}
+                                    minPrice={service.minPrice}
                                     action={true}
                                     actionContent="Xem dịch vụ"
                                     actionType="primary"
@@ -184,7 +200,11 @@ const CenterContainer = (props: Props) => {
                     <div className="center__sideinfo--map mt-6 p-6 border border-[#B3B3B3] rounded-2xl">
                         <h2 className="text-left font-bold text-2xl">Bản đồ</h2>
                         <div className="center__map--wrapper w-full min-h-[420px] border border-[#B3B3B3] rounded-lg mt-6 overflow-hidden">
-                            <Map centerLocation={center.centerLocation} style={mapStyles}></Map>
+                            <Map
+                                centerLocation={center.centerLocation}
+                                selectedCenter={mapCenterDetailsToMap(center)}
+                                style={mapStyles}
+                            ></Map>
                         </div>
                     </div>
                 </div>

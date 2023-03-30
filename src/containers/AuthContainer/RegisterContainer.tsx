@@ -61,7 +61,7 @@ const RegisterContainer = () => {
     const validatePassword = async (_: RuleObject, value: string) => {
         const formValue = form.getFieldsValue();
         if (value && value !== formValue.user_password) {
-            throw new Error('Mật khẩu xác nhận chưa giống nhau');
+            throw new Error('Mật khẩu không trùng khớp');
         }
     };
 

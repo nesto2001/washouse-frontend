@@ -1,4 +1,5 @@
 export type ServiceModel = {
+    minPrice?: number;
     id: number;
     categoryId: number;
     name: string;

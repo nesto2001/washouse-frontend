@@ -1,9 +1,13 @@
+import { ServicePricesResponse } from './ServicePricesResponse';
+
 export type ServiceDetailsResponse = {
     id: number;
     serviceName: string;
     alias: string;
     categoryId: number;
     description: string;
+    minPrice?: number;
+    rate: number;
     priceType: boolean;
     image: string;
     price: number;
@@ -19,7 +23,7 @@ export type ServiceDetailsResponse = {
     center: null;
     orderDetails: [];
     serviceGalleries: [];
-    servicePrices: [];
+    servicePrices: ServicePricesResponse[];
     serviceRequests: [];
     createdDate: string;
     createdBy: string;

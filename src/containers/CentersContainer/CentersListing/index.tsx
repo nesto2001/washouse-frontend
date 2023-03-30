@@ -3,13 +3,14 @@ import { CenterModel } from '../../../models/Center/CenterModel';
 
 type CenterListingProps = {
     centerList: CenterModel[];
+    selectedValues?: string[];
 };
 
-const CenterListing = ({ centerList }: CenterListingProps) => {
+const CenterListing = ({ centerList, selectedValues }: CenterListingProps) => {
     return (
         <div className="flex flex-wrap gap-9">
             {centerList.map((center) => {
-                return <CenterCard key={center.id} center={center}></CenterCard>;
+                return <CenterCard key={center.id} center={center} selectedValues={selectedValues}></CenterCard>;
             })}
         </div>
     );

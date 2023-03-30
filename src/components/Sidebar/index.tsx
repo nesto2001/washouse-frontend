@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { BudgetType } from '../../containers/CentersContainer/CentersContainer';
+import { getCategoryOptions } from '../../repositories/ServiceCategoryRepository';
 
 import { Option } from '../../types/Options';
 import Button from '../Button';
@@ -8,9 +10,15 @@ import Radio from '../RadioButton';
 type Props = {
     sorting: string;
     setSorting: React.Dispatch<React.SetStateAction<string>>;
+    servicesCheck: string[];
+    setServicesCheck: React.Dispatch<React.SetStateAction<string[]>>;
+    budgetRange: BudgetType;
+    setBudgetRange: React.Dispatch<React.SetStateAction<BudgetType>>;
 };
 
-const Sidebar = ({ setSorting, sorting }: Props) => {
+const Sidebar = ({ setSorting, setServicesCheck, setBudgetRange, servicesCheck, sorting, budgetRange }: Props) => {
+    const [checkboxes, setCheckboxes] = useState<Option[]>([]);
+
     const radios: Option[] = [
         {
             value: 'location',
@@ -33,41 +41,40 @@ const Sidebar = ({ setSorting, sorting }: Props) => {
         },
     ];
 
-    const checkboxes: Option[] = [
-        {
-            value: 1,
-            label: 'Giặt sấy',
-        },
-        {
-            value: 2,
-            label: 'Giặt hấp',
-        },
-        {
-            value: 3,
-            label: 'Giặt mền, topper',
-        },
-        {
-            value: 4,
-            label: 'Giặt gấu bông',
-        },
-        {
-            value: 5,
-            label: 'Giặt rèm',
-        },
-        {
-            value: 6,
-            label: 'Ủi đồ',
-        },
-        {
-            value: 7,
-            label: 'Loại bỏ vết bẩn',
-        },
-    ];
+    useEffect(() => {
+        const fetchData = async () => {
+            return await getCategoryOptions();
+        };
+        fetchData().then((res) => {
+            setCheckboxes(
+                res.slice(1).map((data) => {
+                    return {
+                        label: data.name,
+                        value: data.id,
+                    };
+                }),
+            );
+        });
+    }, []);
 
     const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedValue = event.target.value;
         const sortType = selectedValue;
         setSorting(sortType);
+    };
+
+    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+
+        setServicesCheck((prev) => {
+            if (prev.includes(value)) {
+                // If the value is already in the list, remove it
+                return prev.filter((val) => val !== value);
+            } else {
+                // Otherwise, add it to the list
+                return [...prev, value];
+            }
+        });
     };
 
     return (
@@ -112,7 +119,12 @@ const Sidebar = ({ setSorting, sorting }: Props) => {
             <div className="sidebar__service">
                 <div className="sidebar__section--header font-bold text-base mb-3 text-sub">Dịch vụ</div>
                 <div className="sidebar__section--content">
-                    <Checkbox name="services" optionsList={checkboxes} />
+                    <Checkbox
+                        name="services"
+                        optionsList={checkboxes}
+                        selectedValues={servicesCheck}
+                        onChange={handleCheckboxChange}
+                    />
                 </div>
             </div>
             <hr className="my-5" />

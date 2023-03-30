@@ -1,7 +1,8 @@
-import { PriceRange } from "../PriceRange";
+import { PriceRange } from '../PriceRange';
 
 export interface CartItem {
     id: number;
+    centerId: number;
     name: string;
     thumbnail: string;
     price: number;

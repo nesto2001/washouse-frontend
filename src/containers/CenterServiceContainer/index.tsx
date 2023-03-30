@@ -1,28 +1,43 @@
-import { Space } from 'antd';
+import { Button, message, Modal, ModalProps, Space } from 'antd';
 import React, { useEffect, useState, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
+import { FaPhoneAlt, FaRegClock } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import Placeholder from '../../assets/images/placeholder.png';
+import ModalImg from '../../assets/images/laundry-modal.svg';
 import WHButton from '../../components/Button';
 import ErrorScreen from '../../components/ErrorScreen/ErrorScreen';
 import Input from '../../components/Input/Input';
 import Loading from '../../components/Loading/Loading';
 import PriceTable from '../../components/PriceTable';
 import RatingStars from '../../components/RatingStars/RatingStars';
+import StatusTag from '../../components/StatusTag';
+import { CenterModel } from '../../models/Center/CenterModel';
 import { ServiceDetailsModel } from '../../models/Service/ServiceDetailsModel';
-import { addItem } from '../../reducers/CartReducer';
+import { addItem, clearCart } from '../../reducers/CartReducer';
+import { getCenterBrief } from '../../repositories/CenterRepository';
 import { getService } from '../../repositories/ServiceRepository';
+import { RootState } from '../../store/CartStore';
 import { CartItem } from '../../types/CartType/CartItem';
 import { SubService } from '../../types/ServiceType/SubService';
 import { calculatePrice, getRating } from '../../utils/CommonUtils';
+import { formatCurrency } from '../../utils/FormatUtils';
+import { compareTime, getToday } from '../../utils/TimeUtils';
+import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 type Props = {};
 
 const CenterServiceContainer = (props: Props) => {
+    const cartCenterId = useSelector((state: RootState) => state.cart.centerId);
+
     const [service, setService] = useState<ServiceDetailsModel>();
+    const [center, setCenter] = useState<CenterModel>();
     const [weightInput, setWeightInput] = useState<string>('');
     const [quantityInput, setQuantityInput] = useState<number>(0);
     const [isLoading, setIsLoading] = useState(true);
+    const [isModalLoading, setIsModalLoading] = useState(false);
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
 
     // const ServiceDetailsModel = useMemo(
     //     () => ({
@@ -54,7 +69,13 @@ const CenterServiceContainer = (props: Props) => {
         fetchData()
             .then((res) => {
                 setService(res);
-                setIsLoading(false);
+                const fetchData = async () => {
+                    if (res) return await getCenterBrief(res.centerId);
+                };
+                fetchData().then((centerRes) => {
+                    setCenter(centerRes);
+                    setIsLoading(false);
+                });
             })
             .catch((error) => {
                 console.error(error);
@@ -64,6 +85,56 @@ const CenterServiceContainer = (props: Props) => {
 
     const dispatch = useDispatch();
 
+    const [servicePrice, setServicePrice] = useState<string>(
+        service?.price
+            ? formatCurrency(service.price)
+            : service?.servicePrices
+            ? `${formatCurrency(
+                  service.minPrice ?? service.servicePrices[0].price * service.servicePrices[0].maxValue,
+              )} - ${formatCurrency(
+                  service.servicePrices[service.servicePrices.length - 1].price *
+                      service.servicePrices[service.servicePrices.length - 1].maxValue,
+              )}`
+            : formatCurrency(0),
+    );
+    const [status, setStatus] = useState<boolean>(false);
+    const [isBreakDay, setIsBreakDay] = useState<boolean>(false);
+
+    const today = getToday();
+
+    useEffect(() => {
+        const opening: string = center?.centerOperatingHours[today].start ?? '';
+        const closing: string = center?.centerOperatingHours[today].end ?? '';
+        if (opening && closing) {
+            setStatus(compareTime(opening, closing));
+            setIsBreakDay(false);
+        } else {
+            setStatus(false);
+            setIsBreakDay(true);
+        }
+    }, [status, center]); // get center opening status
+
+    // (`${service.servicePrices[0].price.toString()} - ${service.priceChart[service.priceChart.length - 1].price.toString()}`) : null,
+    useEffect(() => {
+        if (service && weightInput && parseFloat(weightInput) > 0) {
+            const calculatedPrice = calculatePrice(service, parseFloat(weightInput));
+            calculatedPrice && setServicePrice(formatCurrency(calculatedPrice));
+        } else {
+            setServicePrice(
+                service?.price
+                    ? formatCurrency(service.price)
+                    : service?.servicePrices
+                    ? `${formatCurrency(
+                          service.minPrice ?? service.servicePrices[0].price * service.servicePrices[0].maxValue,
+                      )} - ${formatCurrency(
+                          service.servicePrices[service.servicePrices.length - 1].price *
+                              service.servicePrices[service.servicePrices.length - 1].maxValue,
+                      )}`
+                    : formatCurrency(0),
+            );
+        }
+    }, [weightInput, service]);
+
     if (isLoading) {
         return (
             <div>
@@ -72,30 +143,39 @@ const CenterServiceContainer = (props: Props) => {
         );
     }
 
-    if (!service) {
+    if (!service || !center) {
         return <ErrorScreen />;
     }
 
-    // const [servicePrice, setServicePrice] = useState(service?.servicePrices ?? service?.servicePrices);
-    // (`${service.priceChart[0].price.toString()} - ${service.priceChart[service.priceChart.length - 1].price.toString()}`) : null,
-    // useEffect(() => {
-    //     servicePrice &&
-
-    //         if (weightInput && parseFloat(weightInput) > 0) {
-    //         const calculatedPrice = calculatePrice(service, parseFloat(weightInput));
-    //         calculatedPrice && setServicePrice(calculatedPrice.toString());
-    //     } else {
-    //         setServicePrice(
-    //             `${service.priceChart[0].price.toString()} - ${service.priceChart[
-    //                 service.priceChart.length - 1
-    //             ].price.toString()}`,
-    //         );
-    //     }
-
-    // }, [weightInput, service]);
-
-    const handleAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleAddToCart = async (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
+        if (cartCenterId && cartCenterId !== service.centerId) {
+            setModalVisible(true);
+        } else {
+            if ((weightInput && parseFloat(weightInput)) || quantityInput > 0) {
+                const cartItem: CartItem = {
+                    id: service.id,
+                    name: service.serviceName,
+                    thumbnail: service.image,
+                    price: service.price,
+                    weight: parseInt(weightInput) ?? null,
+                    quantity: quantityInput ?? null,
+                    unit: quantityInput ? 'pcs' : 'kg',
+                    centerId: service.centerId,
+                };
+                try {
+                    dispatch(addItem(cartItem));
+                    message.success('Đã thêm vào giỏ hàng!');
+                } catch (error) {
+                    message.error(`Không thể thêm vào giỏ hàng, vui lòng thử lại sau!`);
+                }
+            }
+        }
+    };
+
+    const handleOk = () => {
+        setIsModalLoading(true);
+        dispatch(clearCart());
         if ((weightInput && parseFloat(weightInput)) || quantityInput > 0) {
             const cartItem: CartItem = {
                 id: service.id,
@@ -104,15 +184,24 @@ const CenterServiceContainer = (props: Props) => {
                 price: service.price,
                 weight: parseInt(weightInput) ?? null,
                 quantity: quantityInput ?? null,
-                unit: 'pcs',
+                unit: quantityInput ? 'pcs' : 'kg',
+                centerId: service.centerId,
             };
             try {
-                dispatch(addItem(cartItem));
-                console.log('Đã thêm vào giỏ hàng!');
+                setTimeout(() => {
+                    dispatch(addItem(cartItem));
+                    setIsModalLoading(false);
+                    setModalVisible(false);
+                }, 3000);
             } catch (error) {
-                console.error('Không thể thêm vào giỏ hàng:', error);
+                setIsModalLoading(false);
+                setModalVisible(false);
             }
         }
+    };
+
+    const handleCancel = () => {
+        setModalVisible(false);
     };
 
     const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -145,9 +234,7 @@ const CenterServiceContainer = (props: Props) => {
                     <div className="service__details--content basis-7/12 p-6 pl-10 ml-10 border border-[#B3B3B3] rounded-2xl">
                         <form action="" id="addcartForm">
                             <h1 className="text-3xl font-bold">{service.serviceName}</h1>
-                            <h3 className="mt-2 text-2xl font-bold text-primary">
-                                {service.priceType ? '' : service.price}đ
-                            </h3>
+                            <h3 className="mt-2 text-2xl font-bold text-primary">{servicePrice}</h3>
                             <p className="text-justify text-sm mt-3">{service.description}</p>
                             <h4 className="text-sm mt-3">
                                 <span className="font-bold">Thời gian xử lý:</span> {service.timeEstimate}'
@@ -207,11 +294,11 @@ const CenterServiceContainer = (props: Props) => {
                                 {/* {service.minTime * 60}' - {service.maxTime * 60}' */}
                             </h4>
                         </div>
-                        {service.priceType && (
+                        {service.priceType && service.servicePrices && (
                             <div className="basis-1/2">
                                 <h3 className="text-xl font-bold">Bảng giá dịch vụ</h3>
                                 <div className="service__priceTable mt-3">
-                                    {/* <PriceTable priceChart={service.priceChart} unitType="ký"></PriceTable> */}
+                                    <PriceTable priceChart={service.servicePrices} unitType="ký"></PriceTable>
                                 </div>
                             </div>
                         )}
@@ -245,8 +332,53 @@ const CenterServiceContainer = (props: Props) => {
                 </div>
                 <div className="service__sideinfo--center mt-6 p-6 border border-[#B3B3B3] rounded-2xl">
                     <h2 className="text-left font-bold text-2xl">Trung tâm</h2>
+                    <div className="sideinfo__center--card mt-2">
+                        <div className="sideinfo__center--thumb rounded-lg overflow-hidden">
+                            <img src={center.thumbnail ?? Placeholder} alt="" />
+                        </div>
+                        <div className="sideinfo__center-content text-left">
+                            <div className="font-bold mt-2">{center.title}</div>
+                            <div className="text-sm text-sub-gray">{center.address}, TP. Hồ Chí Minh</div>
+                            <div className="flex justify-between text-sm">
+                                <div className="sideinfo__center--opeHour flex items-center">
+                                    {center.centerOperatingHours[today].start &&
+                                        center.centerOperatingHours[today].end && (
+                                            <>
+                                                <FaRegClock className="mr-2 self-center" />
+                                                <span className="leading-7">
+                                                    {center.centerOperatingHours[today].start?.substring(0, 5)} -{' '}
+                                                    {center.centerOperatingHours[today].end?.substring(0, 5)}
+                                                </span>
+                                            </>
+                                        )}
+                                    <StatusTag opening={status} isBreakDay={isBreakDay} />
+                                </div>
+                                <div className="center__card--phone flex items-center">
+                                    <FaPhoneAlt className="mr-2" />
+                                    <span className="leading-7">{center.phone}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <Modal
+                open={modalVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                footer={[
+                    <Button key="back" onClick={handleCancel}>
+                        Hủy
+                    </Button>,
+                    <Button key="submit" type="primary" loading={isModalLoading} onClick={handleOk}>
+                        Tiếp tục
+                    </Button>,
+                ]}
+            >
+                <img src={ModalImg} alt="" />
+                <div className="text-lg font-bold">Bạn muốn đặt dịch vụ ở trung tâm này?</div>
+                <div className="">Những dịch vụ bạn đã chọn từ trung tâm khác sẽ bị xóa khỏi giỏ hàng</div>
+            </Modal>
         </div>
     );
 };

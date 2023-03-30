@@ -21,5 +21,14 @@ export const getService = async (id: number): Promise<ServiceDetailsModel> => {
         alias: data.alias,
         priceType: data.priceType,
         description: data.description,
+        minPrice: data.minPrice,
+        rate: data.rate,
+        servicePrices: data.servicePrices.map((prices) => {
+            return {
+                id: prices.id,
+                maxValue: prices.maxValue,
+                price: prices.price,
+            };
+        }),
     };
 };

@@ -57,7 +57,6 @@ export const getCenterRequests = async ({
                     title: service.serviceCategoryName,
                 };
             }),
-            additions: [],
             rating: item.rating,
             numOfRating: item.numOfRating,
             phone: item.phone,

@@ -34,8 +34,12 @@ const Navbar = () => {
     };
 
     useEffect(() => {
-        getCurrentLocation(setState);
+        getCurrentLocation(setState, locationError);
     }, []);
+
+    const locationError = (error: any) => {
+        console.log(`Gặp lỗi khi lấy vị trí hoặc quyền sử dụng vị trí chưa được cấp: ${error.message}`);
+    };
 
     const setState = ({ latitude, longitude }: { latitude: number; longitude: number }) => {
         setLatitude(latitude);

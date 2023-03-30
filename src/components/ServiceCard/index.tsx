@@ -4,6 +4,7 @@ import { formatCurrency } from '../../utils/FormatUtils';
 import Button from '../Button';
 import './ServiceCard.scss';
 import Placeholder from '../../assets/images/placeholder.png';
+import { Tooltip } from 'antd';
 
 const ServiceCard = ({
     thumbnail,
@@ -16,6 +17,7 @@ const ServiceCard = ({
     cardHeight,
     actionLink,
     price,
+    minPrice,
 }: CardData) => {
     const style = {
         minHeight: minHeight || '135px',
@@ -37,8 +39,14 @@ const ServiceCard = ({
                 src={thumbnail ?? Placeholder}
                 alt={title}
             />
-            <h3 className="font-bold text-xl w-full pt-2 text-left">{title}</h3>
-            <h3 className={'font-bold text-xl w-full pt-2 text-primary text-left'}>{formatCurrency(price ?? 0)}</h3>
+            <Tooltip title={title}>
+                <h3 className="font-bold text-lg  w-full pt-2 text-left md:min-h-[36px] text-ellipsis line-clamp-1">
+                    {title}
+                </h3>
+            </Tooltip>
+            <h3 className={'font-bold text-xl w-full pt-2 text-primary text-left'}>
+                {price ? formatCurrency(price) : minPrice ? 'Từ' + formatCurrency(minPrice) : formatCurrency(0)}
+            </h3>
             <p className={clsx('flex-grow text-justify w-full mt-4')} style={style}>
                 {description}
             </p>

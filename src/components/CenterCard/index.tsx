@@ -1,3 +1,4 @@
+import { is } from 'immer/dist/internal';
 import { useEffect, useState } from 'react';
 import { FaPhoneAlt, FaRegClock } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
@@ -11,9 +12,10 @@ import Tags from '../Tag';
 
 type CenterCardProps = {
     center: CenterModel;
+    selectedValues?: string[];
 };
 
-const CenterCard = ({ center }: CenterCardProps) => {
+const CenterCard = ({ center, selectedValues }: CenterCardProps) => {
     const [status, setStatus] = useState<boolean>(false);
     const [isBreakDay, setIsBreakDay] = useState<boolean>(false);
     const today = getToday();
@@ -22,6 +24,7 @@ const CenterCard = ({ center }: CenterCardProps) => {
         const closing: string = center.centerOperatingHours[today].end ?? '';
         if (opening && closing) {
             setStatus(compareTime(opening, closing));
+            setIsBreakDay(false);
         } else {
             setStatus(false);
             setIsBreakDay(true);
@@ -61,23 +64,23 @@ const CenterCard = ({ center }: CenterCardProps) => {
                     </div>
                 </div>
             </div>
-            <div className="center__card--services mt-3">
+            <div className="center__card--services mt-3 min-h-[24px]">
                 {center.service.slice(0, 3).map((ser) => (
-                    <Tags key={ser.id} item={ser} type={true} />
+                    <Tags
+                        key={ser.id}
+                        item={ser}
+                        type={selectedValues && selectedValues.find((sel) => sel === ser.id.toString()) ? true : false}
+                    />
                 ))}
             </div>
-            <div className="center__card--additions mt-4">
-                {center.additions.map((add) => (
-                    <Tags key={add.id} item={add} type={false} />
-                ))}
-            </div>
+            {/* <div className="center__card--additions mt-4 h-6"></div> */}
             <hr className="my-3" />
             <div className="center__card--more flex justify-between">
                 <div className="center__card--rating flex">
                     <RatingStars rating={center.rating} />{' '}
                     <span className="ml-2 font-bold text-base">{center.numOfRating}</span>
                 </div>
-                <div className="center__card--distance">{center.distance} km</div>
+                <div className="center__card--distance">{center.distance ? center.distance + 'km' : ''}</div>
             </div>
         </div>
     );

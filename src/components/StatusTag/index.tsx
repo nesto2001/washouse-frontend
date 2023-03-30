@@ -22,7 +22,7 @@ const StatusTag = ({ opening, isBreakDay }: Props) => {
             <div
                 className={clsx(
                     opening ? style.open : style.closed,
-                    'flex items-center font-bold',
+                    'flex items-center font-bold text-inherit',
                     isBreakDay ? '' : 'ml-3',
                 )}
             >

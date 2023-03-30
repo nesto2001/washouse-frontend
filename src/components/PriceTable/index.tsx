@@ -1,5 +1,6 @@
 import React from 'react';
 import { PriceRange } from '../../types/PriceRange';
+import { formatCurrency } from '../../utils/FormatUtils';
 import style from './PriceTable.module.scss';
 
 type Props = {
@@ -23,7 +24,7 @@ const PriceTable = ({ priceChart, unitType }: Props) => {
                             <td className={style.pricetable__data}>
                                 Dưới {range.maxValue} {unitType}
                             </td>
-                            <td className={style.pricetable__data}>{range.price}đ</td>
+                            <td className={style.pricetable__data}>{formatCurrency(range.price)}/kg</td>
                         </tr>
                     ))}
                 </tbody>
