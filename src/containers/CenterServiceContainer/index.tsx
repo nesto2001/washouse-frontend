@@ -117,7 +117,9 @@ const CenterServiceContainer = (props: Props) => {
     // (`${service.servicePrices[0].price.toString()} - ${service.priceChart[service.priceChart.length - 1].price.toString()}`) : null,
     useEffect(() => {
         if (service && weightInput && parseFloat(weightInput) > 0) {
-            const calculatedPrice = calculatePrice(service, parseFloat(weightInput));
+            const calculatedPrice =
+                service.servicePrices &&
+                calculatePrice(service.servicePrices, service.minPrice, parseFloat(weightInput));
             calculatedPrice && setServicePrice(formatCurrency(calculatedPrice));
         } else {
             setServicePrice(
@@ -157,15 +159,18 @@ const CenterServiceContainer = (props: Props) => {
                     id: service.id,
                     name: service.serviceName,
                     thumbnail: service.image,
-                    price: service.price,
+                    price:
+                        service.price ??
+                        (service.servicePrices &&
+                            calculatePrice(service.servicePrices, service.minPrice, parseInt(weightInput))),
                     weight: parseInt(weightInput) ?? null,
                     quantity: quantityInput ?? null,
                     unit: quantityInput ? 'pcs' : 'kg',
                     centerId: service.centerId,
+                    priceChart: service.servicePrices,
                 };
                 try {
                     dispatch(addItem(cartItem));
-                    message.success('Đã thêm vào giỏ hàng!');
                 } catch (error) {
                     message.error(`Không thể thêm vào giỏ hàng, vui lòng thử lại sau!`);
                 }
@@ -186,6 +191,7 @@ const CenterServiceContainer = (props: Props) => {
                 quantity: quantityInput ?? null,
                 unit: quantityInput ? 'pcs' : 'kg',
                 centerId: service.centerId,
+                minPrice: service.minPrice,
             };
             try {
                 setTimeout(() => {

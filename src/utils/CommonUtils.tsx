@@ -1,16 +1,21 @@
 import { ServiceDetailsModel } from '../models/Service/ServiceDetailsModel';
+import { ServicePriceModel } from '../models/Service/ServicePricesModel';
 import { SubService } from '../types/ServiceType/SubService';
 
-export function calculatePrice(service: ServiceDetailsModel, weight: number): number {
+export function calculatePrice(
+    priceChart: ServicePriceModel[],
+    minPrice: number | null | undefined,
+    weight: number,
+): number {
     // if (!service.priceType) {
     //     return 0;
     // }
-    if (service.priceType && service.servicePrices) {
-        for (let i = 0; i < service.servicePrices.length; i++) {
-            const { maxValue, price } = service.servicePrices[i];
+    if (priceChart) {
+        for (let i = 0; i < priceChart.length; i++) {
+            const { maxValue, price } = priceChart[i];
             if (weight <= maxValue) {
-                if (service.minPrice && weight * price <= service.minPrice) {
-                    return service.minPrice;
+                if (minPrice && weight * price <= minPrice) {
+                    return minPrice;
                 } else {
                     return weight * price;
                 }

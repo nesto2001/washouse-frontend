@@ -1,3 +1,4 @@
+import { ServicePriceModel } from '../../models/Service/ServicePricesModel';
 import { PriceRange } from '../PriceRange';
 
 export interface CartItem {
@@ -8,6 +9,7 @@ export interface CartItem {
     price: number;
     weight?: number;
     quantity?: number;
-    priceChart?: Array<PriceRange>;
+    minPrice?: number;
+    priceChart?: ServicePriceModel[];
     unit: 'kg' | 'pcs';
 }
