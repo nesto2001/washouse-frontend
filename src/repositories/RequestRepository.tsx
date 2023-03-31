@@ -1,24 +1,18 @@
-import { List } from 'reselect/es/types';
-import { CenterModel } from '../models/Center/CenterModel';
-import { CenterResponse } from '../models/Center/CenterResponse';
-import instance from '../services/axios/AxiosInstance';
-import { ServiceTag } from '../types/ServiceType/ServiceTag';
-import { OperatingDay } from '../types/OperatingDay';
-import { ServiceModel } from '../models/Service/ServiceModel';
-import { ServiceCategoryModel } from '../models/Service/ServiceCategoryModel';
-import { CenterDetailsModel } from '../models/Center/CenterDetailsModel';
-import { PaginationResponse, Response } from '../models/CommonModel';
-import { LoginResponse } from '../models/LoginResponse';
 import {
-    API_CENTER,
-    API_CENTER_DETAILS,
     API_REQUEST,
     API_REQUEST_APPROVE,
     API_REQUEST_DETAILS,
-    API_REQUEST_REJECT,
+    API_REQUEST_REJECT
 } from '../common/Constant';
-import { CenterRequest } from '../models/Center/CreateCenterRequest';
-import { CreateCenterResponse } from '../models/Center/CreateCenterResponse';
+import { CenterDetailsModel } from '../models/Center/CenterDetailsModel';
+import { CenterModel } from '../models/Center/CenterModel';
+import { CenterResponse } from '../models/Center/CenterResponse';
+import { PaginationResponse, Response } from '../models/CommonModel';
+import { ServiceCategoryModel } from '../models/Service/ServiceCategoryModel';
+import { ServiceModel } from '../models/Service/ServiceModel';
+import instance from '../services/axios/AxiosInstance';
+import { OperatingDay } from '../types/OperatingDay';
+import { ServiceTag } from '../types/ServiceType/ServiceTag';
 
 export const getCenterRequests = async ({
     lat,

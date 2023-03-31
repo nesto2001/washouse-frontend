@@ -1,14 +1,12 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { CenterModel } from '../../models/Center/CenterModel';
-import { CentersPage } from '../../pages';
-import { getAllCenter } from '../../repositories/CenterRepository';
-import CentersMap from './CentersMap';
-import CenterListing from './CentersListing';
-import Loading from '../../components/Loading/Loading';
-import { getCurrentLocation } from '../../utils/CommonUtils';
-import Sidebar from '../../components/Sidebar';
-import ErrorScreen from '../../components/ErrorScreen/ErrorScreen';
+import { useEffect, useState } from 'react';
 import EmptyData from '../../components/EmptyData/EmptyData';
+import Loading from '../../components/Loading/Loading';
+import Sidebar from '../../components/Sidebar';
+import { CenterModel } from '../../models/Center/CenterModel';
+import { getAllCenter } from '../../repositories/CenterRepository';
+import { getCurrentLocation } from '../../utils/CommonUtils';
+import CenterListing from './CentersListing';
+import CentersMap from './CentersMap';
 
 export type BudgetType = {
     min: number;

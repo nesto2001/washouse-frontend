@@ -1,10 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { message, Modal } from 'antd';
-import { getService } from '../repositories/ServiceRepository';
+import { AppThunk } from '../store/AppThunk';
 import { CartItem } from '../types/CartType/CartItem';
 import { CartState } from '../types/CartType/CartState';
 import { calculatePrice } from '../utils/CommonUtils';
-import { showMessage } from '../utils/ShowMessageUtils';
 type Props = {};
 
 const cartJson = localStorage.getItem('userCart');
@@ -38,7 +36,7 @@ const CartReducer = createSlice({
             }
 
             if (!item) {
-                return state;
+                throw new Error('Thêm vào giỏ hàng thất bại');
             }
             if (!state.centerId) {
                 state.centerId = item.centerId;
@@ -50,8 +48,7 @@ const CartReducer = createSlice({
                     if (existingItem.weight) {
                         existingItem.weight += item.weight;
                         if (existingItem.weight > item.priceChart[item.priceChart.length - 1].maxValue) {
-                            showMessage('error', 'Khối lượng vượt quá khối lượng tối đa trên bảng giá');
-                            return state;
+                            throw new Error('Khối lượng vượt quá khối lượng tối đa trên bảng giá');
                         }
                         existingItem.price = calculatePrice(item.priceChart, item.minPrice, existingItem.weight);
                         state.totalPrice += existingItem.price - item.price;
@@ -70,7 +67,6 @@ const CartReducer = createSlice({
                 state.totalPrice += item.price * (item.quantity && item.quantity > 0 ? item.quantity : 1);
             }
             localStorage.setItem('userCart', JSON.stringify(state));
-            showMessage('success', 'Đã thêm vào giỏ hàng!');
         },
         removeItem: (state, action: PayloadAction<number>) => {
             const itemId = action.payload;
@@ -107,5 +103,18 @@ const CartReducer = createSlice({
 });
 
 export const { addItem, removeItem, clearCart } = CartReducer.actions;
+
+export const addToCart = (item: CartItem): AppThunk => {
+    return (dispatch) => {
+        return new Promise((resolve, reject) => {
+            try {
+                dispatch(addItem(item));
+                resolve(true);
+            } catch (err) {
+                reject(err);
+            }
+        });
+    };
+};
 
 export default CartReducer.reducer;
