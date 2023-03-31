@@ -1,3 +1,5 @@
+import { ServicePricesResponse } from "./ServicePricesResponse";
+
 export type ServiceResponse = {
     serviceId: number;
     categoryId: number;
@@ -8,4 +10,7 @@ export type ServiceResponse = {
     timeEstimate: number;
     rating: number;
     numOfRating: number;
+    priceType: boolean;
+    minPrice: number;
+    prices: ServicePricesResponse[];
 };

@@ -14,7 +14,7 @@ type Props = {
 const FormRadioDelivery = ({ optionsList, name, isValued, selectedValue, onChange }: Props) => {
     return (
         <div className="formradio__wrapper my-3 border border-wh-gray rounded-lg">
-            {optionsList.map((option) => {
+            {/* {optionsList.map((option) => {
                 return (
                     <div
                         className="formradio--item p-5 flex justify-between border-b border-wh-gray last:border-none"
@@ -47,7 +47,7 @@ const FormRadioDelivery = ({ optionsList, name, isValued, selectedValue, onChang
                         )}
                     </div>
                 );
-            })}
+            })} */}
         </div>
     );
 };

@@ -13,6 +13,11 @@ export interface CenterDetailsModel {
     phone: string;
     centerAddress: string;
     distance: number;
+    minPrice?: number;
+    maxPrice?: number;
+    monthOff?: boolean;
+    hasDelivery: boolean;
+    centerDeliveryPrices?: [];
     centerLocation: {
         latitude: number;
         longitude: number;

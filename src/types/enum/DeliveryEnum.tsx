@@ -1,6 +1,6 @@
 export enum DeliveryEnum {
-    NO = 1,
-    ONE_WAY_TO = 2,
-    ONE_WAY_BACK = 3,
-    TWO_WAY = 4,
+    NO = 0,
+    ONE_WAY_TO = 1,
+    ONE_WAY_BACK = 2,
+    TWO_WAY = 3,
 }

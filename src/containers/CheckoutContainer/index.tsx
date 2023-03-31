@@ -11,6 +11,9 @@ import { RootState } from '../../store/CartStore';
 import { Step1, Step2 } from './CheckoutFormContainer';
 import { CheckoutFormData } from '../../types/FormData/CheckoutFormData';
 import { formatCurrency } from '../../utils/FormatUtils';
+import { CenterModel } from '../../models/Center/CenterModel';
+import { getCenterBrief } from '../../repositories/CenterRepository';
+import { compareTime, getToday } from '../../utils/TimeUtils';
 
 type Props = {};
 
@@ -18,8 +21,13 @@ const CheckoutContainer = (props: Props) => {
     const navigate = useNavigate();
     const cartTotal = useSelector((state: RootState) => state.cart.totalPrice);
     const cartItems = useSelector((state: RootState) => state.cart.items);
+    const cartCenterId = useSelector((state: RootState) => state.cart.centerId);
+    const today = getToday();
 
-    const [step, setStep] = useState<number>(1);
+    const [center, setCenter] = useState<CenterModel>();
+
+    const [step, setStep] = useState<number>(2);
+
     const [formData, setFormData] = useState<CheckoutFormData>({
         fullname: '',
         address: '',
@@ -35,6 +43,29 @@ const CheckoutContainer = (props: Props) => {
         paymentType: 1,
     });
 
+    const [discount, setDiscount] = useState<number>(0);
+
+    const [freight, setFreight] = useState<number>(0);
+
+    const [total, setTotal] = useState<number>(cartTotal + freight - discount);
+
+    //calculate order
+    useEffect(() => {
+        setTotal(cartTotal + freight - discount);
+    }, [discount, freight, total, cartTotal]);
+
+    //fetch center
+    useEffect(() => {
+        const fetchData = async () => {
+            return await getCenterBrief(cartCenterId);
+        };
+        fetchData().then((res) => {
+            setCenter(res);
+        });
+    }, [cartCenterId]);
+
+    //calculate time
+
     const handleNext = () => {
         setStep(step + 1);
     };
@@ -47,13 +78,6 @@ const CheckoutContainer = (props: Props) => {
         event.preventDefault();
         navigate('/cart/checkout/confirm');
     };
-
-    const [discount, setDiscount] = useState<number>(0);
-    const [freight, setFreight] = useState<number>(0);
-    const [total, setTotal] = useState<number>(cartTotal + freight - discount);
-    useEffect(() => {
-        setTotal(cartTotal + freight - discount);
-    }, [discount, freight, total, cartTotal]);
 
     return (
         <div className="checkoutsite__wrapper flex justify-between h-screen container mx-auto text-sub">
@@ -85,21 +109,32 @@ const CheckoutContainer = (props: Props) => {
                 <div className="checkout__center">
                     <h2 className="font-bold text-xl">Trung tâm</h2>
                     <div className="checkout__center--details flex mt-3 mb-6">
-                        <div className="checkout__center--thumbnail rounded-2xl overflow-hidden">
-                            <img className="max-h-[145px] max-w-[200px]" src={Placeholder} alt="" />
+                        <div className="checkout__center--thumbnail md:w-[200px] md:h-[145px] rounded-2xl overflow-hidden">
+                            <img
+                                className="max-h-[145px] max-w-[200px] md:w-[200px] w-full h-full object-cover"
+                                src={center?.thumbnail ?? Placeholder}
+                                alt=""
+                            />
                         </div>
-                        <div className="checkout__center--info ml-6 flex-grow">
-                            <h1 className="text-xl font-bold pt-4">The Clean House</h1> {/* center.title */}
-                            <h3 className="text-sm mt-1">518 Lê Văn Sỹ, Phường 14, Quận 3, TP. HCM</h3>{' '}
-                            {/* center.address */}
+                        <div className="checkout__center--info ml-6 w-[271px]">
+                            <h1 className="text-xl font-bold pt-4">{center?.title}</h1> {/* center.title */}
+                            <h3 className="text-sm mt-1">{center?.address}, TP. Hồ Chí Minh</h3> {/* center.address */}
                             <h3 className="text-sm mt-1">
-                                <FaRegClock className="inline-block" />
-                                <span className="ml-1 inline-block align-middle">08:00 - 21:00</span>
+                                {center?.centerOperatingHours[today]?.start &&
+                                    center?.centerOperatingHours[today]?.end && (
+                                        <>
+                                            <FaRegClock className="mr-2 self-center" />
+                                            <span className="leading-7">
+                                                {center?.centerOperatingHours[today].start?.substring(0, 5)} -{' '}
+                                                {center?.centerOperatingHours[today].end?.substring(0, 5)}
+                                            </span>
+                                        </>
+                                    )}
                             </h3>{' '}
                             {/* center.operationHour */}
                             <h1 className="text-sm mt-1">
                                 <FaPhoneAlt className="inline-block" />
-                                <span className="ml-1 inline-block align-middle">0975926021</span>
+                                <span className="ml-1 inline-block align-middle">{center?.phone}</span>
                             </h1>{' '}
                             {/* center.phone */}
                         </div>

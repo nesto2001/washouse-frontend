@@ -12,6 +12,7 @@ import { LoginResponse } from '../models/LoginResponse';
 import { API_CENTER, API_CENTER_DETAILS } from '../common/Constant';
 import { CenterRequest } from '../models/Center/CreateCenterRequest';
 import { CreateCenterResponse } from '../models/Center/CreateCenterResponse';
+import { CenterDetailsResponse } from '../models/Center/CenterDetailsResponse';
 
 export const getAllCenter = async ({
     lat,
@@ -69,7 +70,7 @@ export const getAllCenter = async ({
 };
 
 export const getCenter = async (id: number): Promise<CenterDetailsModel> => {
-    const { data } = await instance.get<Response<CenterResponse>>(
+    const { data } = await instance.get<Response<CenterDetailsResponse>>(
         API_CENTER_DETAILS.replace('${id}', id.toString()),
         {},
     );
@@ -93,6 +94,7 @@ export const getCenter = async (id: number): Promise<CenterDetailsModel> => {
                         price: service.price,
                         rating: service.rating,
                         timeEstimate: service.timeEstimate,
+                        minPrice: service.minPrice,
                     };
                 }),
             };
@@ -103,6 +105,10 @@ export const getCenter = async (id: number): Promise<CenterDetailsModel> => {
         centerAddress: data.data.centerAddress,
         alias: data.data.alias,
         distance: data.data.distance,
+        hasDelivery: data.data.hasDelivery,
+        minPrice: data.data.minPrice,
+        maxPrice: data.data.maxPrice,
+        centerDeliveryPrices: [],
         centerLocation: data.data.centerLocation,
         operatingHours: data.data.centerOperatingHours.map((day): OperatingDay => {
             return {

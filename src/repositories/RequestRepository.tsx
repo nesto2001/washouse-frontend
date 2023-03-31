@@ -1,10 +1,6 @@
-import {
-    API_REQUEST,
-    API_REQUEST_APPROVE,
-    API_REQUEST_DETAILS,
-    API_REQUEST_REJECT
-} from '../common/Constant';
+import { API_REQUEST, API_REQUEST_APPROVE, API_REQUEST_DETAILS, API_REQUEST_REJECT } from '../common/Constant';
 import { CenterDetailsModel } from '../models/Center/CenterDetailsModel';
+import { CenterDetailsResponse } from '../models/Center/CenterDetailsResponse';
 import { CenterModel } from '../models/Center/CenterModel';
 import { CenterResponse } from '../models/Center/CenterResponse';
 import { PaginationResponse, Response } from '../models/CommonModel';
@@ -70,7 +66,7 @@ export const getCenterRequests = async ({
 };
 
 export const getCenterRequest = async (id: number): Promise<CenterDetailsModel> => {
-    const { data } = await instance.get<Response<CenterResponse>>(
+    const { data } = await instance.get<Response<CenterDetailsResponse>>(
         API_REQUEST_DETAILS.replace('${id}', id.toString()),
         {},
     );
@@ -104,6 +100,7 @@ export const getCenterRequest = async (id: number): Promise<CenterDetailsModel> 
         centerAddress: data.data.centerAddress,
         alias: data.data.alias,
         distance: data.data.distance,
+        hasDelivery: data.data.hasDelivery,
         centerLocation: data.data.centerLocation,
         operatingHours: data.data.centerOperatingHours.map((day): OperatingDay => {
             return {
@@ -116,7 +113,7 @@ export const getCenterRequest = async (id: number): Promise<CenterDetailsModel> 
 };
 
 export const approveCenter = async (id: number): Promise<CenterDetailsModel> => {
-    const { data } = await instance.put<Response<CenterResponse>>(
+    const { data } = await instance.put<Response<CenterDetailsResponse>>(
         API_REQUEST_APPROVE.replace('${id}', id.toString()),
         {},
     );
@@ -150,6 +147,7 @@ export const approveCenter = async (id: number): Promise<CenterDetailsModel> => 
         centerAddress: data.data.centerAddress,
         alias: data.data.alias,
         distance: data.data.distance,
+        hasDelivery: data.data.hasDelivery,
         centerLocation: data.data.centerLocation,
         operatingHours: data.data.centerOperatingHours.map((day): OperatingDay => {
             return {
@@ -162,7 +160,7 @@ export const approveCenter = async (id: number): Promise<CenterDetailsModel> => 
 };
 
 export const rejectCenter = async (id: number): Promise<CenterDetailsModel> => {
-    const { data } = await instance.put<Response<CenterResponse>>(
+    const { data } = await instance.put<Response<CenterDetailsResponse>>(
         API_REQUEST_REJECT.replace('${id}', id.toString()),
         {},
     );
@@ -196,6 +194,7 @@ export const rejectCenter = async (id: number): Promise<CenterDetailsModel> => {
         centerAddress: data.data.centerAddress,
         alias: data.data.alias,
         distance: data.data.distance,
+        hasDelivery: data.data.hasDelivery,
         centerLocation: data.data.centerLocation,
         operatingHours: data.data.centerOperatingHours.map((day): OperatingDay => {
             return {
