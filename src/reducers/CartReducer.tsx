@@ -4,6 +4,7 @@ import { getService } from '../repositories/ServiceRepository';
 import { CartItem } from '../types/CartType/CartItem';
 import { CartState } from '../types/CartType/CartState';
 import { calculatePrice } from '../utils/CommonUtils';
+import { showMessage } from '../utils/ShowMessageUtils';
 type Props = {};
 
 const cartJson = localStorage.getItem('userCart');
@@ -49,37 +50,27 @@ const CartReducer = createSlice({
                     if (existingItem.weight) {
                         existingItem.weight += item.weight;
                         if (existingItem.weight > item.priceChart[item.priceChart.length - 1].maxValue) {
-                            message.error('Khối lượng vượt quá khối lượng tối đa trên bảng giá');
+                            showMessage('error', 'Khối lượng vượt quá khối lượng tối đa trên bảng giá');
                             return state;
                         }
                         existingItem.price = calculatePrice(item.priceChart, item.minPrice, existingItem.weight);
                         state.totalPrice += existingItem.price - item.price;
                         console.log(item.price);
                     }
-                    // const updatedItem = { ...existingItem };
-                    // console.log(updatedItem.weight);
-                    // const fetchData = async () => {
-                    //     return await getService(item.id);
-                    // };
-                    // fetchData().then((res) => {
-                    //     if (updatedItem.weight && updatedItem.weight > 0) {
-                    //         updatedItem.price = calculatePrice(res, updatedItem.weight);
-                    //         console.log(updatedItem.price);
-                    //     }
-                    // });
-                    // console.log(updatedItem.price);
-                    // existingItem.price = updatedItem.price;
                 } else {
-                    if (existingItem.quantity && item.quantity) existingItem.quantity += item.quantity;
+                    if (existingItem.quantity && item.quantity) {
+                        existingItem.quantity += item.quantity;
+                        state.totalQuantity += item.quantity;
+                        state.totalPrice += item.quantity * item.price;
+                    }
                 }
             } else {
                 state.items.push(item);
                 state.totalQuantity += item.quantity && item.quantity > 0 ? item.quantity : 1;
                 state.totalPrice += item.price * (item.quantity && item.quantity > 0 ? item.quantity : 1);
             }
-            state.totalQuantity += item.quantity && item.quantity > 0 ? item.quantity : 0;
             localStorage.setItem('userCart', JSON.stringify(state));
-            message.success('Đã thêm vào giở hàng!');
+            showMessage('success', 'Đã thêm vào giỏ hàng!');
         },
         removeItem: (state, action: PayloadAction<number>) => {
             const itemId = action.payload;
@@ -100,6 +91,9 @@ const CartReducer = createSlice({
                 state.totalPrice -= itemToRemove.price * (itemToRemove.quantity ?? 1);
 
                 state.items.splice(index, 1);
+            }
+            if (state.items.length == 0) {
+                state = emptyState;
             }
             localStorage.setItem('userCart', JSON.stringify(state));
         },

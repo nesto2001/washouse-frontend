@@ -114,11 +114,9 @@ const UpdateProfileContainer = () => {
                             <Input type="text" name="user-fullname" value={userProfile?.fullName}></Input>
                         </div>
                         <div className="col-span-1 text-right mr-6">Số điện thoại</div>
-                        <div className="col-span-3 py-2">
-                            {userProfile?.phone.toString().replace(/.(?=.{2})/g, '*')}
-                        </div>
+                        <div className="col-span-3 py-2">{userProfile?.phone}</div>
                         <div className="col-span-1 text-right mr-6">Email</div>
-                        <div className="col-span-3 py-2">{userProfile && maskEmail(userProfile.email)}</div>
+                        <div className="col-span-3 py-2">{userProfile && userProfile.email}</div>
                         <div className="col-span-1 text-right mr-6">Ngày sinh</div>
                         <div className="col-span-3 grid grid-cols-5">
                             <div className="col-span-3 max-w-[192px]">

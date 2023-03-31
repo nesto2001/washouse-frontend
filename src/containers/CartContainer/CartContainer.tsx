@@ -1,18 +1,30 @@
+import { useEffect, useState } from 'react';
 import { FaPhoneAlt, FaRegClock, FaTrashAlt } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import EmptyCart from '../../assets/images/empty-cart.png';
 import Placeholder from '../../assets/images/placeholder.png';
 import WHButton from '../../components/Button';
 import StatusTag from '../../components/StatusTag';
+import { CenterModel } from '../../models/Center/CenterModel';
 import { removeItem } from '../../reducers/CartReducer';
+import { getCenterBrief } from '../../repositories/CenterRepository';
 import { RootState } from '../../store/CartStore';
+import { formatCurrency, formatLink } from '../../utils/FormatUtils';
+import { compareTime, getToday } from '../../utils/TimeUtils';
 
 type Props = {};
 
 const CartContainer = () => {
+    const [center, setCenter] = useState<CenterModel>();
+    const [status, setStatus] = useState<boolean>(false);
+    const [isBreakDay, setIsBreakDay] = useState<boolean>(false);
     const cartItems = useSelector((state: RootState) => state.cart.items);
     const cartQuantity = useSelector((state: RootState) => state.cart.totalQuantity);
     const cartTotal = useSelector((state: RootState) => state.cart.totalPrice);
+    const cartCenterId = useSelector((state: RootState) => state.cart.centerId);
+
+    const today = getToday();
 
     const dispatch = useDispatch();
 
@@ -28,6 +40,26 @@ const CartContainer = () => {
             }
         }
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            return await getCenterBrief(cartCenterId);
+        };
+        fetchData().then((res) => {
+            setCenter(res);
+            if (res) {
+                const opening: string = res.centerOperatingHours[today]?.start ?? '';
+                const closing: string = res.centerOperatingHours[today]?.end ?? '';
+                if (opening && closing) {
+                    setStatus(compareTime(opening, closing));
+                    setIsBreakDay(false);
+                } else {
+                    setStatus(false);
+                    setIsBreakDay(true);
+                }
+            }
+        });
+    }, [cartCenterId]);
 
     return (
         <div className="sitecart__wrapper flex justify-between gap-[40px] mt-9">
@@ -52,7 +84,7 @@ const CartContainer = () => {
                                                 Chi tiết: {item.weight || item.quantity} {item.unit ?? ''}
                                             </h3>
                                             <h1 className="sitecart__item--price text-2xl font-bold text-primary mt-1">
-                                                {item.price}đ
+                                                {formatCurrency(item.price)}
                                             </h1>
                                         </div>
                                         <div
@@ -73,7 +105,7 @@ const CartContainer = () => {
                             <hr />
                             <div className="sitecart__total flex justify-between my-4">
                                 <h4>Tổng tiền</h4>
-                                <h3 className="font-semibold text-xl text-primary">{cartTotal}đ</h3>
+                                <h3 className="font-semibold text-xl text-primary">{formatCurrency(cartTotal)}</h3>
                             </div>
                             <hr />
                             <ul className="mt-4 list-disc text-xs text-left list-inside pl-2 mb-8">
@@ -85,20 +117,37 @@ const CartContainer = () => {
                             </WHButton>
                         </div>
                         <div className="sitecart__sideinfo--center mt-6 p-6 border border-[#B3B3B3] rounded-2xl">
-                            <h2 className="text-left font-bold text-2xl">Trung tâm</h2>
+                            <div className="flex justify-between items-end">
+                                <h2 className="text-left font-bold text-2xl">Trung tâm</h2>
+                                <h4 className="text-base font-medium text-primary cursor-pointer">
+                                    <Link to={`/trung-tâm/${formatLink(center?.title ?? ' ')}-c.${center?.id}`}>
+                                        Chi tiết
+                                    </Link>
+                                </h4>
+                            </div>
                             <div className="sitecart__center--wrapper  text-left mt-3">
                                 <div className="sitecart__center--thumbnail rounded-lg overflow-hidden">
-                                    <img className="max-h-[168px] w-full object-cover " src={Placeholder} alt="" />
+                                    <img
+                                        className="max-h-[200px] w-full object-cover object-center"
+                                        src={center?.thumbnail ?? Placeholder}
+                                        alt=""
+                                    />
                                 </div>
-                                <h2 className="font-bold text-base mt-2">The Clean House</h2>
-                                <h3 className="text-sm text-bold text-sub-gray">
-                                    518 Lê Văn Sỹ, Phường 14, Quận 3, TP.HCM
-                                </h3>
+                                <h2 className="font-bold text-base mt-2">{center?.title}</h2>
+                                <h3 className="text-sm text-bold text-sub-gray">{center?.address}</h3>
                                 <div className="flex justify-between mt-1">
                                     <h3 className="text-sm flex items-center">
-                                        <FaRegClock className="inline-block mr-2" />
-                                        08:00 - 20:00
-                                        <StatusTag opening={true} />
+                                        {center?.centerOperatingHours[today].start &&
+                                            center.centerOperatingHours[today].end && (
+                                                <>
+                                                    <FaRegClock className="mr-2 self-center" />
+                                                    <span className="leading-7">
+                                                        {center.centerOperatingHours[today].start?.substring(0, 5)} -{' '}
+                                                        {center.centerOperatingHours[today].end?.substring(0, 5)}
+                                                    </span>
+                                                </>
+                                            )}
+                                        <StatusTag opening={status} isBreakDay={isBreakDay} />
                                     </h3>
                                     <h3 className="text-sm">
                                         <FaPhoneAlt className="inline-block mr-2" />

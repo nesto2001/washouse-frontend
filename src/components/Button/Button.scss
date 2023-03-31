@@ -7,12 +7,20 @@
     padding: 12px 24px;
     min-width: 164px;
     cursor: pointer;
+    transition: 0.15s all ease-in-out;
 }
 
 .primary {
     background: var(--washouse-primary-blue);
     color: var(--washouse-primary-white);
     border: none;
+}
+
+.btn {
+    &:hover {
+        background-color: var(--washouse-hover-blue);
+        color: var(--washouse-primary-white);
+    }
 }
 
 .sub {
