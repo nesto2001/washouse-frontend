@@ -10,6 +10,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { RootState } from '../../store/CartStore';
 import { Step1, Step2 } from './CheckoutFormContainer';
 import { CheckoutFormData } from '../../types/FormData/CheckoutFormData';
+import { formatCurrency } from '../../utils/FormatUtils';
 
 type Props = {};
 
@@ -20,12 +21,11 @@ const CheckoutContainer = (props: Props) => {
 
     const [step, setStep] = useState<number>(1);
     const [formData, setFormData] = useState<CheckoutFormData>({
-        firstName: '',
-        lastName: '',
+        fullname: '',
         address: '',
         city: 0,
         district: 0,
-        ward: 0,
+        wardId: 0,
         email: '',
         phone: '',
         delivery: {
@@ -35,8 +35,7 @@ const CheckoutContainer = (props: Props) => {
         paymentType: 1,
     });
 
-    const handleNext = (data: Partial<CheckoutFormData>) => {
-        setFormData({ ...formData, ...data });
+    const handleNext = () => {
         setStep(step + 1);
     };
 
@@ -78,10 +77,9 @@ const CheckoutContainer = (props: Props) => {
                         </>
                     )}
                 </div>
-                <form onSubmit={handleSubmit}>
-                    {step === 1 && <Step1 onNext={handleNext} formData={formData} />}
-                    {step === 2 && <Step2 setFormData={setFormData} onBack={handleBack} formData={formData} />}
-                </form>
+
+                {step === 1 && <Step1 onNext={handleNext} formData={formData} setFormData={setFormData} />}
+                {step === 2 && <Step2 setFormData={setFormData} onBack={handleBack} formData={formData} />}
             </div>
             <div className="checkout__sidebar basis-[45%] border-l border-ws-gray text-left px-6 pt-6">
                 <div className="checkout__center">
@@ -123,9 +121,11 @@ const CheckoutContainer = (props: Props) => {
                                             <input type="hidden" value={item.id} name="cart__item-id" />
                                             <h3 className="font-bold text-xl mt-3">{item.name}</h3>
                                             <h4 className="text-sm flex-grow mt-2">
-                                                Chi tiết: {item.quantity ?? item.weight} {item.unit === 'kg' ?? ''}
+                                                Chi tiết:{' '}
+                                                {item.quantity && item.quantity > 0 ? item.quantity : item.weight}{' '}
+                                                {item.unit === 'kg' ?? ''}
                                             </h4>
-                                            <h4 className="text-2xl font-bold mb-1">{item.price}đ</h4>
+                                            <h4 className="text-2xl font-bold mb-1">{formatCurrency(item.price)}</h4>
                                         </div>
                                     </div>
                                 ))}
@@ -152,20 +152,20 @@ const CheckoutContainer = (props: Props) => {
                             <div className="checkout__order--summary grid grid-cols-2 mt-8 gap-y-3">
                                 <div className="checkout__summary--header col-span-1 text-sm">Tổng tiền</div>
                                 <div className="checkout__order--subtotal col-span-1 text-xl text-right font-semibold">
-                                    {cartTotal}đ
+                                    {formatCurrency(cartTotal)}
                                 </div>
                                 <div className="checkout__summary--header col-span-1 text-sm">Mã giảm giá</div>
                                 <div className="checkout__order--subtotal col-span-1 text-xl text-right font-semibold">
-                                    {discount}đ
+                                    {discount > 0 ? '-' : '' + formatCurrency(discount)}
                                 </div>
                                 <div className="checkout__summary--header col-span-1 text-sm">Phí ship</div>
                                 <div className="checkout__order--subtotal col-span-1 text-xl text-right font-semibold">
-                                    {freight}đ
+                                    {formatCurrency(freight)}
                                 </div>
                                 <hr className="col-span-2 border-wh-gray mt-2" />
                                 <div className="checkout__summary--header col-span-1 font-semibold pt-1">Tổng cộng</div>
                                 <div className="checkout__order--subtotal col-span-1 text-2xl text-right text-primary font-semibold">
-                                    {total}đ
+                                    {formatCurrency(total)}
                                 </div>
                             </div>
                         </div>

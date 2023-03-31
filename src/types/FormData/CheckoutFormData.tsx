@@ -1,10 +1,9 @@
 export type CheckoutFormData = {
-    firstName: string;
-    lastName: string;
+    fullname: string;
     address: string;
     city: number;
     district: number;
-    ward: number;
+    wardId: number;
     email: string;
     phone: string;
     delivery: {

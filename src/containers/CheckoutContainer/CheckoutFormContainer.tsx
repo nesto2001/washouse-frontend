@@ -11,171 +11,273 @@ import { CheckoutFormData } from '../../types/FormData/CheckoutFormData';
 import { Option } from '../../types/Options';
 import '../../components/Button/Button.scss';
 import Input from '../../components/Input/Input';
+import { Form, Tooltip } from 'antd';
+import { QuestionCircleOutlined } from '@ant-design/icons';
+import { LocationModel } from '../../models/LocationModel';
+import { getDistricts, getWards } from '../../repositories/LocationRepository';
 
 type Step1Props = {
     formData: CheckoutFormData;
-    onNext: (data: Partial<CheckoutFormData>) => void;
+    setFormData: React.Dispatch<React.SetStateAction<CheckoutFormData>>;
+    onNext: () => void;
 };
 
-export const Step1 = ({ formData, onNext }: Step1Props) => {
-    const [firstName, setFirstName] = useState(formData.firstName || '');
-    const [lastName, setLastName] = useState(formData.lastName || '');
-    const [address, setAddress] = useState(formData.address || '');
-    const [city, setCity] = useState(formData.city || 1);
+export const Step1 = ({ formData, onNext, setFormData }: Step1Props) => {
+    const [form] = Form.useForm();
     const [district, setDistrict] = useState(formData.district || 0);
-    const [ward, setWard] = useState(formData.ward || 0);
-    const [email, setEmail] = useState(formData.email || '');
-    const [phone, setPhone] = useState(formData.phone || '');
+    const [districtList, setDistrictList] = useState<LocationModel[]>([]);
+    const [wardList, setWardList] = useState<LocationModel[]>([]);
 
     const handleNext = () => {
-        if (firstName && lastName && address && city !== 0 && district !== 0 && ward !== 0 && email && phone) {
-            onNext({ firstName, lastName, address, city, district, ward, email, phone });
+        form.submit();
+    };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            return await getDistricts();
+        };
+        fetchData().then((res) => {
+            setDistrictList(res);
+        });
+    }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            return await getWards(formData.district);
+        };
+        fetchData().then((res) => {
+            setWardList(res);
+        });
+    }, []);
+
+    const handleSelectDistrictChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setFormData((prev) => ({ ...prev, district: parseInt(event.target.value) }));
+        const fetchData = async () => {
+            return await getWards(parseInt(event.target.value));
+        };
+        fetchData().then((res) => {
+            setWardList(res);
+        });
+    };
+
+    const handleSelectWardChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setFormData((prev) => ({ ...prev, wardId: parseInt(event.target.value) }));
+    };
+
+    const handleSelectCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {};
+
+    const onFinish = (values: any) => {
+        console.log('Received values of form: ', values);
+        if (values) {
+            onNext();
         }
     };
 
-    const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const { value } = event.target;
-        console.log(formData);
+    const onFinishFailed = (errorInfo: any) => {
+        console.log('Failed:', errorInfo);
     };
 
     return (
-        <>
-            <div className="checkout__customer--form grid text-left mt-4 gap-x-6 gap-y-5">
+        <Form
+            form={form}
+            name="checkout_customer"
+            initialValues={{
+                fullname: formData.fullname,
+                phone: formData.phone,
+                email: formData.email,
+                address: formData.address,
+                city: 1,
+                district: formData.district,
+                ward: formData.wardId,
+            }}
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+            autoComplete="on"
+            layout="vertical"
+        >
+            <div className="checkout__customer--form grid text-left mt-4 gap-x-6">
                 <div className="customer__input--name grid grid-cols-2 gap-x-6">
-                    <div className="customer__input--lastname col-span-1">
-                        <Input
-                            required
-                            type="text"
-                            name="customer_lname"
-                            label="Họ của bạn"
-                            placeholder="Họ"
-                            value={lastName}
-                            onChange={(e) => {
-                                setLastName(e.target.value);
-                            }}
-                        />
-                    </div>
-                    <div className="customer__input--firstname col-span-1">
-                        <Input
-                            label="Tên của bạn"
-                            required
-                            type="text"
-                            name="customer_fname"
-                            placeholder="Tên"
-                            value={firstName}
-                            onChange={(e) => {
-                                setFirstName(e.target.value);
-                            }}
-                        />
+                    <div className="customer__input--lastname col-span-2">
+                        <Form.Item
+                            name="fullname"
+                            rules={[{ required: true, message: 'Vui lòng nhập họ và tên của bạn' }]}
+                            validateTrigger={['onChange', 'onBlur']}
+                        >
+                            <Input
+                                required
+                                type="text"
+                                name="customer_flname"
+                                label="Họ và tên của bạn"
+                                placeholder="Nhập họ và tên"
+                                value={formData.fullname}
+                                onChange={(e) => {
+                                    setFormData((prev) => ({ ...prev, fullname: e.target.value }));
+                                }}
+                            />
+                        </Form.Item>
                     </div>
                 </div>
-                <div className="customer__input--location grid grid-cols-3 gap-x-6 gap-y-5">
+                <div className="customer__input--contact grid grid-cols-2 gap-x-6">
+                    <div className="customer__input--phone col-span-1">
+                        <Form.Item
+                            name="phone"
+                            rules={[
+                                { required: true, message: 'Vui lòng nhập số điện thoại của bạn' },
+                                { len: 10, message: 'Số điện thoại thông thường có 10 số' },
+                            ]}
+                            validateTrigger={['onBlur']}
+                        >
+                            <Input
+                                label="Số điện thoại"
+                                required
+                                type="text"
+                                name="customer_phone"
+                                placeholder="Số điện thoại"
+                                value={formData.phone}
+                                onChange={(e) => {
+                                    setFormData((prev) => ({ ...prev, phone: e.target.value }));
+                                }}
+                            />
+                        </Form.Item>
+                    </div>
+                    <div className="customer__input--email col-span-1">
+                        <Form.Item
+                            name="email"
+                            rules={[
+                                { required: true, message: 'Vui lòng nhập email của bạn' },
+                                {
+                                    pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i,
+                                    message: 'Vui lòng nhập đúng định dạng email',
+                                },
+                            ]}
+                            validateTrigger={['onBlur']}
+                        >
+                            <Input
+                                label="Email"
+                                required
+                                type="text"
+                                name="customer_email"
+                                placeholder="Email"
+                                value={formData.email}
+                                onChange={(e) => {
+                                    setFormData((prev) => ({ ...prev, email: e.target.value }));
+                                }}
+                            />
+                        </Form.Item>
+                    </div>
+                </div>
+                <div className="customer__input--location grid grid-cols-3 gap-x-6">
                     <div className="customer__input--address col-span-3">
-                        <Input
-                            label="Địa chỉ"
-                            required
-                            type="text"
-                            name="customer_lname"
-                            placeholder="Địa chỉ"
-                            value={address}
-                            onChange={(e) => {
-                                setAddress(e.target.value);
-                            }}
-                        />
+                        <Form.Item
+                            name="address"
+                            rules={[{ required: true, message: 'Vui lòng nhập địa chỉ cá nhân' }]}
+                            validateTrigger={['onBlur']}
+                        >
+                            <Input
+                                label="Địa chỉ cá nhân"
+                                required
+                                type="text"
+                                name="customer_lname"
+                                placeholder="Địa chỉ"
+                                value={formData.address}
+                                onChange={(e) => {
+                                    setFormData((prev) => ({ ...prev, address: e.target.value }));
+                                }}
+                            />
+                        </Form.Item>
                     </div>
                     <div className="customer__input--city col-span-1">
                         <label htmlFor="customer_city" className="text-base font-medium block">
-                            Tỉnh / Thành
+                            Tỉnh / Thành{' '}
+                            <Tooltip
+                                title="Washouse hiện tại chỉ khả dụng tại TP. Hồ Chí Minh thôi bạn nhé"
+                                className="ml-1"
+                            >
+                                <QuestionCircleOutlined />
+                            </Tooltip>
                         </label>
-                        <Selectbox
-                            isRequired={true}
-                            name="customer_city"
-                            id=""
-                            type="tỉnh / thành phố"
-                            className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full pointer-events-none bg-gray-100"
-                            selectedValue={city}
-                            options={[{ label: 'TP. Hồ Chí Minh', value: 1 }]}
-                            onChange={(e) => {
-                                setCity(parseInt(e.target.value));
-                            }}
-                        />
+                        <Form.Item name="city" rules={[{ required: true, message: 'Vui lòng chọn tỉnh / thành phố' }]}>
+                            <Selectbox
+                                isRequired={true}
+                                name="customer_city"
+                                id=""
+                                type="tỉnh / thành phố"
+                                className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full pointer-events-none bg-gray-100"
+                                selectedValue={1}
+                                options={[{ label: 'TP. Hồ Chí Minh', value: 1 }]}
+                                onChange={handleSelectCityChange}
+                            />
+                        </Form.Item>
                     </div>
                     <div className="customer__input--district col-span-1">
                         <label htmlFor="customer_district" className="text-base font-medium block">
                             Quận / Huyện
                         </label>
-                        <Selectbox
-                            isRequired={true}
-                            name="customer_district"
-                            id=""
-                            type="quận / huyện"
-                            className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                            selectedValue={district}
-                            options={[{ label: 'Quận 5', value: 1 }]}
-                            onChange={(e) => {
-                                setDistrict(parseInt(e.target.value));
-                            }}
-                        />
+                        <Form.Item
+                            name="district"
+                            rules={[
+                                { required: true, message: 'Vui lòng chọn quận / huyện' },
+                                {
+                                    validator(_, value) {
+                                        if (value === 0) {
+                                            return Promise.reject(new Error('Vui lòng chọn quận / huyện'));
+                                        }
+                                        return Promise.resolve();
+                                    },
+                                },
+                            ]}
+                        >
+                            <Selectbox
+                                isRequired={true}
+                                name="customer_district"
+                                id=""
+                                type="quận / huyện"
+                                className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
+                                selectedValue={formData.district}
+                                options={districtList.map((district): Option => {
+                                    return {
+                                        value: district.id.toString(),
+                                        label: district.name,
+                                    };
+                                })}
+                                onChange={handleSelectDistrictChange}
+                            />
+                        </Form.Item>
                     </div>
                     <div className="customer__input--ward col-span-1">
                         <label htmlFor="customer_ward" className="text-base font-medium block">
                             Phường / Xã
                         </label>
-                        <Selectbox
-                            isRequired={true}
-                            name="customer_ward"
-                            id=""
-                            type="phường / xã"
-                            className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                            selectedValue={ward}
-                            options={[{ label: 'Phường 4', value: 1 }]}
-                            onChange={(e) => {
-                                setWard(parseInt(e.target.value));
-                            }}
-                        />
-                    </div>
-                </div>
-
-                <div className="customer__input--contact grid grid-cols-2 gap-x-6 gap-y-5">
-                    <div className="customer__input--email col-span-1">
-                        <Input
-                            label="Email"
-                            required
-                            type="text"
-                            name="customer_email"
-                            placeholder="Email"
-                            value={email}
-                            onChange={(e) => {
-                                setEmail(e.target.value);
-                            }}
-                        />
-                    </div>
-                    <div className="customer__input--phone col-span-1">
-                        {/* <label htmlFor="customer_phone" className="text-base font-medium block">
-                            Số điện thoại
-                        </label>
-                        <input
-                            required
-                            type="text"
-                            name="customer_phone"
-                            className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                            placeholder="Số điện thoại"
-                            value={phone}
-                            onChange={(e) => {
-                                setPhone(e.target.value);
-                            }}
-                        /> */}
-                        <Input
-                            label="Số điện thoại"
-                            required
-                            type="text"
-                            name="customer_phone"
-                            placeholder="Số điện thoại"
-                            value={phone}
-                            onChange={(e) => {
-                                setPhone(e.target.value);
-                            }}
-                        />
+                        <Form.Item
+                            name="ward"
+                            rules={[
+                                { required: true, message: 'Vui lòng chọn phường / xã' },
+                                {
+                                    validator(_, value) {
+                                        if (value === 0) {
+                                            return Promise.reject(new Error('Vui lòng chọn phường / xã'));
+                                        }
+                                        return Promise.resolve();
+                                    },
+                                },
+                            ]}
+                        >
+                            <Selectbox
+                                isRequired={true}
+                                name="customer_ward"
+                                id=""
+                                type="phường / xã"
+                                className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
+                                selectedValue={formData.wardId}
+                                options={wardList.map((ward) => {
+                                    return {
+                                        value: ward.id,
+                                        label: ward.name,
+                                    };
+                                })}
+                                onChange={handleSelectWardChange}
+                            />
+                        </Form.Item>
                     </div>
                 </div>
             </div>
@@ -187,7 +289,7 @@ export const Step1 = ({ formData, onNext }: Step1Props) => {
                     Tiếp tục đến phương thức vận chuyển
                 </WHButton>
             </div>
-        </>
+        </Form>
     );
 };
 
