@@ -103,7 +103,14 @@ const CheckoutContainer = (props: Props) => {
                 </div>
 
                 {step === 1 && <Step1 onNext={handleNext} formData={formData} setFormData={setFormData} />}
-                {step === 2 && <Step2 setFormData={setFormData} onBack={handleBack} formData={formData} />}
+                {step === 2 && (
+                    <Step2
+                        setFormData={setFormData}
+                        onBack={handleBack}
+                        formData={formData}
+                        centerOperatingDays={center?.centerOperatingHours}
+                    />
+                )}
             </div>
             <div className="checkout__sidebar basis-[45%] border-l border-ws-gray text-left px-6 pt-6">
                 <div className="checkout__center">
@@ -117,13 +124,13 @@ const CheckoutContainer = (props: Props) => {
                             />
                         </div>
                         <div className="checkout__center--info ml-6 w-[271px]">
-                            <h1 className="text-xl font-bold pt-4">{center?.title}</h1> {/* center.title */}
+                            <h1 className="text-xl font-bold pt-3">{center?.title}</h1> {/* center.title */}
                             <h3 className="text-sm mt-1">{center?.address}, TP. Hồ Chí Minh</h3> {/* center.address */}
-                            <h3 className="text-sm mt-1">
+                            <h3 className="text-sm">
                                 {center?.centerOperatingHours[today]?.start &&
                                     center?.centerOperatingHours[today]?.end && (
                                         <>
-                                            <FaRegClock className="mr-2 self-center" />
+                                            <FaRegClock className="mr-2 inline-block" />
                                             <span className="leading-7">
                                                 {center?.centerOperatingHours[today].start?.substring(0, 5)} -{' '}
                                                 {center?.centerOperatingHours[today].end?.substring(0, 5)}
@@ -132,9 +139,9 @@ const CheckoutContainer = (props: Props) => {
                                     )}
                             </h3>{' '}
                             {/* center.operationHour */}
-                            <h1 className="text-sm mt-1">
-                                <FaPhoneAlt className="inline-block" />
-                                <span className="ml-1 inline-block align-middle">{center?.phone}</span>
+                            <h1 className="text-sm">
+                                <FaPhoneAlt className="inline-block mr-2" />
+                                <span className="inline-block align-middle">{center?.phone}</span>
                             </h1>{' '}
                             {/* center.phone */}
                         </div>

@@ -12,13 +12,26 @@ import { Option } from '../../types/Options';
 import '../../components/Button/Button.scss';
 import './CheckoutContainer.scss';
 import Input from '../../components/Input/Input';
-import { Collapse, DatePicker, DatePickerProps, Form, Radio, RadioChangeEvent, TimePicker, Tooltip } from 'antd';
+import {
+    Collapse,
+    DatePicker,
+    DatePickerProps,
+    Form,
+    Radio,
+    RadioChangeEvent,
+    Select,
+    Space,
+    TimePicker,
+    Tooltip,
+} from 'antd';
 import { QuestionCircleOutlined, DownOutlined } from '@ant-design/icons';
 import { LocationModel } from '../../models/LocationModel';
 import { getDistricts, getWards } from '../../repositories/LocationRepository';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import { OperatingDay } from '../../types/OperatingDay';
+import { getToday } from '../../utils/TimeUtils';
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
 
@@ -310,78 +323,156 @@ const maxDate = currentDate.add(1, 'day').hour(23).minute(0).second(0);
 const dateTimeFormat = 'DD/MM/YYYY HH:mm';
 const customFormat: DatePickerProps['format'] = (value) => `${value.format(dateTimeFormat)}`;
 
+const dateOptions = [
+    { label: 'Hôm nay', value: dayjs().startOf('day').format('DD/MM/YYYY') },
+    { label: 'Ngày mai', value: dayjs().add(1, 'day').startOf('day').format('DD/MM/YYYY') },
+];
+
 type Step2Props = {
     formData: CheckoutFormData;
     onBack: () => void;
     setFormData: React.Dispatch<React.SetStateAction<CheckoutFormData>>;
+    centerOperatingDays?: OperatingDay[];
 };
 
-export const Step2 = ({ formData, onBack, setFormData }: Step2Props) => {
+const today = getToday();
+const tomorrow = today + 1 > 6 ? 0 : today + 1;
+
+type DisabledTime = (now: dayjs.Dayjs) => {
+    disabledHours: () => number[];
+    disabledMinutes: (selectedHour: number) => number[];
+};
+
+export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: Step2Props) => {
     const [delivery, setDelivery] = useState(0);
+    const [pickupDate, setPickupDate] = useState<string>(dateOptions[0].value);
+    const [openingHour, setOpeningHour] = useState<string>();
+    const [closingHour, setClosingHour] = useState<string>();
+    const [operatingDay, setOperatingDay] = useState<number>(today);
     const [paymentType, setPaymentType] = useState(formData.paymentType || 1);
     const [district, setDistrict] = useState(0);
     const [districtList, setDistrictList] = useState<LocationModel[]>([]);
     const [wardList, setWardList] = useState<LocationModel[]>([]);
     const { Panel } = Collapse;
+    const { Option } = Select;
 
-    const disabledDate = (current: dayjs.Dayjs) => {
-        if (!current) {
-            return false;
+    useEffect(() => {
+        if (
+            centerOperatingDays &&
+            centerOperatingDays[operatingDay].start !== null &&
+            centerOperatingDays[operatingDay].end !== null
+        ) {
+            setOpeningHour(centerOperatingDays[operatingDay].start ?? '');
+            setClosingHour(centerOperatingDays[operatingDay].end ?? '');
         }
+    }, [operatingDay]);
 
-        const currentDate = dayjs();
-        const currentPlus15Min = currentDate.add(15, 'minute');
-        const tomorrow = currentDate.add(1, 'day').endOf('day');
+    // const disabledTime = (date: dayjs.Dayjs): DisabledTime => {
+    //     const now = dayjs();
+    //     const isToday = now.isSame(dayjs(date), 'day');
+    //     const disabledHours: number[] = [];
+    //     const disabledMinutes: number[] = [];
+    //     if (openingHour && closingHour) {
+    //         const openingTime: dayjs.Dayjs = isToday
+    //             ? now.hour(Number(openingHour?.slice(0, 2))).startOf('hour')
+    //             : now.startOf('day').hour(Number(openingHour?.slice(0, 2)));
+    //         const closingTime: dayjs.Dayjs = isToday
+    //             ? now.hour(Number(closingHour?.slice(0, 2))).startOf('hour')
+    //             : now.endOf('day').hour(Number(closingHour?.slice(0, 2)));
 
-        return !dayjs(current).isBetween(currentPlus15Min, tomorrow, 'minute', '[]');
-    };
+    //         for (let hour = 0; hour < openingTime.hour(); hour++) {
+    //             disabledHours.push(hour);
+    //         }
+    //         for (let hour = closingTime.hour() + 1; hour < 24; hour++) {
+    //             disabledHours.push(hour);
+    //         }
+    //         if (now.isSame(openingTime, 'hour')) {
+    //             for (let minute = 0; minute < openingTime.minute(); minute += 15) {
+    //                 disabledMinutes.push(minute);
+    //             }
+    //         }
+    //         if (now.isSame(closingTime, 'hour')) {
+    //             for (let minute = closingTime.minute() + 1; minute <= 45; minute += 15) {
+    //                 disabledMinutes.push(minute);
+    //             }
+    //         }
+    //         return {
+    //             disabledHours: () => disabledHours,
+    //             disabledMinutes: (selectedHour: number) => {
+    //                 if (selectedHour === openingTime.hour()) {
+    //                     return disabledMinutes;
+    //                 } else {
+    //                     return [];
+    //                 }
+    //             },
+    //         };
+    //     }
+    //     return {
+    //         disabledHours: () => disabledHours,
+    //         disabledMinutes: () => disabledMinutes,
+    //     };
+    // };
 
-    const getDisabledTime = (current: dayjs.Dayjs | null) => {
-        const fifteenMinutesLater = dayjs().add(15, 'minute');
-        const elevenPMTomorrow = dayjs().add(1, 'day').hour(23).minute(0).second(0);
+    function disabledTime(date: dayjs.Dayjs) {
+        if (date && date.format('YYYY-MM-DD') === '2021-04-17') {
+        }
+    }
 
-        if (current?.isSame(dayjs(), 'day')) {
-            return {
-                disabledHours: () => {
-                    const hours = [];
-                    for (let i = 0; i < fifteenMinutesLater.hour(); i++) {
-                        hours.push(i);
-                    }
-                    for (let i = 24; i > elevenPMTomorrow.hour(); i--) {
-                        hours.push(i);
+    //dem cai disable nay vo state de đổi pickup date thì đổi luôn disable
+    const disable: (date: dayjs.Dayjs) => DisabledTime | undefined = (date) => {
+        const pickedDate = date.format('DD/MM/YYYY');
+        const currentTime = dayjs().format('HH:mm');
+        if (pickedDate === dateOptions[0].value) {
+            const dis: DisabledTime = () => {
+                const disabledHours = () => {
+                    // Disable hours before 9 AM and after 6 PM
+                    const hours: number[] = [];
+                    for (let i = 0; i < 24; i++) {
+                        if (i < Number(currentTime?.slice(0, 2)) || i > Number(closingHour?.slice(0, 2))) {
+                            hours.push(i);
+                        }
                     }
                     return hours;
-                },
-                disabledMinutes: (hour: number) => {
-                    if (hour === fifteenMinutesLater.hour()) {
-                        const minutes = [];
-                        for (let i = 0; i < fifteenMinutesLater.minute(); i++) {
-                            minutes.push(i);
+                };
+
+                const disabledMinutes = (selectedHour: number) => {
+                    if (selectedHour === Number(currentTime.slice(0, 2))) {
+                        // Disable minutes when selected hour is 9 AM or 6 PM
+                        const startMinute = Math.ceil(Number(currentTime.slice(3)) / 15) * 15;
+                        const disabled = [];
+                        for (let i = 0; i < startMinute; i += 15) {
+                            disabled.push(i);
                         }
-                        return minutes;
-                    } else if (hour === elevenPMTomorrow.hour()) {
-                        const minutes = [];
-                        for (let i = elevenPMTomorrow.minute(); i < 60; i++) {
-                            minutes.push(i);
-                        }
-                        return minutes;
                     }
                     return [];
-                },
+                };
+                return { disabledHours, disabledMinutes };
             };
-        }
+            return dis;
+        } else if (pickedDate === dateOptions[1].value) {
+            const dis: DisabledTime = () => {
+                const disabledHours = () => {
+                    // Disable hours before 9 AM and after 6 PM
+                    const hours: number[] = [];
+                    for (let i = 0; i < 24; i++) {
+                        if (i < Number(openingHour?.slice(0, 2)) || i > Number(closingHour?.slice(0, 2))) {
+                            hours.push(i);
+                        }
+                    }
+                    return hours;
+                };
 
-        if (current?.isAfter(dayjs())) {
-            return {
-                disabledHours: () => [],
-                disabledMinutes: () => [],
+                const disabledMinutes = (selectedHour: number) => {
+                    // Disable minutes when selected hour is 9 AM or 6 PM
+
+                    return [];
+                };
+                return { disabledHours, disabledMinutes };
             };
+            return dis;
+        } else {
+            return;
         }
-
-        return {
-            disabledHours: () => Array.from({ length: 24 }, (_, i) => i),
-            disabledMinutes: () => Array.from({ length: 60 }, (_, i) => i),
-        };
     };
 
     useEffect(() => {
@@ -431,6 +522,18 @@ export const Step2 = ({ formData, onBack, setFormData }: Step2Props) => {
         console.log('onOk: ', value);
     };
 
+    const onDateSelectchange = (option: Option) => {
+        console.log(option.value, option.label);
+        if (option.label === 'Hôm nay') {
+            setOperatingDay(today);
+            setPickupDate(option.value.toString());
+        } else if (option.label === 'Ngày mai') {
+            setOperatingDay(tomorrow);
+            setPickupDate(option.value.toString());
+        }
+    };
+
+    //delivery === 0 hiện form thời gian thôi, === 1 hiện thời gian với địa chỉ lấy, === 2 hiện thời gian với địa chỉ nhận, === 3 hiện thời gian và cả 2 địa chỉ lấy và nhận
     const deliveryOpt: DeliveryOption[] = [
         {
             type: DeliveryEnum.NO,
@@ -441,51 +544,75 @@ export const Step2 = ({ formData, onBack, setFormData }: Step2Props) => {
                         <Form>
                             <div className="delivery__form--time grid grid-cols-2 gap-x-6">
                                 <div className="col-span-1">
-                                    <Form.Item
-                                        validateTrigger={['onChange', 'onBlur']}
-                                        noStyle
-                                        {...rangeConfig}
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: 'Vui lòng nhập thời gian ước tính xử lý',
-                                            },
-                                        ]}
-                                    >
-                                        <DatePicker
-                                            showTime={{ format: 'HH:mm' }}
-                                            onChange={onDateChange}
-                                            disabledDate={disabledDate}
-                                            disabledTime={(selectedDate) => getDisabledTime(selectedDate)}
-                                            onOk={onDateOk}
-                                            format={customFormat}
-                                            picker={'date'}
-                                        />
-                                        {/* <TimePicker
-                                            format={format}
-                                            placeholder={'Giờ lấy đon'}
-                                            // onChange={(range) => handleTimeOnChange(day, range)}
-                                        /> */}
-                                    </Form.Item>
+                                    <Space.Compact>
+                                        <Form.Item
+                                            validateTrigger={['onChange', 'onBlur']}
+                                            noStyle
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Vui lòng nhập thời gian ước tính xử lý',
+                                                },
+                                            ]}
+                                        >
+                                            <Form.Item style={{ width: 160 }}>
+                                                <Select
+                                                    labelInValue
+                                                    options={dateOptions}
+                                                    onChange={onDateSelectchange}
+                                                    defaultValue={dateOptions[0]}
+                                                ></Select>
+                                            </Form.Item>
+                                            <Form.Item>
+                                                <TimePicker
+                                                    defaultValue={dayjs('12:08', format)}
+                                                    format={format}
+                                                    minuteStep={5}
+                                                    disabledTime={disable(dayjs(pickupDate, 'DD/MM/YYYY'))}
+                                                />
+                                            </Form.Item>
+                                            {/* <TimePicker
+                                                format={format}
+                                                placeholder={'Giờ lấy đon'}
+                                                // onChange={(range) => handleTimeOnChange(day, range)}
+                                            /> */}
+                                        </Form.Item>
+                                    </Space.Compact>
                                 </div>
                                 <div className="col-span-1">
-                                    <Form.Item
-                                        validateTrigger={['onChange', 'onBlur']}
-                                        noStyle
-                                        {...rangeConfig}
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: 'Vui lòng nhập thời gian ước tính xử lý',
-                                            },
-                                        ]}
-                                    >
-                                        <TimePicker
-                                            format={format}
-                                            placeholder={'Giờ trả đơn'}
-                                            // onChange={(range) => handleTimeOnChange(day, range)}
-                                        />
-                                    </Form.Item>
+                                    <Space.Compact>
+                                        <Form.Item
+                                            validateTrigger={['onChange', 'onBlur']}
+                                            noStyle
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Vui lòng nhập thời gian ước tính xử lý',
+                                                },
+                                            ]}
+                                        >
+                                            <Form.Item style={{ width: 160 }}>
+                                                <Select
+                                                    labelInValue
+                                                    options={dateOptions}
+                                                    onChange={onDateSelectchange}
+                                                    defaultValue={dateOptions[0]}
+                                                ></Select>
+                                            </Form.Item>
+                                            <Form.Item>
+                                                <TimePicker
+                                                    defaultValue={dayjs('12:08', format)}
+                                                    format={format}
+                                                    minuteStep={5}
+                                                />
+                                            </Form.Item>
+                                            {/* <TimePicker
+                                                format={format}
+                                                placeholder={'Giờ lấy đon'}
+                                                // onChange={(range) => handleTimeOnChange(day, range)}
+                                            /> */}
+                                        </Form.Item>
+                                    </Space.Compact>
                                 </div>
                             </div>
                             <div className="customer__input--location grid grid-cols-3 gap-x-6">
