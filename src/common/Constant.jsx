@@ -27,6 +27,7 @@ const API_DISTRICT = '/api/districts'
 const API_DISTRICT_SEARCH = '/api/districts/search'
 const API_DISTRICT_WARDS = '/api/districts/${id}/wards'
 const API_LOCATION_SEARCH = '/api/locations/search'
+const API_LOCATION_DETAILS = 'api/location/${locationId}'
 
 //CENTER REQUEST API
 const API_REQUEST = '/api/requests/centers'

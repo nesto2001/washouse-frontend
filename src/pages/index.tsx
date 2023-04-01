@@ -7,6 +7,7 @@ export { default as CheckoutConfirmPage } from './CheckoutPage/CheckoutConfirmPa
 export { default as HomePage } from './HomePage/HomePage';
 export { default as LoginPage } from './LoginPage/LoginPage';
 export { default as RegisterPage } from './RegisterPage/RegisterPage';
+export { default as ResetPasswordPage } from './ResetPasswordPage/ResetPasswordPage';
 export { default as OrderDetailsPage } from './OrderPage/OrderDetailsPage';
 export { default as OrdersPage } from './OrderPage/OrdersPage';
 export { default as CustomerProfilePage } from './CustomerPage/CustomerProfilePage';

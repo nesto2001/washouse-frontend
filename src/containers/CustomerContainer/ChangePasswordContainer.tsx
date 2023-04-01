@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import Datepicker from 'tailwind-datepicker-react';
 import WHButton from '../../components/Button';
 import Input from '../../components/Input/Input';
@@ -15,7 +16,9 @@ const ChangePasswordContainer = () => {
             <div className="col-span-2">
                 <Input type="text" name="user-fn"></Input>
             </div>
-            <div className="col-span-1 ml-6">Quên mật khẩu?</div>
+            <div className="col-span-1 ml-6">
+                <Link to="/account/reset">Quên mật khẩu?</Link>
+            </div>
 
             <div className="col-span-1 text-right mr-6">Mật khẩu mới</div>
             <div className="col-span-2">

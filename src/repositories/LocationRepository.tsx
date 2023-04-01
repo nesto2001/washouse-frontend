@@ -7,6 +7,8 @@ import { WardReponse } from '../models/WardResponse';
 import { LocationType } from '../types/LocationType';
 import { LocationResponse } from '../models/Location/LocationResponse';
 import { API_DISTRICT, API_DISTRICT_SEARCH, API_DISTRICT_WARDS, API_LOCATION_SEARCH } from '../common/Constant';
+import { LocationDetailsResponse } from '../models/Location/LocationDetailsResponse';
+import { LocationDetailsModel } from '../models/Location/LocationDetailsModel';
 
 export const getDistricts = async (): Promise<LocationModel[]> => {
     const { data } = await instance.get<Response<List<DistrictReponse>>>(API_DISTRICT, {});
@@ -51,6 +53,27 @@ export const searchLocation = async (address: string, wardId: number): Promise<L
         },
     });
     return {
+        latitude: data.data.latitude,
+        longitude: data.data.longitude,
+    };
+};
+
+export const getLocation = async (id: number): Promise<LocationDetailsModel> => {
+    const { data } = await instance.get<Response<LocationDetailsResponse>>(
+        API_LOCATION_SEARCH.replace('${locationId}', id.toString()),
+        {},
+    );
+    return {
+        id: data.data.id,
+        address: data.data.addressString,
+        ward: {
+            id: data.data.ward.wardId,
+            name: data.data.ward.wardName,
+            district: {
+                id: data.data.ward.district.districtId,
+                name: data.data.ward.district.districtName,
+            },
+        },
         latitude: data.data.latitude,
         longitude: data.data.longitude,
     };

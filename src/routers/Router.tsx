@@ -30,6 +30,7 @@ import {
     StaffCustomerPage,
     AdminDashboardPage,
     AdminCenterPage,
+    ResetPasswordPage,
 } from '../pages/';
 
 interface RouteProps {
@@ -105,6 +106,11 @@ const publicRoutes: Array<RouteProps> = [
         path: '/user/account/password',
         layout: CustomerSidebarLayout,
         component: CustomerPasswordPage,
+    },
+    {
+        path: '/account/reset',
+        layout: BlankCenteredLayout,
+        component: ResetPasswordPage,
     },
     {
         path: '/user/order',
