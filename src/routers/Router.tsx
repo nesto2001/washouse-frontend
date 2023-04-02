@@ -6,7 +6,7 @@ import {
     CustomerSidebarLayout,
     ManagerDashboardLayout,
     AdminDashboardLayout,
-} from '../components/Layouts/';
+} from '../Layouts';
 import {
     CartPage,
     CenterPage,

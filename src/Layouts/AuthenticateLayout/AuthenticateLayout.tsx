@@ -1,5 +1,5 @@
-import LoginBanner from '../../../assets/images/login-banner.png';
-import Background from '../../../assets/images/vector-bg-1.png';
+import LoginBanner from '../../assets/images/login-banner.png';
+import Background from '../../assets/images/vector-bg-1.png';
 
 type Props = {
     children?: JSX.Element;

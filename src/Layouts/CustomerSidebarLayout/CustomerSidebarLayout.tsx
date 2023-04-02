@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import Footer from '../../Footer';
-import Navbar from '../../Header';
-import UserSidebar from '../../Sidebar/UserSidebar';
+import Footer from '../../components/Footer';
+import Navbar from '../../components/Header';
+import UserSidebar from '../../components/Sidebar/UserSidebar';
 
 type Props = {
     children?: JSX.Element;

@@ -2,18 +2,26 @@
     position: relative;
     &::after {
         content: '';
+        overflow-y: scroll;
+        padding-right: 17px;
         display: block;
         width: 300%;
         max-width: 896px;
-        position: absolute;
+        position: fixed;
         top: 0;
         bottom: 0;
         background: var(--washouse-light-gray);
-        z-index: -1;
-        left: 0;
+        z-index: -10;
+        right: 0;
+        transform: translateX(calc(-50% + 464px));
         background-position: left top;
         box-shadow: 1px 0 0 #e1e1e1 inset;
+        border-left: 1px solid var(--washouse-placeholder-gray);
     }
+}
+
+.checkoutsite__wrapper::-webkit-scrollbar {
+    width: 0px;
 }
 
 .ant-collapse-expand-icon {
@@ -21,6 +29,5 @@
 }
 
 .ant-collapse-header {
-    
     padding: 24px 20px !important;
 }

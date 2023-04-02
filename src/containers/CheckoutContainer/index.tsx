@@ -7,13 +7,13 @@ import './CheckoutContainer.scss';
 import { FaPhoneAlt, FaRegClock } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { RootState } from '../../store/CartStore';
-import { Step1, Step2 } from './CheckoutFormContainer';
-import { CheckoutFormData } from '../../types/FormData/CheckoutFormData';
-import { formatCurrency } from '../../utils/FormatUtils';
 import { CenterModel } from '../../models/Center/CenterModel';
 import { getCenterBrief } from '../../repositories/CenterRepository';
-import { compareTime, getToday } from '../../utils/TimeUtils';
+import { RootState } from '../../store/CartStore';
+import { CheckoutFormData } from '../../types/FormData/CheckoutFormData';
+import { formatCurrency } from '../../utils/FormatUtils';
+import { getToday } from '../../utils/TimeUtils';
+import { Step1, Step2 } from './CheckoutFormContainer';
 
 type Props = {};
 
@@ -80,7 +80,7 @@ const CheckoutContainer = (props: Props) => {
     };
 
     return (
-        <div className="checkoutsite__wrapper flex justify-between h-screen container mx-auto text-sub">
+        <div className="checkoutsite__wrapper flex justify-between h-screen container mx-auto text-sub relative">
             <div className="checkout__main basis-[55%] pt-16 pr-16">
                 <div className="washouse-logo -mb-4">
                     <Link to="/">
@@ -112,8 +112,8 @@ const CheckoutContainer = (props: Props) => {
                     />
                 )}
             </div>
-            <div className="checkout__sidebar basis-[45%] border-l border-ws-gray text-left px-6 pt-6">
-                <div className="checkout__center">
+            <div className="checkout__sidebar basis-[45%] text-left px-6 pt-6 relative">
+                <div className="checkout__center fixed">
                     <h2 className="font-bold text-xl">Trung tâm</h2>
                     <div className="checkout__center--details flex mt-3 mb-6">
                         <div className="checkout__center--thumbnail md:w-[200px] md:h-[145px] rounded-2xl overflow-hidden">

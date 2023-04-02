@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
-import { DefaultLayout } from './components/Layouts';
+import { DefaultLayout } from './Layouts';
 import { publicRoutes } from './routers/Router';
 import { Provider } from 'react-redux';
 import CartStore from './store/CartStore';

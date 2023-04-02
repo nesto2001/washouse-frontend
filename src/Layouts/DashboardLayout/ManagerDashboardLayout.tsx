@@ -10,14 +10,14 @@ import {
     UserOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu, theme } from 'antd';
+import clsx from 'clsx';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Logo from '../../../assets//images/washouse-notag.png';
-import LogoSmall from '../../../assets/images/washouse-notext.png';
-import UserPlaceholder from '../../../assets/images/user-placeholder.png';
+import Logo from '../../assets//images/washouse-notag.png';
+import UserPlaceholder from '../../assets/images/user-placeholder.png';
+import LogoSmall from '../../assets/images/washouse-notext.png';
+import DropdownMenu from '../../components/Dropdown/DropdownMenu';
 import style from './DashboardLayout.module.scss';
-import clsx from 'clsx';
-import DropdownMenu from '../../Dropdown/DropdownMenu';
 
 type Props = {
     children?: JSX.Element;

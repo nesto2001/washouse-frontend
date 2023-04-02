@@ -1,23 +1,20 @@
 import {
     CalendarOutlined,
     CarOutlined,
-    HeartOutlined,
     LineChartOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
-    ShopOutlined,
     SolutionOutlined,
-    UserOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu, MenuProps, theme } from 'antd';
-import React, { useState, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import Logo from '../../../assets//images/washouse-notag.png';
-import LogoSmall from '../../../assets/images/washouse-notext.png';
-import UserPlaceholder from '../../../assets/images/user-placeholder.png';
-import style from './DashboardLayout.module.scss';
 import clsx from 'clsx';
-import DropdownMenu from '../../Dropdown/DropdownMenu';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Logo from '../../assets//images/washouse-notag.png';
+import UserPlaceholder from '../../assets/images/user-placeholder.png';
+import LogoSmall from '../../assets/images/washouse-notext.png';
+import DropdownMenu from '../../components/Dropdown/DropdownMenu';
+import style from './DashboardLayout.module.scss';
 
 type Props = {
     children?: JSX.Element;

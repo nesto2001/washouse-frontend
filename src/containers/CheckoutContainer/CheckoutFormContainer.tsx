@@ -1,37 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import WHButton from '../../components/Button';
-import FormRadioDelivery from '../../components/RadioButton/FormRadioDelivery';
-import FormRadioPayment from '../../components/RadioButton/FormRadioPayment';
-import Selectbox from '../../components/Selectbox';
-import { DeliveryOption } from '../../types/DeliveryOption';
-import { DeliveryEnum } from '../../types/enum/DeliveryEnum';
-import { PaymentEnum } from '../../types/enum/PaymentEnum';
-import { CheckoutFormData } from '../../types/FormData/CheckoutFormData';
-import { Option } from '../../types/Options';
-import '../../components/Button/Button.scss';
-import './CheckoutContainer.scss';
-import Input from '../../components/Input/Input';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import {
     Collapse,
-    DatePicker,
     DatePickerProps,
     Form,
     Radio,
     RadioChangeEvent,
     Select,
     Space,
+    Switch,
     TimePicker,
     Tooltip,
 } from 'antd';
-import { QuestionCircleOutlined, DownOutlined } from '@ant-design/icons';
-import { LocationModel } from '../../models/LocationModel';
-import { getDistricts, getWards } from '../../repositories/LocationRepository';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import WHButton from '../../components/Button';
+import '../../components/Button/Button.scss';
+import Input from '../../components/Input/Input';
+import Selectbox from '../../components/Selectbox';
+import { LocationModel } from '../../models/LocationModel';
+import { getDistricts, getWards } from '../../repositories/LocationRepository';
+import { DeliveryOption } from '../../types/DeliveryOption';
+import { CheckoutFormData } from '../../types/FormData/CheckoutFormData';
 import { OperatingDay } from '../../types/OperatingDay';
+import { Option } from '../../types/Options';
+import { DeliveryEnum } from '../../types/enum/DeliveryEnum';
+import { PaymentEnum } from '../../types/enum/PaymentEnum';
 import { getToday } from '../../utils/TimeUtils';
+import './CheckoutContainer.scss';
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
 
@@ -346,6 +344,8 @@ type DisabledTime = (now: dayjs.Dayjs) => {
 export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: Step2Props) => {
     const [delivery, setDelivery] = useState(0);
     const [pickupDate, setPickupDate] = useState<string>(dateOptions[0].value);
+    const [hasDropoffTime, setHasDropoffTime] = useState<boolean>(false);
+    const [hasDeliverTime, setHasDeliverTime] = useState<boolean>(false);
     const [openingHour, setOpeningHour] = useState<string>();
     const [closingHour, setClosingHour] = useState<string>();
     const [operatingDay, setOperatingDay] = useState<number>(today);
@@ -878,14 +878,14 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
         value: value,
     }));
 
-    const handlePaymentRadioChange = (e: RadioChangeEvent) => {
-        const selectedValue = parseInt(e.target.value);
-        setPaymentType(selectedValue);
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            paymentType: selectedValue,
-        }));
+    const handleDropoffSwitch = () => {
+        setHasDropoffTime(!hasDropoffTime);
     };
+
+    const handleDeliverSwitch = () => {
+        setHasDeliverTime(!hasDeliverTime);
+    };
+
     const onChange = (e: RadioChangeEvent) => {
         console.log('radio checked', e.target.value);
         setDelivery(e.target.value);
@@ -899,36 +899,39 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                         <div className="delivery__form--time grid grid-cols-2 gap-x-6">
                             <div className="col-span-1">
                                 <div className="delivery__form--header font-medium text-base mb-3">
-                                    Thời gian giao đơn{' '}
-                                    <Tooltip title="Thời gian bạn dự định sẽ mang đồ đến trung tâm">
+                                    Thời gian gửi đơn{' '}
+                                    <Tooltip title="Thời gian đồ sẽ được gửi về trung tâm">
                                         <QuestionCircleOutlined className="ml-1" />
                                     </Tooltip>
                                 </div>
-                                <Space.Compact block>
-                                    <Form.Item style={{ width: 120 }}>
-                                        <Select
-                                            labelInValue
-                                            options={dateOptions}
-                                            onChange={onDateSelectchange}
-                                            defaultValue={dateOptions[0]}
-                                        ></Select>
-                                    </Form.Item>
-                                    <Form.Item className="flex-grow">
-                                        <TimePicker
-                                            className="w-full"
-                                            format={format}
-                                            minuteStep={5}
-                                            disabledTime={disable(dayjs(pickupDate, 'DD/MM/YYYY'))}
-                                        />
-                                    </Form.Item>
-                                    {/* <TimePicker
+                                <div className="flex items-center gap-3 mb-4">
+                                    Hẹn giờ gửi: <Switch onClick={handleDropoffSwitch}></Switch>
+                                </div>
+                                {hasDropoffTime && (
+                                    <Space.Compact block>
+                                        <Form.Item style={{ width: 120 }}>
+                                            <Select
+                                                labelInValue
+                                                options={dateOptions}
+                                                onChange={onDateSelectchange}
+                                                defaultValue={dateOptions[0]}
+                                            ></Select>
+                                        </Form.Item>
+                                        <Form.Item className="flex-grow">
+                                            <TimePicker
+                                                className="w-full"
+                                                format={format}
+                                                minuteStep={5}
+                                                disabledTime={disable(dayjs(pickupDate, 'DD/MM/YYYY'))}
+                                            />
+                                        </Form.Item>
+                                        {/* <TimePicker
                                 format={format}
                                 placeholder={'Giờ lấy đon'}
                                 // onChange={(range) => handleTimeOnChange(day, range)}
                             /> */}
-                                </Space.Compact>
-                                Càng sớm càng tốt:
-                                <input type="checkbox" value="true" />
+                                    </Space.Compact>
+                                )}
                             </div>
                             <div className="col-span-1">
                                 <div className="delivery__form--header font-medium text-base mb-3">
@@ -936,7 +939,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                     <Tooltip
                                         title={
                                             <span>
-                                                Thời gian mà bạn mong muốn nhận đồ về
+                                                Thời gian mong muốn đơn hàng hoàn tất xử lý và trả về
                                                 <br />
                                                 <br />
                                                 Thời gian phải muộn hơn thời gian ước tính xử lý của đơn hàng
@@ -946,24 +949,29 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                         <QuestionCircleOutlined className="ml-1" />
                                     </Tooltip>
                                 </div>
-                                <Space.Compact block>
-                                    <Form.Item style={{ width: 120 }}>
-                                        <Select
-                                            labelInValue
-                                            options={dateOptions}
-                                            onChange={onDateSelectchange}
-                                            defaultValue={dateOptions[0]}
-                                        ></Select>
-                                    </Form.Item>
-                                    <Form.Item className="flex-grow">
-                                        <TimePicker className="w-full" format={format} minuteStep={5} />
-                                        {/* <TimePicker
+                                <div className="flex items-center gap-3 mb-4">
+                                    Hẹn giờ trả: <Switch onClick={handleDeliverSwitch}></Switch>
+                                </div>
+                                {hasDeliverTime && (
+                                    <Space.Compact block>
+                                        <Form.Item style={{ width: 120 }}>
+                                            <Select
+                                                labelInValue
+                                                options={dateOptions}
+                                                onChange={onDateSelectchange}
+                                                defaultValue={dateOptions[0]}
+                                            ></Select>
+                                        </Form.Item>
+                                        <Form.Item className="flex-grow">
+                                            <TimePicker className="w-full" format={format} minuteStep={5} />
+                                            {/* <TimePicker
                                 format={format}
                                 placeholder={'Giờ lấy đon'}
                                 // onChange={(range) => handleTimeOnChange(day, range)}
                             /> */}
-                                    </Form.Item>
-                                </Space.Compact>
+                                        </Form.Item>
+                                    </Space.Compact>
+                                )}
                             </div>
                         </div>
                     </Form>
@@ -974,34 +982,39 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                         <div className="delivery__form--time grid grid-cols-2 gap-x-6">
                             <div className="col-span-1">
                                 <div className="delivery__form--header font-medium text-base mb-3">
-                                    Thời gian giao đơn{' '}
-                                    <Tooltip title="Thời gian bạn dự định sẽ mang đồ đến trung tâm">
+                                    Thời gian gửi đơn{' '}
+                                    <Tooltip title="Thời gian đồ sẽ được gửi về trung tâm">
                                         <QuestionCircleOutlined className="ml-1" />
                                     </Tooltip>
                                 </div>
-                                <Space.Compact block>
-                                    <Form.Item style={{ width: 120 }}>
-                                        <Select
-                                            labelInValue
-                                            options={dateOptions}
-                                            onChange={onDateSelectchange}
-                                            defaultValue={dateOptions[0]}
-                                        ></Select>
-                                    </Form.Item>
-                                    <Form.Item className="flex-grow">
-                                        <TimePicker
-                                            className="w-full"
-                                            format={format}
-                                            minuteStep={5}
-                                            disabledTime={disable(dayjs(pickupDate, 'DD/MM/YYYY'))}
-                                        />
-                                    </Form.Item>
-                                    {/* <TimePicker
+                                <div className="flex items-center gap-3 mb-4">
+                                    Hẹn giờ gửi: <Switch onClick={handleDropoffSwitch}></Switch>
+                                </div>
+                                {hasDropoffTime && (
+                                    <Space.Compact block>
+                                        <Form.Item style={{ width: 120 }}>
+                                            <Select
+                                                labelInValue
+                                                options={dateOptions}
+                                                onChange={onDateSelectchange}
+                                                defaultValue={dateOptions[0]}
+                                            ></Select>
+                                        </Form.Item>
+                                        <Form.Item className="flex-grow">
+                                            <TimePicker
+                                                className="w-full"
+                                                format={format}
+                                                minuteStep={5}
+                                                disabledTime={disable(dayjs(pickupDate, 'DD/MM/YYYY'))}
+                                            />
+                                        </Form.Item>
+                                        {/* <TimePicker
                                 format={format}
                                 placeholder={'Giờ lấy đon'}
                                 // onChange={(range) => handleTimeOnChange(day, range)}
                             /> */}
-                                </Space.Compact>
+                                    </Space.Compact>
+                                )}
                             </div>
                             <div className="col-span-1">
                                 <div className="delivery__form--header font-medium text-base mb-3">
@@ -1009,7 +1022,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                     <Tooltip
                                         title={
                                             <span>
-                                                Thời gian mà bạn mong muốn nhận đồ về
+                                                Thời gian mong muốn đơn hàng hoàn tất xử lý và trả về
                                                 <br />
                                                 <br />
                                                 Thời gian phải muộn hơn thời gian ước tính xử lý của đơn hàng
@@ -1019,24 +1032,29 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                         <QuestionCircleOutlined className="ml-1" />
                                     </Tooltip>
                                 </div>
-                                <Space.Compact block>
-                                    <Form.Item style={{ width: 120 }}>
-                                        <Select
-                                            labelInValue
-                                            options={dateOptions}
-                                            onChange={onDateSelectchange}
-                                            defaultValue={dateOptions[0]}
-                                        ></Select>
-                                    </Form.Item>
-                                    <Form.Item className="flex-grow">
-                                        <TimePicker className="w-full" format={format} minuteStep={5} />
-                                        {/* <TimePicker
+                                <div className="flex items-center gap-3 mb-4">
+                                    Hẹn giờ trả: <Switch onClick={handleDeliverSwitch}></Switch>
+                                </div>
+                                {hasDeliverTime && (
+                                    <Space.Compact block>
+                                        <Form.Item style={{ width: 120 }}>
+                                            <Select
+                                                labelInValue
+                                                options={dateOptions}
+                                                onChange={onDateSelectchange}
+                                                defaultValue={dateOptions[0]}
+                                            ></Select>
+                                        </Form.Item>
+                                        <Form.Item className="flex-grow">
+                                            <TimePicker className="w-full" format={format} minuteStep={5} />
+                                            {/* <TimePicker
                                 format={format}
                                 placeholder={'Giờ lấy đon'}
                                 // onChange={(range) => handleTimeOnChange(day, range)}
                             /> */}
-                                    </Form.Item>
-                                </Space.Compact>
+                                        </Form.Item>
+                                    </Space.Compact>
+                                )}
                             </div>
                         </div>
                         <div className="customer__input--location grid grid-cols-3 gap-x-6">
@@ -1168,34 +1186,39 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                         <div className="delivery__form--time grid grid-cols-2 gap-x-6">
                             <div className="col-span-1">
                                 <div className="delivery__form--header font-medium text-base mb-3">
-                                    Thời gian giao đơn{' '}
-                                    <Tooltip title="Thời gian bạn dự định sẽ mang đồ đến trung tâm">
+                                    Thời gian gửi đơn{' '}
+                                    <Tooltip title="Thời gian đồ sẽ được gửi về trung tâm">
                                         <QuestionCircleOutlined className="ml-1" />
                                     </Tooltip>
                                 </div>
-                                <Space.Compact block>
-                                    <Form.Item style={{ width: 120 }}>
-                                        <Select
-                                            labelInValue
-                                            options={dateOptions}
-                                            onChange={onDateSelectchange}
-                                            defaultValue={dateOptions[0]}
-                                        ></Select>
-                                    </Form.Item>
-                                    <Form.Item className="flex-grow">
-                                        <TimePicker
-                                            className="w-full"
-                                            format={format}
-                                            minuteStep={5}
-                                            disabledTime={disable(dayjs(pickupDate, 'DD/MM/YYYY'))}
-                                        />
-                                    </Form.Item>
-                                    {/* <TimePicker
+                                <div className="flex items-center gap-3 mb-4">
+                                    Hẹn giờ gửi: <Switch onClick={handleDropoffSwitch}></Switch>
+                                </div>
+                                {hasDropoffTime && (
+                                    <Space.Compact block>
+                                        <Form.Item style={{ width: 120 }}>
+                                            <Select
+                                                labelInValue
+                                                options={dateOptions}
+                                                onChange={onDateSelectchange}
+                                                defaultValue={dateOptions[0]}
+                                            ></Select>
+                                        </Form.Item>
+                                        <Form.Item className="flex-grow">
+                                            <TimePicker
+                                                className="w-full"
+                                                format={format}
+                                                minuteStep={5}
+                                                disabledTime={disable(dayjs(pickupDate, 'DD/MM/YYYY'))}
+                                            />
+                                        </Form.Item>
+                                        {/* <TimePicker
                                 format={format}
                                 placeholder={'Giờ lấy đon'}
                                 // onChange={(range) => handleTimeOnChange(day, range)}
                             /> */}
-                                </Space.Compact>
+                                    </Space.Compact>
+                                )}
                             </div>
                             <div className="col-span-1">
                                 <div className="delivery__form--header font-medium text-base mb-3">
@@ -1203,7 +1226,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                     <Tooltip
                                         title={
                                             <span>
-                                                Thời gian mà bạn mong muốn nhận đồ về
+                                                Thời gian mong muốn đơn hàng hoàn tất xử lý và trả về
                                                 <br />
                                                 <br />
                                                 Thời gian phải muộn hơn thời gian ước tính xử lý của đơn hàng
@@ -1213,24 +1236,29 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                         <QuestionCircleOutlined className="ml-1" />
                                     </Tooltip>
                                 </div>
-                                <Space.Compact block>
-                                    <Form.Item style={{ width: 120 }}>
-                                        <Select
-                                            labelInValue
-                                            options={dateOptions}
-                                            onChange={onDateSelectchange}
-                                            defaultValue={dateOptions[0]}
-                                        ></Select>
-                                    </Form.Item>
-                                    <Form.Item className="flex-grow">
-                                        <TimePicker className="w-full" format={format} minuteStep={5} />
-                                        {/* <TimePicker
+                                <div className="flex items-center gap-3 mb-4">
+                                    Hẹn giờ trả: <Switch onClick={handleDeliverSwitch}></Switch>
+                                </div>
+                                {hasDeliverTime && (
+                                    <Space.Compact block>
+                                        <Form.Item style={{ width: 120 }}>
+                                            <Select
+                                                labelInValue
+                                                options={dateOptions}
+                                                onChange={onDateSelectchange}
+                                                defaultValue={dateOptions[0]}
+                                            ></Select>
+                                        </Form.Item>
+                                        <Form.Item className="flex-grow">
+                                            <TimePicker className="w-full" format={format} minuteStep={5} />
+                                            {/* <TimePicker
                                 format={format}
                                 placeholder={'Giờ lấy đon'}
                                 // onChange={(range) => handleTimeOnChange(day, range)}
                             /> */}
-                                    </Form.Item>
-                                </Space.Compact>
+                                        </Form.Item>
+                                    </Space.Compact>
+                                )}
                             </div>
                         </div>
                         <div className="customer__input--location grid grid-cols-3 gap-x-6">
@@ -1362,34 +1390,39 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                         <div className="delivery__form--time grid grid-cols-2 gap-x-6">
                             <div className="col-span-1">
                                 <div className="delivery__form--header font-medium text-base mb-3">
-                                    Thời gian giao đơn{' '}
-                                    <Tooltip title="Thời gian bạn dự định sẽ mang đồ đến trung tâm">
+                                    Thời gian gửi đơn{' '}
+                                    <Tooltip title="Thời gian đồ sẽ được gửi về trung tâm">
                                         <QuestionCircleOutlined className="ml-1" />
                                     </Tooltip>
                                 </div>
-                                <Space.Compact block>
-                                    <Form.Item style={{ width: 120 }}>
-                                        <Select
-                                            labelInValue
-                                            options={dateOptions}
-                                            onChange={onDateSelectchange}
-                                            defaultValue={dateOptions[0]}
-                                        ></Select>
-                                    </Form.Item>
-                                    <Form.Item className="flex-grow">
-                                        <TimePicker
-                                            className="w-full"
-                                            format={format}
-                                            minuteStep={5}
-                                            disabledTime={disable(dayjs(pickupDate, 'DD/MM/YYYY'))}
-                                        />
-                                    </Form.Item>
-                                    {/* <TimePicker
+                                <div className="flex items-center gap-3 mb-4">
+                                    Hẹn giờ gửi: <Switch onClick={handleDropoffSwitch}></Switch>
+                                </div>
+                                {hasDropoffTime && (
+                                    <Space.Compact block>
+                                        <Form.Item style={{ width: 120 }}>
+                                            <Select
+                                                labelInValue
+                                                options={dateOptions}
+                                                onChange={onDateSelectchange}
+                                                defaultValue={dateOptions[0]}
+                                            ></Select>
+                                        </Form.Item>
+                                        <Form.Item className="flex-grow">
+                                            <TimePicker
+                                                className="w-full"
+                                                format={format}
+                                                minuteStep={5}
+                                                disabledTime={disable(dayjs(pickupDate, 'DD/MM/YYYY'))}
+                                            />
+                                        </Form.Item>
+                                        {/* <TimePicker
                                 format={format}
                                 placeholder={'Giờ lấy đon'}
                                 // onChange={(range) => handleTimeOnChange(day, range)}
                             /> */}
-                                </Space.Compact>
+                                    </Space.Compact>
+                                )}
                             </div>
                             <div className="col-span-1">
                                 <div className="delivery__form--header font-medium text-base mb-3">
@@ -1397,7 +1430,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                     <Tooltip
                                         title={
                                             <span>
-                                                Thời gian mà bạn mong muốn nhận đồ về
+                                                Thời gian mong muốn đơn hàng hoàn tất xử lý và trả về
                                                 <br />
                                                 <br />
                                                 Thời gian phải muộn hơn thời gian ước tính xử lý của đơn hàng
@@ -1407,24 +1440,29 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                         <QuestionCircleOutlined className="ml-1" />
                                     </Tooltip>
                                 </div>
-                                <Space.Compact block>
-                                    <Form.Item style={{ width: 120 }}>
-                                        <Select
-                                            labelInValue
-                                            options={dateOptions}
-                                            onChange={onDateSelectchange}
-                                            defaultValue={dateOptions[0]}
-                                        ></Select>
-                                    </Form.Item>
-                                    <Form.Item className="flex-grow">
-                                        <TimePicker className="w-full" format={format} minuteStep={5} />
-                                        {/* <TimePicker
+                                <div className="flex items-center gap-3 mb-4">
+                                    Hẹn giờ trả: <Switch onClick={handleDeliverSwitch}></Switch>
+                                </div>
+                                {hasDeliverTime && (
+                                    <Space.Compact block>
+                                        <Form.Item style={{ width: 120 }}>
+                                            <Select
+                                                labelInValue
+                                                options={dateOptions}
+                                                onChange={onDateSelectchange}
+                                                defaultValue={dateOptions[0]}
+                                            ></Select>
+                                        </Form.Item>
+                                        <Form.Item className="flex-grow">
+                                            <TimePicker className="w-full" format={format} minuteStep={5} />
+                                            {/* <TimePicker
                                 format={format}
                                 placeholder={'Giờ lấy đon'}
                                 // onChange={(range) => handleTimeOnChange(day, range)}
                             /> */}
-                                    </Form.Item>
-                                </Space.Compact>
+                                        </Form.Item>
+                                    </Space.Compact>
+                                )}
                             </div>
                         </div>
                         <div className="customer__input--location grid grid-cols-3 gap-x-6">
@@ -1716,7 +1754,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                     ))}
                 </Radio.Group>
             </div> */}
-            <div className="checkout__customer--action flex justify-between mt-9 items-center">
+            <div className="checkout__customer--action flex justify-between mt-9 pb-12 items-center">
                 <div className="font-bold cursor-pointer" onClick={handleBack}>
                     Quay lại
                 </div>

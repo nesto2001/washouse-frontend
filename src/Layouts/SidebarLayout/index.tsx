@@ -1,7 +1,5 @@
-import React from 'react';
-import Footer from '../../Footer';
-import Navbar from '../../Header';
-import Sidebar from '../../Sidebar';
+import Footer from '../../components/Footer';
+import Navbar from '../../components/Header';
 
 type Props = {
     children?: JSX.Element;

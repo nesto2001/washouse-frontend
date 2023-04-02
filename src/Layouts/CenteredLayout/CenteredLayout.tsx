@@ -1,5 +1,5 @@
-import Footer from '../../Footer';
-import Navbar from '../../Header';
+import Footer from '../../components/Footer';
+import Navbar from '../../components/Header';
 
 type Props = {
     children?: JSX.Element;

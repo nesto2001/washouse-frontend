@@ -1,6 +1,6 @@
 import React from 'react';
-import Navbar from '../../Header';
-import Footer from '../../Footer';
+import Navbar from '../../components/Header';
+import Footer from '../../components/Footer';
 
 import './DefaultLayout.scss';
 type Props = {
