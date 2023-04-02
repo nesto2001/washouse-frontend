@@ -928,7 +928,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                             /> */}
                                 </Space.Compact>
                                 Càng sớm càng tốt:
-                                <input type="checkbox" value="abc" />
+                                <input type="checkbox" value="true" />
                             </div>
                             <div className="col-span-1">
                                 <div className="delivery__form--header font-medium text-base mb-3">
