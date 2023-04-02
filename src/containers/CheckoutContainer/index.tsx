@@ -13,7 +13,9 @@ import { RootState } from '../../store/CartStore';
 import { CheckoutFormData } from '../../types/FormData/CheckoutFormData';
 import { formatCurrency } from '../../utils/FormatUtils';
 import { getToday } from '../../utils/TimeUtils';
-import { Step1, Step2 } from './CheckoutFormContainer';
+import { Step1, Step2, Step3 } from './CheckoutFormContainer';
+import { createOrder, getEstimateTime } from '../../repositories/OrderRepository';
+import { CreateOrderRequest } from '../../models/Order/CreateOrderRequest';
 
 type Props = {};
 
@@ -26,7 +28,9 @@ const CheckoutContainer = (props: Props) => {
 
     const [center, setCenter] = useState<CenterModel>();
 
-    const [step, setStep] = useState<number>(2);
+    const [totalEst, setTotalEst] = useState<number>(0);
+
+    const [step, setStep] = useState<number>(1);
 
     const [formData, setFormData] = useState<CheckoutFormData>({
         fullname: '',
@@ -36,11 +40,12 @@ const CheckoutContainer = (props: Props) => {
         wardId: 0,
         email: '',
         phone: '',
-        delivery: {
-            type: 1,
-            freight: 0,
-        },
+        preferredDropoffTime: '',
+        preferredDeliverTime: '',
+        deliveryType: 0,
+        deliveryPrice: 0,
         paymentType: 1,
+        deliveryInfo: [],
     });
 
     const [discount, setDiscount] = useState<number>(0);
@@ -74,9 +79,55 @@ const CheckoutContainer = (props: Props) => {
         setStep(step - 1);
     };
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    useEffect(() => {
+        const fetchData = async () => {
+            return await getEstimateTime(cartItems);
+        };
+        fetchData().then((res) => {
+            setTotalEst(res.estimated);
+        });
+    }, [cartItems]);
+
+    const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
-        navigate('/cart/checkout/confirm');
+        if (center) {
+            const CreateOrderData: CreateOrderRequest = {
+                centerId: center.id,
+                order: {
+                    customerName: formData.fullname,
+                    customerAddressString: formData.address,
+                    customerEmail: formData.email,
+                    customerMessage: '',
+                    customerMobile: formData.phone,
+                    customerWardId: formData.wardId,
+                    deliveryPrice: formData.deliveryPrice,
+                    deliveryType: formData.deliveryType,
+                    preferredDeliverTime: formData.preferredDeliverTime,
+                    preferredDropoffTime: formData.preferredDropoffTime,
+                },
+                deliveries: [],
+                orderDetails: cartItems.map((item) => {
+                    return {
+                        serviceId: item.id,
+                        measurement: item.quantity && item.quantity > 0 ? item.quantity : item.weight ?? 0,
+                        price: item.price ?? 0,
+                        customerNote: '',
+                    };
+                }),
+                paymentMethod: 0,
+            };
+            console.log(CreateOrderData);
+            const placeOrder = async () => {
+                return await createOrder(CreateOrderData);
+            };
+            placeOrder()
+                .then((res) => {
+                    console.log(res);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
     };
 
     return (
@@ -105,11 +156,15 @@ const CheckoutContainer = (props: Props) => {
                 {step === 1 && center && <Step1 onNext={handleNext} formData={formData} setFormData={setFormData} />}
                 {step === 2 && center && (
                     <Step2
+                        onNext={handleNext}
                         setFormData={setFormData}
                         onBack={handleBack}
                         formData={formData}
                         centerOperatingDays={center.centerOperatingHours}
                     />
+                )}
+                {step === 3 && center && (
+                    <Step3 setFormData={setFormData} onBack={handleBack} formData={formData} onSubmit={handleSubmit} />
                 )}
             </div>
             <div className="checkout__sidebar basis-[45%] text-left px-6 pt-6 relative">
@@ -149,6 +204,7 @@ const CheckoutContainer = (props: Props) => {
                     <hr className="border-wh-gray" />
                     <div className="checkout__order py-6">
                         <h2 className="font-bold text-xl">Chi tiết đơn hàng</h2>
+                        <div className="">Ước tính xử lý đơn hàng: {totalEst}'</div>
                         <div className="checkout__order--details mt-5">
                             {cartItems &&
                                 cartItems.map((item, index) => (
@@ -157,7 +213,7 @@ const CheckoutContainer = (props: Props) => {
                                         className="checkout__order--item py-3 flex gap-4 border-b border-wh-gray"
                                     >
                                         <div className="checkout__order--item order__item--thumb flex-shrink rounded-2xl overflow-hidden">
-                                            <img className="max-h-[120px]" src={Placeholder} alt="" />
+                                            <img className="max-h-[120px]" src={item.thumbnail ?? Placeholder} alt="" />
                                         </div>
                                         <div className="checkout__order--item order__item--info flex flex-col">
                                             <input type="hidden" value={item.id} name="cart__item-id" />
@@ -165,7 +221,7 @@ const CheckoutContainer = (props: Props) => {
                                             <h4 className="text-sm flex-grow mt-2">
                                                 Chi tiết:{' '}
                                                 {item.quantity && item.quantity > 0 ? item.quantity : item.weight}{' '}
-                                                {item.unit === 'kg' ?? ''}
+                                                {item.unit === 'kg' ? 'kg' : ''}
                                             </h4>
                                             <h4 className="text-2xl font-bold mb-1">
                                                 {formatCurrency(item.price ?? 0)}

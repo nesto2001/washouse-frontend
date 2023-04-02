@@ -221,13 +221,13 @@ const Navbar = () => {
                 ) : (
                     <div className="guest__action flex gap-5">
                         <div className="guest__action--signup">
-                            <Button type="primary" link="/register">
-                                <div className="px-3 py-2">Đăng ký</div>
+                            <Button type="primary" link="/register" size="small">
+                                Đăng ký
                             </Button>
                         </div>
                         <div className="guest__action--login">
-                            <Button type="sub" link="/login">
-                                <div className="px-3 py-2">Đăng nhập</div>
+                            <Button type="sub" link="/login" size="small">
+                                Đăng nhập
                             </Button>
                         </div>
                     </div>

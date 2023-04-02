@@ -47,7 +47,7 @@ const HomePage = () => {
                             </div>
                             <div className="hero__content--action mt-10">
                                 <WHButton type="primary" uppercase fontSize="24px" link="/trung-tâm">
-                                    <div className="px-6 py-3">Đặt dịch vụ ngay</div>
+                                    Đặt dịch vụ ngay
                                 </WHButton>
                             </div>
                         </div>

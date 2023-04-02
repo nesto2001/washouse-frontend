@@ -3,7 +3,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 const instance = axios.create({
     baseURL: BASE_URL,
-    timeout: 3500,
+    timeout: 15000,
     headers: {
         Accept: 'application/json',
     },

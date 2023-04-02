@@ -113,6 +113,10 @@ input:focus {
     color: var(--washouse-primary-blue);
 }
 
+a {
+    font-family: 'Roboto' !important;
+}
+
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;

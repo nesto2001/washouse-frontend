@@ -32,7 +32,7 @@ const FormRadioPayment = ({ optionsList, name, selectedValue, onChange }: Props)
                             <span className="form-radio-label text-md">
                                 {option.value === PaymentEnum.COD
                                     ? 'Thanh toán khi nhận hàng (COD)'
-                                    : option.value === PaymentEnum.MOMO
+                                    : option.value === PaymentEnum.VnPay
                                     ? 'Ví điện tử Momo'
                                     : ''}
                             </span>

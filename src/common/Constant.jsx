@@ -35,7 +35,13 @@ const API_REQUEST_DETAILS = '/api/requests/centers/${id}'
 const API_REQUEST_APPROVE = '/api/requests/centers/${id}/approve'
 const API_REQUEST_REJECT = '/api/requests/centers/${id}/reject'
 
+//ORDER API
+const API_ORDER_EST = '/api/orders/estimated-time'
+const API_ORDER_CREATE = '/api/orders'
+
 export {
+    API_ORDER_CREATE,
+    API_ORDER_EST,
     API_REQUEST_REJECT,
     API_REQUEST_APPROVE,
     API_REQUEST_DETAILS,

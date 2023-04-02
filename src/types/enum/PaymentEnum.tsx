@@ -1,4 +1,4 @@
 export enum PaymentEnum {
-    COD = '1',
-    MOMO = '2',
+    COD = '0',
+    VnPay = '1',
 }

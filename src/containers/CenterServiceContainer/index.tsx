@@ -230,7 +230,7 @@ const CenterServiceContainer = (props: Props) => {
                     <div className="service__details--main flex">
                         <div className="service__details--thumbnail basis-5/12">
                             <div className="service__thumbnail--main">
-                                <img src={Placeholder} alt="" />
+                                <img className="w-full" src={service.image ?? Placeholder} alt="" />
                             </div>
                             <div className="service__thumbnail--gallery flex gap-3 mt-3">
                                 <div className="gallery__image-1">
@@ -288,10 +288,10 @@ const CenterServiceContainer = (props: Props) => {
                                 </div>
                                 <div className="service__actiongroup mt-6 flex justify-between">
                                     <WHButton type="sub" minWidth="180px" form="addcartForm" onClick={handleAddToCart}>
-                                        <div className="px-6 py-3">Thêm vào giỏ</div>
+                                        Thêm vào giỏ
                                     </WHButton>
                                     <WHButton type="primary" minWidth="180px">
-                                        <div className="px-6 py-3">Đặt dịch vụ</div>
+                                        Đặt dịch vụ
                                     </WHButton>
                                 </div>
                             </form>

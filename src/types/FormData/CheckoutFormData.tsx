@@ -1,3 +1,5 @@
+import { DeliveryFormData } from './DeliveryFormData';
+
 export type CheckoutFormData = {
     fullname: string;
     address: string;
@@ -6,9 +8,11 @@ export type CheckoutFormData = {
     wardId: number;
     email: string;
     phone: string;
-    delivery: {
-        type: number;
-        freight: number;
-    };
+    deliveryType: number;
+    deliveryPrice: number;
     paymentType: number;
+    deliveryInfo: DeliveryFormData[];
+    promoCode?: string;
+    preferredDropoffTime: string;
+    preferredDeliverTime: string;
 };

@@ -15,6 +15,7 @@ type Props = {
     style?: React.CSSProperties;
     disable?: boolean;
     className?: string;
+    size?: 'small' | 'normal' | 'large';
 };
 
 const WHButton = ({
@@ -30,6 +31,7 @@ const WHButton = ({
     style,
     disable,
     className,
+    size,
 }: Props) => {
     const btnStyle = { ...(style ?? ''), minWidth: minWidth || '164px', fontSize: fontSize || '16px' };
     return (
@@ -42,7 +44,17 @@ const WHButton = ({
                 onClick={onClick}
                 disabled={disable}
             >
-                {link ? <Link to={link}>{children}</Link> : children}
+                {link ? (
+                    <Link to={link}>
+                        <div className={size === 'small' ? 'px-3 py-2' : size === 'large' ? 'px-8 py-4' : 'px-6 py-3'}>
+                            {children}
+                        </div>
+                    </Link>
+                ) : (
+                    <div className={size === 'small' ? 'px-3 py-2' : size === 'large' ? 'px-8 py-4' : 'px-6 py-3'}>
+                        {children}
+                    </div>
+                )}
             </button>
         </>
     );

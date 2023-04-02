@@ -30,6 +30,8 @@ import { DeliveryEnum } from '../../types/enum/DeliveryEnum';
 import { PaymentEnum } from '../../types/enum/PaymentEnum';
 import { getHour, getToday } from '../../utils/TimeUtils';
 import './CheckoutContainer.scss';
+import { DeliveryFormData } from '../../types/FormData/DeliveryFormData';
+import { useForm } from 'antd/es/form/Form';
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
 
@@ -299,7 +301,7 @@ export const Step1 = ({ formData, onNext, setFormData }: Step1Props) => {
                 </div>
             </div>
             <div className="checkout__customer--action flex justify-between mt-9 items-center">
-                <Link to="/cart" className="font-bold">
+                <Link to="/cart" className="font-bold text-base">
                     Quay về giỏ hàng
                 </Link>
                 <WHButton type="primary" onClick={handleNext}>
@@ -331,6 +333,7 @@ type Step2Props = {
     onBack: () => void;
     setFormData: React.Dispatch<React.SetStateAction<CheckoutFormData>>;
     centerOperatingDays: OperatingDay[];
+    onNext: () => void;
 };
 
 const today = getToday();
@@ -341,21 +344,22 @@ type DisabledTime = (now: dayjs.Dayjs) => {
     disabledMinutes: (selectedHour: number) => number[];
 };
 
-export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: Step2Props) => {
+export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDays }: Step2Props) => {
     const [delivery, setDelivery] = useState(0);
     const [pickupDate, setPickupDate] = useState<string>(dateOptions[0].value);
+    const [deliverDate, setDeliverDate] = useState<string>(dateOptions[0].value);
     const [hasDropoffTime, setHasDropoffTime] = useState<boolean>(false);
     const [hasDeliverTime, setHasDeliverTime] = useState<boolean>(false);
     const [closingHour, setClosingHour] = useState<string | null>();
     const [openingHour, setOpeningHour] = useState<string | null>();
     const [operatingDay, setOperatingDay] = useState<number>(today);
-    const [paymentType, setPaymentType] = useState(formData.paymentType || 1);
     const [district, setDistrict] = useState(0);
     const [districtList, setDistrictList] = useState<LocationModel[]>([]);
     const [wardList, setWardList] = useState<LocationModel[]>([]);
-    const [selectedTime, setSelectedTime] = useState<dayjs.Dayjs>();
-    const { Panel } = Collapse;
-    const { Option } = Select;
+    const [selectedDropoffTime, setSelectedDropoffTime] = useState<dayjs.Dayjs>();
+    const [selectedDeliverTime, setSelectedDeliverTime] = useState<dayjs.Dayjs>();
+
+    const [form] = Form.useForm();
 
     useEffect(() => {
         if (centerOperatingDays) {
@@ -388,7 +392,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                 },
                 disabledMinutes: () => {
                     var minutes = [];
-                    var selectedHour = selectedTime?.hour();
+                    var selectedHour = selectedDropoffTime?.hour();
                     if (!selectedHour) {
                         return minuteList;
                     } else if (selectedHour === now.hour()) {
@@ -413,7 +417,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                     return hours;
                 },
                 disabledMinutes: () => {
-                    if (!selectedTime?.hour()) {
+                    if (!selectedDropoffTime?.hour()) {
                         return minuteList;
                     }
                     return [];
@@ -426,6 +430,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
         };
     };
 
+    //fetch districtlist
     useEffect(() => {
         const fetchData = async () => {
             return await getDistricts();
@@ -435,6 +440,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
         });
     }, []);
 
+    //fetch wardlist
     useEffect(() => {
         const fetchData = async () => {
             return await getWards(formData.district);
@@ -444,6 +450,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
         });
     }, []);
 
+    //set ward on district chang
     const handleSelectDistrictChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setFormData((prev) => ({ ...prev, district: parseInt(event.target.value) }));
         const fetchData = async () => {
@@ -454,14 +461,21 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
         });
     };
 
+    //set ward
     const handleSelectWardChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setFormData((prev) => ({ ...prev, wardId: parseInt(event.target.value) }));
     };
 
+    //set city
     const handleSelectCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {};
 
+    //back form
     const handleBack = () => {
         onBack();
+    };
+
+    const handleNext = () => {
+        form.submit();
     };
 
     const onDateChange = (value: DatePickerProps['value'], dateString: string) => {
@@ -483,8 +497,17 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
             setPickupDate(option.value.toString());
         }
     };
+    const onDeliverDateSelectChange = (option: Option) => {
+        console.log(option.value, option.label);
+        if (option.label === 'Hôm nay') {
+            setOperatingDay(today);
+            setDeliverDate(option.value.toString());
+        } else if (option.label === 'Ngày mai') {
+            setOperatingDay(tomorrow);
+            setDeliverDate(option.value.toString());
+        }
+    };
 
-    //delivery === 0 hiện form thời gian thôi, === 1 hiện thời gian với địa chỉ lấy, === 2 hiện thời gian với địa chỉ nhận, === 3 hiện thời gian và cả 2 địa chỉ lấy và nhận
     const deliveryOpt: DeliveryOption[] = [
         {
             type: DeliveryEnum.NO,
@@ -508,11 +531,6 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
         },
     ];
 
-    const paymentOpt: Option[] = Object.entries(PaymentEnum).map(([key, value]) => ({
-        label: key,
-        value: value,
-    }));
-
     const handleDropoffSwitch = () => {
         setHasDropoffTime(!hasDropoffTime);
     };
@@ -524,607 +542,291 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
     const onChange = (e: RadioChangeEvent) => {
         console.log('radio checked', e.target.value);
         setDelivery(e.target.value);
+        setFormData((prev) => ({ ...prev, deliveryType: delivery }));
+    };
+
+    const onFinish = (values: any) => {
+        console.log('submit');
+        console.log(values);
+        const dropoffTime: string =
+            values.dropoff?.date?.value ?? '' + '' + selectedDropoffTime?.format('HH:mm') ?? '' === undefined
+                ? '03-04-2023 10:00:00'
+                : '03-04-2023 10:00:00';
+        const deliverTime: string =
+            values.deliver?.date?.value ?? '' + '' + selectedDeliverTime?.format('HH:mm') ?? '' === undefined ? '' : '';
+        setFormData((prev) => ({
+            ...prev,
+            preferredDropoffTime: dropoffTime ?? '',
+            preferredDeliverTime: deliverTime ?? '',
+        }));
+        onNext();
+    };
+
+    const onFinishFailed = (values: any) => {
+        console.log('failed');
     };
 
     const renderDeliveryForm = () => {
         switch (delivery) {
             case 0:
-                return (
-                    <Form>
-                        <div className="delivery__form--time grid grid-cols-2 gap-x-6">
-                            <div className="col-span-1">
-                                <div className="delivery__form--header font-medium text-base mb-3">
-                                    Thời gian gửi đơn{' '}
-                                    <Tooltip title="Thời gian đồ sẽ được gửi về trung tâm">
-                                        <QuestionCircleOutlined className="ml-1" />
-                                    </Tooltip>
-                                </div>
-                                <div className="flex items-center gap-3 mb-4">
-                                    Hẹn giờ gửi: <Switch onClick={handleDropoffSwitch}></Switch>
-                                </div>
-                                {hasDropoffTime && (
-                                    <Space.Compact block>
-                                        <Form.Item style={{ width: 120 }}>
-                                            <Select
-                                                labelInValue
-                                                options={dateOptions}
-                                                onChange={onDateSelectChange}
-                                                defaultValue={dateOptions[0]}
-                                            ></Select>
-                                        </Form.Item>
-                                        <Form.Item className="flex-grow">
-                                            <TimePicker
-                                                format={format}
-                                                minuteStep={5}
-                                                disabledTime={disabledTime}
-                                                showNow={false}
-                                                onSelect={(time: dayjs.Dayjs) => {
-                                                    setSelectedTime(time);
-                                                }}
-                                            />
-                                        </Form.Item>
-                                        {/* <TimePicker
-                                format={format}
-                                placeholder={'Giờ lấy đon'}
-                                // onChange={(range) => handleTimeOnChange(day, range)}
-                            /> */}
-                                    </Space.Compact>
-                                )}
-                            </div>
-                            <div className="col-span-1">
-                                <div className="delivery__form--header font-medium text-base mb-3">
-                                    Thời gian trả đơn{' '}
-                                    <Tooltip
-                                        title={
-                                            <span>
-                                                Thời gian mong muốn đơn hàng hoàn tất xử lý và trả về
-                                                <br />
-                                                <br />
-                                                Thời gian phải muộn hơn thời gian ước tính xử lý của đơn hàng
-                                            </span>
-                                        }
-                                    >
-                                        <QuestionCircleOutlined className="ml-1" />
-                                    </Tooltip>
-                                </div>
-                                <div className="flex items-center gap-3 mb-4">
-                                    Hẹn giờ trả: <Switch onClick={handleDeliverSwitch}></Switch>
-                                </div>
-                                {hasDeliverTime && (
-                                    <Space.Compact block>
-                                        <Form.Item style={{ width: 120 }}>
-                                            <Select
-                                                labelInValue
-                                                options={dateOptions}
-                                                onChange={onDateSelectChange}
-                                                defaultValue={dateOptions[0]}
-                                            ></Select>
-                                        </Form.Item>
-                                        <Form.Item className="flex-grow">
-                                            <TimePicker className="w-full" format={format} minuteStep={5} />
-                                            {/* <TimePicker
-                                format={format}
-                                placeholder={'Giờ lấy đon'}
-                                // onChange={(range) => handleTimeOnChange(day, range)}
-                            /> */}
-                                        </Form.Item>
-                                    </Space.Compact>
-                                )}
-                            </div>
-                        </div>
-                    </Form>
-                );
+                break;
             case 1:
                 return (
-                    <Form>
-                        <div className="delivery__form--time grid grid-cols-2 gap-x-6">
-                            <div className="col-span-1">
-                                <div className="delivery__form--header font-medium text-base mb-3">
-                                    Thời gian gửi đơn{' '}
-                                    <Tooltip title="Thời gian đồ sẽ được gửi về trung tâm">
-                                        <QuestionCircleOutlined className="ml-1" />
-                                    </Tooltip>
-                                </div>
-                                <div className="flex items-center gap-3 mb-4">
-                                    Hẹn giờ gửi: <Switch onClick={handleDropoffSwitch}></Switch>
-                                </div>
-                                {hasDropoffTime && (
-                                    <Space.Compact block>
-                                        <Form.Item style={{ width: 120 }}>
-                                            <Select
-                                                labelInValue
-                                                options={dateOptions}
-                                                onChange={onDateSelectChange}
-                                                defaultValue={dateOptions[0]}
-                                            ></Select>
-                                        </Form.Item>
-                                        <Form.Item className="flex-grow">
-                                            <TimePicker
-                                                format={format}
-                                                minuteStep={5}
-                                                disabledTime={disabledTime}
-                                                showNow={false}
-                                                onSelect={(time: dayjs.Dayjs) => {
-                                                    setSelectedTime(time);
-                                                }}
-                                            />
-                                        </Form.Item>
-                                        {/* <TimePicker
-                                format={format}
-                                placeholder={'Giờ lấy đon'}
-                                // onChange={(range) => handleTimeOnChange(day, range)}
-                            /> */}
-                                    </Space.Compact>
-                                )}
-                            </div>
-                            <div className="col-span-1">
-                                <div className="delivery__form--header font-medium text-base mb-3">
-                                    Thời gian trả đơn{' '}
-                                    <Tooltip
-                                        title={
-                                            <span>
-                                                Thời gian mong muốn đơn hàng hoàn tất xử lý và trả về
-                                                <br />
-                                                <br />
-                                                Thời gian phải muộn hơn thời gian ước tính xử lý của đơn hàng
-                                            </span>
-                                        }
-                                    >
-                                        <QuestionCircleOutlined className="ml-1" />
-                                    </Tooltip>
-                                </div>
-                                <div className="flex items-center gap-3 mb-4">
-                                    Hẹn giờ trả: <Switch onClick={handleDeliverSwitch}></Switch>
-                                </div>
-                                {hasDeliverTime && (
-                                    <Space.Compact block>
-                                        <Form.Item style={{ width: 120 }}>
-                                            <Select
-                                                labelInValue
-                                                options={dateOptions}
-                                                onChange={onDateSelectChange}
-                                                defaultValue={dateOptions[0]}
-                                            ></Select>
-                                        </Form.Item>
-                                        <Form.Item className="flex-grow">
-                                            <TimePicker className="w-full" format={format} minuteStep={5} />
-                                            {/* <TimePicker
-                                format={format}
-                                placeholder={'Giờ lấy đon'}
-                                // onChange={(range) => handleTimeOnChange(day, range)}
-                            /> */}
-                                        </Form.Item>
-                                    </Space.Compact>
-                                )}
-                            </div>
+                    <div className="dropoff__address--location grid grid-cols-3 gap-x-6">
+                        <div className="delivery__form--header font-bold text-base mb-3">Địa chỉ lấy đơn</div>
+                        <div className="dropoff__address col-span-3">
+                            <Form.Item
+                                name="dropoff_address"
+                                rules={[{ required: true, message: 'Vui lòng nhập địa chỉ lấy đơn' }]}
+                                validateTrigger={['onBlur']}
+                            >
+                                <Input
+                                    label="Địa chỉ"
+                                    required
+                                    type="text"
+                                    name="dropoff_address"
+                                    placeholder="Địa chỉ"
+                                />
+                            </Form.Item>
                         </div>
-                        <div className="customer__input--location grid grid-cols-3 gap-x-6">
-                            <div className="delivery__form--header font-bold text-base mb-3">Địa chỉ lấy đơn</div>
-                            <div className="customer__input--address col-span-3">
-                                <Form.Item
-                                    name="address"
-                                    rules={[{ required: true, message: 'Vui lòng nhập địa chỉ cá nhân' }]}
-                                    validateTrigger={['onBlur']}
+                        <div className="dropoff__address--city col-span-1">
+                            <label htmlFor="dropoff_city" className="text-base font-medium block">
+                                Tỉnh / Thành{' '}
+                                <Tooltip
+                                    title="Washouse hiện tại chỉ khả dụng tại TP. Hồ Chí Minh thôi bạn nhé"
+                                    className="ml-1"
                                 >
-                                    <Input
-                                        label="Địa chỉ"
-                                        required
-                                        type="text"
-                                        name="customer_lname"
-                                        placeholder="Địa chỉ"
-                                        value={formData.address}
-                                        onChange={(e) => {
-                                            setFormData((prev) => ({
-                                                ...prev,
-                                                address: e.target.value,
-                                            }));
-                                        }}
-                                    />
-                                </Form.Item>
-                            </div>
-                            <div className="customer__input--city col-span-1">
-                                <label htmlFor="customer_city" className="text-base font-medium block">
-                                    Tỉnh / Thành{' '}
-                                    <Tooltip
-                                        title="Washouse hiện tại chỉ khả dụng tại TP. Hồ Chí Minh thôi bạn nhé"
-                                        className="ml-1"
-                                    >
-                                        <QuestionCircleOutlined />
-                                    </Tooltip>
-                                </label>
-                                <Form.Item
-                                    name="city"
-                                    rules={[{ required: true, message: 'Vui lòng chọn tỉnh / thành phố' }]}
-                                >
-                                    <Selectbox
-                                        isRequired={true}
-                                        name="customer_city"
-                                        id=""
-                                        type="tỉnh / thành phố"
-                                        className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full pointer-events-none bg-gray-100"
-                                        selectedValue={1}
-                                        options={[{ label: 'TP. Hồ Chí Minh', value: 1 }]}
-                                        onChange={handleSelectCityChange}
-                                    />
-                                </Form.Item>
-                            </div>
-                            <div className="customer__input--district col-span-1">
-                                <label htmlFor="customer_district" className="text-base font-medium block">
-                                    Quận / Huyện
-                                </label>
-                                <Form.Item
-                                    name="district"
-                                    rules={[
-                                        { required: true, message: 'Vui lòng chọn quận / huyện' },
-                                        {
-                                            validator(_, value) {
-                                                if (value === 0) {
-                                                    return Promise.reject(new Error('Vui lòng chọn quận / huyện'));
-                                                }
-                                                return Promise.resolve();
-                                            },
-                                        },
-                                    ]}
-                                >
-                                    <Selectbox
-                                        isRequired={true}
-                                        name="customer_district"
-                                        id=""
-                                        type="quận / huyện"
-                                        className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                        selectedValue={formData.district}
-                                        options={districtList.map((district): Option => {
-                                            return {
-                                                value: district.id.toString(),
-                                                label: district.name,
-                                            };
-                                        })}
-                                        onChange={handleSelectDistrictChange}
-                                    />
-                                </Form.Item>
-                            </div>
-                            <div className="customer__input--ward col-span-1">
-                                <label htmlFor="customer_ward" className="text-base font-medium block">
-                                    Phường / Xã
-                                </label>
-                                <Form.Item
-                                    name="ward"
-                                    rules={[
-                                        { required: true, message: 'Vui lòng chọn phường / xã' },
-                                        {
-                                            validator(_, value) {
-                                                if (value === 0) {
-                                                    return Promise.reject(new Error('Vui lòng chọn phường / xã'));
-                                                }
-                                                return Promise.resolve();
-                                            },
-                                        },
-                                    ]}
-                                >
-                                    <Selectbox
-                                        isRequired={true}
-                                        name="customer_ward"
-                                        id=""
-                                        type="phường / xã"
-                                        className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                        selectedValue={formData.wardId}
-                                        options={wardList.map((ward) => {
-                                            return {
-                                                value: ward.id,
-                                                label: ward.name,
-                                            };
-                                        })}
-                                        onChange={handleSelectWardChange}
-                                    />
-                                </Form.Item>
-                            </div>
+                                    <QuestionCircleOutlined />
+                                </Tooltip>
+                            </label>
+                            <Form.Item
+                                name="dropoff_city"
+                                rules={[{ required: true, message: 'Vui lòng chọn tỉnh / thành phố' }]}
+                            >
+                                <Selectbox
+                                    isRequired={true}
+                                    name="dropoff_city"
+                                    id=""
+                                    type="tỉnh / thành phố"
+                                    className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full pointer-events-none bg-gray-100"
+                                    selectedValue={1}
+                                    options={[{ label: 'TP. Hồ Chí Minh', value: 1 }]}
+                                    onChange={handleSelectCityChange}
+                                />
+                            </Form.Item>
                         </div>
-                    </Form>
+                        <div className="dropoff__address--district col-span-1">
+                            <label htmlFor="dropoff_district" className="text-base font-medium block">
+                                Quận / Huyện
+                            </label>
+                            <Form.Item
+                                name="dropoff_district"
+                                rules={[
+                                    { required: true, message: 'Vui lòng chọn quận / huyện' },
+                                    {
+                                        validator(_, value) {
+                                            if (value === 0) {
+                                                return Promise.reject(new Error('Vui lòng chọn quận / huyện'));
+                                            }
+                                            return Promise.resolve();
+                                        },
+                                    },
+                                ]}
+                            >
+                                <Selectbox
+                                    isRequired={true}
+                                    name="dropoff_district"
+                                    id=""
+                                    type="quận / huyện"
+                                    className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
+                                    selectedValue={formData.district}
+                                    options={districtList.map((district): Option => {
+                                        return {
+                                            value: district.id.toString(),
+                                            label: district.name,
+                                        };
+                                    })}
+                                    onChange={handleSelectDistrictChange}
+                                />
+                            </Form.Item>
+                        </div>
+                        <div className="dropoff__address--ward col-span-1">
+                            <label htmlFor="dropoff_ward" className="text-base font-medium block">
+                                Phường / Xã
+                            </label>
+                            <Form.Item
+                                name="ward"
+                                rules={[
+                                    { required: true, message: 'Vui lòng chọn phường / xã' },
+                                    {
+                                        validator(_, value) {
+                                            if (value === 0) {
+                                                return Promise.reject(new Error('Vui lòng chọn phường / xã'));
+                                            }
+                                            return Promise.resolve();
+                                        },
+                                    },
+                                ]}
+                            >
+                                <Selectbox
+                                    isRequired={true}
+                                    name="dropoff_ward"
+                                    id=""
+                                    type="phường / xã"
+                                    className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
+                                    selectedValue={formData.wardId}
+                                    options={wardList.map((ward) => {
+                                        return {
+                                            value: ward.id,
+                                            label: ward.name,
+                                        };
+                                    })}
+                                    onChange={handleSelectWardChange}
+                                />
+                            </Form.Item>
+                        </div>
+                    </div>
                 );
             case 2:
                 return (
-                    <Form>
-                        <div className="delivery__form--time grid grid-cols-2 gap-x-6">
-                            <div className="col-span-1">
-                                <div className="delivery__form--header font-medium text-base mb-3">
-                                    Thời gian gửi đơn{' '}
-                                    <Tooltip title="Thời gian đồ sẽ được gửi về trung tâm">
-                                        <QuestionCircleOutlined className="ml-1" />
-                                    </Tooltip>
-                                </div>
-                                <div className="flex items-center gap-3 mb-4">
-                                    Hẹn giờ gửi: <Switch onClick={handleDropoffSwitch}></Switch>
-                                </div>
-                                {hasDropoffTime && (
-                                    <Space.Compact block>
-                                        <Form.Item style={{ width: 120 }}>
-                                            <Select
-                                                labelInValue
-                                                options={dateOptions}
-                                                onChange={onDateSelectChange}
-                                                defaultValue={dateOptions[0]}
-                                            ></Select>
-                                        </Form.Item>
-                                        <Form.Item className="flex-grow">
-                                            <TimePicker
-                                                format={format}
-                                                minuteStep={5}
-                                                disabledTime={disabledTime}
-                                                showNow={false}
-                                                onSelect={(time: dayjs.Dayjs) => {
-                                                    setSelectedTime(time);
-                                                }}
-                                            />
-                                        </Form.Item>
-                                        {/* <TimePicker
-                                format={format}
-                                placeholder={'Giờ lấy đon'}
-                                // onChange={(range) => handleTimeOnChange(day, range)}
-                            /> */}
-                                    </Space.Compact>
-                                )}
-                            </div>
-                            <div className="col-span-1">
-                                <div className="delivery__form--header font-medium text-base mb-3">
-                                    Thời gian trả đơn{' '}
-                                    <Tooltip
-                                        title={
-                                            <span>
-                                                Thời gian mong muốn đơn hàng hoàn tất xử lý và trả về
-                                                <br />
-                                                <br />
-                                                Thời gian phải muộn hơn thời gian ước tính xử lý của đơn hàng
-                                            </span>
-                                        }
-                                    >
-                                        <QuestionCircleOutlined className="ml-1" />
-                                    </Tooltip>
-                                </div>
-                                <div className="flex items-center gap-3 mb-4">
-                                    Hẹn giờ trả: <Switch onClick={handleDeliverSwitch}></Switch>
-                                </div>
-                                {hasDeliverTime && (
-                                    <Space.Compact block>
-                                        <Form.Item style={{ width: 120 }}>
-                                            <Select
-                                                labelInValue
-                                                options={dateOptions}
-                                                onChange={onDateSelectChange}
-                                                defaultValue={dateOptions[0]}
-                                            ></Select>
-                                        </Form.Item>
-                                        <Form.Item className="flex-grow">
-                                            <TimePicker className="w-full" format={format} minuteStep={5} />
-                                            {/* <TimePicker
-                                format={format}
-                                placeholder={'Giờ lấy đon'}
-                                // onChange={(range) => handleTimeOnChange(day, range)}
-                            /> */}
-                                        </Form.Item>
-                                    </Space.Compact>
-                                )}
-                            </div>
+                    <div className="deliver__address--location grid grid-cols-3 gap-x-6">
+                        <div className="delivery__form--header font-bold text-base mb-3">Địa chỉ trả đơn</div>
+                        <div className="deliver__address col-span-3">
+                            <Form.Item
+                                name="deliver_address"
+                                rules={[{ required: true, message: 'Vui lòng nhập địa chỉ trả đơn' }]}
+                                validateTrigger={['onBlur']}
+                            >
+                                <Input
+                                    label="Địa chỉ"
+                                    required
+                                    type="text"
+                                    name="deliver_address"
+                                    placeholder="Địa chỉ"
+                                    value={formData.address}
+                                    onChange={(e) => {
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            address: e.target.value,
+                                        }));
+                                    }}
+                                />
+                            </Form.Item>
                         </div>
-                        <div className="customer__input--location grid grid-cols-3 gap-x-6">
-                            <div className="delivery__form--header font-bold text-base mb-3">Địa chỉ trả đơn</div>
-                            <div className="customer__input--address col-span-3">
-                                <Form.Item
-                                    name="address"
-                                    rules={[{ required: true, message: 'Vui lòng nhập địa chỉ cá nhân' }]}
-                                    validateTrigger={['onBlur']}
+                        <div className="deliver__address--city col-span-1">
+                            <label htmlFor="deliver_city" className="text-base font-medium block">
+                                Tỉnh / Thành{' '}
+                                <Tooltip
+                                    title="Washouse hiện tại chỉ khả dụng tại TP. Hồ Chí Minh thôi bạn nhé"
+                                    className="ml-1"
                                 >
-                                    <Input
-                                        label="Địa chỉ"
-                                        required
-                                        type="text"
-                                        name="customer_lname"
-                                        placeholder="Địa chỉ"
-                                        value={formData.address}
-                                        onChange={(e) => {
-                                            setFormData((prev) => ({
-                                                ...prev,
-                                                address: e.target.value,
-                                            }));
-                                        }}
-                                    />
-                                </Form.Item>
-                            </div>
-                            <div className="customer__input--city col-span-1">
-                                <label htmlFor="customer_city" className="text-base font-medium block">
-                                    Tỉnh / Thành{' '}
-                                    <Tooltip
-                                        title="Washouse hiện tại chỉ khả dụng tại TP. Hồ Chí Minh thôi bạn nhé"
-                                        className="ml-1"
-                                    >
-                                        <QuestionCircleOutlined />
-                                    </Tooltip>
-                                </label>
-                                <Form.Item
-                                    name="city"
-                                    rules={[{ required: true, message: 'Vui lòng chọn tỉnh / thành phố' }]}
-                                >
-                                    <Selectbox
-                                        isRequired={true}
-                                        name="customer_city"
-                                        id=""
-                                        type="tỉnh / thành phố"
-                                        className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full pointer-events-none bg-gray-100"
-                                        selectedValue={1}
-                                        options={[{ label: 'TP. Hồ Chí Minh', value: 1 }]}
-                                        onChange={handleSelectCityChange}
-                                    />
-                                </Form.Item>
-                            </div>
-                            <div className="customer__input--district col-span-1">
-                                <label htmlFor="customer_district" className="text-base font-medium block">
-                                    Quận / Huyện
-                                </label>
-                                <Form.Item
-                                    name="district"
-                                    rules={[
-                                        { required: true, message: 'Vui lòng chọn quận / huyện' },
-                                        {
-                                            validator(_, value) {
-                                                if (value === 0) {
-                                                    return Promise.reject(new Error('Vui lòng chọn quận / huyện'));
-                                                }
-                                                return Promise.resolve();
-                                            },
-                                        },
-                                    ]}
-                                >
-                                    <Selectbox
-                                        isRequired={true}
-                                        name="customer_district"
-                                        id=""
-                                        type="quận / huyện"
-                                        className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                        selectedValue={formData.district}
-                                        options={districtList.map((district): Option => {
-                                            return {
-                                                value: district.id.toString(),
-                                                label: district.name,
-                                            };
-                                        })}
-                                        onChange={handleSelectDistrictChange}
-                                    />
-                                </Form.Item>
-                            </div>
-                            <div className="customer__input--ward col-span-1">
-                                <label htmlFor="customer_ward" className="text-base font-medium block">
-                                    Phường / Xã
-                                </label>
-                                <Form.Item
-                                    name="ward"
-                                    rules={[
-                                        { required: true, message: 'Vui lòng chọn phường / xã' },
-                                        {
-                                            validator(_, value) {
-                                                if (value === 0) {
-                                                    return Promise.reject(new Error('Vui lòng chọn phường / xã'));
-                                                }
-                                                return Promise.resolve();
-                                            },
-                                        },
-                                    ]}
-                                >
-                                    <Selectbox
-                                        isRequired={true}
-                                        name="customer_ward"
-                                        id=""
-                                        type="phường / xã"
-                                        className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                        selectedValue={formData.wardId}
-                                        options={wardList.map((ward) => {
-                                            return {
-                                                value: ward.id,
-                                                label: ward.name,
-                                            };
-                                        })}
-                                        onChange={handleSelectWardChange}
-                                    />
-                                </Form.Item>
-                            </div>
+                                    <QuestionCircleOutlined />
+                                </Tooltip>
+                            </label>
+                            <Form.Item
+                                name="city"
+                                rules={[{ required: true, message: 'Vui lòng chọn tỉnh / thành phố' }]}
+                            >
+                                <Selectbox
+                                    isRequired={true}
+                                    name="deliver_city"
+                                    id=""
+                                    type="tỉnh / thành phố"
+                                    className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full pointer-events-none bg-gray-100"
+                                    selectedValue={1}
+                                    options={[{ label: 'TP. Hồ Chí Minh', value: 1 }]}
+                                    onChange={handleSelectCityChange}
+                                />
+                            </Form.Item>
                         </div>
-                    </Form>
+                        <div className="deliver__address--district col-span-1">
+                            <label htmlFor="deliver_district" className="text-base font-medium block">
+                                Quận / Huyện
+                            </label>
+                            <Form.Item
+                                name="deliver_district"
+                                rules={[
+                                    { required: true, message: 'Vui lòng chọn quận / huyện' },
+                                    {
+                                        validator(_, value) {
+                                            if (value === 0) {
+                                                return Promise.reject(new Error('Vui lòng chọn quận / huyện'));
+                                            }
+                                            return Promise.resolve();
+                                        },
+                                    },
+                                ]}
+                            >
+                                <Selectbox
+                                    isRequired={true}
+                                    name="deliver_district"
+                                    id=""
+                                    type="quận / huyện"
+                                    className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
+                                    selectedValue={formData.district}
+                                    options={districtList.map((district): Option => {
+                                        return {
+                                            value: district.id.toString(),
+                                            label: district.name,
+                                        };
+                                    })}
+                                    onChange={handleSelectDistrictChange}
+                                />
+                            </Form.Item>
+                        </div>
+                        <div className="deliver__address--ward col-span-1">
+                            <label htmlFor="deliver_ward" className="text-base font-medium block">
+                                Phường / Xã
+                            </label>
+                            <Form.Item
+                                name="ward"
+                                rules={[
+                                    { required: true, message: 'Vui lòng chọn phường / xã' },
+                                    {
+                                        validator(_, value) {
+                                            if (value === 0) {
+                                                return Promise.reject(new Error('Vui lòng chọn phường / xã'));
+                                            }
+                                            return Promise.resolve();
+                                        },
+                                    },
+                                ]}
+                            >
+                                <Selectbox
+                                    isRequired={true}
+                                    name="deliver_ward"
+                                    id=""
+                                    type="phường / xã"
+                                    className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
+                                    selectedValue={formData.wardId}
+                                    options={wardList.map((ward) => {
+                                        return {
+                                            value: ward.id,
+                                            label: ward.name,
+                                        };
+                                    })}
+                                    onChange={handleSelectWardChange}
+                                />
+                            </Form.Item>
+                        </div>
+                    </div>
                 );
             case 3:
                 return (
-                    <Form>
-                        <div className="delivery__form--time grid grid-cols-2 gap-x-6">
-                            <div className="col-span-1">
-                                <div className="delivery__form--header font-medium text-base mb-3">
-                                    Thời gian gửi đơn{' '}
-                                    <Tooltip title="Thời gian đồ sẽ được gửi về trung tâm">
-                                        <QuestionCircleOutlined className="ml-1" />
-                                    </Tooltip>
-                                </div>
-                                <div className="flex items-center gap-3 mb-4">
-                                    Hẹn giờ gửi: <Switch onClick={handleDropoffSwitch}></Switch>
-                                </div>
-                                {hasDropoffTime && (
-                                    <Space.Compact block>
-                                        <Form.Item style={{ width: 120 }}>
-                                            <Select
-                                                labelInValue
-                                                options={dateOptions}
-                                                onChange={onDateSelectChange}
-                                                defaultValue={dateOptions[0]}
-                                            ></Select>
-                                        </Form.Item>
-                                        <Form.Item className="flex-grow">
-                                            <TimePicker
-                                                format={format}
-                                                minuteStep={5}
-                                                disabledTime={disabledTime}
-                                                showNow={false}
-                                                onSelect={(time: dayjs.Dayjs) => {
-                                                    setSelectedTime(time);
-                                                }}
-                                            />
-                                        </Form.Item>
-                                        {/* <TimePicker
-                                format={format}
-                                placeholder={'Giờ lấy đon'}
-                                // onChange={(range) => handleTimeOnChange(day, range)}
-                            /> */}
-                                    </Space.Compact>
-                                )}
-                            </div>
-                            <div className="col-span-1">
-                                <div className="delivery__form--header font-medium text-base mb-3">
-                                    Thời gian trả đơn{' '}
-                                    <Tooltip
-                                        title={
-                                            <span>
-                                                Thời gian mong muốn đơn hàng hoàn tất xử lý và trả về
-                                                <br />
-                                                <br />
-                                                Thời gian phải muộn hơn thời gian ước tính xử lý của đơn hàng
-                                            </span>
-                                        }
-                                    >
-                                        <QuestionCircleOutlined className="ml-1" />
-                                    </Tooltip>
-                                </div>
-                                <div className="flex items-center gap-3 mb-4">
-                                    Hẹn giờ trả: <Switch onClick={handleDeliverSwitch}></Switch>
-                                </div>
-                                {hasDeliverTime && (
-                                    <Space.Compact block>
-                                        <Form.Item style={{ width: 120 }}>
-                                            <Select
-                                                labelInValue
-                                                options={dateOptions}
-                                                onChange={onDateSelectChange}
-                                                defaultValue={dateOptions[0]}
-                                            ></Select>
-                                        </Form.Item>
-                                        <Form.Item className="flex-grow">
-                                            <TimePicker className="w-full" format={format} minuteStep={5} />
-                                            {/* <TimePicker
-                                format={format}
-                                placeholder={'Giờ lấy đon'}
-                                // onChange={(range) => handleTimeOnChange(day, range)}
-                            /> */}
-                                        </Form.Item>
-                                    </Space.Compact>
-                                )}
-                            </div>
-                        </div>
-                        <div className="customer__input--location grid grid-cols-3 gap-x-6">
+                    <>
+                        <div className="dropoff__address--location grid grid-cols-3 gap-x-6">
                             <div className="delivery__form--header font-bold text-base mb-3">Địa chỉ lấy đơn</div>
-                            <div className="customer__input--address col-span-3">
+                            <div className="dropoff__address col-span-3">
                                 <Form.Item
-                                    name="address"
-                                    rules={[{ required: true, message: 'Vui lòng nhập địa chỉ cá nhân' }]}
+                                    name="dropoff_address"
+                                    rules={[{ required: true, message: 'Vui lòng nhập địa chỉ lấy đơn' }]}
                                     validateTrigger={['onBlur']}
                                 >
                                     <Input
                                         label="Địa chỉ"
                                         required
                                         type="text"
-                                        name="customer_lname"
+                                        name="dropoff_address"
                                         placeholder="Địa chỉ"
                                         value={formData.address}
                                         onChange={(e) => {
@@ -1136,8 +838,8 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                     />
                                 </Form.Item>
                             </div>
-                            <div className="customer__input--city col-span-1">
-                                <label htmlFor="customer_city" className="text-base font-medium block">
+                            <div className="dropoff__address--city col-span-1">
+                                <label htmlFor="dropoff_city" className="text-base font-medium block">
                                     Tỉnh / Thành{' '}
                                     <Tooltip
                                         title="Washouse hiện tại chỉ khả dụng tại TP. Hồ Chí Minh thôi bạn nhé"
@@ -1147,12 +849,12 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                     </Tooltip>
                                 </label>
                                 <Form.Item
-                                    name="city"
+                                    name="dropoff_city"
                                     rules={[{ required: true, message: 'Vui lòng chọn tỉnh / thành phố' }]}
                                 >
                                     <Selectbox
                                         isRequired={true}
-                                        name="customer_city"
+                                        name="dropoff_city"
                                         id=""
                                         type="tỉnh / thành phố"
                                         className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full pointer-events-none bg-gray-100"
@@ -1162,12 +864,12 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                     />
                                 </Form.Item>
                             </div>
-                            <div className="customer__input--district col-span-1">
-                                <label htmlFor="customer_district" className="text-base font-medium block">
+                            <div className="dropoff__address--district col-span-1">
+                                <label htmlFor="dropoff_district" className="text-base font-medium block">
                                     Quận / Huyện
                                 </label>
                                 <Form.Item
-                                    name="district"
+                                    name="dropoff_district"
                                     rules={[
                                         { required: true, message: 'Vui lòng chọn quận / huyện' },
                                         {
@@ -1182,7 +884,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                 >
                                     <Selectbox
                                         isRequired={true}
-                                        name="customer_district"
+                                        name="dropoff_district"
                                         id=""
                                         type="quận / huyện"
                                         className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
@@ -1197,8 +899,8 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                     />
                                 </Form.Item>
                             </div>
-                            <div className="customer__input--ward col-span-1">
-                                <label htmlFor="customer_ward" className="text-base font-medium block">
+                            <div className="dropoff__address--ward col-span-1">
+                                <label htmlFor="dropoff_ward" className="text-base font-medium block">
                                     Phường / Xã
                                 </label>
                                 <Form.Item
@@ -1217,7 +919,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                 >
                                     <Selectbox
                                         isRequired={true}
-                                        name="customer_ward"
+                                        name="dropoff_ward"
                                         id=""
                                         type="phường / xã"
                                         className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
@@ -1233,19 +935,19 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                 </Form.Item>
                             </div>
                         </div>
-                        <div className="customer__input--location grid grid-cols-3 gap-x-6">
+                        <div className="deliver__address--location grid grid-cols-3 gap-x-6">
                             <div className="delivery__form--header font-bold text-base mb-3">Địa chỉ trả đơn</div>
-                            <div className="customer__input--address col-span-3">
+                            <div className="deliver__address col-span-3">
                                 <Form.Item
-                                    name="address"
-                                    rules={[{ required: true, message: 'Vui lòng nhập địa chỉ cá nhân' }]}
+                                    name="deliver_address"
+                                    rules={[{ required: true, message: 'Vui lòng nhập địa chỉ trả đơn' }]}
                                     validateTrigger={['onBlur']}
                                 >
                                     <Input
                                         label="Địa chỉ"
                                         required
                                         type="text"
-                                        name="customer_lname"
+                                        name="deliver_address"
                                         placeholder="Địa chỉ"
                                         value={formData.address}
                                         onChange={(e) => {
@@ -1257,8 +959,8 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                     />
                                 </Form.Item>
                             </div>
-                            <div className="customer__input--city col-span-1">
-                                <label htmlFor="customer_city" className="text-base font-medium block">
+                            <div className="deliver__address--city col-span-1">
+                                <label htmlFor="deliver_city" className="text-base font-medium block">
                                     Tỉnh / Thành{' '}
                                     <Tooltip
                                         title="Washouse hiện tại chỉ khả dụng tại TP. Hồ Chí Minh thôi bạn nhé"
@@ -1273,7 +975,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                 >
                                     <Selectbox
                                         isRequired={true}
-                                        name="customer_city"
+                                        name="deliver_city"
                                         id=""
                                         type="tỉnh / thành phố"
                                         className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full pointer-events-none bg-gray-100"
@@ -1283,12 +985,12 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                     />
                                 </Form.Item>
                             </div>
-                            <div className="customer__input--district col-span-1">
-                                <label htmlFor="customer_district" className="text-base font-medium block">
+                            <div className="deliver__address--district col-span-1">
+                                <label htmlFor="deliver_district" className="text-base font-medium block">
                                     Quận / Huyện
                                 </label>
                                 <Form.Item
-                                    name="district"
+                                    name="deliver_district"
                                     rules={[
                                         { required: true, message: 'Vui lòng chọn quận / huyện' },
                                         {
@@ -1303,7 +1005,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                 >
                                     <Selectbox
                                         isRequired={true}
-                                        name="customer_district"
+                                        name="deliver_district"
                                         id=""
                                         type="quận / huyện"
                                         className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
@@ -1318,8 +1020,8 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                     />
                                 </Form.Item>
                             </div>
-                            <div className="customer__input--ward col-span-1">
-                                <label htmlFor="customer_ward" className="text-base font-medium block">
+                            <div className="deliver__address--ward col-span-1">
+                                <label htmlFor="deliver_ward" className="text-base font-medium block">
                                     Phường / Xã
                                 </label>
                                 <Form.Item
@@ -1338,7 +1040,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                 >
                                     <Selectbox
                                         isRequired={true}
-                                        name="customer_ward"
+                                        name="deliver_ward"
                                         id=""
                                         type="phường / xã"
                                         className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
@@ -1354,7 +1056,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                 </Form.Item>
                             </div>
                         </div>
-                    </Form>
+                    </>
                 );
         }
     };
@@ -1381,7 +1083,112 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
             </div>
             <div className="checkout__delivery--form text-left">
                 <h3 className="font-bold text-xl my-3 mt-6">Thông tin vận chuyển</h3>
-                {renderDeliveryForm()}
+                <Form
+                    form={form}
+                    name="delivery"
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                    autoComplete="on"
+                    layout="vertical"
+                >
+                    <div className="delivery__form--time grid grid-cols-2 gap-x-6">
+                        <div className="col-span-1">
+                            <div className="delivery__form--header font-medium text-base mb-3">
+                                Thời gian gửi đơn{' '}
+                                <Tooltip title="Thời gian đồ sẽ được gửi về trung tâm">
+                                    <QuestionCircleOutlined className="ml-1" />
+                                </Tooltip>
+                            </div>
+                            <div className="flex items-center gap-3 mb-4">
+                                Hẹn giờ gửi: <Switch onClick={handleDropoffSwitch}></Switch>
+                            </div>
+                            {hasDropoffTime && (
+                                <Space.Compact block>
+                                    <Form.Item
+                                        style={{ width: 120 }}
+                                        name={['dropoff', 'date']}
+                                        initialValue={dateOptions[0]}
+                                    >
+                                        <Select
+                                            labelInValue
+                                            options={dateOptions}
+                                            onChange={onDateSelectChange}
+                                        ></Select>
+                                    </Form.Item>
+                                    <Form.Item className="flex-grow" name={['dropoff', 'time']}>
+                                        <TimePicker
+                                            format={format}
+                                            minuteStep={5}
+                                            disabledTime={disabledTime}
+                                            showNow={false}
+                                            onSelect={(time: dayjs.Dayjs) => {
+                                                setSelectedDropoffTime(time);
+                                            }}
+                                        />
+                                    </Form.Item>
+                                    {/* <TimePicker
+                                format={format}
+                                placeholder={'Giờ lấy đon'}
+                                // onChange={(range) => handleTimeOnChange(day, range)}
+                            /> */}
+                                </Space.Compact>
+                            )}
+                        </div>
+                        <div className="col-span-1">
+                            <div className="delivery__form--header font-medium text-base mb-3">
+                                Thời gian trả đơn{' '}
+                                <Tooltip
+                                    title={
+                                        <span>
+                                            Thời gian mong muốn đơn hàng hoàn tất xử lý và trả về
+                                            <br />
+                                            <br />
+                                            Thời gian phải muộn hơn thời gian ước tính xử lý của đơn hàng
+                                        </span>
+                                    }
+                                >
+                                    <QuestionCircleOutlined className="ml-1" />
+                                </Tooltip>
+                            </div>
+                            <div className="flex items-center gap-3 mb-4">
+                                Hẹn giờ trả: <Switch onClick={handleDeliverSwitch}></Switch>
+                            </div>
+                            {hasDeliverTime && (
+                                <Space.Compact block>
+                                    <Form.Item
+                                        style={{ width: 120 }}
+                                        name={['deliver', 'date']}
+                                        initialValue={dateOptions[0]}
+                                    >
+                                        <Select
+                                            labelInValue
+                                            options={dateOptions}
+                                            onChange={onDeliverDateSelectChange}
+                                        ></Select>
+                                    </Form.Item>
+                                    <Form.Item className="flex-grow" name={['deliver', 'time']}>
+                                        <TimePicker
+                                            className="w-full"
+                                            format={format}
+                                            minuteStep={5}
+                                            disabledTime={disabledTime}
+                                            showNow={false}
+                                            onSelect={(time: dayjs.Dayjs) => {
+                                                setSelectedDeliverTime(time);
+                                            }}
+                                        />
+                                        {/* <TimePicker
+                                format={format}
+                                placeholder={'Giờ lấy đon'}
+                                // onChange={(range) => handleTimeOnChange(day, range)}
+                            /> */}
+                                    </Form.Item>
+                                </Space.Compact>
+                            )}
+                        </div>
+                    </div>
+                    {renderDeliveryForm()}
+                </Form>
             </div>
             {/* <div className="checkout__payment--form text-left mt-7">
                 <h3 className="font-bold text-xl">Phương thức thanh toán</h3>
@@ -1405,9 +1212,68 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                 <div className="font-bold cursor-pointer" onClick={handleBack}>
                     Quay lại
                 </div>
-                <button className="btn primary" type="submit">
-                    <div className="px-6 py-3">Hoàn tất đơn hàng</div>
-                </button>
+                <WHButton type="primary" onClick={() => form.submit()}>
+                    Tiếp tục đến phương thức thanh toán
+                </WHButton>
+            </div>
+        </>
+    );
+};
+
+type Step3Props = {
+    formData: CheckoutFormData;
+    onBack: () => void;
+    setFormData: React.Dispatch<React.SetStateAction<CheckoutFormData>>;
+    onSubmit: (e: React.MouseEvent<HTMLButtonElement>) => void;
+};
+
+export const Step3 = ({ formData, onBack, setFormData, onSubmit }: Step3Props) => {
+    const [paymentType, setPaymentType] = useState(formData.paymentType || 0);
+
+    const paymentOpt: Option[] = Object.entries(PaymentEnum).map(([key, value]) => ({
+        label: key,
+        value: value,
+    }));
+
+    const handleBack = () => {
+        onBack();
+    };
+
+    const handlePaymentRadioChange = (e: RadioChangeEvent) => {
+        const selectedValue = parseInt(e.target.value);
+        setPaymentType(selectedValue);
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            paymentType: selectedValue,
+        }));
+    };
+    return (
+        <>
+            <div className="checkout__payment--form text-left mt-7">
+                <h3 className="font-bold text-xl">Phương thức thanh toán</h3>
+                <Radio.Group
+                    onChange={handlePaymentRadioChange}
+                    value={paymentType.toString()}
+                    className="w-full border border-wh-gray rounded-lg"
+                >
+                    {paymentOpt.map((option) => (
+                        <Radio
+                            key={option.value}
+                            className="text-base w-full py-6 px-5 border-b border-wh-gray last:border-none"
+                            value={option.value}
+                        >
+                            {option.label}
+                        </Radio>
+                    ))}
+                </Radio.Group>
+            </div>
+            <div className="checkout__customer--action flex justify-between mt-9 pb-12 items-center">
+                <div className="font-bold cursor-pointer" onClick={handleBack}>
+                    Quay lại
+                </div>
+                <WHButton type="primary" onClick={onSubmit}>
+                    Đặt hàng
+                </WHButton>
             </div>
         </>
     );
