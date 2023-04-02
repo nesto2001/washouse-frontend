@@ -84,7 +84,7 @@ const CartContainer = () => {
                                                 Chi tiết: {item.weight || item.quantity} {item.unit ?? ''}
                                             </h3>
                                             <h1 className="sitecart__item--price text-2xl font-bold text-primary mt-1">
-                                                {formatCurrency(item.price)}
+                                                {formatCurrency(item.price ?? 0)}
                                             </h1>
                                         </div>
                                         <div

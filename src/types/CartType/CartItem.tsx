@@ -1,15 +1,14 @@
-import { ServicePriceModel } from '../../models/Service/ServicePricesModel';
-import { PriceRange } from '../PriceRange';
+import { ServicePricesModel } from '../../models/Service/ServicePricesModel';
 
 export interface CartItem {
     id: number;
     centerId: number;
     name: string;
     thumbnail: string;
-    price: number;
+    price: number | null;
     weight?: number;
-    quantity?: number;
+    quantity?: number | null;
     minPrice?: number;
-    priceChart?: ServicePriceModel[];
+    priceChart?: ServicePricesModel[];
     unit: 'kg' | 'pcs';
 }

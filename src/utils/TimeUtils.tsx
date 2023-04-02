@@ -70,3 +70,10 @@ export function formatDateTimeFull(date: Date): string {
     const formattedDate = `${day} ${paddedDate}/${paddedMonth}/${year} ${hours}:${minutes}:${seconds} GMT`;
     return formattedDate;
 }
+
+export function getHour(time: string | null | undefined): number {
+    if (!time) {
+        return 0;
+    }
+    return +time.split(':')[0];
+}

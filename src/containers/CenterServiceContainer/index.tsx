@@ -2,7 +2,7 @@ import { Button, message, Modal, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { FaPhoneAlt, FaRegClock } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import ModalImg from '../../assets/images/laundry-modal.svg';
 import Placeholder from '../../assets/images/placeholder.png';
 import WHButton from '../../components/Button';
@@ -57,17 +57,18 @@ const CenterServiceContainer = (props: Props) => {
     //     [],
     // );
 
-    const { id } = useParams();
+    const { centerId, id } = useParams();
+    const serviceCenterId = centerId ? parseInt(centerId) : 0;
 
     useEffect(() => {
         const fetchData = async () => {
-            if (id) return await getService(parseInt(id));
+            if (id && centerId) return await getService(serviceCenterId, parseInt(id));
         };
         fetchData()
             .then((res) => {
                 setService(res);
                 const fetchData = async () => {
-                    if (res) return await getCenterBrief(res.centerId);
+                    if (centerId) return await getCenterBrief(serviceCenterId);
                 };
                 fetchData().then((centerRes) => {
                     setCenter(centerRes);
@@ -85,12 +86,11 @@ const CenterServiceContainer = (props: Props) => {
     const [servicePrice, setServicePrice] = useState<string>(
         service?.price
             ? formatCurrency(service.price)
-            : service?.servicePrices
+            : service?.prices
             ? `${formatCurrency(
-                  service.minPrice ?? service.servicePrices[0].price * service.servicePrices[0].maxValue,
+                  service.minPrice ?? service.prices[0].price * service.prices[0].maxValue,
               )} - ${formatCurrency(
-                  service.servicePrices[service.servicePrices.length - 1].price *
-                      service.servicePrices[service.servicePrices.length - 1].maxValue,
+                  service.prices[service.prices.length - 1].price * service.prices[service.prices.length - 1].maxValue,
               )}`
             : formatCurrency(0),
     );
@@ -111,23 +111,22 @@ const CenterServiceContainer = (props: Props) => {
         }
     }, [status, center]); // get center opening status
 
-    // (`${service.servicePrices[0].price.toString()} - ${service.priceChart[service.priceChart.length - 1].price.toString()}`) : null,
+    // (`${service.prices[0].price.toString()} - ${service.priceChart[service.priceChart.length - 1].price.toString()}`) : null,
     useEffect(() => {
         if (service && weightInput && parseFloat(weightInput) > 0) {
             const calculatedPrice =
-                service.servicePrices &&
-                calculatePrice(service.servicePrices, service.minPrice, parseFloat(weightInput));
+                service.prices && calculatePrice(service.prices, service.minPrice, parseFloat(weightInput));
             calculatedPrice && setServicePrice(formatCurrency(calculatedPrice));
         } else {
             setServicePrice(
                 service?.price
                     ? formatCurrency(service.price)
-                    : service?.servicePrices
+                    : service?.prices
                     ? `${formatCurrency(
-                          service.minPrice ?? service.servicePrices[0].price * service.servicePrices[0].maxValue,
+                          service.minPrice ?? service.prices[0].price * service.prices[0].maxValue,
                       )} - ${formatCurrency(
-                          service.servicePrices[service.servicePrices.length - 1].price *
-                              service.servicePrices[service.servicePrices.length - 1].maxValue,
+                          service.prices[service.prices.length - 1].price *
+                              service.prices[service.prices.length - 1].maxValue,
                       )}`
                     : formatCurrency(0),
             );
@@ -148,23 +147,22 @@ const CenterServiceContainer = (props: Props) => {
 
     const handleAddToCart = async (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
-        if (cartCenterId && cartCenterId !== service.centerId) {
+        if (centerId && cartCenterId && cartCenterId !== parseInt(centerId)) {
             setModalVisible(true);
         } else {
             if ((weightInput && parseFloat(weightInput)) || quantityInput > 0) {
                 const cartItem: CartItem = {
                     id: service.id,
-                    name: service.serviceName,
+                    name: service.name,
                     thumbnail: service.image,
                     price:
                         service.price ??
-                        (service.servicePrices &&
-                            calculatePrice(service.servicePrices, service.minPrice, parseInt(weightInput))),
+                        (service.prices && calculatePrice(service.prices, service.minPrice, parseInt(weightInput))),
                     weight: parseInt(weightInput) ?? null,
                     quantity: quantityInput ?? null,
                     unit: quantityInput ? 'pcs' : 'kg',
-                    centerId: service.centerId,
-                    priceChart: service.servicePrices,
+                    centerId: center.id,
+                    priceChart: service.prices,
                 };
                 try {
                     dispatch(addToCart(cartItem) as any)
@@ -186,13 +184,13 @@ const CenterServiceContainer = (props: Props) => {
         if ((weightInput && parseFloat(weightInput)) || quantityInput > 0) {
             const cartItem: CartItem = {
                 id: service.id,
-                name: service.serviceName,
+                name: service.name,
                 thumbnail: service.image,
                 price: service.price,
                 weight: parseInt(weightInput) ?? null,
                 quantity: quantityInput ?? null,
                 unit: quantityInput ? 'pcs' : 'kg',
-                centerId: service.centerId,
+                centerId: center.id,
                 minPrice: service.minPrice,
             };
             try {
@@ -223,7 +221,7 @@ const CenterServiceContainer = (props: Props) => {
         if (regex.test(value)) setWeightInput(value.slice(0, maxLength));
     };
 
-    const ratingText = getRating(service?.rating);
+    const ratingText = getRating(service.rating ?? 0);
     return (
         <>
             {contextHolder}
@@ -248,7 +246,7 @@ const CenterServiceContainer = (props: Props) => {
                         </div>
                         <div className="service__details--content basis-7/12 p-6 pl-10 ml-10 border border-[#B3B3B3] rounded-2xl">
                             <form action="" id="addcartForm">
-                                <h1 className="text-3xl font-bold">{service.serviceName}</h1>
+                                <h1 className="text-3xl font-bold">{service.name}</h1>
                                 <h3 className="mt-2 text-2xl font-bold text-primary">{servicePrice}</h3>
                                 <p className="text-justify text-sm mt-3">{service.description}</p>
                                 <h4 className="text-sm mt-3">
@@ -290,10 +288,10 @@ const CenterServiceContainer = (props: Props) => {
                                 </div>
                                 <div className="service__actiongroup mt-6 flex justify-between">
                                     <WHButton type="sub" minWidth="180px" form="addcartForm" onClick={handleAddToCart}>
-                                        Thêm vào giỏ
+                                        <div className="px-6 py-3">Thêm vào giỏ</div>
                                     </WHButton>
                                     <WHButton type="primary" minWidth="180px">
-                                        Đặt dịch vụ
+                                        <div className="px-6 py-3">Đặt dịch vụ</div>
                                     </WHButton>
                                 </div>
                             </form>
@@ -311,11 +309,11 @@ const CenterServiceContainer = (props: Props) => {
                                     {/* {service.minTime * 60}' - {service.maxTime * 60}' */}
                                 </h4>
                             </div>
-                            {service.priceType && service.servicePrices && (
+                            {service.priceType && service.prices && (
                                 <div className="basis-1/2">
                                     <h3 className="text-xl font-bold">Bảng giá dịch vụ</h3>
                                     <div className="service__priceTable mt-3">
-                                        <PriceTable priceChart={service.servicePrices} unitType="ký"></PriceTable>
+                                        <PriceTable priceChart={service.prices} unitType="ký"></PriceTable>
                                     </div>
                                 </div>
                             )}
@@ -340,7 +338,7 @@ const CenterServiceContainer = (props: Props) => {
                                     <div className="basis-full font-bold text-lg text-white">{ratingText}</div>
                                 </div>
                                 <div className="rating--stars mt-2">
-                                    <RatingStars rating={service.rating} starSize={28}></RatingStars>
+                                    <RatingStars rating={service.rating ?? 0} starSize={28}></RatingStars>
                                 </div>
                             </div>
                             <div className="border-l border-[#B3B3B3]" />

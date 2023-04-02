@@ -3,6 +3,7 @@ export { default as SidebarLayout } from './SidebarLayout';
 export { default as CenteredLayout } from './CenteredLayout/CenteredLayout';
 export { default as BlankCenteredLayout } from './CenteredLayout/BlankCenteredLayout';
 export { default as AuthenticateLayout } from './AuthenticateLayout/AuthenticateLayout';
+export { default as StaffAuthenticateLayout } from './AuthenticateLayout/StaffAuthenticateLayout';
 export { default as CustomerSidebarLayout } from './CustomerSidebarLayout/CustomerSidebarLayout';
 export { default as ManagerDashboardLayout } from './DashboardLayout/ManagerDashboardLayout';
 export { default as AdminDashboardLayout } from './DashboardLayout/AdminDashboardLayout';

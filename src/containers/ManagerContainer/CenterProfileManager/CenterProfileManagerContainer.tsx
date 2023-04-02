@@ -4,6 +4,7 @@ import { Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 import '../ManagerContainer.scss';
 import WHButton from '../../../components/Button';
+import EmptyLaundry from '../../../assets/images/empty-center.png';
 
 const onChange = (key: string) => {
     console.log(key);
@@ -74,14 +75,23 @@ const CenterProfileManagerContainer = (props: Props) => {
                     <Tabs className="mt-3" defaultActiveKey="1" items={items} onChange={onChange} />
                 </>
             ) : (
-                <div className="flex flex-col justify-center items-center">
-                    Bạn chưa đăng ký bất kỳ trung tâm nào
-                    <div className="provider__page--action center__action--register">
-                        <WHButton type="primary" link="/provider/registration">
-                            Đăng ký trung tâm
-                        </WHButton>
+                <>
+                    <div className="provider__page--title pt-4 pl-6 font-semibold text-2xl">Hồ sơ trung tâm</div>
+                    <div className="provider__page--subtitle mt-2 pl-6 text-sub-gray text-base">
+                        Kiểm tra tình trạng trung tâm và cập nhật hồ sơ trung tâm của bạn
                     </div>
-                </div>
+                    <div className="flex flex-col justify-center items-center p-6 pb-20 mt-8">
+                        <div className="">
+                            <img className="max-w-[280px] opacity-70" src={EmptyLaundry} alt="" />
+                        </div>
+                        <div className="font-bold text-xl my-6">Bạn chưa đăng ký bất kỳ trung tâm nào</div>
+                        <div className="provider__page--action center__action--register">
+                            <WHButton type="primary" link="/provider/registration">
+                                Đăng ký trung tâm
+                            </WHButton>
+                        </div>
+                    </div>
+                </>
             )}
         </>
     );

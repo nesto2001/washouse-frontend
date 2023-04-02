@@ -6,6 +6,7 @@ import {
     CustomerSidebarLayout,
     ManagerDashboardLayout,
     AdminDashboardLayout,
+    StaffAuthenticateLayout,
 } from '../Layouts';
 import {
     CartPage,
@@ -31,6 +32,8 @@ import {
     AdminDashboardPage,
     AdminCenterPage,
     ResetPasswordPage,
+    StaffLoginPage,
+    StaffRegisterPage,
 } from '../pages/';
 
 interface RouteProps {
@@ -53,7 +56,7 @@ const publicRoutes: Array<RouteProps> = [
         component: CenterPage,
     },
     {
-        path: '/centers/center/:id/service/:id',
+        path: '/centers/center/:centerId/service/:id',
         layout: CenteredLayout,
         component: CenterServicePage,
     },
@@ -116,6 +119,16 @@ const publicRoutes: Array<RouteProps> = [
         path: '/user/order',
         layout: CustomerSidebarLayout,
         component: CustomerOrdersPage,
+    },
+    {
+        path: '/provider/login',
+        layout: StaffAuthenticateLayout,
+        component: StaffLoginPage,
+    },
+    {
+        path: '/provider/register',
+        layout: StaffAuthenticateLayout,
+        component: StaffRegisterPage,
     },
     {
         path: '/provider/dashboard',

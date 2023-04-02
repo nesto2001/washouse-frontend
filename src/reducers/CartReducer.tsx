@@ -51,20 +51,22 @@ const CartReducer = createSlice({
                             throw new Error('Khối lượng vượt quá khối lượng tối đa trên bảng giá');
                         }
                         existingItem.price = calculatePrice(item.priceChart, item.minPrice, existingItem.weight);
-                        state.totalPrice += existingItem.price - item.price;
+                        state.totalPrice += existingItem.price - (item.price??0);
                         console.log(item.price);
                     }
                 } else {
                     if (existingItem.quantity && item.quantity) {
                         existingItem.quantity += item.quantity;
                         state.totalQuantity += item.quantity;
-                        state.totalPrice += item.quantity * item.price;
+                        state.totalPrice += item.quantity * (item.price??0);
                     }
                 }
             } else {
                 state.items.push(item);
                 state.totalQuantity += item.quantity && item.quantity > 0 ? item.quantity : 1;
-                state.totalPrice += item.price * (item.quantity && item.quantity > 0 ? item.quantity : 1);
+                state.totalPrice += item.price
+                    ? item.price * (item.quantity && item.quantity > 0 ? item.quantity : 1)
+                    : 0;
             }
             localStorage.setItem('userCart', JSON.stringify(state));
         },
@@ -84,7 +86,7 @@ const CartReducer = createSlice({
             if (index >= 0) {
                 const itemToRemove = state.items[index];
                 state.totalQuantity -= itemToRemove.quantity ?? 1;
-                state.totalPrice -= itemToRemove.price * (itemToRemove.quantity ?? 1);
+                state.totalPrice -= itemToRemove.price ? itemToRemove.price * (itemToRemove.quantity ?? 1) : 0;
 
                 state.items.splice(index, 1);
             }

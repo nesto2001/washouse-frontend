@@ -28,7 +28,7 @@ import { OperatingDay } from '../../types/OperatingDay';
 import { Option } from '../../types/Options';
 import { DeliveryEnum } from '../../types/enum/DeliveryEnum';
 import { PaymentEnum } from '../../types/enum/PaymentEnum';
-import { getToday } from '../../utils/TimeUtils';
+import { getHour, getToday } from '../../utils/TimeUtils';
 import './CheckoutContainer.scss';
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
@@ -330,7 +330,7 @@ type Step2Props = {
     formData: CheckoutFormData;
     onBack: () => void;
     setFormData: React.Dispatch<React.SetStateAction<CheckoutFormData>>;
-    centerOperatingDays?: OperatingDay[];
+    centerOperatingDays: OperatingDay[];
 };
 
 const today = getToday();
@@ -346,133 +346,84 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
     const [pickupDate, setPickupDate] = useState<string>(dateOptions[0].value);
     const [hasDropoffTime, setHasDropoffTime] = useState<boolean>(false);
     const [hasDeliverTime, setHasDeliverTime] = useState<boolean>(false);
-    const [openingHour, setOpeningHour] = useState<string>();
-    const [closingHour, setClosingHour] = useState<string>();
+    const [closingHour, setClosingHour] = useState<string | null>();
+    const [openingHour, setOpeningHour] = useState<string | null>();
     const [operatingDay, setOperatingDay] = useState<number>(today);
     const [paymentType, setPaymentType] = useState(formData.paymentType || 1);
     const [district, setDistrict] = useState(0);
     const [districtList, setDistrictList] = useState<LocationModel[]>([]);
     const [wardList, setWardList] = useState<LocationModel[]>([]);
+    const [selectedTime, setSelectedTime] = useState<dayjs.Dayjs>();
     const { Panel } = Collapse;
     const { Option } = Select;
 
     useEffect(() => {
-        if (
-            centerOperatingDays &&
-            centerOperatingDays[operatingDay].start !== null &&
-            centerOperatingDays[operatingDay].end !== null
-        ) {
-            setOpeningHour(centerOperatingDays[operatingDay].start ?? '');
-            setClosingHour(centerOperatingDays[operatingDay].end ?? '');
+        if (centerOperatingDays) {
+            setOpeningHour(centerOperatingDays[operatingDay].start);
+            setClosingHour(centerOperatingDays[operatingDay].end);
         }
     }, [operatingDay]);
 
-    // const disabledTime = (date: dayjs.Dayjs): DisabledTime => {
-    //     const now = dayjs();
-    //     const isToday = now.isSame(dayjs(date), 'day');
-    //     const disabledHours: number[] = [];
-    //     const disabledMinutes: number[] = [];
-    //     if (openingHour && closingHour) {
-    //         const openingTime: dayjs.Dayjs = isToday
-    //             ? now.hour(Number(openingHour?.slice(0, 2))).startOf('hour')
-    //             : now.startOf('day').hour(Number(openingHour?.slice(0, 2)));
-    //         const closingTime: dayjs.Dayjs = isToday
-    //             ? now.hour(Number(closingHour?.slice(0, 2))).startOf('hour')
-    //             : now.endOf('day').hour(Number(closingHour?.slice(0, 2)));
+    const disabledTime = (now: dayjs.Dayjs) => {
+        var minuteList: number[] = [];
 
-    //         for (let hour = 0; hour < openingTime.hour(); hour++) {
-    //             disabledHours.push(hour);
-    //         }
-    //         for (let hour = closingTime.hour() + 1; hour < 24; hour++) {
-    //             disabledHours.push(hour);
-    //         }
-    //         if (now.isSame(openingTime, 'hour')) {
-    //             for (let minute = 0; minute < openingTime.minute(); minute += 15) {
-    //                 disabledMinutes.push(minute);
-    //             }
-    //         }
-    //         if (now.isSame(closingTime, 'hour')) {
-    //             for (let minute = closingTime.minute() + 1; minute <= 45; minute += 15) {
-    //                 disabledMinutes.push(minute);
-    //             }
-    //         }
-    //         return {
-    //             disabledHours: () => disabledHours,
-    //             disabledMinutes: (selectedHour: number) => {
-    //                 if (selectedHour === openingTime.hour()) {
-    //                     return disabledMinutes;
-    //                 } else {
-    //                     return [];
-    //                 }
-    //             },
-    //         };
-    //     }
-    //     return {
-    //         disabledHours: () => disabledHours,
-    //         disabledMinutes: () => disabledMinutes,
-    //     };
-    // };
-
-    function disabledTime(date: dayjs.Dayjs) {
-        if (date && date.format('YYYY-MM-DD') === '2021-04-17') {
+        for (var i = 0; i < 60; i++) {
+            minuteList.push(i);
         }
-    }
+        if (pickupDate === dateOptions[0].value) {
+            return {
+                disabledHours: () => {
+                    var hours = [];
+                    var openingHourNumber = getHour(openingHour);
+                    for (var i = 0; i < 24; i++) {
+                        if (
+                            i < (now.hour() > openingHourNumber ? now.hour() : openingHourNumber) ||
+                            i >= getHour(closingHour)
+                        ) {
+                            hours.push(i);
+                        }
+                    }
 
-    //dem cai disable nay vo state de đổi pickup date thì đổi luôn disable
-    const disable: (date: dayjs.Dayjs) => DisabledTime | undefined = (date) => {
-        const pickedDate = date.format('DD/MM/YYYY');
-        const currentTime = dayjs().format('HH:mm');
-        if (pickedDate === dateOptions[0].value) {
-            const dis: DisabledTime = () => {
-                const disabledHours = () => {
-                    // Disable hours before 9 AM and after 6 PM
-                    const hours: number[] = [];
-                    for (let i = 0; i < 24; i++) {
-                        if (i < Number(currentTime?.slice(0, 2)) || i > Number(closingHour?.slice(0, 2))) {
+                    return hours;
+                },
+                disabledMinutes: () => {
+                    var minutes = [];
+                    var selectedHour = selectedTime?.hour();
+                    if (!selectedHour) {
+                        return minuteList;
+                    } else if (selectedHour === now.hour()) {
+                        for (var i = 0; i < now.minute() + 15; i++) {
+                            minutes.push(i);
+                        }
+                    }
+                    return minutes;
+                },
+            };
+        }
+        if (pickupDate === dateOptions[1].value) {
+            return {
+                disabledHours: () => {
+                    var hours = [];
+
+                    for (var i = 0; i < 24; i++) {
+                        if (i < getHour(openingHour) || i >= getHour(closingHour)) {
                             hours.push(i);
                         }
                     }
                     return hours;
-                };
-
-                const disabledMinutes = (selectedHour: number) => {
-                    if (selectedHour === Number(currentTime.slice(0, 2))) {
-                        // Disable minutes when selected hour is 9 AM or 6 PM
-                        const startMinute = Math.ceil(Number(currentTime.slice(3)) / 15) * 15;
-                        const disabled = [];
-                        for (let i = 0; i < startMinute; i += 15) {
-                            disabled.push(i);
-                        }
+                },
+                disabledMinutes: () => {
+                    if (!selectedTime?.hour()) {
+                        return minuteList;
                     }
                     return [];
-                };
-                return { disabledHours, disabledMinutes };
+                },
             };
-            return dis;
-        } else if (pickedDate === dateOptions[1].value) {
-            const dis: DisabledTime = () => {
-                const disabledHours = () => {
-                    // Disable hours before 9 AM and after 6 PM
-                    const hours: number[] = [];
-                    for (let i = 0; i < 24; i++) {
-                        if (i < Number(openingHour?.slice(0, 2)) || i > Number(closingHour?.slice(0, 2))) {
-                            hours.push(i);
-                        }
-                    }
-                    return hours;
-                };
-
-                const disabledMinutes = (selectedHour: number) => {
-                    // Disable minutes when selected hour is 9 AM or 6 PM
-
-                    return [];
-                };
-                return { disabledHours, disabledMinutes };
-            };
-            return dis;
-        } else {
-            return;
         }
+        return {
+            disabledHours: () => [],
+            disabledMinutes: () => [],
+        };
     };
 
     useEffect(() => {
@@ -522,7 +473,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
         console.log('onOk: ', value);
     };
 
-    const onDateSelectchange = (option: Option) => {
+    const onDateSelectChange = (option: Option) => {
         console.log(option.value, option.label);
         if (option.label === 'Hôm nay') {
             setOperatingDay(today);
@@ -538,323 +489,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
         {
             type: DeliveryEnum.NO,
             title: 'Không sử dụng dịch vụ vận chuyển',
-            children: (
-                <>
-                    {delivery === 0 && (
-                        <Form>
-                            <div className="delivery__form--time grid grid-cols-2 gap-x-6">
-                                <div className="col-span-1">
-                                    <Space.Compact>
-                                        <Form.Item
-                                            validateTrigger={['onChange', 'onBlur']}
-                                            noStyle
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: 'Vui lòng nhập thời gian ước tính xử lý',
-                                                },
-                                            ]}
-                                        >
-                                            <Form.Item style={{ width: 160 }}>
-                                                <Select
-                                                    labelInValue
-                                                    options={dateOptions}
-                                                    onChange={onDateSelectchange}
-                                                    defaultValue={dateOptions[0]}
-                                                ></Select>
-                                            </Form.Item>
-                                            <Form.Item>
-                                                <TimePicker
-                                                    defaultValue={dayjs('12:08', format)}
-                                                    format={format}
-                                                    minuteStep={5}
-                                                    disabledTime={disable(dayjs(pickupDate, 'DD/MM/YYYY'))}
-                                                />
-                                            </Form.Item>
-                                            {/* <TimePicker
-                                                format={format}
-                                                placeholder={'Giờ lấy đon'}
-                                                // onChange={(range) => handleTimeOnChange(day, range)}
-                                            /> */}
-                                        </Form.Item>
-                                    </Space.Compact>
-                                </div>
-                                <div className="col-span-1">
-                                    <Space.Compact>
-                                        <Form.Item
-                                            validateTrigger={['onChange', 'onBlur']}
-                                            noStyle
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: 'Vui lòng nhập thời gian ước tính xử lý',
-                                                },
-                                            ]}
-                                        >
-                                            <Form.Item style={{ width: 160 }}>
-                                                <Select
-                                                    labelInValue
-                                                    options={dateOptions}
-                                                    onChange={onDateSelectchange}
-                                                    defaultValue={dateOptions[0]}
-                                                ></Select>
-                                            </Form.Item>
-                                            <Form.Item>
-                                                <TimePicker
-                                                    defaultValue={dayjs('12:08', format)}
-                                                    format={format}
-                                                    minuteStep={5}
-                                                />
-                                            </Form.Item>
-                                            {/* <TimePicker
-                                                format={format}
-                                                placeholder={'Giờ lấy đon'}
-                                                // onChange={(range) => handleTimeOnChange(day, range)}
-                                            /> */}
-                                        </Form.Item>
-                                    </Space.Compact>
-                                </div>
-                            </div>
-                            <div className="customer__input--location grid grid-cols-3 gap-x-6">
-                                <div className="delivery__form--header font-bold text-base mb-3">Địa chỉ lấy đơn</div>
-                                <div className="customer__input--address col-span-3">
-                                    <Form.Item
-                                        name="address"
-                                        rules={[{ required: true, message: 'Vui lòng nhập địa chỉ cá nhân' }]}
-                                        validateTrigger={['onBlur']}
-                                    >
-                                        <Input
-                                            label="Địa chỉ"
-                                            required
-                                            type="text"
-                                            name="customer_lname"
-                                            placeholder="Địa chỉ"
-                                            value={formData.address}
-                                            onChange={(e) => {
-                                                setFormData((prev) => ({ ...prev, address: e.target.value }));
-                                            }}
-                                        />
-                                    </Form.Item>
-                                </div>
-                                <div className="customer__input--city col-span-1">
-                                    <label htmlFor="customer_city" className="text-base font-medium block">
-                                        Tỉnh / Thành{' '}
-                                        <Tooltip
-                                            title="Washouse hiện tại chỉ khả dụng tại TP. Hồ Chí Minh thôi bạn nhé"
-                                            className="ml-1"
-                                        >
-                                            <QuestionCircleOutlined />
-                                        </Tooltip>
-                                    </label>
-                                    <Form.Item
-                                        name="city"
-                                        rules={[{ required: true, message: 'Vui lòng chọn tỉnh / thành phố' }]}
-                                    >
-                                        <Selectbox
-                                            isRequired={true}
-                                            name="customer_city"
-                                            id=""
-                                            type="tỉnh / thành phố"
-                                            className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full pointer-events-none bg-gray-100"
-                                            selectedValue={1}
-                                            options={[{ label: 'TP. Hồ Chí Minh', value: 1 }]}
-                                            onChange={handleSelectCityChange}
-                                        />
-                                    </Form.Item>
-                                </div>
-                                <div className="customer__input--district col-span-1">
-                                    <label htmlFor="customer_district" className="text-base font-medium block">
-                                        Quận / Huyện
-                                    </label>
-                                    <Form.Item
-                                        name="district"
-                                        rules={[
-                                            { required: true, message: 'Vui lòng chọn quận / huyện' },
-                                            {
-                                                validator(_, value) {
-                                                    if (value === 0) {
-                                                        return Promise.reject(new Error('Vui lòng chọn quận / huyện'));
-                                                    }
-                                                    return Promise.resolve();
-                                                },
-                                            },
-                                        ]}
-                                    >
-                                        <Selectbox
-                                            isRequired={true}
-                                            name="customer_district"
-                                            id=""
-                                            type="quận / huyện"
-                                            className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                            selectedValue={formData.district}
-                                            options={districtList.map((district): Option => {
-                                                return {
-                                                    value: district.id.toString(),
-                                                    label: district.name,
-                                                };
-                                            })}
-                                            onChange={handleSelectDistrictChange}
-                                        />
-                                    </Form.Item>
-                                </div>
-                                <div className="customer__input--ward col-span-1">
-                                    <label htmlFor="customer_ward" className="text-base font-medium block">
-                                        Phường / Xã
-                                    </label>
-                                    <Form.Item
-                                        name="ward"
-                                        rules={[
-                                            { required: true, message: 'Vui lòng chọn phường / xã' },
-                                            {
-                                                validator(_, value) {
-                                                    if (value === 0) {
-                                                        return Promise.reject(new Error('Vui lòng chọn phường / xã'));
-                                                    }
-                                                    return Promise.resolve();
-                                                },
-                                            },
-                                        ]}
-                                    >
-                                        <Selectbox
-                                            isRequired={true}
-                                            name="customer_ward"
-                                            id=""
-                                            type="phường / xã"
-                                            className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                            selectedValue={formData.wardId}
-                                            options={wardList.map((ward) => {
-                                                return {
-                                                    value: ward.id,
-                                                    label: ward.name,
-                                                };
-                                            })}
-                                            onChange={handleSelectWardChange}
-                                        />
-                                    </Form.Item>
-                                </div>
-                            </div>
-                            <div className="customer__input--location grid grid-cols-3 gap-x-6">
-                                <div className="delivery__form--header font-bold text-base mb-3">Địa chỉ trả đơn</div>
-                                <div className="customer__input--address col-span-3">
-                                    <Form.Item
-                                        name="address"
-                                        rules={[{ required: true, message: 'Vui lòng nhập địa chỉ cá nhân' }]}
-                                        validateTrigger={['onBlur']}
-                                    >
-                                        <Input
-                                            label="Địa chỉ"
-                                            required
-                                            type="text"
-                                            name="customer_lname"
-                                            placeholder="Địa chỉ"
-                                            value={formData.address}
-                                            onChange={(e) => {
-                                                setFormData((prev) => ({ ...prev, address: e.target.value }));
-                                            }}
-                                        />
-                                    </Form.Item>
-                                </div>
-                                <div className="customer__input--city col-span-1">
-                                    <label htmlFor="customer_city" className="text-base font-medium block">
-                                        Tỉnh / Thành{' '}
-                                        <Tooltip
-                                            title="Washouse hiện tại chỉ khả dụng tại TP. Hồ Chí Minh thôi bạn nhé"
-                                            className="ml-1"
-                                        >
-                                            <QuestionCircleOutlined />
-                                        </Tooltip>
-                                    </label>
-                                    <Form.Item
-                                        name="city"
-                                        rules={[{ required: true, message: 'Vui lòng chọn tỉnh / thành phố' }]}
-                                    >
-                                        <Selectbox
-                                            isRequired={true}
-                                            name="customer_city"
-                                            id=""
-                                            type="tỉnh / thành phố"
-                                            className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full pointer-events-none bg-gray-100"
-                                            selectedValue={1}
-                                            options={[{ label: 'TP. Hồ Chí Minh', value: 1 }]}
-                                            onChange={handleSelectCityChange}
-                                        />
-                                    </Form.Item>
-                                </div>
-                                <div className="customer__input--district col-span-1">
-                                    <label htmlFor="customer_district" className="text-base font-medium block">
-                                        Quận / Huyện
-                                    </label>
-                                    <Form.Item
-                                        name="district"
-                                        rules={[
-                                            { required: true, message: 'Vui lòng chọn quận / huyện' },
-                                            {
-                                                validator(_, value) {
-                                                    if (value === 0) {
-                                                        return Promise.reject(new Error('Vui lòng chọn quận / huyện'));
-                                                    }
-                                                    return Promise.resolve();
-                                                },
-                                            },
-                                        ]}
-                                    >
-                                        <Selectbox
-                                            isRequired={true}
-                                            name="customer_district"
-                                            id=""
-                                            type="quận / huyện"
-                                            className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                            selectedValue={formData.district}
-                                            options={districtList.map((district): Option => {
-                                                return {
-                                                    value: district.id.toString(),
-                                                    label: district.name,
-                                                };
-                                            })}
-                                            onChange={handleSelectDistrictChange}
-                                        />
-                                    </Form.Item>
-                                </div>
-                                <div className="customer__input--ward col-span-1">
-                                    <label htmlFor="customer_ward" className="text-base font-medium block">
-                                        Phường / Xã
-                                    </label>
-                                    <Form.Item
-                                        name="ward"
-                                        rules={[
-                                            { required: true, message: 'Vui lòng chọn phường / xã' },
-                                            {
-                                                validator(_, value) {
-                                                    if (value === 0) {
-                                                        return Promise.reject(new Error('Vui lòng chọn phường / xã'));
-                                                    }
-                                                    return Promise.resolve();
-                                                },
-                                            },
-                                        ]}
-                                    >
-                                        <Selectbox
-                                            isRequired={true}
-                                            name="customer_ward"
-                                            id=""
-                                            type="phường / xã"
-                                            className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                            selectedValue={formData.wardId}
-                                            options={wardList.map((ward) => {
-                                                return {
-                                                    value: ward.id,
-                                                    label: ward.name,
-                                                };
-                                            })}
-                                            onChange={handleSelectWardChange}
-                                        />
-                                    </Form.Item>
-                                </div>
-                            </div>
-                        </Form>
-                    )}
-                </>
-            ),
+            children: <></>,
         },
         {
             type: DeliveryEnum.ONE_WAY_TO,
@@ -913,16 +548,19 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                             <Select
                                                 labelInValue
                                                 options={dateOptions}
-                                                onChange={onDateSelectchange}
+                                                onChange={onDateSelectChange}
                                                 defaultValue={dateOptions[0]}
                                             ></Select>
                                         </Form.Item>
                                         <Form.Item className="flex-grow">
                                             <TimePicker
-                                                className="w-full"
                                                 format={format}
                                                 minuteStep={5}
-                                                disabledTime={disable(dayjs(pickupDate, 'DD/MM/YYYY'))}
+                                                disabledTime={disabledTime}
+                                                showNow={false}
+                                                onSelect={(time: dayjs.Dayjs) => {
+                                                    setSelectedTime(time);
+                                                }}
                                             />
                                         </Form.Item>
                                         {/* <TimePicker
@@ -958,7 +596,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                             <Select
                                                 labelInValue
                                                 options={dateOptions}
-                                                onChange={onDateSelectchange}
+                                                onChange={onDateSelectChange}
                                                 defaultValue={dateOptions[0]}
                                             ></Select>
                                         </Form.Item>
@@ -996,16 +634,19 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                             <Select
                                                 labelInValue
                                                 options={dateOptions}
-                                                onChange={onDateSelectchange}
+                                                onChange={onDateSelectChange}
                                                 defaultValue={dateOptions[0]}
                                             ></Select>
                                         </Form.Item>
                                         <Form.Item className="flex-grow">
                                             <TimePicker
-                                                className="w-full"
                                                 format={format}
                                                 minuteStep={5}
-                                                disabledTime={disable(dayjs(pickupDate, 'DD/MM/YYYY'))}
+                                                disabledTime={disabledTime}
+                                                showNow={false}
+                                                onSelect={(time: dayjs.Dayjs) => {
+                                                    setSelectedTime(time);
+                                                }}
                                             />
                                         </Form.Item>
                                         {/* <TimePicker
@@ -1041,7 +682,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                             <Select
                                                 labelInValue
                                                 options={dateOptions}
-                                                onChange={onDateSelectchange}
+                                                onChange={onDateSelectChange}
                                                 defaultValue={dateOptions[0]}
                                             ></Select>
                                         </Form.Item>
@@ -1200,16 +841,19 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                             <Select
                                                 labelInValue
                                                 options={dateOptions}
-                                                onChange={onDateSelectchange}
+                                                onChange={onDateSelectChange}
                                                 defaultValue={dateOptions[0]}
                                             ></Select>
                                         </Form.Item>
                                         <Form.Item className="flex-grow">
                                             <TimePicker
-                                                className="w-full"
                                                 format={format}
                                                 minuteStep={5}
-                                                disabledTime={disable(dayjs(pickupDate, 'DD/MM/YYYY'))}
+                                                disabledTime={disabledTime}
+                                                showNow={false}
+                                                onSelect={(time: dayjs.Dayjs) => {
+                                                    setSelectedTime(time);
+                                                }}
                                             />
                                         </Form.Item>
                                         {/* <TimePicker
@@ -1245,7 +889,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                             <Select
                                                 labelInValue
                                                 options={dateOptions}
-                                                onChange={onDateSelectchange}
+                                                onChange={onDateSelectChange}
                                                 defaultValue={dateOptions[0]}
                                             ></Select>
                                         </Form.Item>
@@ -1404,16 +1048,19 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                             <Select
                                                 labelInValue
                                                 options={dateOptions}
-                                                onChange={onDateSelectchange}
+                                                onChange={onDateSelectChange}
                                                 defaultValue={dateOptions[0]}
                                             ></Select>
                                         </Form.Item>
                                         <Form.Item className="flex-grow">
                                             <TimePicker
-                                                className="w-full"
                                                 format={format}
                                                 minuteStep={5}
-                                                disabledTime={disable(dayjs(pickupDate, 'DD/MM/YYYY'))}
+                                                disabledTime={disabledTime}
+                                                showNow={false}
+                                                onSelect={(time: dayjs.Dayjs) => {
+                                                    setSelectedTime(time);
+                                                }}
                                             />
                                         </Form.Item>
                                         {/* <TimePicker
@@ -1449,7 +1096,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                                             <Select
                                                 labelInValue
                                                 options={dateOptions}
-                                                onChange={onDateSelectchange}
+                                                onChange={onDateSelectChange}
                                                 defaultValue={dateOptions[0]}
                                             ></Select>
                                         </Form.Item>
@@ -1759,7 +1406,7 @@ export const Step2 = ({ formData, onBack, setFormData, centerOperatingDays }: St
                     Quay lại
                 </div>
                 <button className="btn primary" type="submit">
-                    Hoàn tất đơn hàng
+                    <div className="px-6 py-3">Hoàn tất đơn hàng</div>
                 </button>
             </div>
         </>

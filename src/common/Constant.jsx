@@ -20,7 +20,7 @@ const API_CENTER_DETAILS = '/api/centers/${id}'
 const API_CATEGORY = '/api/service-categories'
 
 //SERVICE API
-const API_SERVICE_DETAILS = '/api/services/${id}'
+const API_SERVICE_DETAILS = '/api/centers/${centerId}/services/${serviceId}'
 
 //LOCATION API
 const API_DISTRICT = '/api/districts'

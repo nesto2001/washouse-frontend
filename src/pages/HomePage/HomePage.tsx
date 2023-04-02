@@ -47,7 +47,7 @@ const HomePage = () => {
                             </div>
                             <div className="hero__content--action mt-10">
                                 <WHButton type="primary" uppercase fontSize="24px" link="/trung-tâm">
-                                    Đặt dịch vụ ngay
+                                    <div className="px-6 py-3">Đặt dịch vụ ngay</div>
                                 </WHButton>
                             </div>
                         </div>
@@ -79,8 +79,8 @@ const HomePage = () => {
                                     hàng để giảm bớt chi phí quản lý, vận hành, marketing, công nghệ.
                                 </div>
                                 <div className="partnership__content--action mt-9 text-left">
-                                    <WHButton type="primary" fontSize="20px">
-                                        Tham gia ngay
+                                    <WHButton type="primary" fontSize="20px" link="/provider/register">
+                                        <div className="py-3 px-6">Tham gia ngay</div>
                                     </WHButton>
                                 </div>
                             </div>

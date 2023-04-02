@@ -1,21 +1,18 @@
-import { ServicePriceModel } from './ServicePricesModel';
+import { ServicePricesModel } from './ServicePricesModel';
 
 export type ServiceDetailsModel = {
     id: number;
-    serviceName: string;
-    alias: string;
     categoryId: number;
+    name: string;
     description: string;
-    minPrice?: number;
-    rate: number;
-    priceType: boolean;
     image: string;
-    price: number;
+    priceType: boolean;
+    price: number | null;
+    minPrice: number;
+    unit: string;
+    rate: number;
+    prices: ServicePricesModel[];
     timeEstimate: number;
-    isAvailable: boolean;
-    rating: number;
+    rating: number | null;
     numOfRating: number;
-    centerId: number;
-    serviceGalleries?: [];
-    servicePrices?: ServicePriceModel[];
 };

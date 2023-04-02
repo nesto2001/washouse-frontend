@@ -1,9 +1,7 @@
-import { ServiceDetailsModel } from '../models/Service/ServiceDetailsModel';
-import { ServicePriceModel } from '../models/Service/ServicePricesModel';
-import { SubService } from '../types/ServiceType/SubService';
+import { ServicePricesModel } from '../models/Service/ServicePricesModel';
 
 export function calculatePrice(
-    priceChart: ServicePriceModel[],
+    priceChart: ServicePricesModel[],
     minPrice: number | null | undefined,
     weight: number,
 ): number {

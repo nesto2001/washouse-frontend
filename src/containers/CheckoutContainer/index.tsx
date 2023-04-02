@@ -102,13 +102,13 @@ const CheckoutContainer = (props: Props) => {
                     )}
                 </div>
 
-                {step === 1 && <Step1 onNext={handleNext} formData={formData} setFormData={setFormData} />}
-                {step === 2 && (
+                {step === 1 && center && <Step1 onNext={handleNext} formData={formData} setFormData={setFormData} />}
+                {step === 2 && center && (
                     <Step2
                         setFormData={setFormData}
                         onBack={handleBack}
                         formData={formData}
-                        centerOperatingDays={center?.centerOperatingHours}
+                        centerOperatingDays={center.centerOperatingHours}
                     />
                 )}
             </div>
@@ -167,7 +167,9 @@ const CheckoutContainer = (props: Props) => {
                                                 {item.quantity && item.quantity > 0 ? item.quantity : item.weight}{' '}
                                                 {item.unit === 'kg' ?? ''}
                                             </h4>
-                                            <h4 className="text-2xl font-bold mb-1">{formatCurrency(item.price)}</h4>
+                                            <h4 className="text-2xl font-bold mb-1">
+                                                {formatCurrency(item.price ?? 0)}
+                                            </h4>
                                         </div>
                                     </div>
                                 ))}

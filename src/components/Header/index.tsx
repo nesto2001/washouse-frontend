@@ -5,7 +5,7 @@ import { getDistricts, getUserDistrict } from '../../repositories/LocationReposi
 import { Option } from '../../types/Options';
 import { getCurrentLocation } from '../../utils/CommonUtils';
 import { MenuProps } from 'antd';
-import { FaChessKing, FaSearch, FaShoppingCart } from 'react-icons/fa';
+import { FaChessKing, FaRegBell, FaSearch, FaShoppingCart } from 'react-icons/fa';
 import Selectbox from '../Selectbox';
 import Button from '../Button';
 import Logo from '../../assets/images/washouse-tagline.png';
@@ -14,7 +14,7 @@ import Order from '../../assets/images/order-pf.png';
 import Placeholder from '../../assets/images/placeholder.png';
 import DropdownMenu from '../Dropdown/DropdownMenu';
 import './Navbar.scss';
-import { BiPowerOff } from 'react-icons/bi';
+import { BiPowerOff, BiSearch } from 'react-icons/bi';
 import { getMe } from '../../repositories/AuthRepository';
 import { UserModel } from '../../models/User/UserModel';
 
@@ -137,9 +137,35 @@ const Navbar = () => {
 
     return (
         <div className="w-full" id="navbar">
-            <div className="mx-auto flex gap-8 justify-between items-center px-4 py-4 container w-full">
+            <div className="w-full" id="navbar-top">
+                <div className="w-full mx-auto container px-4 py-1.5 flex justify-between items-center">
+                    <div className="topnav-left flex items-center gap-2 text-sm">
+                        <Link className="wh-link" to="/provider/login">
+                            Kênh Đối tác
+                        </Link>
+                        <div className="w-[1px] h-[14px] bg-wh-gray"></div>
+                        <Link className="wh-link" to="/provider/register">
+                            Trở thành Đối tác Washouse
+                        </Link>
+                    </div>
+                    <div className="topnav-right flex items-center gap-2 text-sm">
+                        <div className="wh-link flex items-center gap-1 cursor-pointer">
+                            <FaRegBell /> Thông báo
+                        </div>
+                        <div className="w-[1px] h-[14px] bg-wh-gray"></div>
+                        <div className="wh-link flex items-center gap-1 cursor-pointer">
+                            <BiSearch size={16} /> Tra cứu đơn hàng
+                        </div>
+                        {/* <div className="w-[1px] h-[14px] bg-wh-gray"></div>
+                        <Link className="wh-link" to="/provider/login">
+                            Tải ứng dụng
+                        </Link> */}
+                    </div>
+                </div>
+            </div>
+            <div className="mx-auto flex gap-8 justify-between items-center px-4 container w-full">
                 <Link to={user ? '/trung-tâm' : '/'}>
-                    <div className="w-[221px] h-[75px]">
+                    <div className="w-[200px] h-[75px]">
                         <img src={Logo} alt="logo" className="cursor-pointer" />
                     </div>
                 </Link>
@@ -154,9 +180,9 @@ const Navbar = () => {
                     })}
                     onChange={handleDistrictChange}
                     selectedValue={district?.id}
-                    className=""
+                    className="max-h-[40px]"
                 ></Selectbox>
-                <div className="nav__searchbar w-[450px] h-[55px] grow justify-end hidden md:flex items-center">
+                <div className="nav__searchbar w-[450px] h-[40px] grow justify-end hidden md:flex items-center">
                     <form className="md:flex" action="">
                         <input
                             type="text"
@@ -166,13 +192,13 @@ const Navbar = () => {
                             placeholder="Tìm kiếm"
                         />
                         <button onClick={handleSearch} className="ml-2 px-2 w-[50px] text-sub bg-transparent">
-                            <FaSearch size={30} />
+                            <FaSearch size={24} />
                         </button>
                     </form>
                 </div>
                 <div className="nav__action--cart">
                     <Link to="/cart" className="text-sub">
-                        <FaShoppingCart size={28} />
+                        <FaShoppingCart size={26} />
                     </Link>
                 </div>
                 {user ? (
@@ -196,12 +222,12 @@ const Navbar = () => {
                     <div className="guest__action flex gap-5">
                         <div className="guest__action--signup">
                             <Button type="primary" link="/register">
-                                Đăng ký
+                                <div className="px-3 py-2">Đăng ký</div>
                             </Button>
                         </div>
                         <div className="guest__action--login">
                             <Button type="sub" link="/login">
-                                Đăng nhập
+                                <div className="px-3 py-2">Đăng nhập</div>
                             </Button>
                         </div>
                     </div>

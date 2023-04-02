@@ -104,6 +104,15 @@ input:focus {
     font-weight: 500;
 }
 
+.wh-link {
+    font-weight: 400;
+    transition: 0.1s color ease-in-out;
+}
+
+.wh-link:hover {
+    color: var(--washouse-primary-blue);
+}
+
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;

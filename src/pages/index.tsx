@@ -14,6 +14,8 @@ export { default as CustomerProfilePage } from './CustomerPage/CustomerProfilePa
 export { default as CustomerAddressPage } from './CustomerPage/CustomerAddressPage';
 export { default as CustomerOrdersPage } from './CustomerPage/CustomerOrdersPage';
 export { default as CustomerPasswordPage } from './CustomerPage/CustomerPasswordPage';
+export { default as StaffLoginPage } from './StaffPage/StaffAuth/StaffLoginPage';
+export { default as StaffRegisterPage } from './StaffPage/StaffAuth/StaffRegisterPage';
 export { default as ManagerDashboardPage } from './StaffPage/ManagerDashboardPage';
 export { default as ManagerCenterPage } from './StaffPage/ManagerCenter/ManagerCenterPage';
 export { default as ManagerCenterRegistrationPage } from './StaffPage/ManagerCenter/ManagerCenterRegistrationPage';

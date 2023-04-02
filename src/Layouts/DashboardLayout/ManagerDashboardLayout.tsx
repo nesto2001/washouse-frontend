@@ -9,15 +9,20 @@ import {
     SolutionOutlined,
     UserOutlined,
 } from '@ant-design/icons';
-import { Layout, Menu, theme } from 'antd';
+import { Layout, Menu, MenuProps, theme } from 'antd';
 import clsx from 'clsx';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Logo from '../../assets//images/washouse-notag.png';
 import UserPlaceholder from '../../assets/images/user-placeholder.png';
 import LogoSmall from '../../assets/images/washouse-notext.png';
+import User from '../../assets/images/user-pf.png';
+import Order from '../../assets/images/order-pf.png';
+import Laundromat from '../../assets/images/store.png';
 import DropdownMenu from '../../components/Dropdown/DropdownMenu';
 import style from './DashboardLayout.module.scss';
+import { BiPowerOff } from 'react-icons/bi';
+import { UserModel } from '../../models/User/UserModel';
 
 type Props = {
     children?: JSX.Element;
@@ -26,8 +31,14 @@ type Props = {
 const { Header, Sider, Content } = Layout;
 
 const ManagerDashboardLayout = ({ children }: Props) => {
+    const userJson = localStorage.getItem('currentUser');
     const [collapsed, setCollapsed] = useState(false);
-    const [user, setUser] = useState({ name: 'Le thanh Dat' });
+    const [user, setUser] = useState<UserModel>(userJson && JSON.parse(userJson));
+
+    useEffect(() => {
+        const fetchData = async () => {};
+    }, []);
+
     const {
         token: { colorBgContainer },
     } = theme.useToken();
@@ -70,6 +81,55 @@ const ManagerDashboardLayout = ({ children }: Props) => {
             label: <Link to="/provider/customers">Khách hàng</Link>,
         },
     ];
+
+    const userDropdown: MenuProps['items'] = [
+        // {
+        //     label: (
+        //         <>
+        //             <Link to="/user/account/profile" className="navbar__dropdown--item flex text-sm py-3 px-2 pl-1">
+        //                 <img className="w-5 object-scale-down mr-5" src={User} alt="" />
+        //                 Tài khoản
+        //             </Link>
+        //         </>
+        //     ),
+        //     key: '0',
+        // },
+        {
+            label: (
+                <>
+                    <Link
+                        to="/provider/settings/center/profile"
+                        className="navbar__dropdown--item flex text-sm py-3 px-2 pl-1"
+                    >
+                        <img className="w-5 object-scale-down mr-5" src={Laundromat} alt="" /> Trung tâm
+                    </Link>
+                </>
+            ),
+            key: '1',
+        },
+        {
+            type: 'divider',
+        },
+        {
+            label: (
+                <>
+                    <Link
+                        to="/"
+                        onClick={() => {
+                            localStorage.removeItem('currentUser');
+                        }}
+                        className="navbar__dropdown--item flex text-sm py-3 px-2 pl-1"
+                        id="logout"
+                    >
+                        <BiPowerOff size={20} className="mr-5" />
+                        Đăng xuất
+                    </Link>
+                </>
+            ),
+            key: '3',
+        },
+    ];
+
     return (
         <Layout hasSider className="text-left">
             <Sider
@@ -118,7 +178,7 @@ const ManagerDashboardLayout = ({ children }: Props) => {
                         >
                             <img className="w-full h-full object-cover" src={UserPlaceholder} alt="" />
                         </div>
-                        <DropdownMenu items={items} menuText={user.name} className="" />
+                        <DropdownMenu items={userDropdown} menuText={user.name} className="" />
                     </div>
                 </Header>
                 <Content style={{ margin: '24px 16px 24px', overflow: 'initial', minHeight: `calc(100vh - 88px)` }}>
