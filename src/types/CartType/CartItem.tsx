@@ -5,7 +5,8 @@ export interface CartItem {
     centerId: number;
     name: string;
     thumbnail: string;
-    price: number | null;
+    price?: number;
+    unitPrice: number;
     weight?: number;
     quantity?: number | null;
     minPrice?: number;

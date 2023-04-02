@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppThunk } from '../store/AppThunk';
 import { CartItem } from '../types/CartType/CartItem';
 import { CartState } from '../types/CartType/CartState';
-import { calculatePrice } from '../utils/CommonUtils';
+import { calculatePrice, getWeightUnitPrice } from '../utils/CommonUtils';
 type Props = {};
 
 const cartJson = localStorage.getItem('userCart');
@@ -50,23 +50,24 @@ const CartReducer = createSlice({
                         if (existingItem.weight > item.priceChart[item.priceChart.length - 1].maxValue) {
                             throw new Error('Khối lượng vượt quá khối lượng tối đa trên bảng giá');
                         }
+                        existingItem.minPrice = getWeightUnitPrice(item.priceChart, existingItem.weight);
                         existingItem.price = calculatePrice(item.priceChart, item.minPrice, existingItem.weight);
-                        state.totalPrice += existingItem.price - (item.price??0);
+
+                        state.totalPrice += existingItem.price - (item.price ?? 0);
                         console.log(item.price);
                     }
                 } else {
                     if (existingItem.quantity && item.quantity) {
                         existingItem.quantity += item.quantity;
+                        existingItem.price = item.quantity * item.unitPrice;
                         state.totalQuantity += item.quantity;
-                        state.totalPrice += item.quantity * (item.price??0);
+                        state.totalPrice += item.quantity * (item.price ?? 0);
                     }
                 }
             } else {
                 state.items.push(item);
                 state.totalQuantity += item.quantity && item.quantity > 0 ? item.quantity : 1;
-                state.totalPrice += item.price
-                    ? item.price * (item.quantity && item.quantity > 0 ? item.quantity : 1)
-                    : 0;
+                state.totalPrice += item.price ?? 0;
             }
             localStorage.setItem('userCart', JSON.stringify(state));
         },

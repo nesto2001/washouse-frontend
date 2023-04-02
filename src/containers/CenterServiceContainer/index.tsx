@@ -19,7 +19,7 @@ import { getCenterBrief } from '../../repositories/CenterRepository';
 import { getService } from '../../repositories/ServiceRepository';
 import { RootState } from '../../store/CartStore';
 import { CartItem } from '../../types/CartType/CartItem';
-import { calculatePrice, getRating } from '../../utils/CommonUtils';
+import { calculatePrice, getRating, getWeightUnitPrice } from '../../utils/CommonUtils';
 import { formatCurrency } from '../../utils/FormatUtils';
 import { compareTime, getToday } from '../../utils/TimeUtils';
 
@@ -117,6 +117,9 @@ const CenterServiceContainer = (props: Props) => {
             const calculatedPrice =
                 service.prices && calculatePrice(service.prices, service.minPrice, parseFloat(weightInput));
             calculatedPrice && setServicePrice(formatCurrency(calculatedPrice));
+        } else if (service && service.price && quantityInput > 0) {
+            const calculatedPrice = service.price * quantityInput;
+            calculatedPrice && setServicePrice(formatCurrency(calculatedPrice));
         } else {
             setServicePrice(
                 service?.price
@@ -131,7 +134,7 @@ const CenterServiceContainer = (props: Props) => {
                     : formatCurrency(0),
             );
         }
-    }, [weightInput, service]);
+    }, [weightInput, service, quantityInput]);
 
     if (isLoading) {
         return (
@@ -155,12 +158,12 @@ const CenterServiceContainer = (props: Props) => {
                     id: service.id,
                     name: service.name,
                     thumbnail: service.image,
-                    price:
-                        service.price ??
-                        (service.prices && calculatePrice(service.prices, service.minPrice, parseInt(weightInput))),
+                    unitPrice:
+                        service.price ?? (service.prices && getWeightUnitPrice(service.prices, parseInt(weightInput))),
                     weight: parseInt(weightInput) ?? null,
                     quantity: quantityInput ?? null,
                     unit: quantityInput ? 'pcs' : 'kg',
+                    price: parseFloat(servicePrice.replace(/[^\d]*(\d{1,3})(?:[^\d]|$)/g, '$1')),
                     centerId: center.id,
                     priceChart: service.prices,
                 };
@@ -186,7 +189,7 @@ const CenterServiceContainer = (props: Props) => {
                 id: service.id,
                 name: service.name,
                 thumbnail: service.image,
-                price: service.price,
+                unitPrice: service.price ?? 0,
                 weight: parseInt(weightInput) ?? null,
                 quantity: quantityInput ?? null,
                 unit: quantityInput ? 'pcs' : 'kg',

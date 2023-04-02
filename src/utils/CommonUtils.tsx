@@ -23,6 +23,21 @@ export function calculatePrice(
     return 0;
 }
 
+export function getWeightUnitPrice(priceChart: ServicePricesModel[], weight: number): number {
+    // if (!service.priceType) {
+    //     return 0;
+    // }
+    if (priceChart) {
+        for (let i = 0; i < priceChart.length; i++) {
+            const { maxValue, price } = priceChart[i];
+            if (weight <= maxValue) {
+                return price;
+            }
+        }
+    }
+    return 0;
+}
+
 export function getRating(rating: number): string {
     let ratingText = '';
     if (rating >= 0 && rating <= 1) {
