@@ -41,7 +41,9 @@ const ServiceListingContainer = (props: Props) => {
         priceRange: { min: 0, max: 0 },
         priceType: null,
     });
-    const [categoryOptions, setCategoryOptions] = useState<CategoryOptionsModel[]>([]);
+    const [categoryOptions, setCategoryOptions] = useState<CategoryOptionsModel[]>([
+        { id: 0, name: 'Chọn loại dịch vụ' },
+    ]);
 
     const serviceTab: TabsProps['items'] = [
         {
@@ -80,8 +82,7 @@ const ServiceListingContainer = (props: Props) => {
             return await getCategoryOptions();
         };
         fetchData().then((res) => {
-            setCategoryOptions(res);
-            console.log(res);
+            setCategoryOptions((prev) => [...prev, ...res]);
         });
     }, []);
 
@@ -217,7 +218,6 @@ const ServiceListingContainer = (props: Props) => {
                             </Row>
                         </Form.Item>
                     </div>
-
                 </Form>
             </div>
             <div className="provider__services mt-12 mb-72">

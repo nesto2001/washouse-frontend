@@ -1,17 +1,8 @@
-import { ServiceResponse } from '../Service/ServiceResponse';
-
 export type CategoryResponse = {
-    id: number;
+    categoryId: number;
     categoryName: string;
-    alias: string;
-    parentId: null;
+    categoryAlias: string;
     description: string;
     image: string;
-    status: boolean;
     homeFlag: boolean;
-    services?: ServiceResponse[];
-    createdDate: string;
-    createdBy: string;
-    updatedDate: string;
-    updatedBy: string;
 };

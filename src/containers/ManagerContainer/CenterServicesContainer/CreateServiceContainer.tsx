@@ -47,7 +47,9 @@ const onFinishFailed = (errorInfo: any) => {
 const CreateServiceContainer = ({ setFormData }: Props) => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [priceType, setPriceType] = useState(true);
-    const [categoryOptions, setCategoryOptions] = useState<CategoryOptionsModel[]>([]);
+    const [categoryOptions, setCategoryOptions] = useState<CategoryOptionsModel[]>([
+        { id: 0, name: 'Chọn loại dịch vụ' },
+    ]);
     const [form] = Form.useForm();
 
     const handleChange = (info: UploadChangeParam) => {
@@ -74,7 +76,7 @@ const CreateServiceContainer = ({ setFormData }: Props) => {
             return await getCategoryOptions();
         };
         fetchData().then((res) => {
-            setCategoryOptions(res);
+            setCategoryOptions((prev) => [...prev, ...res]);
         });
     }, []);
 
@@ -87,7 +89,7 @@ const CreateServiceContainer = ({ setFormData }: Props) => {
             <Form
                 name="create"
                 layout="vertical"
-                initialValues={{ remember: true }}
+                initialValues={{ serviceCategory: 0 }}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"
@@ -113,7 +115,7 @@ const CreateServiceContainer = ({ setFormData }: Props) => {
                         name="serviceName"
                         rules={[{ required: true, message: 'Vui lòng nhập tên dịch vụ' }]}
                     >
-                        <Input />
+                        <Input placeholder="Nhập tên dịch vụ" />
                     </Form.Item>
                     <Form.Item
                         className="basis-1/2"
@@ -133,7 +135,7 @@ const CreateServiceContainer = ({ setFormData }: Props) => {
                     name="serviceDescription"
                     rules={[{ required: true, message: 'Vui lòng nhập mô tả dịch vụ' }]}
                 >
-                    <TextArea rows={4} />
+                    <TextArea rows={4} placeholder="Nhập mô tả dịch vụ" />
                 </Form.Item>
 
                 <Form.Item
@@ -142,7 +144,7 @@ const CreateServiceContainer = ({ setFormData }: Props) => {
                     {...rangeConfig}
                     rules={[{ required: true, message: 'Vui lòng nhập thời gian ước tính xử lý' }]}
                 >
-                    <InputNumber addonAfter="phút" />
+                    <InputNumber addonAfter="phút" placeholder="Nhập thời gian ước tính xử lý" />
                 </Form.Item>
                 <div className="flex w-full gap-10">
                     <Form.Item

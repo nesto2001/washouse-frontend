@@ -1,18 +1,15 @@
-import { List } from 'reselect/es/types';
-import { DistrictReponse } from '../models/DistrictReponse';
-import instance from '../services/axios/AxiosInstance';
-import { LocationModel } from '../models/LocationModel';
+import { API_CATEGORY } from '../common/Constant';
 import { CategoryOptionsModel } from '../models/Category/CategoryOptionsModel';
 import { CategoryResponse } from '../models/Category/CategoryResponse';
-import { API_CATEGORY } from '../common/Constant';
+import { ListResponse } from '../models/CommonModel';
+import instance from '../services/axios/AxiosInstance';
 
 export const getCategoryOptions = async (): Promise<CategoryOptionsModel[]> => {
-    const { data } = await instance.get<List<CategoryResponse>>(API_CATEGORY, {});
-    const categoryOptions = data.map((item): CategoryOptionsModel => {
+    const { data } = await instance.get<ListResponse<CategoryResponse>>(API_CATEGORY, {});
+    return data.data.map((item): CategoryOptionsModel => {
         return {
-            id: item.id,
+            id: item.categoryId,
             name: item.categoryName,
         };
     });
-    return [{ id: 0, name: 'Chọn phân loại' }, ...categoryOptions];
 };

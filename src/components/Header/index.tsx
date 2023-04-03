@@ -4,7 +4,7 @@ import { LocationModel } from '../../models/LocationModel';
 import { getDistricts, getUserDistrict } from '../../repositories/LocationRepository';
 import { Option } from '../../types/Options';
 import { getCurrentLocation } from '../../utils/CommonUtils';
-import { MenuProps } from 'antd';
+import { Badge, MenuProps } from 'antd';
 import { FaChessKing, FaRegBell, FaSearch, FaShoppingCart } from 'react-icons/fa';
 import Selectbox from '../Selectbox';
 import Button from '../Button';
@@ -17,6 +17,8 @@ import './Navbar.scss';
 import { BiPowerOff, BiSearch } from 'react-icons/bi';
 import { getMe } from '../../repositories/AuthRepository';
 import { UserModel } from '../../models/User/UserModel';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/CartStore';
 
 const Navbar = () => {
     const [latitude, setLatitude] = useState<number>();
@@ -27,6 +29,7 @@ const Navbar = () => {
     const [districts, setDistricts] = useState<LocationModel[]>([]);
     const userJson = localStorage.getItem('currentUser');
     const [user, setUser] = useState<UserModel>(userJson ? JSON.parse(userJson) : null);
+    const cartQuantity = useSelector((state: RootState) => state.cart.totalQuantity);
     const handleSearch = (e: { preventDefault: () => void }) => {
         e.preventDefault();
         if (searchValue) {
@@ -198,7 +201,9 @@ const Navbar = () => {
                 </div>
                 <div className="nav__action--cart">
                     <Link to="/cart" className="text-sub">
-                        <FaShoppingCart size={26} />
+                        <Badge size="small" color="red" count={cartQuantity}>
+                            <FaShoppingCart size={26} />
+                        </Badge>
                     </Link>
                 </div>
                 {user ? (

@@ -21,6 +21,7 @@ const CentersContainer = () => {
     const [longitude, setLongitude] = useState<number>();
     const [sorting, setSorting] = useState<string>('location');
     const [servicesCheck, setServicesCheck] = useState<string[]>([]);
+    const [hasDelivery, setHasDelivery] = useState<boolean>(false);
     const [budgetRange, setBudgetRange] = useState<BudgetType>({
         min: 0,
         max: 0,
