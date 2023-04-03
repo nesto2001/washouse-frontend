@@ -12,4 +12,5 @@ export interface CartItem {
     minPrice?: number;
     priceChart?: ServicePricesModel[];
     unit: 'kg' | 'pcs';
+    rate: number;
 }
