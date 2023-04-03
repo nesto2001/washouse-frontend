@@ -2,7 +2,7 @@ import { Button, message, Modal, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { FaPhoneAlt, FaRegClock } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import ModalImg from '../../assets/images/laundry-modal.svg';
 import Placeholder from '../../assets/images/placeholder.png';
 import WHButton from '../../components/Button';
@@ -14,7 +14,7 @@ import RatingStars from '../../components/RatingStars/RatingStars';
 import StatusTag from '../../components/StatusTag';
 import { CenterModel } from '../../models/Center/CenterModel';
 import { ServiceDetailsModel } from '../../models/Service/ServiceDetailsModel';
-import { addToCart, changeCartCenter, clearCart, reloadCart } from '../../reducers/CartReducer';
+import { addToCart, changeCartCenter, clearCart } from '../../reducers/CartReducer';
 import { getCenterBrief } from '../../repositories/CenterRepository';
 import { getService } from '../../repositories/ServiceRepository';
 import { RootState } from '../../store/CartStore';
@@ -172,7 +172,6 @@ const CenterServiceContainer = (props: Props) => {
                     dispatch(addToCart(cartItem) as any)
                         .then(() => {
                             messageApi.success('Đã thêm vào giỏ hàng');
-                            dispatch(reloadCart());
                         })
                         .catch((err: Error) => {
                             messageApi.error(err.message);
@@ -208,7 +207,6 @@ const CenterServiceContainer = (props: Props) => {
                     dispatch(addToCart(cartItem) as any)
                         .then(() => {
                             messageApi.success('Đã thêm vào giỏ hàng');
-                            dispatch(reloadCart());
                         })
                         .catch((err: Error) => {
                             messageApi.error(err.message);

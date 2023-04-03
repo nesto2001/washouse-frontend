@@ -3,8 +3,6 @@ import { AppThunk } from '../store/AppThunk';
 import { CartItem } from '../types/CartType/CartItem';
 import { CartState } from '../types/CartType/CartState';
 import { calculatePrice, getWeightUnitPrice } from '../utils/CommonUtils';
-import { persistReducer, persistStore } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
 type Props = {};
 
 const cartJson = localStorage.getItem('userCart');
@@ -81,6 +79,7 @@ const CartReducer = createSlice({
                 }
             }
             localStorage.setItem('userCart', JSON.stringify(state));
+            return state;
         },
         removeItem: (state, action: PayloadAction<number>) => {
             const itemId = action.payload;
@@ -108,20 +107,24 @@ const CartReducer = createSlice({
                 clearCart();
                 localStorage.removeItem('userCart');
             }
+            return state;
         },
         clearCart: (state) => {
             state = emptyState;
             localStorage.setItem('userCart', JSON.stringify(state));
+            return state;
         },
         changeCartCenter: (state, action: PayloadAction<number>) => {
             const centerId = action.payload;
             state.centerId = centerId;
+            return state;
         },
         reloadCart: (state) => {
             const cartJson = localStorage.getItem('userCart');
             const updateCartState: CartState = cartJson && JSON.parse(cartJson);
             state = updateCartState;
             localStorage.setItem('userCart', JSON.stringify(state));
+            return state;
         },
     },
 });

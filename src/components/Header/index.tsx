@@ -40,7 +40,6 @@ const Navbar = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(reloadCart());
         getCurrentLocation(setState, locationError);
     }, []);
 
