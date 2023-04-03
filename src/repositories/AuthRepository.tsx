@@ -1,4 +1,4 @@
-import { API_LOGIN, API_ME, API_REGISTER_CUSTOMER } from '../common/Constant';
+import { API_LOGIN, API_ME, API_REFRESH_TOKEN, API_REGISTER_CUSTOMER } from '../common/Constant';
 import { LoginResponse } from '../models/LoginResponse';
 import { Response } from '../models/CommonModel';
 import instance from '../services/axios/AxiosInstance';
@@ -47,4 +47,12 @@ export const getMe = async (): Promise<UserModel> => {
         phone: data.data.phone,
         roleType: data.data.roleType,
     };
+};
+
+export const refresh = async ({ accessToken, refreshToken }: { accessToken: string; refreshToken: string }) => {
+    const response = await instance.post<Response<LoginResponse>>(API_REFRESH_TOKEN, {
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+    });
+    return response;
 };

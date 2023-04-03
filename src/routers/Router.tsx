@@ -1,40 +1,42 @@
 import {
-    CenteredLayout,
-    BlankCenteredLayout,
-    SidebarLayout,
+    AdminDashboardLayout,
     AuthenticateLayout,
+    BlankCenteredLayout,
+    CenteredLayout,
     CustomerSidebarLayout,
     ManagerDashboardLayout,
-    AdminDashboardLayout,
+    SidebarLayout,
     StaffAuthenticateLayout,
 } from '../Layouts';
 import {
+    AdminCenterPage,
+    AdminDashboardPage,
     CartPage,
     CenterPage,
     CenterServicePage,
     CentersPage,
-    CheckoutPage,
-    HomePage,
     CheckoutConfirmPage,
-    LoginPage,
-    RegisterPage,
-    OrderDetailsPage,
-    CustomerProfilePage,
+    CheckoutPage,
     CustomerAddressPage,
     CustomerOrdersPage,
     CustomerPasswordPage,
-    ManagerDashboardPage,
+    CustomerProfilePage,
+    HomePage,
+    LoginPage,
     ManagerCenterPage,
     ManagerCenterRegistrationPage,
-    ManagerServicePage,
     ManagerCreateServicePage,
-    StaffCustomerPage,
-    AdminDashboardPage,
-    AdminCenterPage,
+    ManagerDashboardPage,
+    ManagerServicePage,
+    OrderDetailsPage,
+    RegisterPage,
     ResetPasswordPage,
+    StaffCustomerPage,
     StaffLoginPage,
     StaffRegisterPage,
+    AdminAccountPage,
 } from '../pages/';
+import AdminCenterRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterRequestPage';
 
 interface RouteProps {
     path: string;
@@ -168,13 +170,19 @@ const publicRoutes: Array<RouteProps> = [
     {
         path: '/admin/centers/request',
         layout: AdminDashboardLayout,
-        component: AdminCenterPage,
+        component: AdminCenterRequestPage,
     },
     {
         path: '/admin/centers/',
         layout: AdminDashboardLayout,
         component: AdminCenterPage,
     },
+    {
+        path: '/admin/accounts/',
+        layout: AdminDashboardLayout,
+        component: AdminAccountPage,
+    },
 ];
 
 export { publicRoutes };
+

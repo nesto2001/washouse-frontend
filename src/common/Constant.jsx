@@ -4,40 +4,41 @@ const BASE_URL = process.env.REACT_APP_FIREBASE_API_URL;
 const API_LOGIN = "/api/accounts/login";
 const API_ME = '/api/accounts/me';
 const API_REGISTER_CUSTOMER = '/api/accounts/customers'
+const API_REFRESH_TOKEN = '/api/accounts/token';
 
 //ACCOUNT API
-const API_ACCOUNT = '/api/accounts/'
-const API_ACCOUNT_DETAILS = '/api/accounts/${id}'
+const API_ACCOUNT = '/api/accounts/';
+const API_ACCOUNT_DETAILS = '/api/accounts/${id}';
 
 //UPLOAD API
-const API_MEDIA = '/api/medias'
+const API_MEDIA = '/api/medias';
 
 //CENTER API
-const API_CENTER = '/api/centers'
-const API_CENTER_DETAILS = '/api/centers/${id}'
+const API_CENTER = '/api/centers';
+const API_CENTER_DETAILS = '/api/centers/${id}';
 
 //SERVICE CATEGORY API
-const API_CATEGORY = '/api/service-categories'
+const API_CATEGORY = '/api/service-categories';
 
 //SERVICE API
-const API_SERVICE_DETAILS = '/api/centers/${centerId}/services/${serviceId}'
+const API_SERVICE_DETAILS = '/api/centers/${centerId}/services/${serviceId}';
 
 //LOCATION API
-const API_DISTRICT = '/api/districts'
-const API_DISTRICT_SEARCH = '/api/districts/search'
-const API_DISTRICT_WARDS = '/api/districts/${id}/wards'
-const API_LOCATION_SEARCH = '/api/locations/search'
-const API_LOCATION_DETAILS = 'api/location/${locationId}'
+const API_DISTRICT = '/api/districts';
+const API_DISTRICT_SEARCH = '/api/districts/search';
+const API_DISTRICT_WARDS = '/api/districts/${id}/wards';
+const API_LOCATION_SEARCH = '/api/locations/search';
+const API_LOCATION_DETAILS = 'api/location/${locationId}';
 
 //CENTER REQUEST API
-const API_REQUEST = '/api/requests/centers'
-const API_REQUEST_DETAILS = '/api/requests/centers/${id}'
-const API_REQUEST_APPROVE = '/api/requests/centers/${id}/approve'
-const API_REQUEST_REJECT = '/api/requests/centers/${id}/reject'
+const API_REQUEST = '/api/requests/centers';
+const API_REQUEST_DETAILS = '/api/requests/centers/${id}';
+const API_REQUEST_APPROVE = '/api/requests/centers/${id}/approve';
+const API_REQUEST_REJECT = '/api/requests/centers/${id}/reject';
 
 //ORDER API
-const API_ORDER_EST = '/api/orders/estimated-time'
-const API_ORDER_CREATE = '/api/orders'
+const API_ORDER_EST = '/api/orders/estimated-time';
+const API_ORDER_CREATE = '/api/orders';
 
 export {
     API_ORDER_CREATE,
@@ -60,5 +61,6 @@ export {
     API_MEDIA,
     API_CENTER,
     API_CATEGORY,
-    API_ACCOUNT_DETAILS
+    API_ACCOUNT_DETAILS,
+    API_REFRESH_TOKEN,
 };

@@ -1,9 +1,6 @@
-import { API_ACCOUNT, API_ACCOUNT_DETAILS, API_LOGIN, API_ME } from '../common/Constant';
+import { API_ACCOUNT_DETAILS } from '../common/Constant';
 import { AccountModel } from '../models/Account/AccountModel';
 import { AccountResponse } from '../models/Account/AccountResponse';
-import { LoginResponse } from '../models/LoginResponse';
-import { UserModel } from '../models/User/UserModel';
-import { UserResponse } from '../models/User/UserResponse';
 import instance from '../services/axios/AxiosInstance';
 
 export const getCustomerProfile = async (id: number): Promise<AccountModel> => {

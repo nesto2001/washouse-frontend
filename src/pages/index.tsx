@@ -24,3 +24,4 @@ export { default as ManagerCreateServicePage } from './StaffPage/ManagerService/
 export { default as StaffCustomerPage } from './StaffPage/StaffCustomer/StaffCustomerPage';
 export { default as AdminDashboardPage } from './AdminPage/AdminDashboardPage';
 export { default as AdminCenterPage } from './AdminPage/AdminCenter/AdminCenterPage';
+export { default as AdminAccountPage } from './AdminPage/AdminAccount/AdminAccountPage';

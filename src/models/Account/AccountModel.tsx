@@ -6,4 +6,5 @@ export type AccountModel = {
     dob: string;
     avatar?: string;
     locationId?: number;
+    status?: boolean;
 };

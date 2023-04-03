@@ -5,8 +5,8 @@ export type AccountResponse = {
     password: string;
     fullName: string;
     dob: string;
-    status: string;
-    roleType: string;
+    status: boolean;
+    roleType: boolean;
     profilePic?: string;
     locationId?: number;
     isResetPassword: boolean;

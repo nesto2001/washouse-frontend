@@ -116,7 +116,8 @@ const ManagerDashboardLayout = ({ children }: Props) => {
                     <Link
                         to="/"
                         onClick={() => {
-                            localStorage.removeItem('currentUser');
+                            localStorage.clear();
+                            //handle Logout
                         }}
                         className="navbar__dropdown--item flex text-sm py-3 px-2 pl-1"
                         id="logout"

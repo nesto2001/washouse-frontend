@@ -1,10 +1,9 @@
 import React from 'react';
-import AdminCenterListingContainer from '../../../containers/AdminContainer/CenterRequestsContainer/AdminCenterRequestsContainer';
-import AdminCentersContainer from '../../../containers/AdminContainer/CenterContainer/AdminCentersContainer';
+import AdminCenterRequestsContainer from '../../../containers/AdminContainer/CenterRequestsContainer/AdminCenterRequestsContainer';
 
 type Props = {};
 
-const AdminCenterPage = () => {
+const AdminCenterRequestPage = () => {
     return (
         <div className="flex gap-4">
             <div className="bg-white basis-2/3 mx-auto rounded border border-wh-lightgray">
@@ -14,7 +13,7 @@ const AdminCenterPage = () => {
                 </div>
                 <div className="provider__page--content px-6 mt-8">
                     <div className="provider__services--wrapper">
-                        <AdminCentersContainer />
+                        <AdminCenterRequestsContainer />
                     </div>
                 </div>
             </div>
@@ -22,4 +21,4 @@ const AdminCenterPage = () => {
     );
 };
 
-export default AdminCenterPage;
+export default AdminCenterRequestPage;

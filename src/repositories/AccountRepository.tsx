@@ -18,3 +18,21 @@ export const getUserProfile = async (id: number): Promise<AccountModel> => {
         locationId: data.locationId,
     };
 };
+
+export const getAllAccounts = async (): Promise<AccountModel[]> => {
+    const { data } = await instance.get<AccountResponse[]>(API_ACCOUNT, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+    });
+    return data.map((item): AccountModel => {
+        return {
+            accountId: item.id,
+            avatar: item.profilePic,
+            email: item.email,
+            fullName: item.fullName,
+            dob: item.dob,
+            phone: item.phone,
+            locationId: item.locationId,
+            status: item.status,
+        };
+    });
+};

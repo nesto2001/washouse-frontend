@@ -68,7 +68,6 @@ export const getAllCenter = async ({
         };
     });
 };
-
 export const getCenter = async (id: number): Promise<CenterDetailsModel> => {
     const { data } = await instance.get<Response<CenterDetailsResponse>>(
         API_CENTER_DETAILS.replace('${id}', id.toString()),
