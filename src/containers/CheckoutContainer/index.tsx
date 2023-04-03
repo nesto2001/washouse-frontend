@@ -5,7 +5,7 @@ import Breadcrumb from '../../components/Breadcrumb';
 import './CheckoutContainer.scss';
 
 import { FaPhoneAlt, FaRegClock } from 'react-icons/fa';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { CenterModel } from '../../models/Center/CenterModel';
 import { getCenterBrief } from '../../repositories/CenterRepository';
@@ -16,6 +16,7 @@ import { getToday } from '../../utils/TimeUtils';
 import { Step1, Step2, Step3 } from './CheckoutFormContainer';
 import { createOrder, getEstimateTime } from '../../repositories/OrderRepository';
 import { CreateOrderRequest } from '../../models/Order/CreateOrderRequest';
+import { clearCart } from '../../reducers/CartReducer';
 
 type Props = {};
 
@@ -25,6 +26,8 @@ const CheckoutContainer = (props: Props) => {
     const cartItems = useSelector((state: RootState) => state.cart.items);
     const cartCenterId = useSelector((state: RootState) => state.cart.centerId);
     const today = getToday();
+
+    const dispatch = useDispatch();
 
     const [center, setCenter] = useState<CenterModel>();
 
@@ -127,6 +130,7 @@ const CheckoutContainer = (props: Props) => {
                 .catch((error) => {
                     console.log(error);
                 });
+            dispatch(clearCart());
         }
     };
 

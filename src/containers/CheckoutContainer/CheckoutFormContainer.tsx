@@ -324,8 +324,8 @@ const dateTimeFormat = 'DD/MM/YYYY HH:mm';
 const customFormat: DatePickerProps['format'] = (value) => `${value.format(dateTimeFormat)}`;
 
 const dateOptions = [
-    { label: 'Hôm nay', value: dayjs().startOf('day').format('DD/MM/YYYY') },
-    { label: 'Ngày mai', value: dayjs().add(1, 'day').startOf('day').format('DD/MM/YYYY') },
+    { label: 'Hôm nay', value: dayjs().startOf('day').format('DD-MM-YYYY') },
+    { label: 'Ngày mai', value: dayjs().add(1, 'day').startOf('day').format('DD-MM-YYYY') },
 ];
 
 type Step2Props = {
@@ -542,23 +542,60 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
     const onChange = (e: RadioChangeEvent) => {
         console.log('radio checked', e.target.value);
         setDelivery(e.target.value);
-        setFormData((prev) => ({ ...prev, deliveryType: delivery }));
+        setFormData((prev) => ({ ...prev, deliveryType: e.target.value }));
     };
 
     const onFinish = (values: any) => {
         console.log('submit');
-        console.log(values);
-        const dropoffTime: string =
-            values.dropoff?.date?.value ?? '' + '' + selectedDropoffTime?.format('HH:mm') ?? '' === undefined
-                ? '03-04-2023 10:00:00'
-                : '03-04-2023 10:00:00';
-        const deliverTime: string =
-            values.deliver?.date?.value ?? '' + '' + selectedDeliverTime?.format('HH:mm') ?? '' === undefined ? '' : '';
-        setFormData((prev) => ({
-            ...prev,
-            preferredDropoffTime: dropoffTime ?? '',
-            preferredDeliverTime: deliverTime ?? '',
-        }));
+        const dropoffTime =
+            (values.dropoff?.date?.value ? values.deliver?.date?.value + ' ' : '') +
+                (selectedDropoffTime?.format('HH:mm:ss') ?? '') ?? undefined;
+        const deliverTime =
+            (values.deliver?.date?.value ? values.deliver?.date?.value + ' ' : '') +
+                (selectedDeliverTime?.format('HH:mm:ss') ?? '') ?? undefined;
+        if (dropoffTime && deliverTime) {
+            setFormData((prev) => ({
+                ...prev,
+                preferredDropoffTime: dropoffTime,
+                preferredDeliverTime: deliverTime,
+            }));
+        } else if (dropoffTime) {
+            setFormData((prev) => ({
+                ...prev,
+                preferredDropoffTime: dropoffTime,
+            }));
+        } else if (deliverTime) {
+            setFormData((prev) => ({
+                ...prev,
+                preferredDeliverTime: deliverTime,
+            }));
+        }
+        const dropoffAddress: DeliveryFormData = {
+            addressString: values.dropoff_address,
+            deliveryType: false,
+            wardId: values.dropoff_ward,
+        };
+        const deliverAddress: DeliveryFormData = {
+            addressString: values.deliver_address,
+            deliveryType: true,
+            wardId: values.deliver_ward,
+        };
+        if (dropoffAddress && deliverAddress) {
+            setFormData((prev) => ({
+                ...prev,
+                deliveryInfo: [dropoffAddress, deliverAddress],
+            }));
+        } else if (dropoffAddress) {
+            setFormData((prev) => ({
+                ...prev,
+                deliveryInfo: [dropoffAddress],
+            }));
+        } else if (deliverAddress) {
+            setFormData((prev) => ({
+                ...prev,
+                deliveryInfo: [deliverAddress],
+            }));
+        }
         onNext();
     };
 
@@ -639,7 +676,6 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
                                     id=""
                                     type="quận / huyện"
                                     className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                    selectedValue={formData.district}
                                     options={districtList.map((district): Option => {
                                         return {
                                             value: district.id.toString(),
@@ -655,7 +691,7 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
                                 Phường / Xã
                             </label>
                             <Form.Item
-                                name="ward"
+                                name="dropoff_ward"
                                 rules={[
                                     { required: true, message: 'Vui lòng chọn phường / xã' },
                                     {
@@ -674,7 +710,6 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
                                     id=""
                                     type="phường / xã"
                                     className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                    selectedValue={formData.wardId}
                                     options={wardList.map((ward) => {
                                         return {
                                             value: ward.id,
@@ -703,13 +738,6 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
                                     type="text"
                                     name="deliver_address"
                                     placeholder="Địa chỉ"
-                                    value={formData.address}
-                                    onChange={(e) => {
-                                        setFormData((prev) => ({
-                                            ...prev,
-                                            address: e.target.value,
-                                        }));
-                                    }}
                                 />
                             </Form.Item>
                         </div>
@@ -724,7 +752,7 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
                                 </Tooltip>
                             </label>
                             <Form.Item
-                                name="city"
+                                name="deliver_city"
                                 rules={[{ required: true, message: 'Vui lòng chọn tỉnh / thành phố' }]}
                             >
                                 <Selectbox
@@ -763,7 +791,6 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
                                     id=""
                                     type="quận / huyện"
                                     className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                    selectedValue={formData.district}
                                     options={districtList.map((district): Option => {
                                         return {
                                             value: district.id.toString(),
@@ -798,7 +825,6 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
                                     id=""
                                     type="phường / xã"
                                     className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                    selectedValue={formData.wardId}
                                     options={wardList.map((ward) => {
                                         return {
                                             value: ward.id,
@@ -828,13 +854,6 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
                                         type="text"
                                         name="dropoff_address"
                                         placeholder="Địa chỉ"
-                                        value={formData.address}
-                                        onChange={(e) => {
-                                            setFormData((prev) => ({
-                                                ...prev,
-                                                address: e.target.value,
-                                            }));
-                                        }}
                                     />
                                 </Form.Item>
                             </div>
@@ -888,7 +907,6 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
                                         id=""
                                         type="quận / huyện"
                                         className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                        selectedValue={formData.district}
                                         options={districtList.map((district): Option => {
                                             return {
                                                 value: district.id.toString(),
@@ -904,7 +922,7 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
                                     Phường / Xã
                                 </label>
                                 <Form.Item
-                                    name="ward"
+                                    name="dropoff_ward"
                                     rules={[
                                         { required: true, message: 'Vui lòng chọn phường / xã' },
                                         {
@@ -923,7 +941,6 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
                                         id=""
                                         type="phường / xã"
                                         className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                        selectedValue={formData.wardId}
                                         options={wardList.map((ward) => {
                                             return {
                                                 value: ward.id,
@@ -949,13 +966,6 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
                                         type="text"
                                         name="deliver_address"
                                         placeholder="Địa chỉ"
-                                        value={formData.address}
-                                        onChange={(e) => {
-                                            setFormData((prev) => ({
-                                                ...prev,
-                                                address: e.target.value,
-                                            }));
-                                        }}
                                     />
                                 </Form.Item>
                             </div>
@@ -970,7 +980,7 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
                                     </Tooltip>
                                 </label>
                                 <Form.Item
-                                    name="city"
+                                    name="deliver_city"
                                     rules={[{ required: true, message: 'Vui lòng chọn tỉnh / thành phố' }]}
                                 >
                                     <Selectbox
@@ -1009,7 +1019,6 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
                                         id=""
                                         type="quận / huyện"
                                         className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                        selectedValue={formData.district}
                                         options={districtList.map((district): Option => {
                                             return {
                                                 value: district.id.toString(),
@@ -1025,7 +1034,7 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
                                     Phường / Xã
                                 </label>
                                 <Form.Item
-                                    name="ward"
+                                    name="deliver_ward"
                                     rules={[
                                         { required: true, message: 'Vui lòng chọn phường / xã' },
                                         {
@@ -1044,7 +1053,6 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
                                         id=""
                                         type="phường / xã"
                                         className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                        selectedValue={formData.wardId}
                                         options={wardList.map((ward) => {
                                             return {
                                                 value: ward.id,
@@ -1067,7 +1075,7 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
                 <h3 className="font-bold text-xl">Phương thức vận chuyển</h3>
                 <Radio.Group
                     onChange={onChange}
-                    value={delivery}
+                    value={formData.deliveryType ?? delivery}
                     className="w-full border border-wh-gray rounded-lg mt-3"
                 >
                     {deliveryOpt.map((option) => (
@@ -1090,6 +1098,7 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
                     onFinishFailed={onFinishFailed}
                     autoComplete="on"
                     layout="vertical"
+                    initialValues={{ dropoff_city: 1, deliver_city: 1 }}
                 >
                     <div className="delivery__form--time grid grid-cols-2 gap-x-6">
                         <div className="col-span-1">
@@ -1254,7 +1263,7 @@ export const Step3 = ({ formData, onBack, setFormData, onSubmit }: Step3Props) =
                 <Radio.Group
                     onChange={handlePaymentRadioChange}
                     value={paymentType.toString()}
-                    className="w-full border border-wh-gray rounded-lg"
+                    className="w-full border border-wh-gray rounded-lg mt-3"
                 >
                     {paymentOpt.map((option) => (
                         <Radio
