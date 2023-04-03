@@ -3,6 +3,8 @@ import { AppThunk } from '../store/AppThunk';
 import { CartItem } from '../types/CartType/CartItem';
 import { CartState } from '../types/CartType/CartState';
 import { calculatePrice, getWeightUnitPrice } from '../utils/CommonUtils';
+import { persistReducer, persistStore } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 type Props = {};
 
 const cartJson = localStorage.getItem('userCart');
@@ -11,6 +13,7 @@ const emptyState: CartState = {
     items: [],
     totalPrice: 0,
     totalQuantity: 0,
+    totalWeight: 0,
     centerId: 0,
 };
 
@@ -20,6 +23,7 @@ const initialState: CartState = cartJson
           items: [],
           totalQuantity: 0,
           totalPrice: 0,
+          totalWeight: 0,
           centerId: null,
       };
 
@@ -54,20 +58,27 @@ const CartReducer = createSlice({
                         existingItem.price = calculatePrice(item.priceChart, item.minPrice, existingItem.weight);
 
                         state.totalPrice += existingItem.price - (item.price ?? 0);
+                        state.totalWeight += item.weight;
                         console.log(item.price);
                     }
                 } else {
-                    if (existingItem.quantity && item.quantity) {
+                    if (existingItem.quantity && item.quantity && existingItem.price) {
                         existingItem.quantity += item.quantity;
-                        existingItem.price = item.quantity * item.unitPrice;
+                        existingItem.price += item.quantity * item.unitPrice;
                         state.totalQuantity += item.quantity;
-                        state.totalPrice += item.quantity * (item.price ?? 0);
+                        state.totalPrice += item.quantity * item.unitPrice;
+                        state.totalWeight += item.rate * item.quantity;
                     }
                 }
             } else {
                 state.items.push(item);
                 state.totalQuantity += item.quantity && item.quantity > 0 ? item.quantity : 1;
                 state.totalPrice += item.price ?? 0;
+                if (item.rate !== 1 && item.quantity) {
+                    state.totalWeight += item.quantity * item.rate;
+                } else {
+                    state.totalWeight += item.weight ?? 0;
+                }
             }
             localStorage.setItem('userCart', JSON.stringify(state));
         },
@@ -86,26 +97,36 @@ const CartReducer = createSlice({
 
             if (index >= 0) {
                 const itemToRemove = state.items[index];
-                state.totalQuantity -= itemToRemove.quantity ?? 1;
-                state.totalPrice -= itemToRemove.price ? itemToRemove.price * (itemToRemove.quantity ?? 1) : 0;
-
+                state.totalQuantity -= itemToRemove.quantity && itemToRemove.quantity > 0 ? itemToRemove.quantity : 1;
+                state.totalPrice -= itemToRemove.price ?? 0;
+                state.totalWeight -=
+                    itemToRemove.weight ?? (itemToRemove.quantity && itemToRemove.quantity * itemToRemove.rate) ?? 0;
                 state.items.splice(index, 1);
             }
-            if (state.items.length == 0) {
-                state = emptyState;
-            }
             localStorage.setItem('userCart', JSON.stringify(state));
+            if (state.items.length <= 0) {
+                clearCart();
+                localStorage.removeItem('userCart');
+            }
         },
         clearCart: (state) => {
             state = emptyState;
-            console.log(initialState);
             localStorage.setItem('userCart', JSON.stringify(state));
-            console.log(state, 'cart clear');
+        },
+        changeCartCenter: (state, action: PayloadAction<number>) => {
+            const centerId = action.payload;
+            state.centerId = centerId;
+        },
+        reloadCart: (state) => {
+            const cartJson = localStorage.getItem('userCart');
+            const updateCartState: CartState = cartJson && JSON.parse(cartJson);
+            state = updateCartState;
+            localStorage.setItem('userCart', JSON.stringify(state));
         },
     },
 });
 
-export const { addItem, removeItem, clearCart } = CartReducer.actions;
+export const { addItem, removeItem, clearCart, changeCartCenter, reloadCart } = CartReducer.actions;
 
 export const addToCart = (item: CartItem): AppThunk => {
     return (dispatch) => {

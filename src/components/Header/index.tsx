@@ -17,8 +17,9 @@ import './Navbar.scss';
 import { BiPowerOff, BiSearch } from 'react-icons/bi';
 import { getMe } from '../../repositories/AuthRepository';
 import { UserModel } from '../../models/User/UserModel';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/CartStore';
+import { reloadCart } from '../../reducers/CartReducer';
 
 const Navbar = () => {
     const [latitude, setLatitude] = useState<number>();
@@ -36,7 +37,10 @@ const Navbar = () => {
         }
     };
 
+    const dispatch = useDispatch();
+
     useEffect(() => {
+        dispatch(reloadCart());
         getCurrentLocation(setState, locationError);
     }, []);
 

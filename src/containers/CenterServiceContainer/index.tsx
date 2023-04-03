@@ -14,7 +14,7 @@ import RatingStars from '../../components/RatingStars/RatingStars';
 import StatusTag from '../../components/StatusTag';
 import { CenterModel } from '../../models/Center/CenterModel';
 import { ServiceDetailsModel } from '../../models/Service/ServiceDetailsModel';
-import { addToCart, clearCart } from '../../reducers/CartReducer';
+import { addToCart, changeCartCenter, clearCart, reloadCart } from '../../reducers/CartReducer';
 import { getCenterBrief } from '../../repositories/CenterRepository';
 import { getService } from '../../repositories/ServiceRepository';
 import { RootState } from '../../store/CartStore';
@@ -166,10 +166,14 @@ const CenterServiceContainer = (props: Props) => {
                     price: parseFloat(servicePrice.replace(/[^\d]*(\d{1,3})(?:[^\d]|$)/g, '$1')),
                     centerId: center.id,
                     priceChart: service.prices,
+                    rate: service.rate,
                 };
                 try {
                     dispatch(addToCart(cartItem) as any)
-                        .then(() => messageApi.success('Đã thêm vào giỏ hàng'))
+                        .then(() => {
+                            messageApi.success('Đã thêm vào giỏ hàng');
+                            dispatch(reloadCart());
+                        })
                         .catch((err: Error) => {
                             messageApi.error(err.message);
                         });
@@ -184,6 +188,7 @@ const CenterServiceContainer = (props: Props) => {
     const handleOk = () => {
         setIsModalLoading(true);
         dispatch(clearCart());
+        dispatch(changeCartCenter(center.id));
         if ((weightInput && parseFloat(weightInput)) || quantityInput > 0) {
             const cartItem: CartItem = {
                 id: service.id,
@@ -193,13 +198,18 @@ const CenterServiceContainer = (props: Props) => {
                 weight: parseInt(weightInput) ?? null,
                 quantity: quantityInput ?? null,
                 unit: quantityInput ? 'pcs' : 'kg',
+                price: parseFloat(servicePrice.replace(/[^\d]*(\d{1,3})(?:[^\d]|$)/g, '$1')),
                 centerId: center.id,
                 minPrice: service.minPrice,
+                rate: service.rate,
             };
             try {
                 setTimeout(() => {
                     dispatch(addToCart(cartItem) as any)
-                        .then(() => messageApi.success('Đã thêm vào giỏ hàng'))
+                        .then(() => {
+                            messageApi.success('Đã thêm vào giỏ hàng');
+                            dispatch(reloadCart());
+                        })
                         .catch((err: Error) => {
                             messageApi.error(err.message);
                         });
