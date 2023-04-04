@@ -137,15 +137,15 @@ const CartReducer = createSlice({
             const item = state.items.find((i) => i.id === itemId);
             if (item) {
                 if (item.unit === 'kg' && item.weight && item.priceChart) {
-                    const updateWeight = item.weight + 1;
+                    const updateWeight = item.weight + 0.1;
                     if (updateWeight > item.priceChart[item.priceChart.length - 1].maxValue) {
                         throw new Error('Khối lượng vượt quá khối lượng tối đa trên bảng giá');
                     } else {
-                        item.weight += 1;
+                        item.weight += 0.1;
                         const updatedPrice = calculatePrice(item.priceChart, item.minPrice, updateWeight);
                         state.totalPrice += updatedPrice - (item.price ?? 0);
                         item.price = updatedPrice;
-                        state.totalWeight += 1;
+                        state.totalWeight += 0.1;
                         localStorage.setItem('userCart', JSON.stringify(state));
                         return state;
                     }
@@ -169,15 +169,15 @@ const CartReducer = createSlice({
             const item = state.items.find((i) => i.id === itemId);
             if (item) {
                 if (item.unit === 'kg' && item.weight && item.priceChart) {
-                    const updateWeight = item.weight - 1;
+                    const updateWeight = item.weight - 0.1;
                     if (updateWeight <= 0) {
                         return state;
                     } else {
-                        item.weight -= 1;
+                        item.weight -= 0.1;
                         const updatedPrice = calculatePrice(item.priceChart, item.minPrice, updateWeight);
                         state.totalPrice -= (item.price ?? 0) - updatedPrice;
                         item.price = updatedPrice;
-                        state.totalWeight -= 1;
+                        state.totalWeight -= 0.1;
                         localStorage.setItem('userCart', JSON.stringify(state));
                         return state;
                     }

@@ -144,7 +144,7 @@ const CartContainer = () => {
                                                         onClick={(e) => {
                                                             e.preventDefault();
                                                             if (
-                                                                (item.weight && item.weight - 1 <= 0) ||
+                                                                (item.weight && item.weight - 0.1 <= 0) ||
                                                                 (item.quantity && item.quantity - 1 <= 0)
                                                             ) {
                                                                 dispatch(removeItem(item.id));
@@ -152,7 +152,7 @@ const CartContainer = () => {
                                                                 dispatch(decreaseCartItem(item.id) as any)
                                                                     .then(() => {
                                                                         if (
-                                                                            (item.weight && item.weight - 2 <= 0) ||
+                                                                            (item.weight && item.weight - 0.2 <= 0) ||
                                                                             (item.quantity && item.quantity - 2 <= 0)
                                                                         ) {
                                                                             messageApi.warning(
@@ -172,7 +172,7 @@ const CartContainer = () => {
                                                         className="border-y border-[#396afc] py-1 w-[50px] text-center"
                                                         type="number"
                                                         name="item-quantity"
-                                                        defaultValue={item.quantity || item.weight?.toFixed(1)}
+                                                        value={item.quantity || item.weight?.toFixed(1)}
                                                         min={0}
                                                         max={
                                                             (item.priceChart &&
@@ -180,18 +180,18 @@ const CartContainer = () => {
                                                                     .maxValue) ??
                                                             undefined
                                                         }
-                                                        onBlur={(e) => {
-                                                            e.preventDefault();
-                                                            dispatch(
-                                                                editCartItem({
-                                                                    id: item.id,
-                                                                    measurement: parseFloat(e.target.value),
-                                                                }) as any,
-                                                            ).catch((err: Error) => {
-                                                                messageApi.error(err.message);
-                                                            });
-                                                        }}
-                                                        onFocus={(e) => e.target.select()}
+                                                        // onBlur={(e) => {
+                                                        //     e.preventDefault();
+                                                        //     dispatch(
+                                                        //         editCartItem({
+                                                        //             id: item.id,
+                                                        //             measurement: parseFloat(e.target.value),
+                                                        //         }) as any,
+                                                        //     ).catch((err: Error) => {
+                                                        //         messageApi.error(err.message);
+                                                        //     });
+                                                        // }}
+                                                        // onFocus={(e) => e.target.select()}
                                                     />
                                                     <button
                                                         className="px-3 pl-2.5 py-3 pt-2.5 text-base text-white flex items-center rounded-r"
@@ -241,7 +241,7 @@ const CartContainer = () => {
                                     <li>Bạn cũng có thể nhập mã giảm giá ở trang thanh toán.</li>
                                 </ul>
                                 <WHButton type="primary" minWidth="330px" link="/cart/checkout">
-                                    Thanh toán
+                                    Đặt dịch vụ
                                 </WHButton>
                             </div>
                             <div className="sitecart__sideinfo--center mt-6 p-6 border border-[#B3B3B3] rounded-2xl">

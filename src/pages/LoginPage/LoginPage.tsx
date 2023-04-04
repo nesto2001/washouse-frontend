@@ -1,10 +1,7 @@
-import React from 'react';
-import Background from '../../assets/images/vector-bg-1.png';
+import { Link } from 'react-router-dom';
 import BackgroundSm from '../../assets/images/vector-bg-2.png';
-import LoginBanner from '../../assets/images/login-banner.png';
 import Logo from '../../assets/images/washouse-tagline.png';
 import LoginContainer from '../../containers/AuthContainer/LoginContainer';
-import { Link } from 'react-router-dom';
 
 type Props = {};
 
