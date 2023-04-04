@@ -1,5 +1,5 @@
-import { Button, message, Modal, Space } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Button, InputRef, message, Modal, Space } from 'antd';
+import React, { useEffect, useState, useRef } from 'react';
 import { FaPhoneAlt, FaRegClock } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -22,6 +22,7 @@ import { CartItem } from '../../types/CartType/CartItem';
 import { calculatePrice, getRating, getWeightUnitPrice } from '../../utils/CommonUtils';
 import { formatCurrency } from '../../utils/FormatUtils';
 import { compareTime, getToday } from '../../utils/TimeUtils';
+import TextArea from 'antd/es/input/TextArea';
 
 type Props = {};
 
@@ -30,12 +31,12 @@ const CenterServiceContainer = (props: Props) => {
     const [messageApi, contextHolder] = message.useMessage();
     const [service, setService] = useState<ServiceDetailsModel>();
     const [center, setCenter] = useState<CenterModel>();
-    const [weightInput, setWeightInput] = useState<string>('');
+    const [weightInput, setWeightInput] = useState<number>(0);
     const [quantityInput, setQuantityInput] = useState<number>(0);
+    const [customerNote, setCustomerNote] = useState<string>('');
     const [isLoading, setIsLoading] = useState(true);
     const [isModalLoading, setIsModalLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState<boolean>(false);
-
     // const ServiceDetailsModel = useMemo(
     //     () => ({
     //         id: 1,
@@ -113,9 +114,8 @@ const CenterServiceContainer = (props: Props) => {
 
     // (`${service.prices[0].price.toString()} - ${service.priceChart[service.priceChart.length - 1].price.toString()}`) : null,
     useEffect(() => {
-        if (service && weightInput && parseFloat(weightInput) > 0) {
-            const calculatedPrice =
-                service.prices && calculatePrice(service.prices, service.minPrice, parseFloat(weightInput));
+        if (service && weightInput && weightInput > 0) {
+            const calculatedPrice = service.prices && calculatePrice(service.prices, service.minPrice, weightInput);
             calculatedPrice && setServicePrice(formatCurrency(calculatedPrice));
         } else if (service && service.price && quantityInput > 0) {
             const calculatedPrice = service.price * quantityInput;
@@ -153,20 +153,21 @@ const CenterServiceContainer = (props: Props) => {
         if (centerId && cartCenterId && cartCenterId !== parseInt(centerId)) {
             setModalVisible(true);
         } else {
-            if ((weightInput && parseFloat(weightInput)) || quantityInput > 0) {
+            if ((weightInput && weightInput > 0) || (quantityInput && quantityInput > 0)) {
                 const cartItem: CartItem = {
                     id: service.id,
                     name: service.name,
                     thumbnail: service.image,
-                    unitPrice:
-                        service.price ?? (service.prices && getWeightUnitPrice(service.prices, parseInt(weightInput))),
-                    weight: parseInt(weightInput) ?? null,
+                    unitPrice: service.price ?? (service.prices && getWeightUnitPrice(service.prices, weightInput)),
+                    weight: weightInput ?? null,
                     quantity: quantityInput ?? null,
                     unit: quantityInput ? 'pcs' : 'kg',
                     price: parseFloat(servicePrice.replace(/[^\d]*(\d{1,3})(?:[^\d]|$)/g, '$1')),
                     centerId: center.id,
+                    minPrice: service.minPrice,
                     priceChart: service.prices,
                     rate: service.rate,
+                    customerNote: customerNote,
                 };
                 try {
                     dispatch(addToCart(cartItem) as any)
@@ -188,19 +189,20 @@ const CenterServiceContainer = (props: Props) => {
         setIsModalLoading(true);
         dispatch(clearCart());
         dispatch(changeCartCenter(center.id));
-        if ((weightInput && parseFloat(weightInput)) || quantityInput > 0) {
+        if ((weightInput && weightInput > 0) || (quantityInput && quantityInput > 0)) {
             const cartItem: CartItem = {
                 id: service.id,
                 name: service.name,
                 thumbnail: service.image,
                 unitPrice: service.price ?? 0,
-                weight: parseInt(weightInput) ?? null,
+                weight: weightInput ?? null,
                 quantity: quantityInput ?? null,
                 unit: quantityInput ? 'pcs' : 'kg',
                 price: parseFloat(servicePrice.replace(/[^\d]*(\d{1,3})(?:[^\d]|$)/g, '$1')),
                 centerId: center.id,
                 minPrice: service.minPrice,
                 rate: service.rate,
+                customerNote: customerNote,
             };
             try {
                 setTimeout(() => {
@@ -229,7 +231,7 @@ const CenterServiceContainer = (props: Props) => {
     const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const regex = /^[0-9.]*$/;
         const { value, maxLength } = event.target;
-        if (regex.test(value)) setWeightInput(value.slice(0, maxLength));
+        if (regex.test(value)) setWeightInput(parseFloat(value.slice(0, maxLength)));
     };
 
     const ratingText = getRating(service.rating ?? 0);
@@ -258,44 +260,122 @@ const CenterServiceContainer = (props: Props) => {
                         <div className="service__details--content basis-7/12 p-6 pl-10 ml-10 border border-[#B3B3B3] rounded-2xl">
                             <form action="" id="addcartForm">
                                 <h1 className="text-3xl font-bold">{service.name}</h1>
-                                <h3 className="mt-2 text-2xl font-bold text-primary">{servicePrice}</h3>
-                                <p className="text-justify text-sm mt-3">{service.description}</p>
+                                <p className="text-justify text-sm mt-3 text-ellipsis line-clamp-3">
+                                    {service.description}
+                                </p>
                                 <h4 className="text-sm mt-3">
                                     <span className="font-bold">Thời gian xử lý:</span> {service.timeEstimate}'
                                     {/* {service.minTime * 60}' - {service.maxTime * 60}' */}
                                 </h4>
+                                <h3 className="mt-1 text-2xl font-bold text-primary">
+                                    <span className="text-sub text-sm">
+                                        {weightInput || (quantityInput && quantityInput > 0)
+                                            ? 'Giá tiền: '
+                                            : service.priceType
+                                            ? 'Giá tối thiểu: '
+                                            : 'Đơn giá: '}
+                                        <br />
+                                    </span>
+                                    {servicePrice}
+                                </h3>
                                 <div className="service__inputgroup mt-3">
                                     <h3 className="text-sm font-bold">
                                         {service.priceType ? 'Khối lượng' : 'Số lượng'}
                                     </h3>
-                                    <div className="inputgroup flex items-center mt-1">
+                                    <div className="inputgroup flex justify-start items-center mt-1">
                                         {service.priceType ? (
                                             <>
-                                                <input
-                                                    className="border border-[#424242] pl-2 py-1 rounded w-[100px] mr-1"
-                                                    type="number"
-                                                    name=""
-                                                    id=""
-                                                    value={weightInput}
-                                                    placeholder="KG"
-                                                    maxLength={8}
-                                                    onChange={handleChangeInput}
-                                                    // max={service.priceChart[service.priceChart.length - 1].maxValue}
-                                                />
-                                                KG
+                                                <Space.Compact block>
+                                                    <button
+                                                        className="px-3 pr-2.5 py-3 pt-2.5 text-base text-white flex items-center rounded-l"
+                                                        style={{ lineHeight: '0px' }}
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setWeightInput(
+                                                                weightInput > 0 ? weightInput - 1 : weightInput,
+                                                            );
+                                                        }}
+                                                    >
+                                                        -
+                                                    </button>
+                                                    <input
+                                                        className="border-y border-[#396afc] py-1 w-[50px] text-center"
+                                                        type="number"
+                                                        name=""
+                                                        id=""
+                                                        value={weightInput}
+                                                        placeholder="KG"
+                                                        maxLength={8}
+                                                        max={service.prices[service.prices.length - 1].maxValue}
+                                                        onChange={handleChangeInput}
+                                                        onFocus={(e) => e.target.select()}
+                                                        // max={service.priceChart[service.priceChart.length - 1].maxValue}
+                                                    />
+                                                    <button
+                                                        className="px-3 pl-2.5 py-3 pt-2.5 text-base text-white flex items-center rounded-r"
+                                                        style={{ lineHeight: '0px' }}
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setWeightInput(
+                                                                weightInput <
+                                                                    service.prices[service.prices.length - 1].maxValue
+                                                                    ? weightInput + 1
+                                                                    : weightInput,
+                                                            );
+                                                        }}
+                                                    >
+                                                        +
+                                                    </button>
+                                                    <div className=" ml-1 py-1">KG</div>
+                                                </Space.Compact>
                                             </>
                                         ) : (
-                                            <Space.Compact>
-                                                <Input
-                                                    className="border border-[#424242] pl-2 py-1 rounded w-[100px] mr-1"
+                                            <Space.Compact block>
+                                                <button
+                                                    className="px-3 pr-2.5 py-3 pt-2.5 text-base text-white flex items-center rounded-l"
+                                                    style={{ lineHeight: '0px' }}
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setQuantityInput(
+                                                            quantityInput > 0 ? quantityInput - 1 : quantityInput,
+                                                        );
+                                                    }}
+                                                >
+                                                    -
+                                                </button>
+                                                <input
+                                                    className="border-y border-[#396afc] py-1 w-[50px] text-center"
                                                     type="number"
                                                     name="item-quantity"
                                                     value={quantityInput}
                                                     onChange={(e) => setQuantityInput(parseInt(e.target.value))}
+                                                    onFocus={(e) => e.target.select()}
                                                 />
+                                                <button
+                                                    className="px-3 pl-2.5 py-3 pt-2.5 text-base text-white flex items-center rounded-r"
+                                                    style={{ lineHeight: '0px' }}
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setQuantityInput(quantityInput + 1);
+                                                    }}
+                                                >
+                                                    +
+                                                </button>
                                             </Space.Compact>
                                         )}
                                     </div>
+                                </div>
+                                <div className="service__input--note mt-3">
+                                    <h3 className="text-sm font-bold">Ghi chú</h3>
+                                    <TextArea
+                                        className="border-[#424242] focus:border-[#424242] hover:border-[#424242] mt-1 mb-2 placeholder:text-[#b3b3b3]"
+                                        style={{ height: 80 }}
+                                        maxLength={100}
+                                        placeholder="Nhập ghi chú về dịch vụ của bạn, VD: Không sử dụng chất tẩy mạnh, ghi chú về loại nước xả vải,..."
+                                        onChange={(e) => {
+                                            setCustomerNote(e.target.value);
+                                        }}
+                                    />
                                 </div>
                                 <div className="service__actiongroup mt-6 flex justify-between">
                                     <WHButton type="sub" minWidth="180px" form="addcartForm" onClick={handleAddToCart}>

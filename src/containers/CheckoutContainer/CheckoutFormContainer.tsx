@@ -32,6 +32,10 @@ import { getHour, getToday } from '../../utils/TimeUtils';
 import './CheckoutContainer.scss';
 import { DeliveryFormData } from '../../types/FormData/DeliveryFormData';
 import { useForm } from 'antd/es/form/Form';
+import { calcDeliveryPrice } from '../../repositories/OrderRepository';
+import { DeliveryPriceRequest } from '../../models/Order/DeliveryPriceRequest';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/CartStore';
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
 
@@ -361,6 +365,9 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
 
     const [form] = Form.useForm();
 
+    const cartCenterId = useSelector((state: RootState) => state.cart.centerId);
+    const cartTotalWeight = useSelector((state: RootState) => state.cart.totalWeight);
+
     useEffect(() => {
         if (centerOperatingDays) {
             setOpeningHour(centerOperatingDays[operatingDay].start);
@@ -596,7 +603,22 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
                 deliveryInfo: [deliverAddress],
             }));
         }
-        onNext();
+        const deliveryInfoRequest: DeliveryPriceRequest = {
+            centerId: cartCenterId,
+            dropoffAddress: dropoffAddress.addressString,
+            dropoffWardId: dropoffAddress.wardId,
+            deliverAddress: deliverAddress.addressString,
+            deliverWardId: deliverAddress.wardId,
+            deliveryType: delivery,
+            totalWeight: cartTotalWeight,
+        };
+        const calculateDeliveryPrice = async () => {
+            return await calcDeliveryPrice(deliveryInfoRequest);
+        };
+        calculateDeliveryPrice().then((res) => {
+            setFormData((prev) => ({ ...prev, deliveryPrice: res.deliveryPrice }));
+            onNext();
+        });
     };
 
     const onFinishFailed = (values: any) => {

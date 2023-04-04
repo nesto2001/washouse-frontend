@@ -12,6 +12,10 @@
         background-color: var(--washouse-light-gray);
     }
 
+    .pricetable_tooltip__header {
+        border-bottom: 1px solid var(--washouse-placeholder-gray);
+    }
+
     .pricetable__data {
         padding: 8px 16px;
     }

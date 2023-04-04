@@ -1,8 +1,9 @@
 export type DeliveryPriceRequest = {
-    centerId: string;
+    centerId: number;
     totalWeight: number;
-    dropoffAddress: string;
-    dropoffWardId: string;
-    deliverAddress: string;
-    deliverfWardId: string;
+    dropoffAddress?: string;
+    dropoffWardId?: number;
+    deliverAddress?: string;
+    deliverWardId?: number;
+    deliveryType: number;
 };

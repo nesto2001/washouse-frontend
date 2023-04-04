@@ -3,6 +3,7 @@ import { AppThunk } from '../store/AppThunk';
 import { CartItem } from '../types/CartType/CartItem';
 import { CartState } from '../types/CartType/CartState';
 import { calculatePrice, getWeightUnitPrice } from '../utils/CommonUtils';
+import { EditCartItemData } from '../types/CartType/PayloadActionType';
 type Props = {};
 
 const cartJson = localStorage.getItem('userCart');
@@ -48,16 +49,17 @@ const CartReducer = createSlice({
             if (existingItem) {
                 if (item.unit === 'kg' && item.weight && existingItem.weight && item.priceChart) {
                     if (existingItem.weight) {
+                        const oldWeight = existingItem.weight;
                         existingItem.weight += item.weight;
                         if (existingItem.weight > item.priceChart[item.priceChart.length - 1].maxValue) {
                             throw new Error('Khối lượng vượt quá khối lượng tối đa trên bảng giá');
                         }
-                        existingItem.minPrice = getWeightUnitPrice(item.priceChart, existingItem.weight);
+                        existingItem.unitPrice = getWeightUnitPrice(item.priceChart, existingItem.weight);
                         existingItem.price = calculatePrice(item.priceChart, item.minPrice, existingItem.weight);
 
-                        state.totalPrice += existingItem.price - (item.price ?? 0);
+                        state.totalPrice +=
+                            existingItem.price - calculatePrice(item.priceChart, item.minPrice, oldWeight);
                         state.totalWeight += item.weight;
-                        console.log(item.price);
                     }
                 } else {
                     if (existingItem.quantity && item.quantity && existingItem.price) {
@@ -70,6 +72,7 @@ const CartReducer = createSlice({
                 }
             } else {
                 state.items.push(item);
+                console.log(state.totalPrice, item.price);
                 state.totalQuantity += item.quantity && item.quantity > 0 ? item.quantity : 1;
                 state.totalPrice += item.price ?? 0;
                 if (item.rate !== 1 && item.quantity) {
@@ -126,16 +129,164 @@ const CartReducer = createSlice({
             localStorage.setItem('userCart', JSON.stringify(state));
             return state;
         },
+        addMeasurement: (state, action: PayloadAction<number>) => {
+            const itemId = action.payload;
+            if (!itemId) {
+                return state;
+            }
+            const item = state.items.find((i) => i.id === itemId);
+            if (item) {
+                if (item.unit === 'kg' && item.weight && item.priceChart) {
+                    const updateWeight = item.weight + 1;
+                    if (updateWeight > item.priceChart[item.priceChart.length - 1].maxValue) {
+                        throw new Error('Khối lượng vượt quá khối lượng tối đa trên bảng giá');
+                    } else {
+                        item.weight += 1;
+                        const updatedPrice = calculatePrice(item.priceChart, item.minPrice, updateWeight);
+                        state.totalPrice += updatedPrice - (item.price ?? 0);
+                        item.price = updatedPrice;
+                        state.totalWeight += 1;
+                        localStorage.setItem('userCart', JSON.stringify(state));
+                        return state;
+                    }
+                } else if (item.quantity && item.price) {
+                    item.quantity += 1;
+                    item.price += item.unitPrice;
+                    state.totalPrice += item.unitPrice;
+                    state.totalWeight += item.rate * 1;
+                    state.totalQuantity += 1;
+                    localStorage.setItem('userCart', JSON.stringify(state));
+                    return state;
+                }
+            }
+            return state;
+        },
+        subMeasurement: (state, action: PayloadAction<number>) => {
+            const itemId = action.payload;
+            if (!itemId) {
+                return state;
+            }
+            const item = state.items.find((i) => i.id === itemId);
+            if (item) {
+                if (item.unit === 'kg' && item.weight && item.priceChart) {
+                    const updateWeight = item.weight - 1;
+                    if (updateWeight <= 0) {
+                        return state;
+                    } else {
+                        item.weight -= 1;
+                        const updatedPrice = calculatePrice(item.priceChart, item.minPrice, updateWeight);
+                        state.totalPrice -= (item.price ?? 0) - updatedPrice;
+                        item.price = updatedPrice;
+                        state.totalWeight -= 1;
+                        localStorage.setItem('userCart', JSON.stringify(state));
+                        return state;
+                    }
+                } else if (item.quantity && item.price) {
+                    item.quantity -= 1;
+                    item.price -= item.unitPrice;
+                    state.totalPrice -= item.unitPrice;
+                    state.totalWeight -= item.rate * 1;
+                    state.totalQuantity -= 1;
+                    localStorage.setItem('userCart', JSON.stringify(state));
+                    return state;
+                }
+            }
+            return state;
+        },
+        editMeasurement: (state, action: PayloadAction<EditCartItemData>) => {
+            const itemId = action.payload.id;
+            const measurement = action.payload.measurement ?? 0;
+            if (!itemId) {
+                return state;
+            }
+
+            const item = state.items.find((i) => i.id === itemId);
+            if (item) {
+                if (measurement <= 0) {
+                    throw new Error(
+                        `${item.unit === 'kg' ? 'Khối lượng' : 'Số lượng'} không được phép nhỏ hơn hoặc bằng 0`,
+                    );
+                }
+                if (item.unit === 'kg' && item.weight && item.priceChart && item.price) {
+                    if (measurement > item.priceChart[item.priceChart.length - 1].maxValue) {
+                        throw new Error(`Khối lượng trong giỏ đã vượt quá mức tối đa của dịch vụ`);
+                    }
+                    const updatedPrice = calculatePrice(item.priceChart, item.minPrice, measurement);
+                    state.totalPrice += updatedPrice - item.price;
+                    state.totalWeight += measurement - item.weight;
+                    item.price = updatedPrice;
+                    item.weight = measurement;
+                    localStorage.setItem('userCart', JSON.stringify(state));
+                    return state;
+                } else if (item.quantity && item.price) {
+                    const updatedPrice = measurement * item.unitPrice;
+                    state.totalPrice += updatedPrice - item.price;
+                    state.totalWeight += measurement * item.rate - item.quantity * item.rate;
+                    state.totalQuantity += measurement - item.quantity;
+                    localStorage.setItem('userCart', JSON.stringify(state));
+                    return state;
+                }
+            }
+            return state;
+        },
     },
 });
 
-export const { addItem, removeItem, clearCart, changeCartCenter, reloadCart } = CartReducer.actions;
+export const {
+    addItem,
+    removeItem,
+    clearCart,
+    changeCartCenter,
+    reloadCart,
+    addMeasurement,
+    subMeasurement,
+    editMeasurement,
+} = CartReducer.actions;
 
 export const addToCart = (item: CartItem): AppThunk => {
     return (dispatch) => {
         return new Promise((resolve, reject) => {
             try {
                 dispatch(addItem(item));
+                resolve(true);
+            } catch (err) {
+                reject(err);
+            }
+        });
+    };
+};
+
+export const increaseCartItem = (item: number): AppThunk => {
+    return (dispatch) => {
+        return new Promise((resolve, reject) => {
+            try {
+                dispatch(addMeasurement(item));
+                resolve(true);
+            } catch (err) {
+                reject(err);
+            }
+        });
+    };
+};
+
+export const decreaseCartItem = (item: number): AppThunk => {
+    return (dispatch) => {
+        return new Promise((resolve, reject) => {
+            try {
+                dispatch(subMeasurement(item));
+                resolve(true);
+            } catch (err) {
+                reject(err);
+            }
+        });
+    };
+};
+
+export const editCartItem = (item: EditCartItemData): AppThunk => {
+    return (dispatch) => {
+        return new Promise((resolve, reject) => {
+            try {
+                dispatch(editMeasurement(item));
                 resolve(true);
             } catch (err) {
                 reject(err);

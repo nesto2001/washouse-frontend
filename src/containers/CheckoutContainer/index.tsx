@@ -53,7 +53,7 @@ const CheckoutContainer = (props: Props) => {
 
     const [discount, setDiscount] = useState<number>(0);
 
-    const [freight, setFreight] = useState<number>(0);
+    const [freight, setFreight] = useState<number>(formData.deliveryPrice);
 
     const [total, setTotal] = useState<number>(cartTotal + freight - discount);
 
@@ -114,7 +114,7 @@ const CheckoutContainer = (props: Props) => {
                         serviceId: item.id,
                         measurement: item.quantity && item.quantity > 0 ? item.quantity : item.weight ?? 0,
                         price: item.price ?? 0,
-                        customerNote: '',
+                        customerNote: item.customerNote,
                     };
                 }),
                 paymentMethod: 0,
@@ -125,12 +125,14 @@ const CheckoutContainer = (props: Props) => {
             };
             placeOrder()
                 .then((res) => {
-                    console.log(res);
+                    dispatch(clearCart());
+                    navigate('/cart/checkout/confirm', {
+                        state: { orderId: res.orderId, customerPhone: formData.phone, customerEmail: formData.email },
+                    });
                 })
                 .catch((error) => {
                     console.log(error);
                 });
-            dispatch(clearCart());
         }
     };
 

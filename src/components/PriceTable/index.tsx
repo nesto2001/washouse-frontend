@@ -6,13 +6,14 @@ import style from './PriceTable.module.scss';
 type Props = {
     priceChart: PriceRange[];
     unitType: string;
+    isTooltip?: boolean;
 };
 
-const PriceTable = ({ priceChart, unitType }: Props) => {
+const PriceTable = ({ priceChart, unitType, isTooltip }: Props) => {
     return (
         <div className={style.pricetable__wrapper}>
             <table className={style.pricetable}>
-                <thead className={style.pricetable__header}>
+                <thead className={isTooltip ? style.pricetable_tooltip__header : style.pricetable__header}>
                     <tr>
                         <th className={style.pricetable__data}>Khối lượng</th>
                         <th className={style.pricetable__data}>Giá tiền</th>

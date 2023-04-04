@@ -8,12 +8,13 @@ export function calculatePrice(
     // if (!service.priceType) {
     //     return 0;
     // }
+    const minimumPrice = minPrice || priceChart[0].price * priceChart[0].maxValue;
     if (priceChart) {
         for (let i = 0; i < priceChart.length; i++) {
             const { maxValue, price } = priceChart[i];
             if (weight <= maxValue) {
-                if (minPrice && weight * price <= minPrice) {
-                    return minPrice;
+                if (minimumPrice && weight * price <= minimumPrice && weight <= priceChart[0].maxValue) {
+                    return minimumPrice;
                 } else {
                     return weight * price;
                 }

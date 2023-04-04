@@ -13,4 +13,5 @@ export interface CartItem {
     priceChart?: ServicePricesModel[];
     unit: 'kg' | 'pcs';
     rate: number;
+    customerNote: string;
 }
