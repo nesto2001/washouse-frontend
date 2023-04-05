@@ -16,15 +16,16 @@ const emptyState: CartState = {
     centerId: 0,
 };
 
-const initialState: CartState = cartJson
-    ? JSON.parse(cartJson)
-    : {
-          items: [],
-          totalQuantity: 0,
-          totalPrice: 0,
-          totalWeight: 0,
-          centerId: null,
-      };
+const initialState: CartState =
+    cartJson && cartJson !== 'null'
+        ? JSON.parse(cartJson)
+        : {
+              items: [],
+              totalQuantity: 0,
+              totalPrice: 0,
+              totalWeight: 0,
+              centerId: null,
+          };
 
 const CartReducer = createSlice({
     name: 'cart',
