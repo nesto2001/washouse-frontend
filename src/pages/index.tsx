@@ -9,11 +9,15 @@ export { default as LoginPage } from './LoginPage/LoginPage';
 export { default as RegisterPage } from './RegisterPage/RegisterPage';
 export { default as ResetPasswordPage } from './ResetPasswordPage/ResetPasswordPage';
 export { default as OrderDetailsPage } from './OrderPage/OrderDetailsPage';
+
+//customer
 export { default as OrdersPage } from './OrderPage/OrdersPage';
 export { default as CustomerProfilePage } from './CustomerPage/CustomerProfilePage';
 export { default as CustomerAddressPage } from './CustomerPage/CustomerAddressPage';
 export { default as CustomerOrdersPage } from './CustomerPage/CustomerOrdersPage';
 export { default as CustomerPasswordPage } from './CustomerPage/CustomerPasswordPage';
+
+//manager & staff
 export { default as StaffLoginPage } from './StaffPage/StaffAuth/StaffLoginPage';
 export { default as StaffRegisterPage } from './StaffPage/StaffAuth/StaffRegisterPage';
 export { default as ManagerDashboardPage } from './StaffPage/ManagerDashboardPage';
@@ -22,6 +26,9 @@ export { default as ManagerCenterRegistrationPage } from './StaffPage/ManagerCen
 export { default as ManagerServicePage } from './StaffPage/ManagerService/ManagerServicePage';
 export { default as ManagerCreateServicePage } from './StaffPage/ManagerService/ManagerCreateServicePage';
 export { default as StaffCustomerPage } from './StaffPage/StaffCustomer/StaffCustomerPage';
+export { default as StaffOrderPage } from './StaffPage/StaffOrder/StaffOrderPage';
+
+//admin
 export { default as AdminDashboardPage } from './AdminPage/AdminDashboardPage';
 export { default as AdminCenterPage } from './AdminPage/AdminCenter/AdminCenterPage';
 export { default as AdminAccountPage } from './AdminPage/AdminAccount/AdminAccountPage';

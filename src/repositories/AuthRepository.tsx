@@ -1,4 +1,11 @@
-import { API_LOGIN, API_ME, API_REFRESH_TOKEN, API_REGISTER_CUSTOMER } from '../common/Constant';
+import {
+    API_LOGIN,
+    API_LOGIN_STAFF,
+    API_ME,
+    API_REFRESH_TOKEN,
+    API_REGISTER_CUSTOMER,
+    API_REGISTER_PROVIDER,
+} from '../common/Constant';
 import { LoginResponse } from '../models/LoginResponse';
 import { Response } from '../models/CommonModel';
 import instance from '../services/axios/AxiosInstance';
@@ -7,6 +14,14 @@ import { UserModel } from '../models/User/UserModel';
 
 export const login = async ({ phone, password }: { phone: string; password: string }) => {
     const response = await instance.post<Response<LoginResponse>>(API_LOGIN, {
+        phone,
+        password,
+    });
+    return response;
+};
+
+export const loginStaff = async ({ phone, password }: { phone: string; password: string }) => {
+    const response = await instance.post<Response<LoginResponse>>(API_LOGIN_STAFF, {
         phone,
         password,
     });
@@ -33,12 +48,35 @@ export const registerCustomer = async ({
     return response;
 };
 
+export const registerProvider = async ({
+    phone,
+    password,
+    confirmPass,
+    email,
+}: {
+    phone: string;
+    password: string;
+    email: string;
+    confirmPass: string;
+}) => {
+    const response = await instance.post<LoginResponse>(API_REGISTER_PROVIDER, {
+        phone,
+        password,
+        confirmPass,
+        email,
+    });
+    return response;
+};
+
 export const getMe = async (): Promise<UserModel> => {
     const { data } = await instance.get<UserResponse>(API_ME, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
     });
+    if (data ===null) {
+        throw new Error;
+    }
     return {
         accountId: data.data.accountId,
         avatar: data.data.avatar,

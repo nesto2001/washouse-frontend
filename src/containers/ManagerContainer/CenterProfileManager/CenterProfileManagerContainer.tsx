@@ -1,32 +1,19 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import { Tabs } from 'antd';
 import type { TabsProps } from 'antd';
-import '../ManagerContainer.scss';
-import WHButton from '../../../components/Button';
+import { Tabs } from 'antd';
+import { useEffect, useState } from 'react';
 import EmptyLaundry from '../../../assets/images/empty-center.png';
-
-const onChange = (key: string) => {
-    console.log(key);
-};
-
-const items: TabsProps['items'] = [
-    {
-        key: '1',
-        label: `Thông tin cơ bản`,
-        children: <div className="px-6">Content of Tab Pane 1</div>,
-    },
-    {
-        key: '2',
-        label: `Địa chỉ & liên hệ`,
-        children: <div className="px-6">Content of Tab Pane 2</div>,
-    },
-];
+import WHButton from '../../../components/Button';
+import Loading from '../../../components/Loading/Loading';
+import { ManagerCenterModel } from '../../../models/Manager/ManagerCenterModel';
+import { getManagerCenter } from '../../../repositories/StaffRepository';
+import '../ManagerContainer.scss';
+import CenterBasics from './CenterBasics';
 
 type Props = {};
 
 const CenterProfileManagerContainer = (props: Props) => {
-    const [center, setCenter] = useState(false);
+    const [center, setCenter] = useState<ManagerCenterModel>();
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
         const style = document.createElement('style');
@@ -63,6 +50,37 @@ const CenterProfileManagerContainer = (props: Props) => {
             document.head.removeChild(style);
         };
     }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            return await getManagerCenter();
+        };
+        fetchData().then((res) => {
+            setCenter(res);
+            setIsLoading(false);
+        });
+    }, []);
+
+    const onChange = (key: string) => {
+        console.log(key);
+    };
+
+    const items: TabsProps['items'] = [
+        {
+            key: '1',
+            label: `Thông tin cơ bản`,
+            children: <div className="px-6">{center && <CenterBasics center={center} />}</div>,
+        },
+        {
+            key: '2',
+            label: `Địa chỉ & liên hệ`,
+            children: <div className="px-6">Content of Tab Pane 2</div>,
+        },
+    ];
+
+    if (isLoading) {
+        return <Loading />;
+    }
 
     return (
         <>

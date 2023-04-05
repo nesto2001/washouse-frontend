@@ -23,7 +23,7 @@ const StaffAuthenticateLayout = ({ children }: Props) => {
                                 Nền tảng quản lý trực tuyến
                             </h1>
                             <h3 className="text-2xl mt-3 font-semibold float-right">
-                                Hiệu quả, đơn giản, tiết kiệm hơn
+                                Hiệu quả, Đơn giản, Tiết kiệm hơn
                             </h3>
                         </div>
                     </div>

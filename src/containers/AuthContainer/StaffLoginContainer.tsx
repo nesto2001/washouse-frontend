@@ -5,7 +5,7 @@ import Google from '../../assets/images/google.png';
 import { Link, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { BiErrorAlt } from 'react-icons/bi';
-import { getMe, login } from '../../repositories/AuthRepository';
+import { getMe, login, loginStaff } from '../../repositories/AuthRepository';
 import { Form } from 'antd';
 
 type Props = {};
@@ -24,7 +24,7 @@ const StaffLoginContainer = () => {
         setIsFetching(true);
         if (loginForm.phone && loginForm.password) {
             const fetchData = async () => {
-                return await login({ phone: loginForm.phone.trim(), password: loginForm.password.trim() });
+                return await loginStaff({ phone: loginForm.phone.trim(), password: loginForm.password.trim() });
             };
             fetchData().then((res) => {
                 console.log(res);
@@ -40,7 +40,7 @@ const StaffLoginContainer = () => {
                         if (res.roleType.toLowerCase() === 'admin') {
                             navigate('/admin/dashboard');
                         } else {
-                            navigate('/trung-tâm');
+                            navigate('/provider/dashboard');
                         }
                     });
                 } else {
@@ -144,7 +144,7 @@ const StaffLoginContainer = () => {
                 <h3 className="font-semibold">
                     Bạn chưa có tài khoản?{' '}
                     <span className="text-primary font-bold">
-                        <Link to="/register">Đăng ký</Link>
+                        <Link to="/provider/register">Đăng ký</Link>
                     </span>{' '}
                     ngay!
                 </h3>

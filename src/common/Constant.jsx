@@ -2,8 +2,10 @@ const BASE_URL = process.env.REACT_APP_FIREBASE_API_URL;
 
 //AUTH API
 const API_LOGIN = "/api/accounts/login";
+const API_LOGIN_STAFF = "/api/accounts/login-staff";
 const API_ME = '/api/accounts/me';
 const API_REGISTER_CUSTOMER = '/api/accounts/customers'
+const API_REGISTER_PROVIDER = '/api/accounts/managers';
 const API_REFRESH_TOKEN = '/api/accounts/token';
 
 //ACCOUNT API
@@ -40,7 +42,13 @@ const API_REQUEST_REJECT = '/api/requests/centers/${id}/reject';
 const API_ORDER_EST = '/api/orders/estimated-time';
 const API_ORDER_CREATE = '/api/orders';
 
+//MANAGER API
+const API_MANAGER_CENTER = '/api/manager/my-center'
+
 export {
+    API_MANAGER_CENTER,
+    API_REGISTER_PROVIDER,
+    API_LOGIN_STAFF,
     API_ORDER_CREATE,
     API_ORDER_EST,
     API_REQUEST_REJECT,

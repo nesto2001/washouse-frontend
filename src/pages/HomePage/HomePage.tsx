@@ -24,7 +24,7 @@ const HomePage = () => {
         } else {
             setIsLoading(false);
         }
-    }, []);
+    });
 
     if (isLoading) {
         return <Loading screen />;
