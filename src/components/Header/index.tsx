@@ -30,7 +30,7 @@ const Navbar = () => {
     const [districts, setDistricts] = useState<LocationModel[]>([]);
     const userJson = localStorage.getItem('currentUser');
     const [user, setUser] = useState<UserModel>(userJson ? JSON.parse(userJson) : null);
-    const cartQuantity = useSelector((state: RootState) => state.cart.totalQuantity);
+    const cartQuantity = useSelector((state: RootState) => state.cart.totalQuantity) ?? 0;
     const handleSearch = (e: { preventDefault: () => void }) => {
         e.preventDefault();
         if (searchValue) {

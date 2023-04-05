@@ -174,12 +174,6 @@ const CartContainer = () => {
                                                         name="item-quantity"
                                                         value={item.quantity || item.weight?.toFixed(1)}
                                                         min={0}
-                                                        max={
-                                                            (item.priceChart &&
-                                                                item.priceChart[item.priceChart?.length - 1]
-                                                                    .maxValue) ??
-                                                            undefined
-                                                        }
                                                         // onBlur={(e) => {
                                                         //     e.preventDefault();
                                                         //     dispatch(
