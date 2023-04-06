@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { ManagerCenterModel } from '../../../models/Manager/ManagerCenterModel';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Modal, Select, Tooltip } from 'antd';
-import TextArea from 'antd/es/input/TextArea';
-import { LocationModel } from '../../../models/Location/LocationModel';
+import React, { useEffect, useState } from 'react';
 import Map from '../../../components/Map/Map';
-import { QuestionCircleOutlined, DownOutlined } from '@ant-design/icons';
-import { getDistricts, getLocation, getWards } from '../../../repositories/LocationRepository';
 import { LocationDetailsModel } from '../../../models/Location/LocationDetailsModel';
+import { LocationModel } from '../../../models/Location/LocationModel';
 import { LocationPlaceModel } from '../../../models/LocationPlaceModel';
+import { ManagerCenterModel } from '../../../models/Manager/ManagerCenterModel';
+import { getDistricts, getWards } from '../../../repositories/LocationRepository';
 import { Option } from '../../../types/Options';
 
 type Props = {
@@ -30,7 +29,6 @@ const CenterAddress = ({ center, centerAddress }: Props) => {
     const [district, setDistrict] = useState<LocationPlaceModel>();
     const [districtList, setDistrictList] = useState<LocationPlaceModel[]>([]);
     const [wardList, setWardList] = useState<LocationPlaceModel[]>([]);
-
     const [formData, setFormData] = useState<CenterAddressFormData>({
         address: centerAddress.address ?? '',
         ward: centerAddress.ward.id ?? 0,
@@ -50,17 +48,8 @@ const CenterAddress = ({ center, centerAddress }: Props) => {
         };
         fetchData().then((res) => {
             setDistrictList(res);
-            const fetchData = async () => {
-                return await getWards(centerAddress.ward.district.id);
-            };
-            fetchData().then((res) => {
-                setWardList(res);
-            });
+            handleSelectDistrictChange(centerAddress.ward.district.id);
         });
-    }, []);
-
-    useEffect(() => {
-        console.log(wardList);
     }, []);
 
     const handleSelectDistrictChange = (value: number) => {
@@ -100,22 +89,8 @@ const CenterAddress = ({ center, centerAddress }: Props) => {
     };
 
     const handleModalCancel = () => {
-        centerAddress &&
-            form.setFieldsValue({
-                address: centerAddress.address,
-                city: 1,
-                centerLocation: {
-                    centerDistrict: centerAddress.ward.district.id,
-                },
-            });
-        setInterval(() => {
-            centerAddress &&
-                form.setFieldsValue({
-                    centerLocation: {
-                        centerWard: centerAddress.ward.id,
-                    },
-                });
-        }, 1000);
+        handleSelectDistrictChange(centerAddress.ward.district.id);
+        form.resetFields();
         setModalVisibility(false);
     };
     return (
@@ -190,17 +165,14 @@ const CenterAddress = ({ center, centerAddress }: Props) => {
                                         rules={[{ required: true, message: 'Vui lòng nhập địa chỉ cá nhân' }]}
                                         validateTrigger={['onBlur']}
                                         label="Địa chỉ trung tâm"
-                                        initialValue={formData.address ?? centerAddress.address}
+                                        initialValue={centerAddress.address}
                                     >
                                         <Input
+                                            value={0}
                                             required
                                             type="text"
                                             name="customer_lname"
                                             placeholder="Địa chỉ"
-                                            // value={formData.address}
-                                            // onChange={(e) => {
-                                            //     setFormData((prev) => ({ ...prev, address: e.target.value }));
-                                            // }}
                                         />
                                     </Form.Item>
                                 </div>
@@ -215,8 +187,8 @@ const CenterAddress = ({ center, centerAddress }: Props) => {
                                         </Tooltip>
                                     </label>
                                     <Form.Item
-                                        name="city"
                                         initialValue={1}
+                                        name="city"
                                         rules={[{ required: true, message: 'Vui lòng chọn tỉnh / thành phố' }]}
                                     >
                                         <Select id="" options={[{ label: 'TP. Hồ Chí Minh', value: 1 }]} />
@@ -227,7 +199,7 @@ const CenterAddress = ({ center, centerAddress }: Props) => {
                                         Quận / Huyện
                                     </label>
                                     <Form.Item
-                                        initialValue={formData.district ?? centerAddress.ward.district.id}
+                                        initialValue={centerAddress.ward.district.id}
                                         name={['centerLocation', 'centerDistrict']}
                                         rules={[
                                             { required: true, message: 'Vui lòng chọn quận / huyện' },
@@ -258,7 +230,7 @@ const CenterAddress = ({ center, centerAddress }: Props) => {
                                         Phường / Xã
                                     </label>
                                     <Form.Item
-                                        initialValue={formData.ward ?? centerAddress.ward.id}
+                                        initialValue={centerAddress.ward.id}
                                         name={['centerLocation', 'centerWard']}
                                         rules={[
                                             { required: true, message: 'Vui lòng chọn phường / xã' },

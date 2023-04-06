@@ -38,7 +38,6 @@ instance.interceptors.response.use(
                     localStorage.setItem('refreshToken', res.data.data.refreshToken);
                     localStorage.setItem('accessToken', res.data.data.accessToken);
 
-                    console.log(1);
                     return instance(originalRequest);
                 });
             } else {
