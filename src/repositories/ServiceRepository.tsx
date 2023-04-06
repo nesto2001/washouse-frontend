@@ -1,4 +1,4 @@
-import { API_SERVICE_DETAILS } from '../common/Constant';
+import { API_SERVICES, API_SERVICE_DETAILS } from '../common/Constant';
 import { Response } from '../models/CommonModel';
 import { ServiceDetailsModel } from '../models/Service/ServiceDetailsModel';
 import { ServiceDetailsResponse } from '../models/Service/ServiceDetailsResponse';
@@ -33,4 +33,33 @@ export const getService = async (centerId: number, id: number): Promise<ServiceD
         rating: data.data.rating,
         numOfRating: data.data.numOfRating,
     };
+};
+
+export const getServices = async (centerId: number): Promise<ServiceDetailsModel[]> => {
+    const { data } = await instance.get<Response<ServiceDetailsResponse[]>>(
+        API_SERVICES.replace('${centerId}', centerId.toString()),
+    );
+    return data.data.map((service) => {
+        return {
+            id: service.serviceId,
+            categoryId: service.categoryId,
+            name: service.serviceName,
+            description: service.description,
+            image: service.image,
+            priceType: service.priceType,
+            price: service.price,
+            minPrice: service.minPrice,
+            unit: service.unit,
+            rate: service.rate,
+            prices: service.prices.map((price): ServicePricesModel => {
+                return {
+                    maxValue: price.maxValue,
+                    price: price.price,
+                };
+            }),
+            timeEstimate: service.timeEstimate,
+            rating: service.rating,
+            numOfRating: service.numOfRating,
+        };
+    });
 };

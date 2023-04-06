@@ -1,8 +1,8 @@
-import { Button, InputRef, message, Modal, Space } from 'antd';
-import React, { useEffect, useState, useRef } from 'react';
+import { Button, InputRef, message, Modal, Space, TabsProps } from 'antd';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { FaPhoneAlt, FaRegClock } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import ModalImg from '../../assets/images/laundry-modal.svg';
 import Placeholder from '../../assets/images/placeholder.png';
 import WHButton from '../../components/Button';
@@ -16,13 +16,15 @@ import { CenterModel } from '../../models/Center/CenterModel';
 import { ServiceDetailsModel } from '../../models/Service/ServiceDetailsModel';
 import { addToCart, changeCartCenter, clearCart } from '../../reducers/CartReducer';
 import { getCenterBrief } from '../../repositories/CenterRepository';
-import { getService } from '../../repositories/ServiceRepository';
+import { getService, getServices } from '../../repositories/ServiceRepository';
 import { RootState } from '../../store/CartStore';
 import { CartItem } from '../../types/CartType/CartItem';
-import { calculatePrice, getRating, getWeightUnitPrice } from '../../utils/CommonUtils';
+import { calculatePrice, getRating, getWeightUnitPrice, splitDescription } from '../../utils/CommonUtils';
 import { formatCurrency } from '../../utils/FormatUtils';
 import { compareTime, getToday } from '../../utils/TimeUtils';
 import TextArea from 'antd/es/input/TextArea';
+import ServiceCard from '../../components/ServiceCard';
+import Carousel from '../../components/Carousel';
 
 type Props = {};
 
@@ -34,34 +36,17 @@ const CenterServiceContainer = (props: Props) => {
     const [weightInput, setWeightInput] = useState<number>(0);
     const [quantityInput, setQuantityInput] = useState<number>(0);
     const [customerNote, setCustomerNote] = useState<string>('');
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [isModalLoading, setIsModalLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState<boolean>(false);
-    // const ServiceDetailsModel = useMemo(
-    //     () => ({
-    //         id: 1,
-    //         thumbnail: Placeholder,
-    //         title: 'Giặt ủi quần áo',
-    //         description:
-    //             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vel sem accumsan, commodo velit ac, dictum sem. Proin pharetra lectus ac dolor dictum, eget tempor nulla efficitur. Nam eget euismod odio. Nunc euismod, eros ac dapibus interdum, magna libero placerat dui, ac commodo ante magna et mi.',
-    //         minTime: 2,
-    //         maxTime: 3,
-    //         rating: 4.5,
-    //         priceChart: [
-    //             { maxValue: 3, price: 30000 },
-    //             { maxValue: 4, price: 35000 },
-    //             { maxValue: 5, price: 40000 },
-    //             { maxValue: 6, price: 45000 },
-    //             { maxValue: 7, price: 50000 },
-    //         ],
-    //     }),
-    //     [],
-    // );
+    const [serviceList, setServiceList] = useState<ServiceDetailsModel[]>();
+    const location = useLocation();
 
     const { centerId, id } = useParams();
     const serviceCenterId = centerId ? parseInt(centerId) : 0;
 
     useEffect(() => {
+        setIsLoading(true);
         const fetchData = async () => {
             if (id && centerId) return await getService(serviceCenterId, parseInt(id));
         };
@@ -74,13 +59,14 @@ const CenterServiceContainer = (props: Props) => {
                 fetchData().then((centerRes) => {
                     setCenter(centerRes);
                     setIsLoading(false);
+                    centerRes?.id && getServices(centerRes?.id).then((res) => setServiceList(res));
                 });
             })
             .catch((error) => {
                 console.error(error);
                 setIsLoading(false);
             });
-    }, []);
+    }, [location]);
 
     const dispatch = useDispatch();
 
@@ -410,7 +396,38 @@ const CenterServiceContainer = (props: Props) => {
                             )}
                         </div>
                     </div>
+                    <div className="service__details--others mt-4 mb-20 md:w-[820px]">
+                        <h3 className="text-xl font-bold pl-9">Dịch vụ khác</h3>
+                        <hr className="mt-2" />
+                        {serviceList && (
+                            <Carousel
+                                showItem={serviceList.length < 3 ? serviceList.length : 3}
+                                items={serviceList
+                                    .filter((s) => service.id !== s.id)
+                                    .map((s) => {
+                                        return (
+                                            <ServiceCard
+                                                key={s.id}
+                                                id={s.id}
+                                                thumbnail={s.image}
+                                                title={s.name}
+                                                description={splitDescription(s.description, 100)}
+                                                price={s.price ?? undefined}
+                                                minPrice={s.minPrice}
+                                                action={true}
+                                                actionContent="Xem dịch vụ"
+                                                actionType="primary"
+                                                minHeight="100px"
+                                                cardHeight="432px"
+                                                actionLink={`/centers/center/${center.id}/service/${s.id}`}
+                                            ></ServiceCard>
+                                        );
+                                    })}
+                            ></Carousel>
+                        )}
+                    </div>
                 </div>
+
                 <div className="service__sideinfo basis-1/3">
                     <div className="service__sideinfo--rating p-6 border border-[#B3B3B3] rounded-2xl">
                         <h2 className="text-left font-bold text-2xl">Đánh giá</h2>
@@ -468,6 +485,7 @@ const CenterServiceContainer = (props: Props) => {
                         </div>
                     </div>
                 </div>
+
                 <Modal
                     open={modalVisible}
                     onOk={handleOk}
