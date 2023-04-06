@@ -8,6 +8,7 @@ import { ManagerCenterModel } from '../../../models/Manager/ManagerCenterModel';
 import { getManagerCenter } from '../../../repositories/StaffRepository';
 import '../ManagerContainer.scss';
 import CenterBasics from './CenterBasics';
+import CenterAddress from './CenterAddress';
 
 type Props = {};
 
@@ -74,7 +75,7 @@ const CenterProfileManagerContainer = (props: Props) => {
         {
             key: '2',
             label: `Địa chỉ & liên hệ`,
-            children: <div className="px-6">Content of Tab Pane 2</div>,
+            children: <div className="px-6">{center && <CenterAddress center={center} />}</div>,
         },
     ];
 

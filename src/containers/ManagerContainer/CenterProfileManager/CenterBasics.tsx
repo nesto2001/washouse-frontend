@@ -1,4 +1,4 @@
-import { Form, Input, UploadFile, message } from 'antd';
+import { Button, Form, Input, UploadFile, message } from 'antd';
 import Upload, { UploadChangeParam } from 'antd/es/upload';
 import React, { useState } from 'react';
 import { uploadSingle } from '../../../repositories/MediaRepository';
@@ -71,7 +71,6 @@ const CenterBasics = ({ center }: Props) => {
         console.log('Failed:', errorInfo);
     };
 
-    const defaultFileList = [,];
 
     // const handleTimeOnChange = (day: string, times: RangeValue<dayjs.Dayjs>) => {
     //     const operationDay = DayMap[day];
@@ -169,7 +168,13 @@ const CenterBasics = ({ center }: Props) => {
                         }}
                     />
                 </Form.Item>
-                {/* <Form.Item label="Giờ hoạt động">
+                <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
+                    <Button type="primary" htmlType="submit">
+                        Lưu
+                    </Button>
+                </Form.Item>
+            </Form>
+            {/* <Form.Item label="Giờ hoạt động">
                     <Form.List name="operatingDays">
                         {(fields, {}, { errors }) => (
                             <>
@@ -204,7 +209,7 @@ const CenterBasics = ({ center }: Props) => {
                         )}
                     </Form.List>
                 </Form.Item> */}
-            </Form>
+
             {/* <div className="col-span-2">Tên trung tâm</div>
             <div className="col-span-3"></div> */}
         </div>

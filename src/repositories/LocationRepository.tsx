@@ -6,7 +6,13 @@ import { LocationModel } from '../models/LocationModel';
 import { WardReponse } from '../models/WardResponse';
 import { LocationType } from '../types/LocationType';
 import { LocationResponse } from '../models/Location/LocationResponse';
-import { API_DISTRICT, API_DISTRICT_SEARCH, API_DISTRICT_WARDS, API_LOCATION_SEARCH } from '../common/Constant';
+import {
+    API_DISTRICT,
+    API_DISTRICT_SEARCH,
+    API_DISTRICT_WARDS,
+    API_LOCATION_DETAILS,
+    API_LOCATION_SEARCH,
+} from '../common/Constant';
 import { LocationDetailsResponse } from '../models/Location/LocationDetailsResponse';
 import { LocationDetailsModel } from '../models/Location/LocationDetailsModel';
 
@@ -60,7 +66,7 @@ export const searchLocation = async (address: string, wardId: number): Promise<L
 
 export const getLocation = async (id: number): Promise<LocationDetailsModel> => {
     const { data } = await instance.get<Response<LocationDetailsResponse>>(
-        API_LOCATION_SEARCH.replace('${locationId}', id.toString()),
+        API_LOCATION_DETAILS.replace('${locationId}', id.toString()),
         {},
     );
     return {

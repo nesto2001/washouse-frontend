@@ -10,17 +10,18 @@ import { getUserProfile } from '../../repositories/AccountRepository';
 import EmptyAddress from '../../assets/images/empty-address.png';
 import { Form, Modal, Tooltip } from 'antd';
 import { LocationModel } from '../../models/LocationModel';
-import { getDistricts, getWards } from '../../repositories/LocationRepository';
+import { getDistricts, getLocation, getWards } from '../../repositories/LocationRepository';
 import Selectbox from '../../components/Selectbox';
 import Input from '../../components/Input/Input';
 import { Option } from '../../types/Options';
+import { LocationDetailsModel } from '../../models/Location/LocationDetailsModel';
 type Props = {};
 
 const UpdateAddressContainer = (props: Props) => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [modalVisibility, setModalVisibility] = useState<boolean>(false);
     const [userProfile, setUserProfile] = useState<AccountModel>();
-
+    const [userAddress, setUserAddress] = useState<LocationDetailsModel>();
     const [form] = Form.useForm();
     const [district, setDistrict] = useState<LocationModel>();
     const [districtList, setDistrictList] = useState<LocationModel[]>([]);
@@ -30,10 +31,6 @@ const UpdateAddressContainer = (props: Props) => {
     const user: UserModel = userJson && JSON.parse(userJson);
 
     const location = useLocation();
-    const userAddress = {
-        latitude: 10.746564906708516,
-        longitude: 106.6452826711652,
-    };
 
     const mapStyles: React.CSSProperties = {
         height: '100%',
@@ -49,9 +46,15 @@ const UpdateAddressContainer = (props: Props) => {
         };
         fetchData().then((res) => {
             setUserProfile(res);
-        });
 
-        setIsLoading(false);
+            const fetchLocation = async () => {
+                return await getLocation(res.locationId ?? 0);
+            };
+            fetchLocation().then((res) => {
+                setUserAddress(res);
+                setIsLoading(false);
+            });
+        });
     }, []);
 
     const handleNext = () => {
@@ -69,7 +72,7 @@ const UpdateAddressContainer = (props: Props) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            return await getWards(district?.id ?? 0);
+            return await getWards(userAddress?.ward.district.id ?? district?.id ?? 0);
         };
         fetchData().then((res) => {
             setWardList(res);
@@ -123,13 +126,13 @@ const UpdateAddressContainer = (props: Props) => {
         <div className="useraddress w-full border border-wh-gray rounded-2xl mb-10">
             <div className="useraddress--header pt-4 pl-6 font-bold text-xl">Địa chỉ của tôi</div>
             <hr className="mt-3 mb-8" />
-            {!userProfile ? (
+            {userProfile && userAddress ? (
                 <div className="useraddress--content flex justify-between pl-14 pr-6 mb-16">
                     <div className="useraddress--details">
                         <div className="useraddress--user flex justify-start items-center">
-                            <div className="font-medium">Trần Tân Long</div>
+                            <div className="font-medium">{userProfile.fullName}</div>
                             <div className="mx-3 border bg-wh-gray w-[0.5px] h-6"></div>
-                            <div className="text-sm text-sub-gray">0975926021</div>
+                            <div className="text-sm text-sub-gray">{userProfile.phone}</div>
                         </div>
                         <div className="useraddress--address grid grid-cols-3 mt-5 gap-y-6">
                             <div className="col-span-1 min-w-[150px] flex flex-col">
@@ -138,26 +141,28 @@ const UpdateAddressContainer = (props: Props) => {
                             </div>
                             <div className="col-span-1 min-w-[150px] flex flex-col">
                                 <div className="font-medium text-sub-gray">Quận / huyện</div>
-                                <div className="mt-3">Quận 6</div>
+                                <div className="mt-3">{userAddress.ward.district.name}</div>
                             </div>
                             <div className="col-span-1 min-w-[150px] flex flex-col">
                                 <div className="font-medium text-sub-gray">Phường / xã</div>
-                                <div className="mt-3">Phường 4</div>
+                                <div className="mt-3">{userAddress.ward.name}</div>
                             </div>
                             <div className="col-span-3 min-w-[140px] flex flex-col">
                                 <div className="font-medium text-sub-gray">Địa chỉ cụ thể</div>
-                                <div className="mt-3 h-16">234/89B Phạm Phú Thứ</div>
+                                <div className="mt-3 h-16">{userAddress.address}</div>
                             </div>
                         </div>
                         <div className="useraddress--update">
-                            <WHButton type="primary">Cập nhật</WHButton>
+                            <WHButton type="primary" onClick={handleOpenModal}>
+                                Cập nhật
+                            </WHButton>
                         </div>
                     </div>
                     <div className="mx-6 bg-wh-gray w-[0.5px] max-h-[224px]"></div>
                     <div className="useraddress__map w-full max-w-[280px] max-h-[200px] pt-3">
                         <div className="useraddress__map--container h-[200px] rounded-2xl border border-wh-gray overflow-hidden">
                             <Map
-                                userLocation={userAddress}
+                                userLocation={{ latitude: userAddress.latitude, longitude: userAddress.longitude }}
                                 style={mapStyles}
                                 iconSize={iconSize}
                                 iconAnchor={iconAnchor}
@@ -173,12 +178,13 @@ const UpdateAddressContainer = (props: Props) => {
                         <br />
                         Có thể bạn chưa cập nhật địa chỉ cá nhân
                     </div>
-                    <WHButton type="primary" className="mt-2">
+                    <WHButton type="primary" className="mt-2" onClick={handleOpenModal}>
                         Cập nhật địa chỉ
                     </WHButton>
                 </div>
             )}
             <Modal
+                width={600}
                 title="Cập nhật địa chỉ cá nhân"
                 open={modalVisibility}
                 onOk={handleUpdateAddress}
@@ -187,7 +193,12 @@ const UpdateAddressContainer = (props: Props) => {
                 <Form
                     form={form}
                     name="account_address"
-                    initialValues={{}}
+                    initialValues={{
+                        address: userAddress?.address,
+                        city: 1,
+                        district: userAddress?.ward.district.id,
+                        ward: userAddress?.ward.id,
+                    }}
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
                     autoComplete="on"
@@ -263,7 +274,7 @@ const UpdateAddressContainer = (props: Props) => {
                                     id=""
                                     type="quận / huyện"
                                     className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                    // selectedValue={formData.district}
+                                    selectedValue={userAddress?.ward.district.id}
                                     options={districtList.map((district): Option => {
                                         return {
                                             value: district.id.toString(),
@@ -298,7 +309,7 @@ const UpdateAddressContainer = (props: Props) => {
                                     id=""
                                     type="phường / xã"
                                     className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                    // selectedValue={formData.wardId}
+                                    selectedValue={userAddress?.ward.id}
                                     options={wardList.map((ward) => {
                                         return {
                                             value: ward.id,

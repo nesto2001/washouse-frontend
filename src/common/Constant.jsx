@@ -30,7 +30,7 @@ const API_DISTRICT = '/api/districts';
 const API_DISTRICT_SEARCH = '/api/districts/search';
 const API_DISTRICT_WARDS = '/api/districts/${id}/wards';
 const API_LOCATION_SEARCH = '/api/locations/search';
-const API_LOCATION_DETAILS = 'api/location/${locationId}';
+const API_LOCATION_DETAILS = 'api/locations/${locationId}';
 
 //CENTER REQUEST API
 const API_REQUEST = '/api/requests/centers';
@@ -46,6 +46,7 @@ const API_ORDER_CREATE = '/api/orders';
 const API_MANAGER_CENTER = '/api/manager/my-center'
 
 export {
+    API_LOCATION_DETAILS,
     API_MANAGER_CENTER,
     API_REGISTER_PROVIDER,
     API_LOGIN_STAFF,
