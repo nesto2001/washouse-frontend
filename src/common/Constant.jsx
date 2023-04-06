@@ -45,6 +45,9 @@ const API_ORDER_CREATE = '/api/orders';
 //MANAGER API
 const API_MANAGER_CENTER = '/api/manager/my-center'
 
+//PROMOTION API
+const API_PROMOTION = '/api/promotions'
+
 export {
     API_LOCATION_DETAILS,
     API_MANAGER_CENTER,
@@ -72,4 +75,5 @@ export {
     API_CATEGORY,
     API_ACCOUNT_DETAILS,
     API_REFRESH_TOKEN,
+    API_PROMOTION,
 };

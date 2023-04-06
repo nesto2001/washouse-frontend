@@ -77,3 +77,6 @@ export function getHour(time: string | null | undefined): number {
     }
     return +time.split(':')[0];
 }
+export function formatDateEn(date: Date): string {
+    return date.toLocaleDateString();
+}

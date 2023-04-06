@@ -39,6 +39,7 @@ import {
 import AdminCenterRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterRequestPage';
 import AdminPostPage from '../pages/AdminPage/AdminPost/AdminPostPage';
 import AdminServicePage from '../pages/AdminPage/AdminService/AdminServicePage';
+import ManagerPromotionsPage from '../pages/StaffPage/ManagerPromotion/ManagerPromotionsPage';
 
 interface RouteProps {
     path: string;
@@ -163,6 +164,11 @@ const publicRoutes: Array<RouteProps> = [
         path: '/provider/customers',
         layout: ManagerDashboardLayout,
         component: StaffCustomerPage,
+    },
+    {
+        path: '/provider/promotions',
+        layout: ManagerDashboardLayout,
+        component: ManagerPromotionsPage,
     },
     {
         path: '/admin/dashboard',

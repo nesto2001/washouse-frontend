@@ -26,3 +26,7 @@ export function formatCurrency(value: number): string {
     });
     return formattedValue;
 }
+
+export function formatPercentage(value: number): string {
+    return `${value * 100}%`;
+}
