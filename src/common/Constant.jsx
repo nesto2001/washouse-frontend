@@ -46,7 +46,8 @@ const API_ORDER_CREATE = '/api/orders';
 //MANAGER API
 const API_MANAGER_CENTER = '/api/manager/my-center';
 const API_MANAGER_CENTER_ORDER = '/api/manager/my-center/orders';
-const API_MANAGER_CENTER_SERVICE = '/api/manager/services';const API_MANAGER_CENTER_CUSTOMER = '/api/manager/my-center/customers'
+const API_MANAGER_CENTER_SERVICE = '/api/manager/services';
+const API_MANAGER_CENTER_CUSTOMER = '/api/manager/my-center/customers';
 
 
 //PROMOTION API
