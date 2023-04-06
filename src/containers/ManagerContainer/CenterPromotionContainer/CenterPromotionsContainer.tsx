@@ -10,6 +10,7 @@ import Modal from 'antd/es/modal/Modal';
 import TextArea from 'antd/es/input/TextArea';
 import dayjs from 'dayjs';
 import { getManagerCenter } from '../../../repositories/StaffRepository';
+import CouponTag from '../../../components/CouponTag/CouponTag';
 
 type PromotionFormData = {
     code: string;
@@ -45,7 +46,7 @@ const CenterPromotionsContainer = () => {
             align: 'center',
             key: 'discount',
             render(_, record) {
-                return <div>{formatPercentage(record.discount)}</div>;
+                return <CouponTag discountValue={formatPercentage(record.discount)} />;
             },
         },
         {

@@ -17,7 +17,7 @@ const OrderCard = ({ order }: Props) => {
             <div className="order__item--id w-full text-right py-1 bg-wh-lightgray pr-6">Mã đơn hàng: {order.id}</div>
             <div className="order__item--content flex pt-3">
                 <div className="order__item--services w-[400px] pl-4">
-                    <OrderListItem orderId={order.id} />
+                    <OrderListItem orderedService={order.orderedServices} />
                 </div>
                 <div className="order__item--value mx-1">{formatCurrency(order.totalValue)}</div>
                 <div className="order__item--payment mx-1">{formatCurrency(order.totalPayment)}</div>{' '}

@@ -1,3 +1,5 @@
+import { CenterOrderedServiceResponse } from './CenterOrderedServiceResponse';
+
 export type CenterOrderResponse = {
     orderId: string;
     orderDate: string;
@@ -6,4 +8,5 @@ export type CenterOrderResponse = {
     discount: number;
     totalOrderPayment: number;
     status: string;
+    orderedServices: CenterOrderedServiceResponse[];
 };

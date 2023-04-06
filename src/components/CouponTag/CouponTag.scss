@@ -1,0 +1,44 @@
+.coupon__tag {
+    cursor: pointer;
+    padding: 3px 12px;
+    border: 1px solid var(--washouse-primary-blue);
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 20px;
+    color: var(--washouse-primary-blue);
+    position: relative;
+    margin: 0;
+    &::before {
+        content: '';
+        width: 10px;
+        height: 10px;
+        background-color: rgb(255, 255, 255);
+        border-width: 1px;
+        border-style: solid;
+        border-color: transparent var(--washouse-primary-blue) var(--washouse-primary-blue) transparent;
+        border-image: initial;
+        position: absolute;
+        top: 50%;
+        margin-top: -5px;
+        border-radius: 50%;
+        left: -6px;
+        transform: rotate(-45deg);
+    }
+    &::after {
+        content: '';
+        width: 10px;
+        height: 10px;
+        background-color: rgb(255, 255, 255);
+        border-width: 1px;
+        border-style: solid;
+        border-color: transparent var(--washouse-primary-blue) var(--washouse-primary-blue) transparent;
+        border-image: initial;
+        position: absolute;
+        top: 50%;
+        margin-top: -5px;
+        border-radius: 50%;
+        right: -6px;
+        transform: rotate(135deg);
+    }
+}

@@ -8,6 +8,7 @@ import { ManagerServiceItem } from '../models/Manager/ManagerServiceItem';
 import { ManagerServiceResponse } from '../models/Manager/ManagerServiceResponse';
 import { CenterOrderModel } from '../models/Staff/CenterOrderModel';
 import { CenterOrderResponse } from '../models/Staff/CenterOrderResponse';
+import { CenterOrderedServiceModel } from '../models/Staff/CenterOrderedServiceModel';
 import instance from '../services/axios/AxiosInstance';
 import { OperatingDay } from '../types/OperatingDay';
 
@@ -77,6 +78,15 @@ export const getManagerCenterOrders = async (): Promise<CenterOrderModel[]> => {
             status: item.status,
             totalPayment: item.totalOrderPayment,
             totalValue: item.totalOrderValue,
+            orderedServices: item.orderedServices.map((ordered): CenterOrderedServiceModel => {
+                return {
+                    name: ordered.serviceName,
+                    category: ordered.serviceCategory,
+                    measurement: ordered.measurement,
+                    price: ordered.price,
+                    unit: ordered.unit,
+                };
+            }),
         };
     });
 };
