@@ -1,10 +1,9 @@
-import { Image, Table, Tabs, TabsProps } from 'antd';
+import { Table, Tabs, TabsProps } from 'antd';
+import { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import CenterList from '../../../components/CenterList/CenterList';
 import { CenterModel } from '../../../models/Center/CenterModel';
 import { getAllCenter } from '../../../repositories/CenterRepository';
-import { ColumnsType } from 'antd/es/table';
 
 type Props = {};
 

@@ -1,55 +1,23 @@
-import { message } from 'antd';
-import { useEffect, useState } from 'react';
+import { Button, Modal, message } from 'antd';
+import { Dispatch, SetStateAction, useState } from 'react';
 import Placeholder from '../../assets/images/placeholder.png';
 import { CenterModel } from '../../models/Center/CenterModel';
-import { approveCenter, getCenterRequests, rejectCenter } from '../../repositories/RequestRepository';
-import WHButton from '../Button';
+import { approveCenter, rejectCenter } from '../../repositories/RequestRepository';
 
 type Props = {
     centerRequests: CenterModel[];
+    openDetail: (center: CenterModel) => void;
 };
 
-const CenterList = ({centerRequests}: Props) => {
-
-    const handleApprove = (id: number) => {
-        const approve = async () => {
-            return await approveCenter(id);
-        };
-        approve()
-            .then((res) => {
-                if (res) {
-                    message.success(`Đã chấp thuận yêu cầu duyệt trung tâm ${res.title}`);
-                }
-            })
-            .catch((error) => {
-                if (error) {
-                    message.error(`Đã xảy ra lỗi trong quá trình xét duyệt, vui lòng thử lại sau.`);
-                }
-            });
-    };
-
-    const handleReject = (id: number) => {
-        const reject = async () => {
-            return await rejectCenter(id);
-        };
-        reject()
-            .then((res) => {
-                if (res) {
-                    message.success(`Đã từ chối yêu cầu duyệt trung tâm ${res.title}`);
-                }
-            })
-            .catch((error) => {
-                if (error) {
-                    message.error(`Đã xảy ra lỗi trong quá trình xét duyệt, vui lòng thử lại sau.`);
-                }
-            });
-    };
-
+const CenterList = ({ centerRequests, openDetail }: Props) => {
     return (
         <div className="centerrq__list--wrapper my-5 mt-2">
             <div className="centerrq__list">
-                {centerRequests.map((req) => (
-                    <div className="centerrq__list--item flex border-b border-wh-gray py-2 pb-4 mb-2">
+                {centerRequests.map((req: CenterModel) => (
+                    <div
+                        className="centerrq__list--item flex border-b border-wh-gray py-2 pb-4 mb-2 cursor-pointer"
+                        onClick={() => openDetail(req)}
+                    >
                         <div className="centerrq__item--thumb h-[160px] rounded overflow-hidden basis-1/5">
                             <img className="w-full h-full object-cover" src={req.thumbnail ?? Placeholder} alt="" />
                         </div>
@@ -68,17 +36,6 @@ const CenterList = ({centerRequests}: Props) => {
                                 </div>
                             </div>
                             <div className="centerrq__item--address flex gap-2 text-base">{req.description}</div>
-                        </div>
-                        <div className="centerrq__item--price basis-1/5 text-right">
-                            <div className="centerrq__item--price text-primary font-bold text-2xl">
-                                <WHButton type="sub" onClick={() => handleReject(req.id)}>
-                                    Từ chối
-                                </WHButton>
-                                <div className="my-5"></div>
-                                <WHButton type="primary" onClick={() => handleApprove(req.id)}>
-                                    Chấp thuận
-                                </WHButton>
-                            </div>
                         </div>
                     </div>
                 ))}

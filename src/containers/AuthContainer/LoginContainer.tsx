@@ -27,7 +27,7 @@ const LoginContainer = () => {
             };
             fetchData().then((res) => {
                 console.log(res);
-                if (res.status == 200) {
+                if (res.status === 200 && res.data.statusCode === 0) {
                     localStorage.setItem('accessToken', res.data.data.accessToken);
                     localStorage.setItem('refreshToken', res.data.data.refreshToken);
                     const fetchData = async () => {
@@ -44,6 +44,7 @@ const LoginContainer = () => {
                     });
                 } else {
                     setLoginError('Số điện thoại hoặc mật khẩu chưa chính xác!');
+                    setIsFetching(false);
                 }
             });
         } else {
@@ -60,6 +61,9 @@ const LoginContainer = () => {
                     name="user_phone"
                     type="tel"
                     onChange={(e) => {
+                        if (loginError) {
+                            setLoginError('');
+                        }
                         setLoginForm((prev) => ({ ...prev, phone: e.target.value }));
                     }}
                     value={loginForm.phone}

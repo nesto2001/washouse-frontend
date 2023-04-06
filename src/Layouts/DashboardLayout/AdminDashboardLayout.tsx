@@ -86,7 +86,7 @@ const AdminDashboardLayout = ({ children }: Props) => {
         },
         {
             key: '5',
-            url: '/admin/marketing/posts',
+            url: '/admin/posts',
             icon: <CalendarOutlined />,
             label: 'Bài đăng',
         },

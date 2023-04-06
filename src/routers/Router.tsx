@@ -37,6 +37,8 @@ import {
     AdminAccountPage,
 } from '../pages/';
 import AdminCenterRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterRequestPage';
+import AdminPostPage from '../pages/AdminPage/AdminPost/AdminPostPage';
+import AdminServicePage from '../pages/AdminPage/AdminService/AdminServicePage';
 
 interface RouteProps {
     path: string;
@@ -182,7 +184,16 @@ const publicRoutes: Array<RouteProps> = [
         layout: AdminDashboardLayout,
         component: AdminAccountPage,
     },
+    {
+        path: '/admin/service-categories/',
+        layout: AdminDashboardLayout,
+        component: AdminServicePage,
+    },
+    {
+        path: '/admin/posts/',
+        layout: AdminDashboardLayout,
+        component: AdminPostPage,
+    },
 ];
 
 export { publicRoutes };
-

@@ -11,7 +11,7 @@ export type PaginationResponse<T> = {
 };
 
 export type Response<T> = {
-    code: number;
+    statusCode: number;
     message: string;
     data: T;
 };

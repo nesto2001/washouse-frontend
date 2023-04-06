@@ -32,11 +32,7 @@ const columns: ColumnsType<AccountModel> = [
         dataIndex: '',
         key: 'x',
         render: (_, record) => {
-            return record.status ? (
-                <a className="text-red-500">Inactivate</a>
-            ) : (
-                <a className="text-primary">Activate</a>
-            );
+            return record.status ? <a className="text-red">De activate</a> : <a className="text-primary">Activate</a>;
         },
     },
 ];
