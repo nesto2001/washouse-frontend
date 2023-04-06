@@ -1,62 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import Placeholder from '../../../assets/images/placeholder.png';
+import LogoText from '../../../assets/images/washouse-textonly.png';
 import Carousel from '../../../components/Carousel';
 import ServiceCard from '../../../components/ServiceCard';
-import Placeholder from '../../../assets/images/placeholder.png';
+import { ServiceCategoryDetailModel } from '../../../models/Category/ServiceCategoryDetailModel';
+import { getServiceCategories } from '../../../repositories/ServiceCategoryRepository';
 import { CardData } from '../../../types/CardData';
-import LogoText from '../../../assets/images/washouse-textonly.png';
-import { getAllCenter } from '../../../repositories/CenterRepository';
+import { splitDescription } from '../../../utils/CommonUtils';
 
 const HomeServices = () => {
-    const cards: CardData[] = [
-        {
-            id: 1,
-            thumbnail: Placeholder,
-            title: 'Giặt & Gấp',
-            description: 'Dịch vu cơ bản bao gồm việc giặt, sấy khô và gấp quần áo.',
-        },
-        {
-            id: 2,
-            thumbnail: Placeholder,
-            title: 'Giặt & Gấp',
-            description: 'Dịch vu cơ bản bao gồm việc giặt, sấy khô và gấp quần áo.',
-        },
-        {
-            id: 3,
-            thumbnail: Placeholder,
-            title: 'Giặt & Gấp',
-            description: 'Dịch vu cơ bản bao gồm việc giặt, sấy khô và gấp quần áo.',
-        },
-        {
-            id: 4,
-            thumbnail: Placeholder,
-            title: 'Giặt & Gấp',
-            description: 'Dịch vu cơ bản bao gồm việc giặt, sấy khô và gấp quần áo.',
-        },
-        {
-            id: 5,
-            thumbnail: Placeholder,
-            title: 'Giặt & Gấp',
-            description: 'Dịch vu cơ bản bao gồm việc giặt, sấy khô và gấp quần áo.',
-        },
-        {
-            id: 6,
-            thumbnail: Placeholder,
-            title: 'Giặt & Gấp',
-            description: 'Dịch vu cơ bản bao gồm việc giặt, sấy khô và gấp quần áo.',
-        },
-        {
-            id: 7,
-            thumbnail: Placeholder,
-            title: 'Giặt & Gấp',
-            description: 'Dịch vu cơ bản bao gồm việc giặt, sấy khô và gấp quần áo.',
-        },
-        {
-            id: 8,
-            thumbnail: Placeholder,
-            title: 'Giặt & Gấp',
-            description: 'Dịch vu cơ bản bao gồm việc giặt, sấy khô và gấp quần áo.',
-        },
-    ];
+    const [serviceCategories, setServiceCategories] = useState<ServiceCategoryDetailModel[]>();
+    useEffect(() => {
+        getServiceCategories().then((res) => setServiceCategories(res));
+    }, []);
 
     return (
         <div className="service__wrapper h-full">
@@ -70,19 +26,21 @@ const HomeServices = () => {
             </div>
             <div className="homepage__section--content">
                 <div className="service__slider--wrapper mx-40">
-                    <Carousel
-                        items={cards.map((card) => {
-                            return (
-                                <ServiceCard
-                                    key={card.id}
-                                    id={card.id}
-                                    description={card.description}
-                                    thumbnail={card.thumbnail}
-                                    title={card.title}
-                                ></ServiceCard>
-                            );
-                        })}
-                    ></Carousel>
+                    {serviceCategories && (
+                        <Carousel
+                            items={serviceCategories.map((serviceCategory) => {
+                                return (
+                                    <ServiceCard
+                                        key={serviceCategory.categoryId}
+                                        id={serviceCategory.categoryId}
+                                        description={splitDescription(serviceCategory.description, 140)}
+                                        thumbnail={serviceCategory.image}
+                                        title={serviceCategory.categoryName}
+                                    ></ServiceCard>
+                                );
+                            })}
+                        ></Carousel>
+                    )}
                 </div>
             </div>
         </div>

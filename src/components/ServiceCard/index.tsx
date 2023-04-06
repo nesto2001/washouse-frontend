@@ -35,18 +35,20 @@ const ServiceCard = ({
             style={cardStyle}
         >
             <img
-                className="rounded md:min-h-[126px] md:max-h-[126px] max-w-[200px] object-cover object-center"
+                className="rounded md:min-h-[126px] md:max-h-[126px] w-full object-cover object-center"
                 src={thumbnail ?? Placeholder}
                 alt={title}
             />
             <Tooltip title={title}>
-                <h3 className="font-bold text-lg  w-full pt-2 text-left md:min-h-[36px] text-ellipsis line-clamp-1">
+                <h3 className="font-bold text-lg mt-4 w-full pt-2 text-left md:min-h-[36px] text-ellipsis line-clamp-1">
                     {title}
                 </h3>
             </Tooltip>
-            <h3 className={'font-bold text-xl w-full pt-2 text-primary text-left'}>
-                {price ? formatCurrency(price) : minPrice ? 'Từ ' + formatCurrency(minPrice) : formatCurrency(0)}
-            </h3>
+            {price && (
+                <h3 className={'font-bold text-xl w-full pt-2 text-primary text-left'}>
+                    {price ? formatCurrency(price) : minPrice ? 'Từ ' + formatCurrency(minPrice) : formatCurrency(0)}
+                </h3>
+            )}
             <p className={clsx('flex-grow text-justify w-full mt-4')} style={style}>
                 {description}
             </p>

@@ -90,3 +90,10 @@ export function maskEmail(email: string): string {
     const parts = email.split('@');
     return '*'.repeat(parts[0].length) + '@' + parts[1];
 }
+
+export function splitDescription(content: string, length: number): string {
+    if (content.length < length) {
+        return content;
+    }
+    return `${content.substring(0, length - 3)}...`;
+}
