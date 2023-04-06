@@ -1,10 +1,10 @@
 const BASE_URL = process.env.REACT_APP_FIREBASE_API_URL;
 
 //AUTH API
-const API_LOGIN = "/api/accounts/login";
-const API_LOGIN_STAFF = "/api/accounts/login-staff";
+const API_LOGIN = '/api/accounts/login';
+const API_LOGIN_STAFF = '/api/accounts/login-staff';
 const API_ME = '/api/accounts/me';
-const API_REGISTER_CUSTOMER = '/api/accounts/customers'
+const API_REGISTER_CUSTOMER = '/api/accounts/customers';
 const API_REGISTER_PROVIDER = '/api/accounts/managers';
 const API_REFRESH_TOKEN = '/api/accounts/token';
 
@@ -24,6 +24,7 @@ const API_CATEGORY = '/api/service-categories';
 
 //SERVICE API
 const API_SERVICE_DETAILS = '/api/centers/${centerId}/services/${serviceId}';
+const API_SERVICES = '/api/centers/${centerId}/services';
 
 //LOCATION API
 const API_DISTRICT = '/api/districts';
@@ -43,14 +44,13 @@ const API_ORDER_EST = '/api/orders/estimated-time';
 const API_ORDER_CREATE = '/api/orders';
 
 //MANAGER API
-const API_MANAGER_CENTER = '/api/manager/my-center'
-const API_MANAGER_CENTER_ORDER = '/api/manager/my-center/orders'
-const API_MANAGER_CENTER_SERVICE = '/api/manager/services'
-const API_MANAGER_CENTER_CUSTOMER = '/api/manager/my-center/customers'
+const API_MANAGER_CENTER = '/api/manager/my-center';
+const API_MANAGER_CENTER_ORDER = '/api/manager/my-center/orders';
+const API_MANAGER_CENTER_SERVICE = '/api/manager/services';const API_MANAGER_CENTER_CUSTOMER = '/api/manager/my-center/customers'
 
 
 //PROMOTION API
-const API_PROMOTION = '/api/promotions'
+const API_PROMOTION = '/api/promotions';
 
 export {
     API_MANAGER_CENTER_CUSTOMER,
@@ -83,4 +83,5 @@ export {
     API_ACCOUNT_DETAILS,
     API_REFRESH_TOKEN,
     API_PROMOTION,
+    API_SERVICES,
 };

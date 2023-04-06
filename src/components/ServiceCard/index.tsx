@@ -1,10 +1,10 @@
 import clsx from 'clsx';
-import { CardData } from '../../types/CardData';
 import { formatCurrency } from '../../utils/FormatUtils';
 import Button from '../Button';
 import './ServiceCard.scss';
 import Placeholder from '../../assets/images/placeholder.png';
 import { Tooltip } from 'antd';
+import { CardData } from '../../types/CardData';
 
 const ServiceCard = ({
     thumbnail,
