@@ -1,16 +1,18 @@
-import { Button, InputRef, message, Modal, Space, TabsProps } from 'antd';
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { Button, message, Modal, Space } from 'antd';
+import TextArea from 'antd/es/input/TextArea';
+import React, { useEffect, useState } from 'react';
 import { FaPhoneAlt, FaRegClock } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
 import ModalImg from '../../assets/images/laundry-modal.svg';
 import Placeholder from '../../assets/images/placeholder.png';
 import WHButton from '../../components/Button';
+import Carousel from '../../components/Carousel';
 import ErrorScreen from '../../components/ErrorScreen/ErrorScreen';
-import Input from '../../components/Input/Input';
 import Loading from '../../components/Loading/Loading';
 import PriceTable from '../../components/PriceTable';
 import RatingStars from '../../components/RatingStars/RatingStars';
+import ServiceCard from '../../components/ServiceCard';
 import StatusTag from '../../components/StatusTag';
 import { CenterModel } from '../../models/Center/CenterModel';
 import { ServiceDetailsModel } from '../../models/Service/ServiceDetailsModel';
@@ -22,9 +24,6 @@ import { CartItem } from '../../types/CartType/CartItem';
 import { calculatePrice, getRating, getWeightUnitPrice, splitDescription } from '../../utils/CommonUtils';
 import { formatCurrency } from '../../utils/FormatUtils';
 import { compareTime, getToday } from '../../utils/TimeUtils';
-import TextArea from 'antd/es/input/TextArea';
-import ServiceCard from '../../components/ServiceCard';
-import Carousel from '../../components/Carousel';
 
 type Props = {};
 
@@ -59,7 +58,10 @@ const CenterServiceContainer = (props: Props) => {
                 fetchData().then((centerRes) => {
                     setCenter(centerRes);
                     setIsLoading(false);
-                    centerRes?.id && getServices(centerRes?.id).then((res) => setServiceList(res));
+                    centerRes?.id &&
+                        getServices(centerRes?.id).then((servicesRes) =>
+                            setServiceList(servicesRes.filter((s) => res?.id != s.id)),
+                        );
                 });
             })
             .catch((error) => {
@@ -220,7 +222,7 @@ const CenterServiceContainer = (props: Props) => {
         if (regex.test(value)) setWeightInput(parseFloat(value.slice(0, maxLength)));
     };
 
-    const ratingText = getRating(service.rating ?? 0);
+    const ratingText = getRating(service.rating);
     return (
         <>
             {contextHolder}
@@ -402,27 +404,25 @@ const CenterServiceContainer = (props: Props) => {
                         {serviceList && (
                             <Carousel
                                 showItem={serviceList.length < 3 ? serviceList.length : 3}
-                                items={serviceList
-                                    .filter((s) => service.id !== s.id)
-                                    .map((s) => {
-                                        return (
-                                            <ServiceCard
-                                                key={s.id}
-                                                id={s.id}
-                                                thumbnail={s.image}
-                                                title={s.name}
-                                                description={splitDescription(s.description, 100)}
-                                                price={s.price ?? undefined}
-                                                minPrice={s.minPrice}
-                                                action={true}
-                                                actionContent="Xem dịch vụ"
-                                                actionType="primary"
-                                                minHeight="100px"
-                                                cardHeight="432px"
-                                                actionLink={`/centers/center/${center.id}/service/${s.id}`}
-                                            ></ServiceCard>
-                                        );
-                                    })}
+                                items={serviceList.map((s) => {
+                                    return (
+                                        <ServiceCard
+                                            key={s.id}
+                                            id={s.id}
+                                            thumbnail={s.image}
+                                            title={s.name}
+                                            description={splitDescription(s.description, 100)}
+                                            price={s.price ?? undefined}
+                                            minPrice={s.minPrice}
+                                            action={true}
+                                            actionContent="Xem dịch vụ"
+                                            actionType="primary"
+                                            minHeight="100px"
+                                            cardHeight="432px"
+                                            actionLink={`/centers/center/${center.id}/service/${s.id}`}
+                                        ></ServiceCard>
+                                    );
+                                })}
                             ></Carousel>
                         )}
                     </div>

@@ -39,8 +39,11 @@ export function getWeightUnitPrice(priceChart: ServicePricesModel[], weight: num
     return 0;
 }
 
-export function getRating(rating: number): string {
+export function getRating(rating: number | null): string {
     let ratingText = '';
+    if (!rating) {
+        return 'Chưa có';
+    }
     if (rating >= 0 && rating <= 1) {
         ratingText = 'Rất tệ';
     } else if (rating > 1 && rating <= 2) {
