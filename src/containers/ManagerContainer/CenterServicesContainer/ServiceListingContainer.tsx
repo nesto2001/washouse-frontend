@@ -6,6 +6,8 @@ import ServiceList from '../../../components/ServiceList/ServiceList';
 import { getCategoryOptions } from '../../../repositories/ServiceCategoryRepository';
 import { CategoryOptionsModel } from '../../../models/Category/CategoryOptionsModel';
 import { useNavigate } from 'react-router-dom';
+import { ManagerServiceItem } from '../../../models/Manager/ManagerServiceItem';
+import { getManagerServices } from '../../../repositories/StaffRepository';
 
 type Props = {};
 
@@ -33,6 +35,7 @@ export type SearchParamsData = {
 
 const ServiceListingContainer = (props: Props) => {
     const navigate = useNavigate();
+    const [serviceList, setServiceList] = useState<ManagerServiceItem[]>([]);
     const [form] = Form.useForm();
     const [searchParams, setSearchParams] = useState<SearchParamsData>({
         searchString: '',
@@ -45,11 +48,20 @@ const ServiceListingContainer = (props: Props) => {
         { id: 0, name: 'Chọn loại dịch vụ' },
     ]);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            return await getManagerServices();
+        };
+        fetchData().then((res) => {
+            setServiceList(res);
+        });
+    }, [searchParams]);
+
     const serviceTab: TabsProps['items'] = [
         {
             key: '1',
             label: `Tất cả`,
-            children: <ServiceList layout="table" />,
+            children: <ServiceList layout="table" serviceList={serviceList} />,
         },
         {
             key: '2',

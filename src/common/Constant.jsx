@@ -44,11 +44,16 @@ const API_ORDER_CREATE = '/api/orders';
 
 //MANAGER API
 const API_MANAGER_CENTER = '/api/manager/my-center'
+const API_MANAGER_CENTER_ORDER = '/api/manager/my-center/orders'
+const API_MANAGER_CENTER_SERVICE = '/api/manager/services'
+
 
 //PROMOTION API
 const API_PROMOTION = '/api/promotions'
 
 export {
+    API_MANAGER_CENTER_SERVICE,
+    API_MANAGER_CENTER_ORDER,
     API_LOCATION_DETAILS,
     API_MANAGER_CENTER,
     API_REGISTER_PROVIDER,

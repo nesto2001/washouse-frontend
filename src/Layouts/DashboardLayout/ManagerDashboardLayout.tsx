@@ -42,10 +42,10 @@ const ManagerDashboardLayout = ({ children }: Props) => {
             return await getMe();
         };
         fetchData().catch((error) => {
-            if (error) {
-                message.error('Vui lòng đăng nhập để xem trang này');
-                navigate('/provider/login');
-            }
+            // if (error) {
+            //     message.error('Vui lòng đăng nhập để xem trang này');
+            //     navigate('/provider/login');
+            // }
         });
     }, [user]);
 
@@ -61,7 +61,7 @@ const ManagerDashboardLayout = ({ children }: Props) => {
         {
             key: '2',
             icon: <SolutionOutlined />,
-            label: 'Đơn hàng',
+            label: <Link to="/provider/orders">Đơn hàng</Link>,
         },
         {
             key: '3',

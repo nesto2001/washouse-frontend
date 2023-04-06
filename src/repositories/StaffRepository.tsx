@@ -1,8 +1,13 @@
-import { API_MANAGER_CENTER } from '../common/Constant';
-import { Response } from '../models/CommonModel';
+import { API_MANAGER_CENTER, API_MANAGER_CENTER_ORDER, API_MANAGER_CENTER_SERVICE } from '../common/Constant';
+import { ListResponse } from '../models/CommonModel';
+import { PaginationResponse, Response } from '../models/CommonModel';
 import { CenterDeliveryPriceModel } from '../models/DeliveryPrice/DeliveryPriceModel';
 import { ManagerCenterModel } from '../models/Manager/ManagerCenterModel';
 import { ManagerCenterResponse } from '../models/Manager/ManagerCenterResponse';
+import { ManagerServiceItem } from '../models/Manager/ManagerServiceItem';
+import { ManagerServiceResponse } from '../models/Manager/ManagerServiceResponse';
+import { CenterOrderModel } from '../models/Staff/CenterOrderModel';
+import { CenterOrderResponse } from '../models/Staff/CenterOrderResponse';
 import instance from '../services/axios/AxiosInstance';
 import { OperatingDay } from '../types/OperatingDay';
 
@@ -52,4 +57,60 @@ export const getManagerCenter = async (): Promise<ManagerCenterModel> => {
         thumbnail: data.data.thumbnail,
         title: data.data.title,
     };
+};
+
+export const getManagerCenterOrders = async (): Promise<CenterOrderModel[]> => {
+    const { data } = await instance.get<PaginationResponse<CenterOrderResponse>>(API_MANAGER_CENTER_ORDER, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    if (data === null) {
+        throw new Error();
+    }
+    return data.data.items.map((item): CenterOrderModel => {
+        return {
+            id: item.orderId,
+            customerName: item.customerName,
+            discount: item.discount,
+            orderedDate: item.orderDate,
+            status: item.status,
+            totalPayment: item.totalOrderPayment,
+            totalValue: item.totalOrderValue,
+        };
+    });
+};
+
+export const getManagerServices = async (): Promise<ManagerServiceItem[]> => {
+    const { data } = await instance.get<ListResponse<ManagerServiceResponse>>(API_MANAGER_CENTER_SERVICE, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    if (data === null) {
+        throw new Error();
+    }
+    return data.data.map((item): ManagerServiceItem => {
+        return {
+            id: item.serviceId,
+            categoryId: item.categoryId,
+            categoryName: item.serviceName,
+            homeFlag: item.homeFlag,
+            hotFlag: item.hotFlag,
+            isAvailable: item.isAvailable,
+            minPrice: item.minPrice,
+            name: item.serviceName,
+            numOfRating: item.numOfRating,
+            price: item.price,
+            prices: item.prices.map((price) => {
+                return {
+                    maxValue: price.maxValue,
+                    price: price.price,
+                };
+            }),
+            priceType: item.priceType,
+            rating: item.rating,
+            status: item.status,
+        };
+    });
 };

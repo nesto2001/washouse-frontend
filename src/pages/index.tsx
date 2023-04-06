@@ -26,7 +26,7 @@ export { default as ManagerCenterRegistrationPage } from './StaffPage/ManagerCen
 export { default as ManagerServicePage } from './StaffPage/ManagerService/ManagerServicePage';
 export { default as ManagerCreateServicePage } from './StaffPage/ManagerService/ManagerCreateServicePage';
 export { default as StaffCustomerPage } from './StaffPage/StaffCustomer/StaffCustomerPage';
-export { default as StaffOrderPage } from './StaffPage/StaffOrder/StaffOrderPage';
+export { default as StaffOrdersPage } from './StaffPage/StaffOrder/StaffOrdersPage';
 
 //admin
 export { default as AdminDashboardPage } from './AdminPage/AdminDashboardPage';

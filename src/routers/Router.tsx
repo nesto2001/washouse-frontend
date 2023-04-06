@@ -35,6 +35,7 @@ import {
     StaffLoginPage,
     StaffRegisterPage,
     AdminAccountPage,
+    StaffOrdersPage,
 } from '../pages/';
 import AdminCenterRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterRequestPage';
 import AdminPostPage from '../pages/AdminPage/AdminPost/AdminPostPage';
@@ -164,6 +165,11 @@ const publicRoutes: Array<RouteProps> = [
         path: '/provider/customers',
         layout: ManagerDashboardLayout,
         component: StaffCustomerPage,
+    },
+    {
+        path: '/provider/orders',
+        layout: ManagerDashboardLayout,
+        component: StaffOrdersPage,
     },
     {
         path: '/provider/promotions',

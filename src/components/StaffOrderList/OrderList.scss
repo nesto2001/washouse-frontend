@@ -1,0 +1,9 @@
+.order__item {
+    overflow: hidden;
+    &.expanded {
+        height: auto;
+    }
+    &.collapsed {
+        height: 140px;
+    }
+}
