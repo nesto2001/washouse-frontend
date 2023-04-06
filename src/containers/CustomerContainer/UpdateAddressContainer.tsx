@@ -9,7 +9,7 @@ import { UserModel } from '../../models/User/UserModel';
 import { getUserProfile } from '../../repositories/AccountRepository';
 import EmptyAddress from '../../assets/images/empty-address.png';
 import { Form, Modal, Tooltip } from 'antd';
-import { LocationModel } from '../../models/LocationModel';
+import { LocationPlaceModel } from '../../models/LocationPlaceModel';
 import { getDistricts, getLocation, getWards } from '../../repositories/LocationRepository';
 import Selectbox from '../../components/Selectbox';
 import Input from '../../components/Input/Input';
@@ -23,9 +23,9 @@ const UpdateAddressContainer = (props: Props) => {
     const [userProfile, setUserProfile] = useState<AccountModel>();
     const [userAddress, setUserAddress] = useState<LocationDetailsModel>();
     const [form] = Form.useForm();
-    const [district, setDistrict] = useState<LocationModel>();
-    const [districtList, setDistrictList] = useState<LocationModel[]>([]);
-    const [wardList, setWardList] = useState<LocationModel[]>([]);
+    const [district, setDistrict] = useState<LocationPlaceModel>();
+    const [districtList, setDistrictList] = useState<LocationPlaceModel[]>([]);
+    const [wardList, setWardList] = useState<LocationPlaceModel[]>([]);
 
     const userJson = localStorage.getItem('currentUser');
     const user: UserModel = userJson && JSON.parse(userJson);

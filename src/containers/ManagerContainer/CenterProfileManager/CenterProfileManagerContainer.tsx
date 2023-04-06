@@ -9,11 +9,14 @@ import { getManagerCenter } from '../../../repositories/StaffRepository';
 import '../ManagerContainer.scss';
 import CenterBasics from './CenterBasics';
 import CenterAddress from './CenterAddress';
+import { getLocation } from '../../../repositories/LocationRepository';
+import { LocationDetailsModel } from '../../../models/Location/LocationDetailsModel';
 
 type Props = {};
 
 const CenterProfileManagerContainer = (props: Props) => {
     const [center, setCenter] = useState<ManagerCenterModel>();
+    const [centerAddress, setCenterAddress] = useState<LocationDetailsModel>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -58,7 +61,13 @@ const CenterProfileManagerContainer = (props: Props) => {
         };
         fetchData().then((res) => {
             setCenter(res);
-            setIsLoading(false);
+            const fetchLocation = async () => {
+                return await getLocation(res.locationId);
+            };
+            fetchLocation().then((res) => {
+                setCenterAddress(res);
+                setIsLoading(false);
+            });
         });
     }, []);
 
@@ -75,7 +84,11 @@ const CenterProfileManagerContainer = (props: Props) => {
         {
             key: '2',
             label: `Địa chỉ & liên hệ`,
-            children: <div className="px-6">{center && <CenterAddress center={center} />}</div>,
+            children: (
+                <div className="px-6">
+                    {center && centerAddress && <CenterAddress centerAddress={centerAddress} center={center} />}
+                </div>
+            ),
         },
     ];
 

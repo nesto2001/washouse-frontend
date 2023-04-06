@@ -41,6 +41,7 @@ export const getManagerCenter = async (): Promise<ManagerCenterModel> => {
         description: data.data.description,
         hasDelivery: data.data.hasDelivery,
         isAvailable: data.data.isAvailable,
+        locationId: data.data.locationId,
         monthOff: data.data.monthOff,
         numOfRating: data.data.numOfRating,
         phone: data.data.phone,

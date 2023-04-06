@@ -2,7 +2,7 @@ import { Button, Form, FormInstance, Input, Modal, Select, Space, Tooltip, Uploa
 import DefaultOptionType from 'antd/es/select';
 import TextArea from 'antd/es/input/TextArea';
 import React, { useState, useEffect, useMemo } from 'react';
-import { LocationModel } from '../../../models/LocationModel';
+import { LocationPlaceModel } from '../../../models/LocationPlaceModel';
 import { getDistricts, getWards, searchLocation } from '../../../repositories/LocationRepository';
 import { CreateCenterFormData } from '.';
 import { LocationType } from '../../../types/LocationType';
@@ -18,10 +18,10 @@ type Props = {
 };
 
 const CenterContactForm = ({ setFormData, setIsValidated, formData, formInstance }: Props) => {
-    const [districtsList, setDistrictsList] = useState<LocationModel[]>([]);
-    const [wardsList, setWardsList] = useState<LocationModel[]>([]);
-    const [city, setCity] = useState<LocationModel>({ id: 0, name: 'TP. Hồ Chí Minh' });
-    const [district, setDistrict] = useState<LocationModel>();
+    const [districtsList, setDistrictsList] = useState<LocationPlaceModel[]>([]);
+    const [wardsList, setWardsList] = useState<LocationPlaceModel[]>([]);
+    const [city, setCity] = useState<LocationPlaceModel>({ id: 0, name: 'TP. Hồ Chí Minh' });
+    const [district, setDistrict] = useState<LocationPlaceModel>();
     const [openMap, setOpenMap] = useState<boolean>(false);
     const [location, setLocation] = useState<LocationType>({ latitude: 0, longitude: 0 });
 
