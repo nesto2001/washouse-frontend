@@ -1,8 +1,9 @@
 import Table, { ColumnsType } from 'antd/es/table';
 import React from 'react';
 import { formatDateString } from '../../utils/TimeUtils';
+import { CenterCustomerModel } from '../../models/Staff/CenterCustomerModel';
 
-type Props = {};
+type Props = { customers: CenterCustomerModel[] };
 
 type CustomerType = {
     id: number;
@@ -14,48 +15,47 @@ type CustomerType = {
     dob?: string;
 };
 
-const customers: CustomerType[] = [
-    {
-        id: 2,
-        fullname: 'Đoàn Kim Trọng',
-        phone: '0328104356',
-        address: '123 Phạm Văn Đồng, Phường 3, Quận Gò Vấp, TP. HCM',
-        email: 'tester01@gmail.com',
-        avatar: 'abc.png',
-        dob: '12/05/2001',
-    },
-    {
-        id: 3,
-        fullname: 'Đoàn Huy Tân',
-        phone: '0328171821',
-        address: '159 Lý Chính Thắng, Phường 14, Quận 3, TP. HCM',
-        email: 'huytan@gmail.com',
-        avatar: 'abcdef.png',
-        dob: '12/12/2001',
-    },
-    {
-        id: 4,
-        fullname: '0123456788',
-        phone: '0123456788',
-        address: '23 Bình Tây, Phường 3, Quận 6, TP. HCM',
-        email: '',
-    },
-];
+// const customers: CenterCustomerModel[] = [
+//     {
+//         id: 2,
+//         fullname: 'Đoàn Kim Trọng',
+//         phone: '0328104356',
+//         address: '123 Phạm Văn Đồng, Phường 3, Quận Gò Vấp, TP. HCM',
+//         email: 'tester01@gmail.com',
+//         avatar: 'abc.png',
+//         dob: '12/05/2001',
+//     },
+//     {
+//         id: 3,
+//         fullname: 'Đoàn Huy Tân',
+//         phone: '0328171821',
+//         address: '159 Lý Chính Thắng, Phường 14, Quận 3, TP. HCM',
+//         email: 'huytan@gmail.com',
+//         avatar: 'abcdef.png',
+//         dob: '12/12/2001',
+//     },
+//     {
+//         id: 4,
+//         fullname: '0123456788',
+//         phone: '0123456788',
+//         address: '23 Bình Tây, Phường 3, Quận 6, TP. HCM',
+//         email: '',
+//     },
+// ];
 
-const columns: ColumnsType<CustomerType> = [
+const columns: ColumnsType<CenterCustomerModel> = [
     {
         title: 'Mã',
         dataIndex: 'id',
         key: 'id',
     },
     {
-        title: 'Ảnh đại diện',
-        dataIndex: 'avatar',
-        key: 'avatar',
-        render: (text) => <a>{text}</a>,
+        title: 'Tên khách hàng',
+        dataIndex: 'fullname',
+        key: 'fullname',
     },
     {
-        title: 'Tên khách hàng',
+        title: 'Giới tính',
         dataIndex: 'fullname',
         key: 'fullname',
     },
@@ -73,6 +73,7 @@ const columns: ColumnsType<CustomerType> = [
         title: 'Địa chỉ',
         dataIndex: 'address',
         key: 'address',
+        width: 360,
     },
     {
         title: 'Sinh nhật',
@@ -82,7 +83,7 @@ const columns: ColumnsType<CustomerType> = [
     },
 ];
 
-const CustomerList = (props: Props) => {
+const CustomerList = ({ customers }: Props) => {
     return (
         <div className="customer__list--wrapper my-5 mt-2">
             <div className="customer__list">

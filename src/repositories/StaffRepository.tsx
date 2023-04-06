@@ -1,4 +1,9 @@
-import { API_MANAGER_CENTER, API_MANAGER_CENTER_ORDER, API_MANAGER_CENTER_SERVICE } from '../common/Constant';
+import {
+    API_MANAGER_CENTER,
+    API_MANAGER_CENTER_CUSTOMER,
+    API_MANAGER_CENTER_ORDER,
+    API_MANAGER_CENTER_SERVICE,
+} from '../common/Constant';
 import { ListResponse } from '../models/CommonModel';
 import { PaginationResponse, Response } from '../models/CommonModel';
 import { CenterDeliveryPriceModel } from '../models/DeliveryPrice/DeliveryPriceModel';
@@ -6,6 +11,8 @@ import { ManagerCenterModel } from '../models/Manager/ManagerCenterModel';
 import { ManagerCenterResponse } from '../models/Manager/ManagerCenterResponse';
 import { ManagerServiceItem } from '../models/Manager/ManagerServiceItem';
 import { ManagerServiceResponse } from '../models/Manager/ManagerServiceResponse';
+import { CenterCustomerModel } from '../models/Staff/CenterCustomerModel';
+import { CenterCustomerResponse } from '../models/Staff/CenterCustomerResponse';
 import { CenterOrderModel } from '../models/Staff/CenterOrderModel';
 import { CenterOrderResponse } from '../models/Staff/CenterOrderResponse';
 import { CenterOrderedServiceModel } from '../models/Staff/CenterOrderedServiceModel';
@@ -85,6 +92,7 @@ export const getManagerCenterOrders = async (): Promise<CenterOrderModel[]> => {
                     measurement: ordered.measurement,
                     price: ordered.price,
                     unit: ordered.unit,
+                    thumbnail: ordered.image,
                 };
             }),
         };
@@ -121,6 +129,23 @@ export const getManagerServices = async (): Promise<ManagerServiceItem[]> => {
             priceType: item.priceType,
             rating: item.rating,
             status: item.status,
+        };
+    });
+};
+
+export const getCenterCustomer = async (): Promise<CenterCustomerModel[]> => {
+    const { data } = await instance.get<ListResponse<CenterCustomerResponse>>(API_MANAGER_CENTER_CUSTOMER, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    return data.data.map((item): CenterCustomerModel => {
+        return {
+            id: item.id,
+            address: item.addressString,
+            email: item.email,
+            fullname: item.fullname,
+            phone: item.phone,
         };
     });
 };

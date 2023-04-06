@@ -2,10 +2,13 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 
 import OrderListItem from './OrderListItem';
-import { formatCurrency } from '../../utils/FormatUtils';
+import { formatCurrency, formatPercentage } from '../../utils/FormatUtils';
 import { CenterOrderModel } from '../../models/Staff/CenterOrderModel';
 
 import './OrderList.scss';
+import CouponTag from '../CouponTag/CouponTag';
+import { OrderStatusEnum } from '../../types/enum/OrderStatusEnum';
+import { OrderStatusMap } from '../../mapping/OrderStatusMap';
 
 type Props = {
     order: CenterOrderModel;
@@ -13,18 +16,27 @@ type Props = {
 
 const OrderCard = ({ order }: Props) => {
     return (
-        <div key={order.id} className="order__item flex flex-col mb-6 border border-wh-gray rounded-xl overflow-hidden">
-            <div className="order__item--id w-full text-right py-1 bg-wh-lightgray pr-6">Mã đơn hàng: {order.id}</div>
-            <div className="order__item--content flex pt-3">
+        <div key={order.id} className="order__item flex flex-col mb-6 border border-wh-gray rounded-lg overflow-hidden">
+            <div className="order__item--id w-full text-left py-2 bg-primary text-white font-bold pl-4">
+                Mã đơn hàng: {order.id}
+            </div>
+            <div className="order__item--content flex justify-between pt-3">
                 <div className="order__item--services w-[400px] pl-4">
                     <OrderListItem orderedService={order.orderedServices} />
                 </div>
-                <div className="order__item--value mx-1">{formatCurrency(order.totalValue)}</div>
-                <div className="order__item--payment mx-1">{formatCurrency(order.totalPayment)}</div>{' '}
+                <div className="order__item--value mx-1 text-base font-bold w-[110px]">
+                    {formatCurrency(order.totalValue)}
+                </div>
+                <div className="order__item--discount mx-1 text-base w-[86px]">
+                    {order.discount > 0 ? <CouponTag discountValue={formatPercentage(order.discount)} /> : 'Không có'}
+                </div>
+                <div className="order__item--payment mx-1 text-base font-bold w-[100px]">
+                    {formatCurrency(order.totalPayment)}
+                </div>{' '}
                 {/* insert tooltip here */}
-                <div className="order__item--discount mx-1">{order.discount}</div>
-                <div className="order__item--date mx-1">{order.orderedDate}</div>
-                <div className="order__item--status mx-1">{order.status}</div>
+                <div className="order__item--date text-base mx-1 w-[148px]">{order.orderedDate}</div>
+                <div className="order__item--status text-base mx-1 w-[88px]">{OrderStatusMap[order.status]}</div>
+                <div className="order__item--status text-base mx-1 w-[200px]">Xem chi tiết | Hủy</div>
             </div>
         </div>
     );

@@ -1,7 +1,9 @@
 import { Col, Form, Input, Row, Select, Space } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CustomerList from '../../../components/CustomerList/CustomerList';
+import { getCenterCustomer } from '../../../repositories/StaffRepository';
+import { CenterCustomerModel } from '../../../models/Staff/CenterCustomerModel';
 
 type Props = {};
 
@@ -17,11 +19,21 @@ export type SearchParamsData = {
 
 const CustomerListingContainer = (props: Props) => {
     const navigate = useNavigate();
+    const [customers, setCustomers] = useState<CenterCustomerModel[]>([]);
     const [form] = Form.useForm();
     const [searchParams, setSearchParams] = useState<SearchParamsData>({
         searchString: '',
         searchType: 'name',
     });
+
+    useEffect(() => {
+        const fetchData = async () => {
+            return await getCenterCustomer();
+        };
+        fetchData().then((res) => {
+            setCustomers(res);
+        });
+    }, [searchParams]);
 
     // const customerTab: TabsProps['items'] = [
     //     {
@@ -96,7 +108,7 @@ const CustomerListingContainer = (props: Props) => {
                 </Form>
             </div>
             <div className="provider__services mt-12 mb-72">
-                <CustomerList />
+                <CustomerList customers={customers} />
             </div>
         </>
     );

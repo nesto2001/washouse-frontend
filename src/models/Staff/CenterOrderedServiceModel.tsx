@@ -4,4 +4,5 @@ export type CenterOrderedServiceModel = {
     measurement: number;
     unit: string;
     price: number;
+    thumbnail: string;
 };

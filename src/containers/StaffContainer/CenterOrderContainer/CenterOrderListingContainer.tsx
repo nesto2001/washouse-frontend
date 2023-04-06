@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 
 import { CenterOrderModel } from '../../../models/Staff/CenterOrderModel';
-import { Form, Input, Select, Space } from 'antd';
+import { Form, Input, Select, Space, Tabs, TabsProps } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { getManagerCenterOrders } from '../../../repositories/StaffRepository';
 import OrderList from '../../../components/StaffOrderList/OrderList';
+import { OrderStatusMap } from '../../../mapping/OrderStatusMap';
 
 type Props = {};
 
@@ -16,6 +17,7 @@ const searchType = [
 export type SearchParamsData = {
     searchString: string | null;
     searchType: string | null;
+    status: string;
 };
 
 const CenterOrderListingContainer = (props: Props) => {
@@ -24,9 +26,14 @@ const CenterOrderListingContainer = (props: Props) => {
     const [searchParams, setSearchParams] = useState<SearchParamsData>({
         searchString: '',
         searchType: 'id',
+        status: '',
     });
 
     const [centerOrders, setCenterOrders] = useState<CenterOrderModel[]>();
+
+    const onChange = (key: string) => {
+        setSearchParams((prev) => ({ ...prev, status: OrderStatusMap[key] }));
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -36,6 +43,44 @@ const CenterOrderListingContainer = (props: Props) => {
             setCenterOrders(res);
         });
     }, [searchParams]);
+
+    const items: TabsProps['items'] = centerOrders && [
+        {
+            key: '1',
+            label: `Tất cả`,
+            children: <OrderList orders={centerOrders} />,
+        },
+        {
+            key: 'Pending',
+            label: `Đang chờ`,
+            children: <OrderList orders={centerOrders} />,
+        },
+        {
+            key: 'Confirmed',
+            label: `Xác nhận`,
+            children: <OrderList orders={centerOrders} />,
+        },
+        {
+            key: 'Processing',
+            label: `Xử lý`,
+            children: <OrderList orders={centerOrders} />,
+        },
+        {
+            key: 'Ready',
+            label: `Sẵn sàng`,
+            children: <OrderList orders={centerOrders} />,
+        },
+        {
+            key: 'Completed',
+            label: `Hoàn tất`,
+            children: <OrderList orders={centerOrders} />,
+        },
+        {
+            key: 'Cancelled',
+            label: `Đã hủy`,
+            children: <OrderList orders={centerOrders} />,
+        },
+    ];
 
     return (
         <>
@@ -54,7 +99,7 @@ const CenterOrderListingContainer = (props: Props) => {
                         <Form.Item className="basis-1/2 mb-1">
                             <Space.Compact size="large">
                                 <Form.Item name={['search', 'type']} style={{ width: 160 }}>
-                                    <Select defaultValue="name" options={searchType} />
+                                    <Select defaultValue="id" options={searchType} />
                                 </Form.Item>
                                 <Form.Item
                                     name={['search', 'string']}
@@ -77,7 +122,9 @@ const CenterOrderListingContainer = (props: Props) => {
                     </div>
                 </Form>
             </div>
-            <div className="provider__services mt-12 mb-72">{centerOrders && <OrderList orders={centerOrders} />}</div>
+            <div className="provider__services mt-12 mb-72">
+                <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+            </div>
         </>
     );
 };
