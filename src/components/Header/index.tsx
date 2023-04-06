@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { LocationModel } from '../../models/LocationModel';
+import { LocationPlaceModel } from '../../models/LocationPlaceModel';
 import { getDistricts, getUserDistrict } from '../../repositories/LocationRepository';
 import { Option } from '../../types/Options';
 import { getCurrentLocation } from '../../utils/CommonUtils';
@@ -25,9 +25,9 @@ const Navbar = () => {
     const [latitude, setLatitude] = useState<number>();
     const [longitude, setLongitude] = useState<number>();
     const districtJson = sessionStorage.getItem('userDistrict');
-    const [district, setDistrict] = useState<LocationModel | null>(districtJson ? JSON.parse(districtJson) : null);
+    const [district, setDistrict] = useState<LocationPlaceModel | null>(districtJson ? JSON.parse(districtJson) : null);
     const [searchValue, setSearchValue] = useState('');
-    const [districts, setDistricts] = useState<LocationModel[]>([]);
+    const [districts, setDistricts] = useState<LocationPlaceModel[]>([]);
     const userJson = localStorage.getItem('currentUser');
     const [user, setUser] = useState<UserModel>(userJson ? JSON.parse(userJson) : null);
     const cartQuantity = useSelector((state: RootState) => state.cart.totalQuantity) ?? 0;
@@ -58,7 +58,7 @@ const Navbar = () => {
 
     useEffect(() => {
         const userDistrictJson = sessionStorage.getItem('userDistrict');
-        const userDistrict: LocationModel = userDistrictJson ? JSON.parse(userDistrictJson) : null;
+        const userDistrict: LocationPlaceModel = userDistrictJson ? JSON.parse(userDistrictJson) : null;
         if (userDistrict) {
             setDistrict(userDistrict);
         } else {

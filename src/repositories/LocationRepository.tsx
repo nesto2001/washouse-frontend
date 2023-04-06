@@ -2,7 +2,7 @@ import { List } from 'reselect/es/types';
 import { Response } from '../models/CommonModel';
 import { DistrictReponse } from '../models/DistrictReponse';
 import instance from '../services/axios/AxiosInstance';
-import { LocationModel } from '../models/LocationModel';
+import { LocationPlaceModel } from '../models/LocationPlaceModel';
 import { WardReponse } from '../models/WardResponse';
 import { LocationType } from '../types/LocationType';
 import { LocationResponse } from '../models/Location/LocationResponse';
@@ -16,9 +16,9 @@ import {
 import { LocationDetailsResponse } from '../models/Location/LocationDetailsResponse';
 import { LocationDetailsModel } from '../models/Location/LocationDetailsModel';
 
-export const getDistricts = async (): Promise<LocationModel[]> => {
+export const getDistricts = async (): Promise<LocationPlaceModel[]> => {
     const { data } = await instance.get<Response<List<DistrictReponse>>>(API_DISTRICT, {});
-    return data.data.map((item): LocationModel => {
+    return data.data.map((item): LocationPlaceModel => {
         return {
             id: item.districtId,
             name: item.districtName,
@@ -26,7 +26,7 @@ export const getDistricts = async (): Promise<LocationModel[]> => {
     });
 };
 
-export const getUserDistrict = async ({ lat, long }: { lat: number; long: number }): Promise<LocationModel> => {
+export const getUserDistrict = async ({ lat, long }: { lat: number; long: number }): Promise<LocationPlaceModel> => {
     const { data } = await instance.get<Response<DistrictReponse>>(API_DISTRICT_SEARCH, {
         params: {
             latitude: lat,
@@ -36,14 +36,14 @@ export const getUserDistrict = async ({ lat, long }: { lat: number; long: number
     return { id: data.data.districtId, name: data.data.districtName };
 };
 
-export const getWards = async (id: number): Promise<LocationModel[]> => {
+export const getWards = async (id: number): Promise<LocationPlaceModel[]> => {
     const { data } = await instance.get<Response<List<WardReponse>>>(
         API_DISTRICT_WARDS.replace('${id}', id.toString()),
         {
             params: { id: id },
         },
     );
-    return data.data.map((item): LocationModel => {
+    return data.data.map((item): LocationPlaceModel => {
         return {
             id: item.wardId,
             name: item.wardName,

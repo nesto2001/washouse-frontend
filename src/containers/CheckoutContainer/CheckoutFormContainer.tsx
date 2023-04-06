@@ -20,7 +20,7 @@ import WHButton from '../../components/Button';
 import '../../components/Button/Button.scss';
 import Input from '../../components/Input/Input';
 import Selectbox from '../../components/Selectbox';
-import { LocationModel } from '../../models/LocationModel';
+import { LocationPlaceModel } from '../../models/LocationPlaceModel';
 import { getDistricts, getWards } from '../../repositories/LocationRepository';
 import { DeliveryOption } from '../../types/DeliveryOption';
 import { CheckoutFormData } from '../../types/FormData/CheckoutFormData';
@@ -48,8 +48,8 @@ type Step1Props = {
 export const Step1 = ({ formData, onNext, setFormData }: Step1Props) => {
     const [form] = Form.useForm();
     const [district, setDistrict] = useState(formData.district || 0);
-    const [districtList, setDistrictList] = useState<LocationModel[]>([]);
-    const [wardList, setWardList] = useState<LocationModel[]>([]);
+    const [districtList, setDistrictList] = useState<LocationPlaceModel[]>([]);
+    const [wardList, setWardList] = useState<LocationPlaceModel[]>([]);
 
     const handleNext = () => {
         form.submit();
@@ -358,8 +358,8 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
     const [openingHour, setOpeningHour] = useState<string | null>();
     const [operatingDay, setOperatingDay] = useState<number>(today);
     const [district, setDistrict] = useState(0);
-    const [districtList, setDistrictList] = useState<LocationModel[]>([]);
-    const [wardList, setWardList] = useState<LocationModel[]>([]);
+    const [districtList, setDistrictList] = useState<LocationPlaceModel[]>([]);
+    const [wardList, setWardList] = useState<LocationPlaceModel[]>([]);
     const [selectedDropoffTime, setSelectedDropoffTime] = useState<dayjs.Dayjs>();
     const [selectedDeliverTime, setSelectedDeliverTime] = useState<dayjs.Dayjs>();
 

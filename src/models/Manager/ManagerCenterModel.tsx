@@ -18,6 +18,7 @@ export type ManagerCenterModel = {
     taxRegistrationImage: string;
     monthOff: boolean;
     hasDelivery: boolean;
+    locationId: number;
     centerDeliveryPrices: CenterDeliveryPriceModel[];
     centerLocation: LocationModel;
     centerOperatingHours: OperatingDay[];
