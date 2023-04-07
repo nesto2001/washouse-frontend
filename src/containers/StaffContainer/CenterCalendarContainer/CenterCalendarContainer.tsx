@@ -76,7 +76,7 @@ const CenterCalendarContainer = (props: Props) => {
         if (info.type === 'month') return monthCellRender(current);
         return info.originNode;
     };
-    return <Calendar cellRender={cellRender} />;
+    return <Calendar />;
 };
 
 export default CenterCalendarContainer;

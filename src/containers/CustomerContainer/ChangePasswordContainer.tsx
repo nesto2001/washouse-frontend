@@ -1,11 +1,6 @@
-import { useState } from 'react';
-import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import Datepicker from 'tailwind-datepicker-react';
 import WHButton from '../../components/Button';
 import Input from '../../components/Input/Input';
-import Radio from '../../components/RadioButton';
-import { Option } from '../../types/Options';
 
 type Props = {};
 

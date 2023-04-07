@@ -61,29 +61,30 @@ const UpdateProfileContainer = () => {
             ),
         },
         datepickerClassNames: 'top-50 pt-1',
-        defaultDate: new Date(),
         language: 'vi',
     };
 
     const [show, setShow] = useState<boolean>(false);
     const handleChange = (selectedDate: Date) => {
-        console.log(selectedDate);
+        setUpdateFormData((prev) => ({ ...prev, dob: selectedDate }));
     };
     const handleClose = (state: boolean) => {
         setShow(state);
     };
 
-    const handleUpdateProfile = () => {
-        image &&
-            userProfile &&
-            uploadSingle(image).then((res) => {
-                updateCustomerProfile(userProfile?.accountId, {
-                    dob: new Date().toISOString(),
-                    fullName: '',
-                    gender: 1,
-                    savedFileName: res.data.data.savedFileName,
-                });
-            });
+    const handleUpdateProfile = async () => {
+        const response = image ? await uploadSingle(image) : null;
+        userProfile &&
+            updateCustomerProfile(userProfile?.accountId, {
+                dob: updateFormData?.dob?.toISOString() ?? new Date().toISOString(),
+                fullName: updateFormData?.fullName ?? userProfile.name,
+                gender: updateFormData?.gender ?? 0,
+                savedFileName: response?.data.data.savedFileName ?? undefined,
+            })
+                .then(() => {
+                    message.success('Cập nhật thành công');
+                })
+                .catch(() => message.error('Có lỗi xảy ra, vui lòng thử lại sau'));
     };
     const genderOptions: Option[] = [
         {
@@ -109,6 +110,11 @@ const UpdateProfileContainer = () => {
         };
         fetchData()
             .then((res) => {
+                setUpdateFormData({
+                    dob: new Date(),
+                    fullName: res.name,
+                    gender: 0,
+                });
                 setUserProfile(res);
                 setIsLoading(false);
             })
@@ -132,7 +138,14 @@ const UpdateProfileContainer = () => {
                     <div className="grid grid-cols-4 items-center gap-y-2">
                         <div className="col-span-1 text-right mr-6">Họ và tên</div>
                         <div className="col-span-3">
-                            <Input type="text" name="user-fullname" value={userProfile?.name}></Input>
+                            <Input
+                                type="text"
+                                name="user-fullname"
+                                value={updateFormData?.fullName}
+                                onChange={(e) => {
+                                    setUpdateFormData((prev) => ({ ...prev, fullName: e.target.value }));
+                                }}
+                            ></Input>
                         </div>
                         <div className="col-span-1 text-right mr-6">Số điện thoại</div>
                         <div className="col-span-3 py-2">{userProfile?.phone}</div>
@@ -142,7 +155,7 @@ const UpdateProfileContainer = () => {
                         <div className="col-span-3 grid grid-cols-5">
                             <div className="col-span-3 max-w-[192px]">
                                 <Datepicker
-                                    options={options}
+                                    options={{ ...options, defaultDate: updateFormData?.dob }}
                                     onChange={handleChange}
                                     show={show}
                                     setShow={handleClose}
@@ -152,11 +165,16 @@ const UpdateProfileContainer = () => {
                         </div>
                         <div className="col-span-1 text-right mr-6">Giới tính</div>
                         <div className="col-span-3 py-2 flex items-center gap-6">
-                            <Radio optionsList={genderOptions} name="gender" inline></Radio>
+                            <Radio
+                                optionsList={genderOptions}
+                                name="gender"
+                                defaultValue={updateFormData?.gender}
+                                inline
+                            ></Radio>
                         </div>
                         <div className="col-span-1 text-right mr-6"></div>
                         <div className="col-span-3 mt-6">
-                            <WHButton type="primary" minWidth="124px">
+                            <WHButton type="primary" minWidth="124px" onClick={handleUpdateProfile}>
                                 Lưu
                             </WHButton>
                         </div>
