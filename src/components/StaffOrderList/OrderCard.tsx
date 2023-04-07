@@ -9,6 +9,7 @@ import './OrderList.scss';
 import CouponTag from '../CouponTag/CouponTag';
 import { OrderStatusEnum } from '../../types/enum/OrderStatusEnum';
 import { OrderStatusMap } from '../../mapping/OrderStatusMap';
+import { Link } from 'react-router-dom';
 
 type Props = {
     order: CenterOrderModel;
@@ -37,7 +38,9 @@ const OrderCard = ({ order }: Props) => {
                 <div className="order__item--date text-base mx-1 w-[100px]">{order.orderedDate}</div>
                 <div className="order__item--status text-base mx-1 w-[88px]">{OrderStatusMap[order.status]}</div>
                 <div className="order__item--status text-base mx-1 w-[200px] flex gap-4">
-                    <div className="font-medium text-primary">Xem chi tiết</div>
+                    <div className="font-medium text-primary">
+                        <Link to={`/provider/orders/${order.id}`}>Xem chi tiết</Link>
+                    </div>
                     {order.status.toLowerCase() === 'pending' && <div className="font-medium text-red">Hủy</div>}
                 </div>
             </div>

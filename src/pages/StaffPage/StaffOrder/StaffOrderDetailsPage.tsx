@@ -1,11 +1,14 @@
-import React from 'react'
+import React from 'react';
+import CenterOrderDetailsContainer from '../../../containers/StaffContainer/CenterOrderContainer/CenterOrderDetailsContainer';
 
-type Props = {}
+type Props = {};
 
 const StaffOrderDetailsPage = () => {
-  return (
-    <div>StaffOrderDetailsPage</div>
-  )
-}
+    return (
+        <div className="flex gap-4">
+            <CenterOrderDetailsContainer />
+        </div>
+    );
+};
 
-export default StaffOrderDetailsPage
+export default StaffOrderDetailsPage;
