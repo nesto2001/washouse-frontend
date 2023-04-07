@@ -71,7 +71,7 @@ const ManagerDashboardLayout = ({ children }: Props) => {
         {
             key: '4',
             icon: <CalendarOutlined />,
-            label: 'Đặt lịch',
+            label: <Link to="/provider/calendar">Đặt lịch</Link>,
         },
         {
             key: '5',

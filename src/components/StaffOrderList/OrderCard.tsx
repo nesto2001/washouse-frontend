@@ -34,9 +34,12 @@ const OrderCard = ({ order }: Props) => {
                     {formatCurrency(order.totalPayment)}
                 </div>{' '}
                 {/* insert tooltip here */}
-                <div className="order__item--date text-base mx-1 w-[148px]">{order.orderedDate}</div>
+                <div className="order__item--date text-base mx-1 w-[100px]">{order.orderedDate}</div>
                 <div className="order__item--status text-base mx-1 w-[88px]">{OrderStatusMap[order.status]}</div>
-                <div className="order__item--status text-base mx-1 w-[200px]">Xem chi tiết | Hủy</div>
+                <div className="order__item--status text-base mx-1 w-[200px] flex gap-4">
+                    <div className="font-medium text-primary">Xem chi tiết</div>
+                    {order.status.toLowerCase() === 'pending' && <div className="font-medium text-red">Hủy</div>}
+                </div>
             </div>
         </div>
     );

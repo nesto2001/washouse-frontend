@@ -27,6 +27,7 @@ export { default as ManagerServicePage } from './StaffPage/ManagerService/Manage
 export { default as ManagerCreateServicePage } from './StaffPage/ManagerService/ManagerCreateServicePage';
 export { default as StaffCustomerPage } from './StaffPage/StaffCustomer/StaffCustomerPage';
 export { default as StaffOrdersPage } from './StaffPage/StaffOrder/StaffOrdersPage';
+export { default as StaffCalendarPage } from './StaffPage/StaffCalendar/StaffCalendarPage';
 
 //admin
 export { default as AdminDashboardPage } from './AdminPage/AdminDashboardPage';

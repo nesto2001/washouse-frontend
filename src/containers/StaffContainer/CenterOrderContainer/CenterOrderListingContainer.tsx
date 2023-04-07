@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import { CenterOrderModel } from '../../../models/Staff/CenterOrderModel';
-import { Form, Input, Select, Space, Tabs, TabsProps } from 'antd';
+import { Form, Input, Select, Space, Spin, Tabs, TabsProps, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { getManagerCenterOrders } from '../../../repositories/StaffRepository';
 import OrderList from '../../../components/StaffOrderList/OrderList';
@@ -15,75 +15,98 @@ const searchType = [
 ];
 
 export type SearchParamsData = {
-    searchString: string | null;
-    searchType: string | null;
+    searchString?: string;
+    searchType: string;
     status: string;
+    page?: number;
+    pageSize?: number;
+    fromDate: string;
+    toDate: string;
 };
 
 const CenterOrderListingContainer = (props: Props) => {
     const navigate = useNavigate();
     const [form] = Form.useForm();
+    const [msg, contextHolder] = message.useMessage();
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [searchParams, setSearchParams] = useState<SearchParamsData>({
         searchString: '',
         searchType: 'id',
         status: '',
+        fromDate: '',
+        page: 1,
+        pageSize: 10,
+        toDate: '',
     });
 
     const [centerOrders, setCenterOrders] = useState<CenterOrderModel[]>();
 
     const onChange = (key: string) => {
-        setSearchParams((prev) => ({ ...prev, status: OrderStatusMap[key] }));
+        if (key !== '1') {
+            setSearchParams((prev) => ({ ...prev, status: key }));
+        } else {
+            setSearchParams((prev) => ({ ...prev, status: '' }));
+        }
     };
 
     useEffect(() => {
+        setIsLoading(true);
         const fetchData = async () => {
-            return await getManagerCenterOrders();
+            return await getManagerCenterOrders(searchParams);
         };
-        fetchData().then((res) => {
-            setCenterOrders(res);
-        });
+        fetchData()
+            .then((res) => {
+                setCenterOrders(res);
+                setIsLoading(false);
+            })
+            .catch((err) => {
+                msg.error('Không tìm thấy đơn hàng mong muốn');
+                setIsLoading(false);
+                setCenterOrders([]);
+            });
     }, [searchParams]);
 
     const items: TabsProps['items'] = centerOrders && [
         {
             key: '1',
             label: `Tất cả`,
-            children: <OrderList orders={centerOrders} />,
+            children: <OrderList orders={centerOrders} isLoading={isLoading} />,
         },
         {
             key: 'Pending',
             label: `Đang chờ`,
-            children: <OrderList orders={centerOrders} />,
+            children: <OrderList orders={centerOrders} isLoading={isLoading} />,
         },
         {
             key: 'Confirmed',
             label: `Xác nhận`,
-            children: <OrderList orders={centerOrders} />,
+            children: <OrderList orders={centerOrders} isLoading={isLoading} />,
         },
         {
             key: 'Processing',
             label: `Xử lý`,
-            children: <OrderList orders={centerOrders} />,
+            children: <OrderList orders={centerOrders} isLoading={isLoading} />,
         },
         {
             key: 'Ready',
             label: `Sẵn sàng`,
-            children: <OrderList orders={centerOrders} />,
+            children: <OrderList orders={centerOrders} isLoading={isLoading} />,
         },
         {
             key: 'Completed',
             label: `Hoàn tất`,
-            children: <OrderList orders={centerOrders} />,
+            children: <OrderList orders={centerOrders} isLoading={isLoading} />,
         },
         {
             key: 'Cancelled',
             label: `Đã hủy`,
-            children: <OrderList orders={centerOrders} />,
+            children: <OrderList orders={centerOrders} isLoading={isLoading} />,
         },
     ];
 
     return (
         <>
+            {contextHolder}
             <div className="provider__services--filter">
                 <Form
                     form={form}
@@ -109,7 +132,7 @@ const CenterOrderListingContainer = (props: Props) => {
                                     <Input
                                         defaultValue=""
                                         placeholder="Vui lòng nhập tối thiểu 2 ký tự"
-                                        onChange={(e) => {
+                                        onBlur={(e) => {
                                             setSearchParams((prevData) => ({
                                                 ...prevData,
                                                 searchString: e.target.value ?? null,
