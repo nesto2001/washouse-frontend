@@ -46,7 +46,7 @@ const HomePage = () => {
                                 dịch vụ giặt ủi
                             </div>
                             <div className="hero__content--action mt-10">
-                                <WHButton type="primary" uppercase fontSize="24px" link="/trung-tâm">
+                                <WHButton type="primary" uppercase fontSize="24px" link="/trung-tam">
                                     Đặt dịch vụ ngay
                                 </WHButton>
                             </div>

@@ -53,12 +53,12 @@ interface RouteProps {
 const publicRoutes: Array<RouteProps> = [
     { path: '/', component: HomePage },
     {
-        path: '/trung-tâm',
+        path: '/trung-tam',
         layout: SidebarLayout,
         component: CentersPage,
     },
     {
-        path: '/trung-tâm/:name',
+        path: '/trung-tam/:name',
         layout: CenteredLayout,
         component: CenterPage,
     },

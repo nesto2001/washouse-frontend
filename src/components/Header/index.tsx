@@ -1,39 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { LocationPlaceModel } from '../../models/LocationPlaceModel';
-import { getDistricts, getUserDistrict } from '../../repositories/LocationRepository';
-import { Option } from '../../types/Options';
-import { getCurrentLocation } from '../../utils/CommonUtils';
 import { Badge, MenuProps } from 'antd';
-import { FaChessKing, FaRegBell, FaSearch, FaShoppingCart } from 'react-icons/fa';
-import Selectbox from '../Selectbox';
-import Button from '../Button';
-import Logo from '../../assets/images/washouse-tagline.png';
-import User from '../../assets/images/user-pf.png';
+import React, { useEffect, useState } from 'react';
+import { BiPowerOff, BiSearch } from 'react-icons/bi';
+import { FaRegBell, FaSearch, FaShoppingCart } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import Order from '../../assets/images/order-pf.png';
 import Placeholder from '../../assets/images/placeholder.png';
-import DropdownMenu from '../Dropdown/DropdownMenu';
-import './Navbar.scss';
-import { BiPowerOff, BiSearch } from 'react-icons/bi';
-import { getMe } from '../../repositories/AuthRepository';
+import User from '../../assets/images/user-pf.png';
+import Logo from '../../assets/images/washouse-tagline.png';
+import { LocationPlaceModel } from '../../models/LocationPlaceModel';
 import { UserModel } from '../../models/User/UserModel';
-import { useDispatch, useSelector } from 'react-redux';
+import { getDistricts, getUserDistrict } from '../../repositories/LocationRepository';
 import { RootState } from '../../store/CartStore';
-import { reloadCart } from '../../reducers/CartReducer';
+import { Option } from '../../types/Options';
+import { getCurrentLocation } from '../../utils/CommonUtils';
+import Button from '../Button';
+import DropdownMenu from '../Dropdown/DropdownMenu';
+import Selectbox from '../Selectbox';
+import './Navbar.scss';
 
 const Navbar = () => {
     const [latitude, setLatitude] = useState<number>();
     const [longitude, setLongitude] = useState<number>();
     const districtJson = sessionStorage.getItem('userDistrict');
     const [district, setDistrict] = useState<LocationPlaceModel | null>(districtJson ? JSON.parse(districtJson) : null);
-    const [searchValue, setSearchValue] = useState('');
     const [districts, setDistricts] = useState<LocationPlaceModel[]>([]);
     const userJson = localStorage.getItem('currentUser');
     const [user, setUser] = useState<UserModel>(userJson ? JSON.parse(userJson) : null);
     const cartQuantity = useSelector((state: RootState) => state.cart.totalQuantity) ?? 0;
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [searchValue] = useSearchParams();
+    const [searchString, setSearchString] = useState<string>();
+
     const handleSearch = (e: { preventDefault: () => void }) => {
         e.preventDefault();
-        if (searchValue) {
+        if (searchString) {
+            navigate(`/trung-tam?search=${searchString}`);
         }
     };
 
@@ -42,7 +45,9 @@ const Navbar = () => {
     useEffect(() => {
         getCurrentLocation(setState, locationError);
     }, []);
-
+    useEffect(() => {
+        setSearchString(searchValue.get('search') ?? '');
+    }, [location]);
     const locationError = (error: any) => {
         console.log(`Gặp lỗi khi lấy vị trí hoặc quyền sử dụng vị trí chưa được cấp: ${error.message}`);
     };
@@ -170,7 +175,7 @@ const Navbar = () => {
                 </div>
             </div>
             <div className="mx-auto flex gap-8 justify-between items-center px-4 container w-full">
-                <Link to={user ? '/trung-tâm' : '/'}>
+                <Link to={user ? '/trung-tam' : '/'}>
                     <div className="w-[200px] h-[75px]">
                         <img src={Logo} alt="logo" className="cursor-pointer" />
                     </div>
@@ -192,8 +197,8 @@ const Navbar = () => {
                     <form className="md:flex" action="">
                         <input
                             type="text"
-                            value={searchValue}
-                            onChange={(e) => setSearchValue(e.target.value)}
+                            value={searchString ?? ''}
+                            onChange={(e) => setSearchString(e.target.value)}
                             className="w-full basis-full grow"
                             placeholder="Tìm kiếm"
                         />

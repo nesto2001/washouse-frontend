@@ -89,7 +89,7 @@ const Map = ({ selectedCenter, locations, userLocation, style, iconSize, iconAnc
                             >
                                 <Popup className="z-[9999] absolute">
                                     <div>
-                                        <Link to="/trung-tâm/center" className="text-sub">
+                                        <Link to="/trung-tam/center" className="text-sub">
                                             <div className="w-[200px] h-[150px] max-w-[200px] max-h-[150px] rounded overflow-hidden">
                                                 <img
                                                     className="max-h-full w-full object-cover"
@@ -119,7 +119,7 @@ const Map = ({ selectedCenter, locations, userLocation, style, iconSize, iconAnc
                     <Popup>
                         <div>
                             <Link
-                                to={`/trung-tâm/${formatLink(selectedCenter.title)}-c.${selectedCenter.id}`}
+                                to={`/trung-tam/${formatLink(selectedCenter.title)}-c.${selectedCenter.id}`}
                                 className="text-sub"
                             >
                                 <div className="w-[200px] h-[150px] max-w-[200px] max-h-[150px] rounded overflow-hidden">

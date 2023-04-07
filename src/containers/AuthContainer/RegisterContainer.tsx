@@ -43,7 +43,7 @@ const RegisterContainer = () => {
                             };
                             fetchData().then((res) => {
                                 localStorage.setItem('currentUser', JSON.stringify(res));
-                                navigate('/trung-tâm');
+                                navigate('/trung-tam');
                             });
                         } else {
                             console.log('lỗi login');

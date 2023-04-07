@@ -38,7 +38,7 @@ const CenterCard = ({ center, selectedValues }: CenterCardProps) => {
             </div>
             <div className="center__card--name text-lg font-bold mt-2">
                 <h4>
-                    <Link to={`/trung-tâm/${formatLink(center.title)}-c.${center.id}`}>{center.title}</Link>
+                    <Link to={`/trung-tam/${formatLink(center.title)}-c.${center.id}`}>{center.title}</Link>
                 </h4>
             </div>
             <div className="center__card--info">

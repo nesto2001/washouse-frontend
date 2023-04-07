@@ -7,6 +7,8 @@ import { getAllCenter } from '../../repositories/CenterRepository';
 import { getCurrentLocation } from '../../utils/CommonUtils';
 import CenterListing from './CentersListing';
 import CentersMap from './CentersMap';
+import { useLocation, useParams } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
 
 export type BudgetType = {
     min: number;
@@ -26,10 +28,12 @@ const CentersContainer = () => {
         min: 0,
         max: 0,
     });
+    const [searchParams] = useSearchParams();
+    const location = useLocation();
 
     useEffect(() => {
         getCurrentLocation(setState, setStateNoLocation);
-    }, [sorting, servicesCheck]);
+    }, [sorting, servicesCheck, location]);
 
     const setState = ({ latitude, longitude }: { latitude: number; longitude: number }) => {
         setIsLoading(true);
@@ -42,6 +46,7 @@ const CentersContainer = () => {
                 long: longitude,
                 sort: sorting,
                 categoryServices: servicesCheck.toString(),
+                searchString: searchParams.get('search') ?? undefined,
             });
         };
         fetchData()

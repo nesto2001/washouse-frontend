@@ -242,7 +242,7 @@ const CartContainer = () => {
                                 <div className="flex justify-between items-end">
                                     <h2 className="text-left font-bold text-2xl">Trung tâm</h2>
                                     <h4 className="text-base font-medium text-primary cursor-pointer">
-                                        <Link to={`/trung-tâm/${formatLink(center?.title ?? ' ')}-c.${center?.id}`}>
+                                        <Link to={`/trung-tam/${formatLink(center?.title ?? ' ')}-c.${center?.id}`}>
                                             Chi tiết
                                         </Link>
                                     </h4>
@@ -289,7 +289,7 @@ const CartContainer = () => {
                             <h1 className="font-bold text-3xl mt-10 text-sub mb-6">
                                 Giỏ hàng của bạn hiện đang trống.
                             </h1>
-                            <WHButton type="primary" fontSize="24px" link="/trung-tâm">
+                            <WHButton type="primary" fontSize="24px" link="/trung-tam">
                                 Đặt dịch vụ ngay
                             </WHButton>
                         </div>

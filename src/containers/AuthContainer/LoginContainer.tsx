@@ -39,7 +39,7 @@ const LoginContainer = () => {
                         if (res.roleType.toLowerCase() === 'admin') {
                             navigate('/admin/dashboard');
                         } else {
-                            navigate('/trung-tâm');
+                            navigate('/trung-tam');
                         }
                     });
                 } else {
