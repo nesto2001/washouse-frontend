@@ -1,4 +1,5 @@
 import React from 'react';
+import CenterCalendarContainer from '../../../containers/StaffContainer/CenterCalendarContainer/CenterCalendarContainer';
 
 type Props = {};
 
@@ -11,7 +12,9 @@ const StaffCalendarPage = () => {
                     Quản lý đơn hàng dễ dàng hơn chế độ xem lịch
                 </div>
                 <div className="provider__page--content px-6 mt-8">
-                    <div className="provider__calender--wrapper"></div>
+                    <div className="provider__calender--wrapper">
+                        <CenterCalendarContainer />
+                    </div>
                 </div>
             </div>
         </div>

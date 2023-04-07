@@ -37,6 +37,7 @@ import {
     AdminAccountPage,
     StaffOrdersPage,
     StaffCalendarPage,
+    StaffDayTimelinePage,
 } from '../pages/';
 import AdminCenterRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterRequestPage';
 import AdminPostPage from '../pages/AdminPage/AdminPost/AdminPostPage';
@@ -181,6 +182,11 @@ const publicRoutes: Array<RouteProps> = [
         path: '/provider/calendar',
         layout: ManagerDashboardLayout,
         component: StaffCalendarPage,
+    },
+    {
+        path: '/provider/calendar/day/:year/:month/:day',
+        layout: ManagerDashboardLayout,
+        component: StaffDayTimelinePage,
     },
     {
         path: '/admin/dashboard',

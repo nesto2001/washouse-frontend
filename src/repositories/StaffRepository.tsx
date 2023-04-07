@@ -80,7 +80,7 @@ export const getManagerCenterOrders = async ({
     searchString?: string;
     fromDate?: string;
     toDate?: string;
-    status: string;
+    status?: string;
 }): Promise<CenterOrderModel[]> => {
     const { data } = await instance.get<PaginationResponse<CenterOrderResponse>>(API_MANAGER_CENTER_ORDER, {
         headers: {

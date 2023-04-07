@@ -1,14 +1,27 @@
-import React from 'react';
-import type { BadgeProps } from 'antd';
+import * as React from 'react';
+import { useState, useEffect } from 'react';
+import { BadgeProps, Tooltip } from 'antd';
 import { Badge, Calendar } from 'antd';
 import dayjs from 'dayjs';
 import 'dayjs/locale/vi';
-dayjs.locale('vi');
+
 import type { Dayjs } from 'dayjs';
 
 import type { CellRenderInfo } from 'rc-picker/lib/interface';
+import { getManagerCenterOrders } from '../../../repositories/StaffRepository';
+import { BadgeStatusMap } from '../../../mapping/BadgeStatusMap';
+import { useNavigate } from 'react-router-dom';
+
+dayjs.locale('vi');
 
 type Props = {};
+
+type CalendarCell = {
+    id: string;
+    content: string;
+    date: string;
+    status: string;
+};
 
 const getListData = (value: Dayjs) => {
     let listData;
@@ -41,42 +54,59 @@ const getListData = (value: Dayjs) => {
     return listData || [];
 };
 
-const getMonthData = (value: Dayjs) => {
-    if (value.month() === 8) {
-        return 1394;
-    }
-};
+// const getMonthData = (value: Dayjs) => {
+//     if (value.month() === 8) {
+//         return 1394;
+//     }
+// };
 
 const CenterCalendarContainer = (props: Props) => {
-    const monthCellRender = (value: Dayjs) => {
-        const num = getMonthData(value);
-        return num ? (
-            <div className="notes-month">
-                <section>{num}</section>
-                <span>Backlog number</span>
-            </div>
-        ) : null;
-    };
+    const [orderList, setOrderList] = useState<CalendarCell[]>([]);
+    const [selectedDate, setSelectedDate] = useState('');
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            return await getManagerCenterOrders({});
+        };
+        fetchData().then((res) => {
+            setOrderList(
+                res.map((r) => {
+                    return {
+                        id: r.id,
+                        content: r.id,
+                        date: r.orderedDate,
+                        status: r.status,
+                    };
+                }),
+            );
+        });
+    }, []);
 
     const dateCellRender = (value: Dayjs) => {
-        const listData = getListData(value);
+        const stringValue = value.format('DD-MM-YYYY');
+        const listData = orderList.filter(({ date }) => date.split(' ')[0] === stringValue);
         return (
-            <ul className="events">
-                {listData.map((item) => (
-                    <li key={item.content}>
-                        <Badge status={item.type as BadgeProps['status']} text={item.content} />
-                    </li>
-                ))}
-            </ul>
+            <Tooltip title={`${listData.length} đơn hàng`}>
+                <ul className="events">
+                    {listData.map((item) => (
+                        <li key={item.content} className="mb-1">
+                            <Badge status={BadgeStatusMap[item.status] as BadgeProps['status']} text={item.content} />
+                        </li>
+                    ))}
+                </ul>
+            </Tooltip>
         );
     };
 
-    const cellRender = (current: Dayjs, info: CellRenderInfo<Dayjs>) => {
-        if (info.type === 'date') return dateCellRender(current);
-        if (info.type === 'month') return monthCellRender(current);
-        return info.originNode;
+    const onSelect = (value: Dayjs) => {
+        const day = value.get('date');
+        const month = value.get('month');
+        const year = value.get('year');
+        navigate(`/provider/calendar/day/${year}/${month}/${day}`);
     };
-    return <Calendar />;
+
+    return <Calendar dateCellRender={dateCellRender} onSelect={onSelect} value={dayjs()} />;
 };
 
 export default CenterCalendarContainer;
