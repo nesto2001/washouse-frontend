@@ -55,6 +55,9 @@ const API_PROMOTION = '/api/promotions';
 //CUSTOMER API
 const API_CUSTOMER = '/api/customers';
 
+//NOTIFICATION API
+const API_NOTIFICATION = '/api/notifications/account/${accountId}';
+
 export {
     API_MANAGER_CENTER_CUSTOMER,
     API_MANAGER_CENTER_SERVICE,
@@ -88,4 +91,5 @@ export {
     API_PROMOTION,
     API_SERVICES,
     API_CUSTOMER,
+    API_NOTIFICATION,
 };

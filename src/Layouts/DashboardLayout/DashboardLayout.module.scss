@@ -2,6 +2,7 @@
     cursor: pointer;
     display: flex;
     align-items: center;
+    height: 100%;
     .active__staff_avatar {
         border: 1px solid var(--washouse-primary-white);
         box-shadow: 0 0 0 0.75px var(--washouse-placeholder-gray);
