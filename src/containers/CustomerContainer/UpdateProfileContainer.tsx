@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import Datepicker from 'tailwind-datepicker-react';
@@ -8,17 +8,26 @@ import Input from '../../components/Input/Input';
 import Loading from '../../components/Loading/Loading';
 import Radio from '../../components/RadioButton';
 import { AccountModel } from '../../models/Account/AccountModel';
-import { getUserProfile } from '../../repositories/AccountRepository';
+import { UserModel } from '../../models/User/UserModel';
+import { getMe } from '../../repositories/AuthRepository';
 import { Option } from '../../types/Options';
-import { maskEmail } from '../../utils/CommonUtils';
 import UpdateAvatarContainer from './UpdateAvatarContainer';
+import { RcFile } from 'antd/es/upload';
+import { uploadSingle } from '../../repositories/MediaRepository';
+import { updateCustomerProfile } from '../../repositories/CustomerRepository';
 
-type Props = {};
+type UpdateRequestData = {
+    fullName?: string;
+    dob?: Date;
+    gender?: number;
+};
 
 const UpdateProfileContainer = () => {
-    const [messageApi, contextHolder] = message.useMessage();
-    const [userProfile, setUserProfile] = useState<AccountModel>();
+    const [userProfile, setUserProfile] = useState<UserModel>();
     const [isLoading, setIsLoading] = useState(true);
+    const [image, setImage] = useState<RcFile>();
+    const [updateFormData, setUpdateFormData] = useState<UpdateRequestData>();
+
     const navigate = useNavigate();
     const options = {
         title: '',
@@ -64,6 +73,18 @@ const UpdateProfileContainer = () => {
         setShow(state);
     };
 
+    const handleUpdateProfile = () => {
+        image &&
+            userProfile &&
+            uploadSingle(image).then((res) => {
+                updateCustomerProfile(userProfile?.accountId, {
+                    dob: new Date().toISOString(),
+                    fullName: '',
+                    gender: 1,
+                    savedFileName: res.data.data.savedFileName,
+                });
+            });
+    };
     const genderOptions: Option[] = [
         {
             label: 'Nam',
@@ -84,7 +105,7 @@ const UpdateProfileContainer = () => {
         const user: AccountModel = userJson && JSON.parse(userJson);
 
         const fetchData = async () => {
-            return await getUserProfile(user.accountId);
+            return await getMe();
         };
         fetchData()
             .then((res) => {
@@ -111,7 +132,7 @@ const UpdateProfileContainer = () => {
                     <div className="grid grid-cols-4 items-center gap-y-2">
                         <div className="col-span-1 text-right mr-6">Họ và tên</div>
                         <div className="col-span-3">
-                            <Input type="text" name="user-fullname" value={userProfile?.fullName}></Input>
+                            <Input type="text" name="user-fullname" value={userProfile?.name}></Input>
                         </div>
                         <div className="col-span-1 text-right mr-6">Số điện thoại</div>
                         <div className="col-span-3 py-2">{userProfile?.phone}</div>
@@ -143,7 +164,7 @@ const UpdateProfileContainer = () => {
                 </div>
                 <div className="mx-6 bg-wh-gray w-[0.5px]"></div>
                 <div className="userprofile__update--avatar pl-10 pr-2">
-                    <UpdateAvatarContainer />
+                    <UpdateAvatarContainer currentImage={userProfile?.avatar} setImage={setImage} />
                 </div>
             </div>
         </div>

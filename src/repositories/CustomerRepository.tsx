@@ -1,6 +1,7 @@
-import { API_ACCOUNT_DETAILS } from '../common/Constant';
+import { API_ACCOUNT_DETAILS, API_CUSTOMER } from '../common/Constant';
 import { AccountModel } from '../models/Account/AccountModel';
 import { AccountResponse } from '../models/Account/AccountResponse';
+import { UpdateCustomerRequest } from '../models/Customer/UpdateCustomerRequest';
 import instance from '../services/axios/AxiosInstance';
 
 export const getCustomerProfile = async (id: number): Promise<AccountModel> => {
@@ -14,4 +15,18 @@ export const getCustomerProfile = async (id: number): Promise<AccountModel> => {
         phone: data.phone,
         locationId: data.locationId,
     };
+};
+
+export const updateCustomerProfile = async (id: number, request: UpdateCustomerRequest) => {
+    const { status } = await instance.put(API_CUSTOMER, request, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+        params: {
+            customerId: id,
+        },
+    });
+    if (status !== 200) {
+        throw new Error();
+    }
 };

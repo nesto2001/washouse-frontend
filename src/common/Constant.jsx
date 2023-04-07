@@ -49,9 +49,11 @@ const API_MANAGER_CENTER_ORDER = '/api/manager/my-center/orders';
 const API_MANAGER_CENTER_SERVICE = '/api/manager/services';
 const API_MANAGER_CENTER_CUSTOMER = '/api/manager/my-center/customers';
 
-
 //PROMOTION API
 const API_PROMOTION = '/api/promotions';
+
+//CUSTOMER API
+const API_CUSTOMER = '/api/customers';
 
 export {
     API_MANAGER_CENTER_CUSTOMER,
@@ -85,4 +87,5 @@ export {
     API_REFRESH_TOKEN,
     API_PROMOTION,
     API_SERVICES,
+    API_CUSTOMER,
 };
