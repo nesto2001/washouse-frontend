@@ -9,6 +9,7 @@ import localeData from 'dayjs/plugin/localeData';
 import CenterTimelineContainer from '../../../containers/StaffContainer/CenterCalendarContainer/CenterTimelineContainer';
 import { getManagerCenterOrders } from '../../../repositories/StaffRepository';
 import { CenterOrderModel } from '../../../models/Staff/CenterOrderModel';
+import { useParams } from 'react-router-dom';
 
 dayjs.locale('vi');
 dayjs.extend(localeData);
@@ -16,17 +17,23 @@ dayjs.extend(localeData);
 type Props = {};
 
 const CenterTimelineOverallContainer = (props: Props) => {
+    const { year, month, day } = useParams<{ year: string; month: string; day: string }>();
     const { token } = theme.useToken();
     const [orderList, setOrderList] = useState<CenterOrderModel[]>([]);
+    const [fetchingDate, setFetchingDate] = useState(`${day}-${month}-${year}`);
 
     useEffect(() => {
         const fetchData = async () => {
-            return await getManagerCenterOrders({ fromDate: '02-04-2023' });
+            return await getManagerCenterOrders({ fromDate: fetchingDate, pageSize: 50 });
         };
-        fetchData().then((res) => {
-            setOrderList(res);
-        });
-    }, []);
+        fetchData()
+            .then((res) => {
+                setOrderList(res);
+            })
+            .catch(() => {
+                setOrderList([]);
+            });
+    }, [fetchingDate]);
 
     const headerRender = ({
         value,
@@ -119,12 +126,24 @@ const CenterTimelineOverallContainer = (props: Props) => {
         borderRadius: token.borderRadiusLG,
     };
 
+    const onSelect = (newValue: Dayjs) => {
+        setFetchingDate(newValue.format('DD-MM-YYYY'));
+    };
+
     return (
         <>
-            <div className="basis-1/3">
-                <div className="bg-white mx-auto rounded border border-wh-lightgray fixed max-w-[390px]">
+            <div className="basis-1/3 relative">
+                <div
+                    className="bg-white mx-auto rounded border border-wh-lightgray sticky max-w-[390px]"
+                    style={{ position: '-webkit-sticky', top: 12 }}
+                >
                     <div style={wrapperStyle} className="">
-                        <Calendar headerRender={headerRender} fullscreen={false} />
+                        <Calendar
+                            headerRender={headerRender}
+                            fullscreen={false}
+                            onSelect={onSelect}
+                            defaultValue={dayjs(fetchingDate, 'DD-MM-YYYY')}
+                        />
                     </div>
                 </div>
             </div>

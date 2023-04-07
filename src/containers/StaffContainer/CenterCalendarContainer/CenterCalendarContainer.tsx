@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { BadgeProps, Tooltip } from 'antd';
+import { BadgeProps, Spin, Tooltip } from 'antd';
 import { Badge, Calendar } from 'antd';
 import dayjs from 'dayjs';
 import 'dayjs/locale/vi';
@@ -11,6 +11,8 @@ import type { CellRenderInfo } from 'rc-picker/lib/interface';
 import { getManagerCenterOrders } from '../../../repositories/StaffRepository';
 import { BadgeStatusMap } from '../../../mapping/BadgeStatusMap';
 import { useNavigate } from 'react-router-dom';
+import OthersSpin from '../../../components/OthersSpin/OthersSpin';
+import './CenterCalendar.scss';
 
 dayjs.locale('vi');
 
@@ -63,24 +65,29 @@ const getListData = (value: Dayjs) => {
 const CenterCalendarContainer = (props: Props) => {
     const [orderList, setOrderList] = useState<CalendarCell[]>([]);
     const [selectedDate, setSelectedDate] = useState('');
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const navigate = useNavigate();
 
     useEffect(() => {
+        setIsLoading(true);
         const fetchData = async () => {
-            return await getManagerCenterOrders({});
+            return await getManagerCenterOrders({ pageSize: -1 });
         };
-        fetchData().then((res) => {
-            setOrderList(
-                res.map((r) => {
-                    return {
-                        id: r.id,
-                        content: r.id,
-                        date: r.orderedDate,
-                        status: r.status,
-                    };
-                }),
-            );
-        });
+        fetchData()
+            .then((res) => {
+                setOrderList(
+                    res.map((r) => {
+                        return {
+                            id: r.id,
+                            content: r.id,
+                            date: r.orderedDate,
+                            status: r.status,
+                        };
+                    }),
+                );
+                setIsLoading(false);
+            })
+            .catch(() => {});
     }, []);
 
     const dateCellRender = (value: Dayjs) => {
@@ -100,12 +107,13 @@ const CenterCalendarContainer = (props: Props) => {
     };
 
     const onSelect = (value: Dayjs) => {
-        const day = value.get('date');
-        const month = value.get('month');
-        const year = value.get('year');
-        navigate(`/provider/calendar/day/${year}/${month}/${day}`);
+        const date = value.format('YYYY/MM/DD');
+        navigate(`/provider/calendar/day/${date}`);
     };
 
+    if (isLoading) {
+        return <OthersSpin />;
+    }
     return <Calendar dateCellRender={dateCellRender} onSelect={onSelect} value={dayjs()} />;
 };
 

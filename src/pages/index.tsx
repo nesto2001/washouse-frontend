@@ -29,6 +29,7 @@ export { default as StaffCustomerPage } from './StaffPage/StaffCustomer/StaffCus
 export { default as StaffOrdersPage } from './StaffPage/StaffOrder/StaffOrdersPage';
 export { default as StaffCalendarPage } from './StaffPage/StaffCalendar/StaffCalendarPage';
 export { default as StaffDayTimelinePage } from './StaffPage/StaffCalendar/StaffDayTimelinePage';
+export { default as StaffOrderDetailsPage } from './StaffPage/StaffOrder/StaffOrderDetailsPage';
 
 //admin
 export { default as AdminDashboardPage } from './AdminPage/AdminDashboardPage';

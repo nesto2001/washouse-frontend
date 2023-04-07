@@ -1,4 +1,4 @@
-import type { TabsProps } from 'antd';
+import { Spin, TabsProps } from 'antd';
 import { Tabs } from 'antd';
 import { useEffect, useState } from 'react';
 import EmptyLaundry from '../../../assets/images/empty-center.png';
@@ -11,6 +11,7 @@ import CenterBasics from './CenterBasics';
 import CenterAddress from './CenterAddress';
 import { getLocation } from '../../../repositories/LocationRepository';
 import { LocationDetailsModel } from '../../../models/Location/LocationDetailsModel';
+import OthersSpin from '../../../components/OthersSpin/OthersSpin';
 
 type Props = {};
 
@@ -93,7 +94,9 @@ const CenterProfileManagerContainer = (props: Props) => {
     ];
 
     if (isLoading) {
-        return <Loading />;
+        return (
+            <OthersSpin/>
+        );
     }
 
     return (

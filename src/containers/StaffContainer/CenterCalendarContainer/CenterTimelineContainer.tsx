@@ -34,8 +34,6 @@ type TimelineOrderItem = {
     orderName: string;
 };
 
-const hours = Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`);
-
 type TimelineItemProps = {
     label: string;
     children?: TimelineOrderItem[];
