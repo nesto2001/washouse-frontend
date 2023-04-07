@@ -67,10 +67,32 @@ export const getManagerCenter = async (): Promise<ManagerCenterModel> => {
     };
 };
 
-export const getManagerCenterOrders = async (): Promise<CenterOrderModel[]> => {
+export const getManagerCenterOrders = async ({
+    page,
+    pageSize,
+    searchString,
+    fromDate,
+    toDate,
+    status,
+}: {
+    page?: number;
+    pageSize?: number;
+    searchString?: string;
+    fromDate?: string;
+    toDate?: string;
+    status: string;
+}): Promise<CenterOrderModel[]> => {
     const { data } = await instance.get<PaginationResponse<CenterOrderResponse>>(API_MANAGER_CENTER_ORDER, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+        params: {
+            page: page,
+            pageSize: pageSize,
+            searchString: searchString,
+            fromDate: fromDate,
+            toDate: toDate,
+            status: status,
         },
     });
     if (data === null) {
