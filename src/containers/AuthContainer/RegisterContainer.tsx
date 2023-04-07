@@ -8,13 +8,15 @@ import Input from '../../components/Input/Input';
 import { RegisterRequest } from '../../models/Account/RegisterRequest';
 import { getMe, login, registerCustomer } from '../../repositories/AuthRepository';
 import { RegisterErrors } from '../../types/RegisterErrors';
+import { BiErrorAlt } from 'react-icons/bi';
 
 type Props = {};
 
 const RegisterContainer = () => {
     const [form] = Form.useForm();
-    const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
     const navigate = useNavigate();
+    const [isFetching, setIsFetching] = useState<boolean>(false);
+    const [error, setError] = useState<string>();
 
     const [registerData, setRegisterData] = useState<RegisterRequest>({
         phone: '',
@@ -29,33 +31,39 @@ const RegisterContainer = () => {
             const registerCus = async () => {
                 return await registerCustomer(registerData);
             };
-            registerCus().then((res) => {
-                if (res.status == 200) {
-                    const loginCustomer = async () => {
-                        return await login({ phone: registerData.phone, password: registerData.password });
-                    };
-                    loginCustomer().then((res) => {
-                        console.log(res);
-                        if (res.status == 200) {
-                            localStorage.setItem('accessToken', res.data.data.accessToken);
-                            const fetchData = async () => {
-                                return await getMe();
-                            };
-                            fetchData().then((res) => {
-                                localStorage.setItem('currentUser', JSON.stringify(res));
-                                navigate('/trung-tam');
-                            });
-                        } else {
-                            console.log('lỗi login');
-                        }
-                    });
-                }
-            });
+            registerCus()
+                .then((res) => {
+                    console.log(res);
+                    if (res.status == 200 && res.data != null) {
+                        const loginCustomer = async () => {
+                            return await login({ phone: registerData.phone, password: registerData.password });
+                        };
+                        loginCustomer().then((res) => {
+                            console.log(res);
+                            if (res.status == 200) {
+                                localStorage.setItem('accessToken', res.data.data.accessToken);
+                                const fetchData = async () => {
+                                    return await getMe();
+                                };
+                                fetchData().then((res) => {
+                                    localStorage.setItem('currentUser', JSON.stringify(res));
+                                    navigate('/trung-tam');
+                                });
+                            } else {
+                                console.log('lỗi login');
+                            }
+                        });
+                    }
+                })
+                .catch(() => {
+                    setError('Số điện thoại hoặc email đã tồn tại');
+                });
         }
+        setIsFetching(false);
     };
 
     const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
+        setIsFetching(false);
     };
 
     const validatePassword = async (_: RuleObject, value: string) => {
@@ -66,7 +74,14 @@ const RegisterContainer = () => {
     };
 
     return (
-        <Form form={form} name="register" onFinish={onFinish} onFinishFailed={onFinishFailed} autoComplete="off">
+        <Form
+            form={form}
+            name="register"
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+            autoComplete="off"
+            onFocus={() => setError(undefined)}
+        >
             <div className="register__form--phone">
                 <Form.Item
                     name="phone"
@@ -151,6 +166,12 @@ const RegisterContainer = () => {
                     />
                 </Form.Item>
             </div>
+            {error && (
+                <div className="mb-2">
+                    <BiErrorAlt className="inline align-text-bottom text-red" size={20} />
+                    <span className="text-red ml-1">{error}</span>
+                </div>
+            )}
             <div className="register__form--tspp text-xs mt-3">
                 Bằng việc đăng ký, bạn đã đồng ý với Washouse về{' '}
                 <Link to="/terms" className="text-primary">
@@ -168,8 +189,10 @@ const RegisterContainer = () => {
                         type="primary"
                         isSubmit={true}
                         onClick={() => {
+                            setIsFetching(true);
                             form.submit();
                         }}
+                        fetching={isFetching}
                     >
                         Đăng ký
                     </WHButton>
@@ -188,10 +211,10 @@ const RegisterContainer = () => {
             </div>
             <div className="register__form--redirect mt-3">
                 <h3 className="font-semibold">
-                    Bạn đã có tài khoản?{' '}
+                    Bạn đã có tài khoản?
                     <span className="text-primary font-bold">
                         <Link to="/login">Đăng nhập</Link>
-                    </span>{' '}
+                    </span>
                 </h3>
             </div>
         </Form>

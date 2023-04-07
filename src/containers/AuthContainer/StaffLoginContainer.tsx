@@ -92,15 +92,7 @@ const StaffLoginContainer = () => {
                     </div>
                 )}
                 <WHButton minWidth="100%" type="primary" onClick={handleSubmit}>
-                    {isFetching ? (
-                        <div
-                            className={isFetching ? 'flex justify-center my-[7px] text-center dot-flashing' : ''}
-                        ></div>
-                    ) : loginSMS ? (
-                        'Tiếp theo'
-                    ) : (
-                        'Đăng nhập'
-                    )}
+                    {loginSMS ? 'Tiếp theo' : 'Đăng nhập'}
                 </WHButton>
                 <div className={clsx(loginSMS ? 'justify-end' : 'justify-between', 'login__form--addition flex mt-2')}>
                     {loginSMS ? (

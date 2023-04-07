@@ -16,6 +16,7 @@ type Props = {
     disable?: boolean;
     className?: string;
     size?: 'small' | 'normal' | 'large';
+    fetching?: boolean;
 };
 
 const WHButton = ({
@@ -32,6 +33,7 @@ const WHButton = ({
     disable,
     className,
     size,
+    fetching,
 }: Props) => {
     const btnStyle = { ...(style ?? ''), minWidth: minWidth || '164px', fontSize: fontSize || '16px' };
     return (
@@ -44,17 +46,18 @@ const WHButton = ({
                 onClick={onClick}
                 disabled={disable}
             >
-                {link ? (
-                    <Link to={link}>
-                        <div className={size === 'small' ? 'px-3 py-2' : size === 'large' ? 'px-8 py-4' : 'px-6 py-3'}>
-                            {children}
-                        </div>
-                    </Link>
-                ) : (
+                {/* {link ? ( */}
+                <Link to={link ?? ''}>
                     <div className={size === 'small' ? 'px-3 py-2' : size === 'large' ? 'px-8 py-4' : 'px-6 py-3'}>
-                        {children}
+                        {fetching ? (
+                            <div
+                                className={fetching ? 'flex justify-center my-[7px] text-center dot-flashing' : ''}
+                            ></div>
+                        ) : (
+                            children
+                        )}
                     </div>
-                )}
+                </Link>
             </button>
         </>
     );
