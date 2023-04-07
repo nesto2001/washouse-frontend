@@ -169,15 +169,23 @@ const AdminDashboardLayout = ({ children }: Props) => {
                         onClick: () => setCollapsed(!collapsed),
                     })}
                     <div className={style.active__staff}>
-                        <div
-                            className={clsx(
-                                'w-[50px] h-[50px] rounded-full overflow-hidden',
-                                style.active__staff_avatar,
-                            )}
-                        >
-                            <img className="w-full h-full object-cover" src={UserPlaceholder} alt="" />
-                        </div>
-                        <DropdownMenu items={items} menuText={user.name} className="" />
+                        <DropdownMenu
+                            items={items}
+                            content={
+                                <div className="flex items-center justify-center">
+                                    <div
+                                        className={clsx(
+                                            'w-[40px] h-[40px] rounded-full overflow-hidden',
+                                            style.active__staff_avatar,
+                                        )}
+                                    >
+                                        <img className="w-full h-full object-cover" src={UserPlaceholder} alt="" />
+                                    </div>
+                                    {user.name}
+                                </div>
+                            }
+                            className=""
+                        />
                     </div>
                 </Header>
                 <Content style={{ margin: '24px 16px 24px', overflow: 'initial', minHeight: `calc(100vh - 88px)` }}>

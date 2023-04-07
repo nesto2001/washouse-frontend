@@ -218,16 +218,24 @@ const Navbar = () => {
                     <>
                         <div className="user__navbar--action flex">
                             <div className="user__navbar--profile flex items-center font-medium">
-                                <div className="user__navbar--avatar w-[50px] h-[50px] rounded-full overflow-hidden mr-3">
-                                    <Link to="/user/account/profile">
-                                        <img
-                                            className="h-full w-full object-cover"
-                                            src={user.avatar ?? Placeholder}
-                                            alt=""
-                                        />
-                                    </Link>
-                                </div>
-                                <DropdownMenu items={items} menuText={user.name} className="" />
+                                <DropdownMenu
+                                    items={items}
+                                    content={
+                                        <div className="flex items-center justify-center">
+                                            <div className="user__navbar--avatar w-[50px] h-[50px] rounded-full overflow-hidden mr-3">
+                                                <Link to="/user/account/profile">
+                                                    <img
+                                                        className="h-full w-full object-cover"
+                                                        src={user.avatar ?? Placeholder}
+                                                        alt=""
+                                                    />
+                                                </Link>
+                                            </div>
+                                            {user.name}
+                                        </div>
+                                    }
+                                    className=""
+                                />
                             </div>
                         </div>
                     </>

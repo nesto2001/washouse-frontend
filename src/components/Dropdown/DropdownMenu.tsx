@@ -1,22 +1,20 @@
-import React from 'react';
-import { DownOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Dropdown, Space } from 'antd';
 import { FaAngleDown } from 'react-icons/fa';
 
 type Props = {
     items: MenuProps['items'];
-    menuText: string;
+    content: React.ReactNode;
     className?: string;
 };
 
-const DropdownMenu = ({ items, menuText, className }: Props) => {
+const DropdownMenu = ({ items, content, className }: Props) => {
     return (
-        <div className="z-[9999]">
+        <div className="z-[9999] h-full">
             <Dropdown menu={{ items }} className={className}>
                 <a onClick={(e) => e.preventDefault()}>
                     <Space>
-                        {menuText}
+                        {content}
                         <FaAngleDown />
                     </Space>
                 </a>
