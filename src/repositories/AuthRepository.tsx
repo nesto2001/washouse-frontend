@@ -74,8 +74,8 @@ export const getMe = async (): Promise<UserModel> => {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
     });
-    if (data ===null) {
-        throw new Error;
+    if (data === null) {
+        throw new Error();
     }
     return {
         accountId: data.data.accountId,

@@ -23,6 +23,8 @@ export type CreateCenterFormData = {
     wardId: number;
     location: LocationType;
     hasDelivery: boolean;
+    taxCode: string;
+    taxRegistrationImage: string;
 };
 
 type Props = {};
@@ -48,6 +50,8 @@ const CenterRegistrationContainer = (props: Props) => {
             { day: 5, start: null, end: null },
             { day: 6, start: null, end: null },
         ],
+        taxCode: '123153463462',
+        taxRegistrationImage: 'taximage.png',
         address: '',
         districtId: 0,
         wardId: 0,
@@ -121,6 +125,8 @@ const CenterRegistrationContainer = (props: Props) => {
                 hasDelivery: true,
                 phone: formData.phone,
                 savedFileName: formData.savedImage,
+                taxCode: '12341245',
+                taxRegistrationImage: 'taximage.png',
             },
             location: {
                 addressString: formData.address,

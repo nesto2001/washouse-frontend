@@ -7,6 +7,8 @@ export interface CenterRequest {
         monthOff?: string;
         savedFileName?: string;
         hasDelivery: boolean;
+        taxCode: string;
+        taxRegistrationImage: string;
     };
     location: {
         addressString: string;
