@@ -21,6 +21,7 @@ export { default as CustomerPasswordPage } from './CustomerPage/CustomerPassword
 export { default as StaffLoginPage } from './StaffPage/StaffAuth/StaffLoginPage';
 export { default as StaffRegisterPage } from './StaffPage/StaffAuth/StaffRegisterPage';
 export { default as ManagerDashboardPage } from './StaffPage/ManagerDashboardPage';
+export { default as StaffDashboardPage } from './StaffPage/StaffDashboardPage';
 export { default as ManagerCenterPage } from './StaffPage/ManagerCenter/ManagerCenterPage';
 export { default as ManagerCenterRegistrationPage } from './StaffPage/ManagerCenter/ManagerCenterRegistrationPage';
 export { default as ManagerCenterStaffPage } from './StaffPage/ManagerCenter/ManagerCenterStaffPage';
