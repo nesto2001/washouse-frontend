@@ -212,9 +212,12 @@ const Navbar = () => {
                             className="w-full basis-full grow"
                             placeholder="Tìm kiếm"
                         />
-                        <button onClick={handleSearch} className="ml-2 px-2 w-[50px] text-sub bg-transparent">
+                        <div
+                            onClick={handleSearch}
+                            className="ml-2 px-2 w-[50px] text-sub flex justify-center items-center cursor-pointer"
+                        >
                             <FaSearch size={24} />
-                        </button>
+                        </div>
                     </form>
                 </div>
                 <div className="nav__action--cart">

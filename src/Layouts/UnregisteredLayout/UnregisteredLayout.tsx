@@ -126,9 +126,7 @@ const UnregisteredLayout = ({ children }: Props) => {
                             </div>
                         </div>
                     </Header>
-                    <Content style={{ margin: '24px 16px 24px', overflow: 'initial', minHeight: `calc(100vh - 88px)` }}>
-                        {children}
-                    </Content>
+                    <Content style={{ overflow: 'initial', minHeight: `calc(100vh - 88px)` }}>{children}</Content>
                 </Layout>
             </Layout>
         </>
