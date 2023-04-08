@@ -53,6 +53,13 @@ export const getCenterRequests = async ({
             address: item.centerAddress,
             alias: item.alias,
             distance: item.distance,
+            centerDeliveryPrices: [],
+            hasDelivery: item.hasDelivery,
+            hasOnlinePayment: item.hasOnlinePayment,
+            isOpening: item.isOpening,
+            maxPrice: item.maxPrice,
+            minPrice: item.minPrice,
+            monthOff: item.monthOff,
             location: item.centerLocation,
             centerOperatingHours: item.centerOperatingHours.map((day): OperatingDay => {
                 return {

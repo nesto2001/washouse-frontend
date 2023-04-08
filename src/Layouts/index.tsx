@@ -6,4 +6,5 @@ export { default as AuthenticateLayout } from './AuthenticateLayout/Authenticate
 export { default as StaffAuthenticateLayout } from './AuthenticateLayout/StaffAuthenticateLayout';
 export { default as CustomerSidebarLayout } from './CustomerSidebarLayout/CustomerSidebarLayout';
 export { default as ManagerDashboardLayout } from './DashboardLayout/ManagerDashboardLayout';
+export { default as UnregisteredLayout } from './UnregisteredLayout/UnregisteredLayout';
 export { default as AdminDashboardLayout } from './DashboardLayout/AdminDashboardLayout';

@@ -1,6 +1,9 @@
-import React from 'react';
+import { Tag } from 'antd';
+import CenterOrderDetailsCustomer from './CenterOrderDetailsCustomer';
+import CenterOrderDetailsDelivery from './CenterOrderDetailsDelivery';
+import CenterOrderDetailsPayment, { OrderPayment } from './CenterOrderDetailsPayment';
+import CenterOrderDetailsTracking from './CenterOrderDetailsTracking';
 import CenterOrderedDetailsContainer from './CenterOrderedDetailsContainer';
-import CenterOrderDetailsCustomerContainter from './CenterOrderDetailsCustomerContainter';
 
 type Props = {};
 
@@ -45,6 +48,18 @@ const CenterOrderDetailsContainer = (props: Props) => {
         },
     };
 
+    const orderPayment: OrderPayment = {
+        paymentTotal: 120000,
+        platformFee: 0,
+        dateIssue: null,
+        status: 'Pending',
+        paymentMethod: 0,
+        promoCode: null,
+        discount: null,
+        createdDate: '02-04-2023 19:13:38',
+        updatedDate: null,
+    };
+
     const customerInfo = {
         customerName: 'Trần Tân Long',
         locationId: '199/1 Bãi Sậy, Phường 4, Quận 6, TP. Hồ Chí Minh',
@@ -55,6 +70,14 @@ const CenterOrderDetailsContainer = (props: Props) => {
     return (
         <>
             <div className=" basis-3/4 mx-auto">
+                <div className="order__customer w-full bg-white rounded border border-wh-lightgray mb-6">
+                    <div className="provider__page--title pt-4 pl-6 font-semibold text-2xl">Thông tin khách hàng</div>
+                    <div className="provider__page--content px-6 mt-6">
+                        <div className="provider__services--wrapper">
+                            <CenterOrderDetailsCustomer customerInfo={customerInfo} />
+                        </div>
+                    </div>
+                </div>
                 <div className="order__details w-full bg-white rounded border border-wh-lightgray mb-6 md:min-h-[400px]">
                     <div className="provider__page--title pt-4 pl-6 font-semibold text-2xl">Chi tiết đơn hàng</div>
                     <div className="provider__page--content px-6 mt-6">
@@ -75,32 +98,48 @@ const CenterOrderDetailsContainer = (props: Props) => {
                         </div>
                     </div>
                 </div>
-                <div className="order__customer w-full bg-white rounded border border-wh-lightgray mb-6">
-                    <div className="provider__page--title pt-4 pl-6 font-semibold text-2xl">Thông tin khách hàng</div>
+            </div>
+            <div className="basis-1/4 mx-auto">
+                <div className="order__payment w-full bg-white rounded border border-wh-lightgray mb-6">
+                    <div className="provider__page--title pt-4 pl-6 font-semibold text-2xl flex justify-between items-center">
+                        <div className="">Thông tin thanh toán</div>
+                        <Tag style={{ fontSize: 14, paddingTop: 2, paddingBottom: 2 }} color="default">
+                            Đang chờ
+                        </Tag>
+                    </div>
                     <div className="provider__page--content px-6 mt-6">
                         <div className="provider__services--wrapper">
-                            <CenterOrderDetailsCustomerContainter customerInfo={customerInfo} />
+                            <CenterOrderDetailsPayment
+                                orderPayment={orderPayment}
+                                orderTotal={orderDetails.totalOrderValue}
+                            />
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className="basis-1/4 mx-auto">
-                <div className="order__tracking w-full bg-white rounded border border-wh-lightgray mb-6">
-                    <div className="provider__page--title pt-4 pl-6 font-semibold text-2xl">Trạng thái đơn hàng</div>
+                <div className="order__delivery w-full bg-white rounded border border-wh-lightgray mb-6">
+                    <div className="provider__page--title pt-4 pl-6 font-semibold text-2xl flex justify-between items-center">
+                        <div className="">Thông tin giao hàng</div>
+                        <Tag style={{ fontSize: 14, paddingTop: 2, paddingBottom: 2 }} color="default">
+                            Đang chờ
+                        </Tag>
+                    </div>
                     <div className="provider__page--content px-6 mt-6">
-                        <div className="provider__services--wrapper"></div>
+                        <div className="provider__services--wrapper">
+                            <CenterOrderDetailsDelivery />
+                        </div>
                     </div>
                 </div>
-                <div className="order__payment w-full bg-white rounded border border-wh-lightgray mb-6">
-                    <div className="provider__page--title pt-4 pl-6 font-semibold text-2xl">Thông tin thanh toán</div>
-                    <div className="provider__page--content px-6 mt-6">
-                        <div className="provider__services--wrapper"></div>
+                <div className="order__tracking w-full bg-white rounded border border-wh-lightgray">
+                    <div className="provider__page--title pt-4 pl-6 font-semibold text-2xl flex justify-between items-center">
+                        <div className="">Trạng thái đơn hàng</div>
+                        <Tag style={{ fontSize: 14, paddingTop: 2, paddingBottom: 2 }} color="default">
+                            Đang chờ
+                        </Tag>
                     </div>
-                </div>
-                <div className="order__delivery w-full bg-white rounded border border-wh-lightgray">
-                    <div className="provider__page--title pt-4 pl-6 font-semibold text-2xl">Thông tin giao hàng</div>
                     <div className="provider__page--content px-6 mt-6">
-                        <div className="provider__services--wrapper"></div>
+                        <div className="provider__services--wrapper">
+                            <CenterOrderDetailsTracking />
+                        </div>
                     </div>
                 </div>
             </div>

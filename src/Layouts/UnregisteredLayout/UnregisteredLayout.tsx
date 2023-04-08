@@ -12,23 +12,19 @@ import {
 } from '@ant-design/icons';
 import { Badge, Layout, List, Menu, MenuProps, Popover, message, theme } from 'antd';
 import clsx from 'clsx';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { BiPowerOff } from 'react-icons/bi';
 import { FaBell } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
-import Logo from '../../assets//images/washouse-notag.png';
+import Logo from '../../assets//images/washouse-tagline.png';
 import Laundromat from '../../assets/images/store.png';
 import UserPlaceholder from '../../assets/images/user-placeholder.png';
-import LogoSmall from '../../assets/images/washouse-notext.png';
 import DropdownMenu from '../../components/Dropdown/DropdownMenu';
 import { NotificationModel } from '../../models/Notification/NotificationModel';
 import { UserModel } from '../../models/User/UserModel';
 import { getMe } from '../../repositories/AuthRepository';
-import { getNotifications, readNotification } from '../../repositories/NotificationRepository';
-import { timeSince } from '../../utils/TimeUtils';
-import style from './DashboardLayout.module.scss';
-import NotificationDropdown from '../../components/NotificationDropdown/NotificationDropdown';
-import { getManagerCenter } from '../../repositories/StaffRepository';
+import { getNotifications } from '../../repositories/NotificationRepository';
+import style from '../DashboardLayout/DashboardLayout.module.scss';
 
 type Props = {
     children?: JSX.Element;
@@ -36,11 +32,12 @@ type Props = {
 
 const { Header, Sider, Content } = Layout;
 
-const ManagerDashboardLayout = ({ children }: Props) => {
+const UnregisteredLayout = ({ children }: Props) => {
     const [messageApi, contextHolder] = message.useMessage();
     const userJson = localStorage.getItem('currentUser');
     const [collapsed, setCollapsed] = useState(false);
-    const [user, setUser] = useState<UserModel | null>(userJson && JSON.parse(userJson));
+    const [notificationList, setNotificationList] = useState<NotificationModel[]>();
+    const [user, setUser] = useState<UserModel>(userJson && JSON.parse(userJson));
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -51,66 +48,19 @@ const ManagerDashboardLayout = ({ children }: Props) => {
 
     useMemo(() => {
         const fetchData = async () => {
-            return await getManagerCenter();
+            return await getMe();
         };
         fetchData().catch((error) => {
-            if (error) {
-                navigate('/provider/registration');
-            }
+            // if (error) {
+            //     message.error('Vui lòng đăng nhập để xem trang này');
+            //     navigate('/provider/login');
+            // }
         });
     }, [user]);
 
     const {
         token: { colorBgContainer },
     } = theme.useToken();
-    const items = [
-        {
-            key: '1',
-            icon: <LineChartOutlined />,
-            label: <Link to="/provider/dashboard">Bảng chính</Link>,
-        },
-        {
-            key: '2',
-            icon: <SolutionOutlined />,
-            label: <Link to="/provider/orders">Đơn hàng</Link>,
-        },
-        {
-            key: '3',
-            icon: <CarOutlined />,
-            label: 'Vận chuyển',
-        },
-        {
-            key: '4',
-            icon: <CalendarOutlined />,
-            label: <Link to="/provider/calendar">Đặt lịch</Link>,
-        },
-        {
-            key: '5',
-            icon: <HeartOutlined />,
-            label: <Link to="/provider/services">Dịch vụ</Link>,
-        },
-        {
-            key: '6',
-            icon: <GiftOutlined />,
-            label: <Link to="/provider/promotions">Khuyến mãi</Link>,
-        },
-        {
-            key: '7',
-            icon: <ShopOutlined />,
-            label: 'Trung tâm',
-            children: [
-                { key: '8', label: <Link to="/provider/settings/center/profile">Hồ sơ trung tâm</Link> },
-                { key: '9', label: <Link to="/provider/settings/center/rating">Đánh giá trung tâm</Link> },
-                { key: '10', label: <Link to="/provider/settings/center/">Thiết lập trung tâm</Link> },
-                { key: '11', label: <Link to="/provider/settings/center/staff">Danh sách nhân viên</Link> },
-            ],
-        },
-        {
-            key: '12',
-            icon: <UserOutlined />,
-            label: <Link to="/provider/customers">Khách hàng</Link>,
-        },
-    ];
 
     const userDropdown: MenuProps['items'] = [
         {
@@ -135,8 +85,8 @@ const ManagerDashboardLayout = ({ children }: Props) => {
                     <Link
                         to="/"
                         onClick={() => {
-                            setUser(null);
                             localStorage.clear();
+                            //handle Logout
                         }}
                         className="navbar__dropdown--item flex text-sm py-3 px-2 pl-1"
                         id="logout"
@@ -150,46 +100,15 @@ const ManagerDashboardLayout = ({ children }: Props) => {
         },
     ];
 
-    useEffect(() => {
-        getMe().then((res) => {
-            setUser(res);
-        });
-    }, []);
-
     return (
         <>
             {contextHolder}
             <Layout hasSider className="text-left">
-                <Sider
-                    trigger={null}
-                    collapsible
-                    collapsed={collapsed}
-                    theme="light"
-                    width={256}
-                    style={{
-                        overflow: 'auto',
-                        height: '100vh',
-                        position: 'fixed',
-                        left: 0,
-                        top: 0,
-                        bottom: 0,
-                        filter: 'drop-shadow(2px 0 5px rgba(0,0,0,0.15))',
-                    }}
-                >
-                    <div className="logo flex justify-center pt-4">
-                        {collapsed ? (
-                            <img width={'40%'} src={LogoSmall} alt="" />
-                        ) : (
-                            <img width={'80%'} src={Logo} alt="" />
-                        )}
-                    </div>
-                    <Menu className="mt-5" theme="light" mode="inline" defaultSelectedKeys={['1']} items={items} />
-                </Sider>
-                <Layout className="site-layout" style={collapsed ? { marginLeft: 80 } : { marginLeft: 256 }}>
+                <Layout className="site-layout">
                     <Header
                         style={{
                             padding: 0,
-                            paddingLeft: 20,
+                            paddingLeft: 420,
                             background: colorBgContainer,
                             display: 'flex',
                             alignItems: 'center',
@@ -197,12 +116,49 @@ const ManagerDashboardLayout = ({ children }: Props) => {
                             paddingRight: 200,
                         }}
                     >
-                        {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-                            className: 'trigger',
-                            onClick: () => setCollapsed(!collapsed),
-                        })}
-                        <div className="flex justify-center items-center gap-9 h-full">
-                            <NotificationDropdown child={<FaBell />} showBadge />
+                        <div className="max-h-[50px] max-w-[150px] mx-auto">
+                            <img className="h-full w-full object-cover" src={Logo} alt="" />
+                        </div>
+                        <div className="flex justify-end items-center gap-9 h-full">
+                            {/* <Dropdown menu={notificationList.map(no)}>
+                                <a onClick={(e) => e.preventDefault()}>
+                                    
+                                </a>
+                            </Dropdown> */}
+                            <Popover
+                                overlayStyle={{
+                                    top: '60px',
+                                }}
+                                placement="bottomRight"
+                                content={
+                                    <List
+                                        className="w-80"
+                                        itemLayout="horizontal"
+                                        dataSource={notificationList}
+                                        header={<div className="text-xl font-bold">Thông báo</div>}
+                                        renderItem={(item, index) => (
+                                            <List.Item className="cursor-pointer">
+                                                <List.Item.Meta
+                                                    title={
+                                                        <div className="flex justify-between">
+                                                            <div className="font-bold">Notification số index</div>
+                                                            <div className="text-sub-gray">{item.createdDate}</div>
+                                                        </div>
+                                                    }
+                                                    description={item.content}
+                                                />
+                                            </List.Item>
+                                        )}
+                                    />
+                                }
+                                arrow={false}
+                            >
+                                <Badge count={notificationList?.length} size="small">
+                                    <div className="text-xl cursor-pointer">
+                                        <FaBell />
+                                    </div>
+                                </Badge>
+                            </Popover>
                             <div className={style.active__staff}>
                                 <DropdownMenu
                                     items={userDropdown}
@@ -220,7 +176,7 @@ const ManagerDashboardLayout = ({ children }: Props) => {
                                                     alt=""
                                                 />
                                             </div>
-                                            {user?.name}
+                                            {user.name}
                                         </div>
                                     }
                                     className=""
@@ -237,4 +193,4 @@ const ManagerDashboardLayout = ({ children }: Props) => {
     );
 };
 
-export default ManagerDashboardLayout;
+export default UnregisteredLayout;

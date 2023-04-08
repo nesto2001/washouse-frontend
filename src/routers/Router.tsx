@@ -7,6 +7,7 @@ import {
     ManagerDashboardLayout,
     SidebarLayout,
     StaffAuthenticateLayout,
+    UnregisteredLayout,
 } from '../Layouts';
 import {
     AdminCenterPage,
@@ -39,6 +40,7 @@ import {
     StaffCalendarPage,
     StaffDayTimelinePage,
     StaffOrderDetailsPage,
+    ManagerCenterStaffPage,
 } from '../pages/';
 import AdminCenterRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterRequestPage';
 import AdminPostPage from '../pages/AdminPage/AdminPost/AdminPostPage';
@@ -151,8 +153,13 @@ const publicRoutes: Array<RouteProps> = [
     },
     {
         path: '/provider/registration',
-        layout: ManagerDashboardLayout,
+        layout: UnregisteredLayout,
         component: ManagerCenterRegistrationPage,
+    },
+    {
+        path: '/provider/settings/center/staff',
+        layout: ManagerDashboardLayout,
+        component: ManagerCenterStaffPage,
     },
     {
         path: '/provider/services',

@@ -23,6 +23,7 @@ export { default as StaffRegisterPage } from './StaffPage/StaffAuth/StaffRegiste
 export { default as ManagerDashboardPage } from './StaffPage/ManagerDashboardPage';
 export { default as ManagerCenterPage } from './StaffPage/ManagerCenter/ManagerCenterPage';
 export { default as ManagerCenterRegistrationPage } from './StaffPage/ManagerCenter/ManagerCenterRegistrationPage';
+export { default as ManagerCenterStaffPage } from './StaffPage/ManagerCenter/ManagerCenterStaffPage';
 export { default as ManagerServicePage } from './StaffPage/ManagerService/ManagerServicePage';
 export { default as ManagerCreateServicePage } from './StaffPage/ManagerService/ManagerCreateServicePage';
 export { default as StaffCustomerPage } from './StaffPage/StaffCustomer/StaffCustomerPage';

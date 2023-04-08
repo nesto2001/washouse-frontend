@@ -1,4 +1,4 @@
 export enum PaymentEnum {
-    COD = '0',
-    VnPay = '1',
+    'Thanh toán tiền mặt (COD)' = '0',
+    'Thanh toán bằng ví Washouse' = '1',
 }

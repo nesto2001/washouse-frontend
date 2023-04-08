@@ -14,6 +14,13 @@ export type CenterResponse = {
     phone: string;
     centerAddress: string;
     distance: number;
+    minPrice: number;
+    maxPrice: number;
+    monthOff: boolean;
+    hasDelivery: boolean;
+    hasOnlinePayment: boolean;
+    isOpening: boolean;
+    centerDeliveryPrices: [];
     centerLocation: {
         latitude: number;
         longitude: number;

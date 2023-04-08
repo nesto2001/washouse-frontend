@@ -10,6 +10,7 @@
         "borderRadius": 6,
         "colorPrimaryHover": "#0236D1",
         "colorPrimaryTextHover": "#0236D1",
-        "colorInfoHover": "#0236D1"
+        "colorInfoHover": "#0236D1",
+        "fontFamily": "Roboto"
     }
 }

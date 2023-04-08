@@ -14,7 +14,7 @@ type Props = {
     customerInfo: customerType;
 };
 
-const CenterOrderDetailsCustomerContainter = ({ customerInfo }: Props) => {
+const CenterOrderDetailsCustomer = ({ customerInfo }: Props) => {
     return (
         <>
             <Descriptions layout="vertical">
@@ -59,4 +59,4 @@ const CenterOrderDetailsCustomerContainter = ({ customerInfo }: Props) => {
     );
 };
 
-export default CenterOrderDetailsCustomerContainter;
+export default CenterOrderDetailsCustomer;

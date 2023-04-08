@@ -128,7 +128,7 @@ const CenterPromotionsContainer = () => {
             <Table
                 caption={
                     <div className="flex justify-end">
-                        <Button className="text-white" onClick={() => setModalVisibility(true)}>
+                        <Button type="primary" onClick={() => setModalVisibility(true)}>
                             Thêm mã khuyến mãi
                         </Button>
                     </div>

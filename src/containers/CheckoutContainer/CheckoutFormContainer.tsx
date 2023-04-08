@@ -1,4 +1,4 @@
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { QuestionCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import {
     Collapse,
     DatePickerProps,
@@ -338,6 +338,7 @@ type Step2Props = {
     setFormData: React.Dispatch<React.SetStateAction<CheckoutFormData>>;
     centerOperatingDays: OperatingDay[];
     onNext: () => void;
+    centerHasDelivery: boolean;
 };
 
 const today = getToday();
@@ -348,7 +349,14 @@ type DisabledTime = (now: dayjs.Dayjs) => {
     disabledMinutes: (selectedHour: number) => number[];
 };
 
-export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDays }: Step2Props) => {
+export const Step2 = ({
+    formData,
+    onBack,
+    onNext,
+    setFormData,
+    centerOperatingDays,
+    centerHasDelivery,
+}: Step2Props) => {
     const [delivery, setDelivery] = useState(0);
     const [pickupDate, setPickupDate] = useState<string>(dateOptions[0].value);
     const [deliverDate, setDeliverDate] = useState<string>(dateOptions[0].value);
@@ -1100,15 +1108,27 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
                     value={formData.deliveryType ?? delivery}
                     className="w-full border border-wh-gray rounded-lg mt-3"
                 >
-                    {deliveryOpt.map((option) => (
-                        <Radio
-                            key={option.type}
-                            className="text-base w-full py-6 px-5 border-b border-wh-gray last:border-none"
-                            value={option.type}
-                        >
-                            {option.title}
-                        </Radio>
-                    ))}
+                    {deliveryOpt.map(
+                        (option, index) =>
+                            (!centerHasDelivery && index === 0 && (
+                                <Radio
+                                    key={option.type}
+                                    className="text-base w-full py-6 px-5 border-b border-wh-gray"
+                                    value={option.type}
+                                >
+                                    {option.title}
+                                </Radio>
+                            )) ||
+                            (centerHasDelivery && (
+                                <Radio
+                                    key={option.type}
+                                    className="text-base w-full py-6 px-5 border-b border-wh-gray last:border-none"
+                                    value={option.type}
+                                >
+                                    {option.title}
+                                </Radio>
+                            )),
+                    )}
                 </Radio.Group>
             </div>
             <div className="checkout__delivery--form text-left">
@@ -1252,13 +1272,14 @@ export const Step2 = ({ formData, onBack, onNext, setFormData, centerOperatingDa
 };
 
 type Step3Props = {
+    hasOnlinePayment: boolean;
     formData: CheckoutFormData;
     onBack: () => void;
     setFormData: React.Dispatch<React.SetStateAction<CheckoutFormData>>;
     onSubmit: (e: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
-export const Step3 = ({ formData, onBack, setFormData, onSubmit }: Step3Props) => {
+export const Step3 = ({ formData, hasOnlinePayment, onBack, setFormData, onSubmit }: Step3Props) => {
     const [paymentType, setPaymentType] = useState(formData.paymentType || 0);
 
     const paymentOpt: Option[] = Object.entries(PaymentEnum).map(([key, value]) => ({
@@ -1281,21 +1302,40 @@ export const Step3 = ({ formData, onBack, setFormData, onSubmit }: Step3Props) =
     return (
         <>
             <div className="checkout__payment--form text-left mt-7">
-                <h3 className="font-bold text-xl">Phương thức thanh toán</h3>
+                <h3 className="font-bold text-xl">
+                    Phương thức thanh toán{' '}
+                    {!hasOnlinePayment && (
+                        <Tooltip title="Trung tâm hiện không hỗ trợ các hình thức thanh toán khác ngoài thanh toán bằng tiền mặt">
+                            <InfoCircleOutlined className="text-sub-gray text-base ml-1" />
+                        </Tooltip>
+                    )}
+                </h3>
                 <Radio.Group
                     onChange={handlePaymentRadioChange}
                     value={paymentType.toString()}
                     className="w-full border border-wh-gray rounded-lg mt-3"
                 >
-                    {paymentOpt.map((option) => (
-                        <Radio
-                            key={option.value}
-                            className="text-base w-full py-6 px-5 border-b border-wh-gray last:border-none"
-                            value={option.value}
-                        >
-                            {option.label}
-                        </Radio>
-                    ))}
+                    {paymentOpt.map(
+                        (option, index) =>
+                            (!hasOnlinePayment && index === 0 && (
+                                <Radio
+                                    key={option.value}
+                                    className="text-base w-full py-6 px-5 border-b border-wh-gray last:border-none"
+                                    value={option.value}
+                                >
+                                    {option.label}
+                                </Radio>
+                            )) ||
+                            (hasOnlinePayment && (
+                                <Radio
+                                    key={option.value}
+                                    className="text-base w-full py-6 px-5 border-b border-wh-gray last:border-none"
+                                    value={option.value}
+                                >
+                                    {option.label}
+                                </Radio>
+                            )),
+                    )}
                 </Radio.Group>
             </div>
             <div className="checkout__customer--action flex justify-between mt-9 pb-12 items-center">

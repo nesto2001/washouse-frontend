@@ -47,7 +47,7 @@ const CheckoutContainer = (props: Props) => {
         preferredDeliverTime: '',
         deliveryType: 0,
         deliveryPrice: 0,
-        paymentType: 1,
+        paymentType: 0,
         deliveryInfo: [],
     });
 
@@ -162,6 +162,7 @@ const CheckoutContainer = (props: Props) => {
                 {step === 1 && center && <Step1 onNext={handleNext} formData={formData} setFormData={setFormData} />}
                 {step === 2 && center && (
                     <Step2
+                        centerHasDelivery={center.hasDelivery}
                         onNext={handleNext}
                         setFormData={setFormData}
                         onBack={handleBack}
@@ -170,7 +171,13 @@ const CheckoutContainer = (props: Props) => {
                     />
                 )}
                 {step === 3 && center && (
-                    <Step3 setFormData={setFormData} onBack={handleBack} formData={formData} onSubmit={handleSubmit} />
+                    <Step3
+                        hasOnlinePayment={center.hasOnlinePayment}
+                        setFormData={setFormData}
+                        onBack={handleBack}
+                        formData={formData}
+                        onSubmit={handleSubmit}
+                    />
                 )}
             </div>
             <div className="checkout__sidebar basis-[45%] text-left px-6 pt-6 relative">

@@ -47,20 +47,17 @@ const CenterOrderedDetailsContainer = ({ orderedDetails, orderTotal }: Props) =>
                         {formatCurrency((det.price && det.price * det.measurement) ?? 0)}
                     </div>
                     <div className="ordered__item--price font-bold text-xl w-[284px] text-right">
-                        <Tag
-                            className="flex w-1/2 justify-center items-center mx-auto h-8 rounded-full"
-                            color="default"
-                        >
+                        <Tag className="flex w-1/2 justify-center items-center mx-auto h-8" color="default">
                             Đang chờ
                         </Tag>
                     </div>
                 </div>
             ))}
             <hr />
-            <div className="order__summary flex mt-4 text-2xl font-bold">
+            {/* <div className="order__summary flex mt-4 text-2xl font-bold">
                 <div className="flex-grow text-right">Tổng đơn hàng</div>
                 <div className="w-[284px] text-right">{formatCurrency(orderTotal)}</div>
-            </div>
+            </div> */}
         </>
     );
 };

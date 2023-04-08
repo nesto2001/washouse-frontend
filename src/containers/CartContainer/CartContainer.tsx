@@ -85,7 +85,7 @@ const CartContainer = () => {
                                     {cartItems.map((item, index) => (
                                         <div
                                             key={`cartitem-${index}`}
-                                            className="sitecart--item flex justify-between items-center p-3 gap-4 border border-wh-gray rounded-2xl"
+                                            className="sitecart--item flex flex-wrap items-center p-3 gap-4 border border-wh-gray rounded-2xl"
                                             id={item.id.toString()}
                                         >
                                             <div className="sitecart__item--thumbnail rounded overflow-hidden">
@@ -95,126 +95,141 @@ const CartContainer = () => {
                                                     alt=""
                                                 />
                                             </div>
-                                            <div className="sitecart__item--content pt-2">
-                                                <h2 className="sitecart__item--title text-xl font-bold">{item.name}</h2>
-                                                <h1 className="">
-                                                    Đơn giá: {formatCurrency(item.unitPrice)}/
-                                                    {item.unit.toLowerCase() !== 'kg' ? 'bộ' : 'kg'}
-                                                    {item.unit.toLowerCase() === 'kg' && (
-                                                        <Tooltip
-                                                            className="ml-2 text-sub-gray"
-                                                            title={
-                                                                item.priceChart && (
-                                                                    <>
-                                                                        <div className="mb-1">
-                                                                            {item.minPrice
-                                                                                ? `Giá tối thiểu: ${formatCurrency(
-                                                                                      item.minPrice,
-                                                                                  )}`
-                                                                                : `Giá tối thiểu: ${formatCurrency(
-                                                                                      item.unitPrice,
-                                                                                  )}`}
-                                                                        </div>
-                                                                        <PriceTable
-                                                                            isTooltip
-                                                                            priceChart={item.priceChart.map(
-                                                                                (range): PriceRange => {
-                                                                                    return {
-                                                                                        maxValue: range.maxValue,
-                                                                                        price: range.price,
-                                                                                    };
-                                                                                },
-                                                                            )}
-                                                                            unitType="kg"
-                                                                        />
-                                                                    </>
-                                                                )
-                                                            }
-                                                        >
-                                                            <InfoCircleOutlined />
-                                                        </Tooltip>
-                                                    )}
-                                                </h1>
-                                            </div>
-                                            <div className="">
-                                                <Space.Compact block>
-                                                    <button
-                                                        className="px-3 pr-2.5 py-3 pt-2.5 text-base text-white flex items-center rounded-l"
-                                                        style={{ lineHeight: '0px' }}
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            if (
-                                                                (item.weight && item.weight - 0.1 <= 0) ||
-                                                                (item.quantity && item.quantity - 1 <= 0)
-                                                            ) {
-                                                                dispatch(removeItem(item.id));
-                                                            } else {
-                                                                dispatch(decreaseCartItem(item.id) as any)
-                                                                    .then(() => {
-                                                                        if (
-                                                                            (item.weight && item.weight - 0.2 <= 0) ||
-                                                                            (item.quantity && item.quantity - 2 <= 0)
-                                                                        ) {
-                                                                            messageApi.warning(
-                                                                                'Nhấn "-" lần nữa sẽ tự động xóa dịch vụ khỏi giỏ hàng',
-                                                                            );
-                                                                        }
-                                                                    })
-                                                                    .catch((err: Error) => {
-                                                                        messageApi.error(err.message);
-                                                                    });
-                                                            }
-                                                        }}
-                                                    >
-                                                        -
-                                                    </button>
-                                                    <input
-                                                        className="border-y border-[#396afc] py-1 w-[50px] text-center"
-                                                        type="number"
-                                                        name="item-quantity"
-                                                        value={item.quantity || item.weight?.toFixed(1)}
-                                                        min={0}
-                                                        // onBlur={(e) => {
-                                                        //     e.preventDefault();
-                                                        //     dispatch(
-                                                        //         editCartItem({
-                                                        //             id: item.id,
-                                                        //             measurement: parseFloat(e.target.value),
-                                                        //         }) as any,
-                                                        //     ).catch((err: Error) => {
-                                                        //         messageApi.error(err.message);
-                                                        //     });
-                                                        // }}
-                                                        // onFocus={(e) => e.target.select()}
-                                                    />
-                                                    <button
-                                                        className="px-3 pl-2.5 py-3 pt-2.5 text-base text-white flex items-center rounded-r"
-                                                        style={{ lineHeight: '0px' }}
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            dispatch(increaseCartItem(item.id) as any).catch(
-                                                                (err: Error) => {
-                                                                    messageApi.error(err.message);
-                                                                },
-                                                            );
-                                                        }}
-                                                    >
-                                                        +
-                                                    </button>
-                                                    <div className="py-1 ml-1 text-base">
-                                                        {item.unit === 'kg' ? item.unit : 'bộ'}
+                                            <div className="flex flex-grow flex-col h-[120px] justify-between">
+                                                <div className="flex justify-between items-center w-full flex-grow">
+                                                    <div className="sitecart__item--content pt-2">
+                                                        <h2 className="sitecart__item--title text-xl font-bold">
+                                                            {item.name}
+                                                        </h2>
+                                                        <h1 className="">
+                                                            Đơn giá: {formatCurrency(item.unitPrice)}/
+                                                            {item.unit.toLowerCase() !== 'kg' ? 'bộ' : 'kg'}
+                                                            {item.unit.toLowerCase() === 'kg' && (
+                                                                <Tooltip
+                                                                    className="ml-2 text-sub-gray"
+                                                                    title={
+                                                                        item.priceChart && (
+                                                                            <>
+                                                                                <div className="mb-1">
+                                                                                    {item.minPrice
+                                                                                        ? `Giá tối thiểu: ${formatCurrency(
+                                                                                              item.minPrice,
+                                                                                          )}`
+                                                                                        : `Giá tối thiểu: ${formatCurrency(
+                                                                                              item.unitPrice,
+                                                                                          )}`}
+                                                                                </div>
+                                                                                <PriceTable
+                                                                                    isTooltip
+                                                                                    priceChart={item.priceChart.map(
+                                                                                        (range): PriceRange => {
+                                                                                            return {
+                                                                                                maxValue:
+                                                                                                    range.maxValue,
+                                                                                                price: range.price,
+                                                                                            };
+                                                                                        },
+                                                                                    )}
+                                                                                    unitType="kg"
+                                                                                />
+                                                                            </>
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <InfoCircleOutlined />
+                                                                </Tooltip>
+                                                            )}
+                                                        </h1>
                                                     </div>
-                                                </Space.Compact>
-                                            </div>
-                                            <div className="sitecart__item--price text-2xl font-bold text-primary mt-1">
-                                                {formatCurrency(item.price ?? 0)}
-                                            </div>
-                                            <div
-                                                className="sitecart__item--action self-start text-red pt-2 pr-2 cursor-pointer"
-                                                data-id={item.id.toString()}
-                                                onClick={(e) => handleRemoveFromCart(e)}
-                                            >
-                                                <FaTrashAlt className="pointer-events-none" size={24} />
+                                                    <div className="">
+                                                        <Space.Compact block>
+                                                            <button
+                                                                className="px-3 pr-2.5 py-3 pt-2.5 text-base text-white flex items-center rounded-l"
+                                                                style={{ lineHeight: '0px' }}
+                                                                onClick={(e) => {
+                                                                    e.preventDefault();
+                                                                    if (
+                                                                        (item.weight && item.weight - 0.1 <= 0) ||
+                                                                        (item.quantity && item.quantity - 1 <= 0)
+                                                                    ) {
+                                                                        dispatch(removeItem(item.id));
+                                                                    } else {
+                                                                        dispatch(decreaseCartItem(item.id) as any)
+                                                                            .then(() => {
+                                                                                if (
+                                                                                    (item.weight &&
+                                                                                        item.weight - 0.2 <= 0) ||
+                                                                                    (item.quantity &&
+                                                                                        item.quantity - 2 <= 0)
+                                                                                ) {
+                                                                                    messageApi.warning(
+                                                                                        'Nhấn "-" lần nữa sẽ tự động xóa dịch vụ khỏi giỏ hàng',
+                                                                                    );
+                                                                                }
+                                                                            })
+                                                                            .catch((err: Error) => {
+                                                                                messageApi.error(err.message);
+                                                                            });
+                                                                    }
+                                                                }}
+                                                            >
+                                                                -
+                                                            </button>
+                                                            <input
+                                                                className="border-y border-[#396afc] py-1 w-[50px] text-center"
+                                                                type="number"
+                                                                name="item-quantity"
+                                                                value={item.quantity || item.weight?.toFixed(1)}
+                                                                min={0}
+                                                                // onBlur={(e) => {
+                                                                //     e.preventDefault();
+                                                                //     dispatch(
+                                                                //         editCartItem({
+                                                                //             id: item.id,
+                                                                //             measurement: parseFloat(e.target.value),
+                                                                //         }) as any,
+                                                                //     ).catch((err: Error) => {
+                                                                //         messageApi.error(err.message);
+                                                                //     });
+                                                                // }}
+                                                                // onFocus={(e) => e.target.select()}
+                                                            />
+                                                            <button
+                                                                className="px-3 pl-2.5 py-3 pt-2.5 text-base text-white flex items-center rounded-r"
+                                                                style={{ lineHeight: '0px' }}
+                                                                onClick={(e) => {
+                                                                    e.preventDefault();
+                                                                    dispatch(increaseCartItem(item.id) as any).catch(
+                                                                        (err: Error) => {
+                                                                            messageApi.error(err.message);
+                                                                        },
+                                                                    );
+                                                                }}
+                                                            >
+                                                                +
+                                                            </button>
+                                                            <div className="py-1 ml-1 text-base">
+                                                                {item.unit === 'kg' ? item.unit : 'bộ'}
+                                                            </div>
+                                                        </Space.Compact>
+                                                    </div>
+                                                    <div className="sitecart__item--price text-2xl font-bold text-primary mt-1">
+                                                        {formatCurrency(item.price ?? 0)}
+                                                    </div>
+                                                    <div
+                                                        className="sitecart__item--action self-center text-red pr-2 cursor-pointer"
+                                                        data-id={item.id.toString()}
+                                                        onClick={(e) => handleRemoveFromCart(e)}
+                                                    >
+                                                        <FaTrashAlt className="pointer-events-none" size={24} />
+                                                    </div>
+                                                </div>
+                                                <div className="w-full">
+                                                    Ghi chú:{' '}
+                                                    {item.customerNote.trim().length > 0
+                                                        ? item.customerNote
+                                                        : 'không có'}
+                                                </div>
                                             </div>
                                         </div>
                                     ))}
