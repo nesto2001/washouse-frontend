@@ -1,4 +1,4 @@
-import { API_ORDER_CREATE, API_ORDER_EST, API_REGISTER_CUSTOMER } from '../common/Constant';
+import { API_ORDER_CREATE, API_ORDER_DELIVERY, API_ORDER_EST, API_REGISTER_CUSTOMER } from '../common/Constant';
 import { Response } from '../models/CommonModel';
 import { LoginResponse } from '../models/LoginResponse';
 import { CreateOrderRequest } from '../models/Order/CreateOrderRequest';
@@ -18,7 +18,7 @@ export const getEstimateTime = async (cartItems: CartItem[]): Promise<EstimatedT
 };
 
 export const calcDeliveryPrice = async (deliveryInfo: DeliveryPriceRequest): Promise<DeliveryPriceResponse> => {
-    const { data } = await instance.get<Response<DeliveryPriceResponse>>(API_ORDER_EST, { params: deliveryInfo });
+    const { data } = await instance.get<Response<DeliveryPriceResponse>>(API_ORDER_DELIVERY, { params: deliveryInfo });
     return {
         deliveryPrice: data.data.deliveryPrice,
     };

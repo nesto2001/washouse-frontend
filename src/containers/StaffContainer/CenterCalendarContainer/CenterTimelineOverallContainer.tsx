@@ -24,7 +24,7 @@ const CenterTimelineOverallContainer = (props: Props) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            return await getManagerCenterOrders({ fromDate: fetchingDate, pageSize: 50 });
+            return await getManagerCenterOrders({ fromDate: fetchingDate, toDate: fetchingDate, pageSize: 50 });
         };
         fetchData()
             .then((res) => {

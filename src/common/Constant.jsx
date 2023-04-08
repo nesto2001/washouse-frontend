@@ -41,6 +41,7 @@ const API_REQUEST_REJECT = '/api/requests/centers/${id}/reject';
 
 //ORDER API
 const API_ORDER_EST = '/api/orders/estimated-time';
+const API_ORDER_DELIVERY = '/api/orders/delivery-price';
 const API_ORDER_CREATE = '/api/orders';
 
 //MANAGER API
@@ -59,6 +60,7 @@ const API_CUSTOMER = '/api/customers';
 const API_NOTIFICATION = '/api/notifications/account/${accountId}';
 
 export {
+    API_ORDER_DELIVERY,
     API_MANAGER_CENTER_CUSTOMER,
     API_MANAGER_CENTER_SERVICE,
     API_MANAGER_CENTER_ORDER,
