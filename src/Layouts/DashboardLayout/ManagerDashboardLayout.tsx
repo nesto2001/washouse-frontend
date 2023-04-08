@@ -10,9 +10,9 @@ import {
     SolutionOutlined,
     UserOutlined,
 } from '@ant-design/icons';
-import { Badge, Layout, List, Menu, MenuProps, Popover, message, theme } from 'antd';
+import { Layout, Menu, MenuProps, message, theme } from 'antd';
 import clsx from 'clsx';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { BiPowerOff } from 'react-icons/bi';
 import { FaBell } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
@@ -21,14 +21,11 @@ import Laundromat from '../../assets/images/store.png';
 import UserPlaceholder from '../../assets/images/user-placeholder.png';
 import LogoSmall from '../../assets/images/washouse-notext.png';
 import DropdownMenu from '../../components/Dropdown/DropdownMenu';
-import { NotificationModel } from '../../models/Notification/NotificationModel';
+import NotificationDropdown from '../../components/NotificationDropdown/NotificationDropdown';
 import { UserModel } from '../../models/User/UserModel';
 import { getMe } from '../../repositories/AuthRepository';
-import { getNotifications, readNotification } from '../../repositories/NotificationRepository';
-import { timeSince } from '../../utils/TimeUtils';
-import style from './DashboardLayout.module.scss';
-import NotificationDropdown from '../../components/NotificationDropdown/NotificationDropdown';
 import { getManagerCenter } from '../../repositories/StaffRepository';
+import style from './DashboardLayout.module.scss';
 
 type Props = {
     children?: JSX.Element;
@@ -43,11 +40,6 @@ const ManagerDashboardLayout = ({ children }: Props) => {
     const [user, setUser] = useState<UserModel | null>(userJson && JSON.parse(userJson));
     const navigate = useNavigate();
 
-    useEffect(() => {
-        getNotifications(user.accountId).then((res) => {
-            setNotificationList(res);
-        });
-    }, []);
 
     useMemo(() => {
         const fetchData = async () => {
