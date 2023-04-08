@@ -5,10 +5,11 @@ import { NotificationResponse } from '../models/Notification/NotificationRespons
 import instance from '../services/axios/AxiosInstance';
 
 export const getNotifications = async (accountId: number): Promise<NotificationModel[]> => {
-    const { data } = await instance.get<ListResponse<NotificationResponse>>(
-        API_NOTIFICATION.replace('${accountId}', accountId.toString()),
-        {},
-    );
+    const { data } = await instance.get<ListResponse<NotificationResponse>>(API_NOTIFICATION, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
     return data.data.map((item): NotificationModel => {
         return {
             accountId: item.accountId,

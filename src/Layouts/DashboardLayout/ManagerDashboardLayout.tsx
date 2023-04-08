@@ -141,7 +141,7 @@ const ManagerDashboardLayout = ({ children }: Props) => {
         getMe().then((res) => {
             setUser(res);
         });
-    }, [user]);
+    }, []);
 
     return (
         <>

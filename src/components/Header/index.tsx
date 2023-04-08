@@ -47,7 +47,7 @@ const Navbar = () => {
             setUser(res);
         });
         getCurrentLocation(setState, locationError);
-    }, [user]);
+    }, []);
 
     useEffect(() => {
         setSearchString(searchValue.get('search') ?? '');
