@@ -12,7 +12,7 @@ import {
 } from '@ant-design/icons';
 import { Badge, Layout, List, Menu, MenuProps, Popover, message, theme } from 'antd';
 import clsx from 'clsx';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BiPowerOff } from 'react-icons/bi';
 import { FaBell } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
@@ -23,9 +23,9 @@ import LogoSmall from '../../assets/images/washouse-notext.png';
 import DropdownMenu from '../../components/Dropdown/DropdownMenu';
 import { NotificationModel } from '../../models/Notification/NotificationModel';
 import { UserModel } from '../../models/User/UserModel';
-import { getMe } from '../../repositories/AuthRepository';
 import { getNotifications } from '../../repositories/NotificationRepository';
 import style from './DashboardLayout.module.scss';
+import { getMe } from '../../repositories/AuthRepository';
 
 type Props = {
     children?: JSX.Element;
@@ -38,26 +38,15 @@ const ManagerDashboardLayout = ({ children }: Props) => {
     const userJson = localStorage.getItem('currentUser');
     const [collapsed, setCollapsed] = useState(false);
     const [notificationList, setNotificationList] = useState<NotificationModel[]>();
-    const [user, setUser] = useState<UserModel>(userJson && JSON.parse(userJson));
+    const [user, setUser] = useState<UserModel | null>(userJson && JSON.parse(userJson));
     const navigate = useNavigate();
 
     useEffect(() => {
-        getNotifications(user.accountId).then((res) => {
-            setNotificationList(res);
-        });
+        user &&
+            getNotifications(user.accountId).then((res) => {
+                setNotificationList(res);
+            });
     }, []);
-
-    useMemo(() => {
-        const fetchData = async () => {
-            return await getMe();
-        };
-        fetchData().catch((error) => {
-            // if (error) {
-            //     message.error('Vui lòng đăng nhập để xem trang này');
-            //     navigate('/provider/login');
-            // }
-        });
-    }, [user]);
 
     const {
         token: { colorBgContainer },
@@ -133,8 +122,8 @@ const ManagerDashboardLayout = ({ children }: Props) => {
                     <Link
                         to="/"
                         onClick={() => {
+                            setUser(null);
                             localStorage.clear();
-                            //handle Logout
                         }}
                         className="navbar__dropdown--item flex text-sm py-3 px-2 pl-1"
                         id="logout"
@@ -147,6 +136,12 @@ const ManagerDashboardLayout = ({ children }: Props) => {
             key: '3',
         },
     ];
+
+    useEffect(() => {
+        getMe().then((res) => {
+            setUser(res);
+        });
+    }, [user]);
 
     return (
         <>
@@ -194,11 +189,6 @@ const ManagerDashboardLayout = ({ children }: Props) => {
                             onClick: () => setCollapsed(!collapsed),
                         })}
                         <div className="flex justify-center items-center gap-9 h-full">
-                            {/* <Dropdown menu={notificationList.map(no)}>
-                                <a onClick={(e) => e.preventDefault()}>
-                                    
-                                </a>
-                            </Dropdown> */}
                             <Popover
                                 overlayStyle={{
                                     top: '60px',
@@ -209,7 +199,7 @@ const ManagerDashboardLayout = ({ children }: Props) => {
                                         className="w-80"
                                         itemLayout="horizontal"
                                         dataSource={notificationList}
-                                        header={<div className="text-xl font-bold">Thông báo</div>}
+                                        header={<div className="text-lg font-bold">Thông báo</div>}
                                         renderItem={(item, index) => (
                                             <List.Item className="cursor-pointer">
                                                 <List.Item.Meta
@@ -219,7 +209,12 @@ const ManagerDashboardLayout = ({ children }: Props) => {
                                                             <div className="text-sub-gray">{item.createdDate}</div>
                                                         </div>
                                                     }
-                                                    description={item.content}
+                                                    description={
+                                                        <div className="flex justify-between">
+                                                            <div>{item.content}</div>
+                                                            <Badge color="red" />
+                                                        </div>
+                                                    }
                                                 />
                                             </List.Item>
                                         )}
@@ -250,7 +245,7 @@ const ManagerDashboardLayout = ({ children }: Props) => {
                                                     alt=""
                                                 />
                                             </div>
-                                            {user.name}
+                                            {user?.name}
                                         </div>
                                     }
                                     className=""

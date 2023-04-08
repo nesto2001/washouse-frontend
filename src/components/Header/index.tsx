@@ -18,6 +18,7 @@ import Button from '../Button';
 import DropdownMenu from '../Dropdown/DropdownMenu';
 import Selectbox from '../Selectbox';
 import './Navbar.scss';
+import { getMe } from '../../repositories/AuthRepository';
 
 const Navbar = () => {
     const [latitude, setLatitude] = useState<number>();
@@ -26,7 +27,7 @@ const Navbar = () => {
     const [district, setDistrict] = useState<LocationPlaceModel | null>(districtJson ? JSON.parse(districtJson) : null);
     const [districts, setDistricts] = useState<LocationPlaceModel[]>([]);
     const userJson = localStorage.getItem('currentUser');
-    const [user, setUser] = useState<UserModel>(userJson ? JSON.parse(userJson) : null);
+    const [user, setUser] = useState<UserModel | null>(userJson ? JSON.parse(userJson) : null);
     const cartQuantity = useSelector((state: RootState) => state.cart.totalQuantity) ?? 0;
     const navigate = useNavigate();
     const location = useLocation();
@@ -40,11 +41,14 @@ const Navbar = () => {
         }
     };
 
-    const dispatch = useDispatch();
-
     useEffect(() => {
+        getMe().then((res) => {
+            localStorage.setItem('currentUser', JSON.stringify(res));
+            setUser(res);
+        });
         getCurrentLocation(setState, locationError);
-    }, []);
+    }, [user]);
+
     useEffect(() => {
         setSearchString(searchValue.get('search') ?? '');
     }, [location]);
@@ -56,10 +60,6 @@ const Navbar = () => {
         setLatitude(latitude);
         setLongitude(longitude);
     };
-    useEffect(() => {
-        const userJson = localStorage.getItem('currentUser');
-        if (userJson) setUser(JSON.parse(userJson));
-    }, []);
 
     useEffect(() => {
         const userDistrictJson = sessionStorage.getItem('userDistrict');
@@ -132,7 +132,8 @@ const Navbar = () => {
                     <Link
                         to="/"
                         onClick={() => {
-                            localStorage.removeItem('currentUser');
+                            setUser(null);
+                            localStorage.clear();
                         }}
                         className="navbar__dropdown--item flex text-sm py-3 px-2 pl-1"
                         id="logout"
