@@ -57,7 +57,8 @@ const API_PROMOTION = '/api/promotions';
 const API_CUSTOMER = '/api/customers';
 
 //NOTIFICATION API
-const API_NOTIFICATION = '/api/notifications/account/me-noti';
+const API_NOTIFICATION = '/api/notifications/me-noti';
+const API_NOTIFICATION_READ = '/api/notifications/read';
 
 export {
     API_ORDER_DELIVERY,
@@ -94,4 +95,5 @@ export {
     API_SERVICES,
     API_CUSTOMER,
     API_NOTIFICATION,
+    API_NOTIFICATION_READ,
 };

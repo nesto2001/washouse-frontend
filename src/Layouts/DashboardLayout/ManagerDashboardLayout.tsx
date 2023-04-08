@@ -23,9 +23,10 @@ import LogoSmall from '../../assets/images/washouse-notext.png';
 import DropdownMenu from '../../components/Dropdown/DropdownMenu';
 import { NotificationModel } from '../../models/Notification/NotificationModel';
 import { UserModel } from '../../models/User/UserModel';
-import { getNotifications } from '../../repositories/NotificationRepository';
-import style from './DashboardLayout.module.scss';
 import { getMe } from '../../repositories/AuthRepository';
+import { getNotifications, readNotification } from '../../repositories/NotificationRepository';
+import { timeSince } from '../../utils/TimeUtils';
+import style from './DashboardLayout.module.scss';
 
 type Props = {
     children?: JSX.Element;
@@ -38,16 +39,26 @@ const ManagerDashboardLayout = ({ children }: Props) => {
     const userJson = localStorage.getItem('currentUser');
     const [collapsed, setCollapsed] = useState(false);
     const [notificationList, setNotificationList] = useState<NotificationModel[]>();
+    const [numOfUnread, setNumOfUnread] = useState<number>();
     const [user, setUser] = useState<UserModel | null>(userJson && JSON.parse(userJson));
     const navigate = useNavigate();
 
     useEffect(() => {
         user &&
-            getNotifications(user.accountId).then((res) => {
-                setNotificationList(res);
+            getNotifications().then((res) => {
+                setNumOfUnread(res.numOfUnread);
+                setNotificationList(res.notifications);
             });
     }, []);
 
+    const handleRead = (id: number) => {
+        readNotification(id);
+        user &&
+            getNotifications().then((res) => {
+                setNumOfUnread(res.numOfUnread);
+                setNotificationList(res.notifications);
+            });
+    };
     const {
         token: { colorBgContainer },
     } = theme.useToken();
@@ -196,23 +207,34 @@ const ManagerDashboardLayout = ({ children }: Props) => {
                                 placement="bottomRight"
                                 content={
                                     <List
-                                        className="w-80"
+                                        className="w-96"
+                                        pagination={{ align: 'center', pageSize: 5 }}
                                         itemLayout="horizontal"
-                                        dataSource={notificationList}
+                                        dataSource={notificationList?.sort(
+                                            (nof1: NotificationModel, nof2: NotificationModel) =>
+                                                nof2.createdDate.getTime() - nof1.createdDate.getTime(),
+                                        )}
                                         header={<div className="text-lg font-bold">Thông báo</div>}
                                         renderItem={(item, index) => (
-                                            <List.Item className="cursor-pointer">
+                                            <List.Item
+                                                className="cursor-pointer hover:bg-gray-50"
+                                                onClick={() => {
+                                                    !item.isRead && handleRead(item.id);
+                                                }}
+                                            >
                                                 <List.Item.Meta
                                                     title={
                                                         <div className="flex justify-between">
-                                                            <div className="font-bold">Notification số index</div>
-                                                            <div className="text-sub-gray">{item.createdDate}</div>
+                                                            <div className="font-bold">Notification số {index}</div>
+                                                            <div className="text-sub-gray">
+                                                                {timeSince(item.createdDate)}
+                                                            </div>
                                                         </div>
                                                     }
                                                     description={
                                                         <div className="flex justify-between">
                                                             <div>{item.content}</div>
-                                                            <Badge color="red" />
+                                                            {!item.isRead && <Badge color="red" />}
                                                         </div>
                                                     }
                                                 />
@@ -222,7 +244,7 @@ const ManagerDashboardLayout = ({ children }: Props) => {
                                 }
                                 arrow={false}
                             >
-                                <Badge count={notificationList?.length} size="small">
+                                <Badge count={numOfUnread} size="small">
                                     <div className="text-xl cursor-pointer">
                                         <FaBell />
                                     </div>

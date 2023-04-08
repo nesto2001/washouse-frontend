@@ -4,4 +4,5 @@ export type NotificationResponse = {
     orderId: string;
     accountId: number;
     createdDate: string;
+    isRead: boolean;
 };

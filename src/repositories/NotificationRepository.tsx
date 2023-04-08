@@ -1,22 +1,44 @@
-import { API_NOTIFICATION } from '../common/Constant';
-import { ListResponse } from '../models/CommonModel';
+import parse from 'date-fns/parse';
+import { API_NOTIFICATION, API_NOTIFICATION_READ } from '../common/Constant';
+import { Response } from '../models/CommonModel';
+import { NotificationListModel } from '../models/Notification/NotificationListModel';
+import { NotificationListResponse } from '../models/Notification/NotificationListResponse';
 import { NotificationModel } from '../models/Notification/NotificationModel';
-import { NotificationResponse } from '../models/Notification/NotificationResponse';
 import instance from '../services/axios/AxiosInstance';
 
-export const getNotifications = async (accountId: number): Promise<NotificationModel[]> => {
-    const { data } = await instance.get<ListResponse<NotificationResponse>>(API_NOTIFICATION, {
+export const getNotifications = async (): Promise<NotificationListModel> => {
+    const { data } = await instance.get<Response<NotificationListResponse>>(API_NOTIFICATION, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
     });
-    return data.data.map((item): NotificationModel => {
-        return {
-            accountId: item.accountId,
-            content: item.content,
-            createdDate: item.createdDate,
-            id: item.id,
-            orderId: item.orderId,
-        };
-    });
+    return {
+        numOfUnread: data.data.numOfUnread,
+        notifications: data.data.notifications.map((item): NotificationModel => {
+            return {
+                accountId: item.accountId,
+                content: item.content,
+                createdDate: parse(item.createdDate, 'dd-MM-yyyy HH:mm:ss', new Date()),
+                id: item.id,
+                orderId: item.orderId,
+                isRead: item.isRead,
+            };
+        }),
+    };
+};
+
+export const readNotification = async (id: number) => {
+    const { status } = await instance.post(
+        API_NOTIFICATION_READ,
+        {},
+        {
+            params: {
+                notiId: id,
+            },
+        },
+    );
+
+    if (status != 200) {
+        throw new Error();
+    }
 };

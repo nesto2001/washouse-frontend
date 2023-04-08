@@ -3,5 +3,6 @@ export type NotificationModel = {
     content: string;
     orderId: string;
     accountId: number;
-    createdDate: string;
+    createdDate: Date;
+    isRead: boolean;
 };
