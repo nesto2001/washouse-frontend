@@ -19,6 +19,9 @@ import DropdownMenu from '../Dropdown/DropdownMenu';
 import Selectbox from '../Selectbox';
 import './Navbar.scss';
 import { getMe } from '../../repositories/AuthRepository';
+import NotificationDropdown from '../NotificationDropdown/NotificationDropdown';
+import { NotificationModel } from '../../models/Notification/NotificationModel';
+import { getNotifications } from '../../repositories/NotificationRepository';
 
 const Navbar = () => {
     const [latitude, setLatitude] = useState<number>();
@@ -33,6 +36,7 @@ const Navbar = () => {
     const location = useLocation();
     const [searchValue] = useSearchParams();
     const [searchString, setSearchString] = useState<string>();
+    const [notificationList, setNotificationList] = useState<NotificationModel[]>();
 
     const handleSearch = (e: { preventDefault: () => void }) => {
         e.preventDefault();
@@ -161,9 +165,14 @@ const Navbar = () => {
                         </Link>
                     </div>
                     <div className="topnav-right flex items-center gap-2 text-sm">
-                        <div className="wh-link flex items-center gap-1 cursor-pointer">
-                            <FaRegBell /> Thông báo
-                        </div>
+                        <NotificationDropdown
+                            child={
+                                <div className="wh-link flex items-center gap-1 cursor-pointer text-sm">
+                                    <FaRegBell /> Thông báo
+                                </div>
+                            }
+                            showBadge={false}
+                        />
                         <div className="w-[1px] h-[14px] bg-wh-gray"></div>
                         <div className="wh-link flex items-center gap-1 cursor-pointer">
                             <BiSearch size={16} /> Tra cứu đơn hàng

@@ -24,7 +24,8 @@ const API_CATEGORY = '/api/service-categories';
 
 //SERVICE API
 const API_SERVICE_DETAILS = '/api/centers/${centerId}/services/${serviceId}';
-const API_SERVICES = '/api/centers/${centerId}/services';
+const API_CENTER_SERVICES = '/api/centers/${centerId}/services';
+const API_SERVICES = '/api/services';
 
 //LOCATION API
 const API_DISTRICT = '/api/districts';
@@ -96,4 +97,5 @@ export {
     API_CUSTOMER,
     API_NOTIFICATION,
     API_NOTIFICATION_READ,
+    API_CENTER_SERVICES,
 };

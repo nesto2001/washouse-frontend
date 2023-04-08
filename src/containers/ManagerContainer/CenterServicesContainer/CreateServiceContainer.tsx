@@ -1,31 +1,12 @@
-import {
-    Form,
-    Input,
-    message,
-    Select,
-    Tooltip,
-    Upload,
-    UploadFile,
-    DatePicker,
-    TimePicker,
-    Space,
-    Button,
-    InputNumber,
-} from 'antd';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Form, Input, InputNumber, Select, Space, Upload, UploadFile, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { UploadChangeParam } from 'antd/es/upload';
-import { useState, useEffect } from 'react';
-import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
-import { CreateCenterFormData } from '../CenterRegistrationContainer';
+import { useEffect, useState } from 'react';
 import { CategoryOptionsModel } from '../../../models/Category/CategoryOptionsModel';
 import { getCategoryOptions } from '../../../repositories/ServiceCategoryRepository';
-import WHButton from '../../../components/Button';
-
-const { RangePicker } = DatePicker;
-
-type Props = {
-    setFormData?: React.Dispatch<React.SetStateAction<CreateCenterFormData>>;
-};
+import { createService } from '../../../repositories/ServiceRepository';
+import { Link } from 'react-router-dom';
 
 const rangeConfig = {
     rules: [{ type: 'array' as const, required: true, message: 'Please select time!' }],
@@ -36,22 +17,52 @@ const priceTypeOption = [
     { value: false, label: 'Số lượng' },
 ];
 
-const onFinish = (values: any) => {
-    console.log('Success:', values);
-};
-
 const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
 };
+type CreateServiceFormData = {
+    serviceName: string;
+    alias: string;
+    serviceCategory: number;
+    serviceDescription: string;
+    serviceImage: string;
+    timeEstimate: number;
+    unit: 'kg' | 'pcs';
+    rate: number;
+    priceType: true;
+    price: number;
+    minPrice: number;
+    serviceGalleries: string[];
+    prices: Array<{
+        maxValue: number;
+        price: number;
+    }>;
+};
 
-const CreateServiceContainer = ({ setFormData }: Props) => {
+const CreateServiceContainer = () => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [priceType, setPriceType] = useState(true);
     const [categoryOptions, setCategoryOptions] = useState<CategoryOptionsModel[]>([
         { id: 0, name: 'Chọn loại dịch vụ' },
     ]);
     const [form] = Form.useForm();
-
+    const onFinish = (values: CreateServiceFormData) => {
+        createService({
+            serviceName: values.serviceName,
+            alias: values.alias,
+            serviceCategory: values.serviceCategory,
+            serviceDescription: values.serviceDescription,
+            serviceImage: values.serviceImage,
+            timeEstimate: values.timeEstimate,
+            unit: values.unit,
+            rate: values.rate,
+            priceType: values.priceType,
+            price: values.price,
+            minPrice: values.minPrice,
+            serviceGalleries: values.serviceGalleries,
+            prices: values.prices,
+        });
+    };
     const handleChange = (info: UploadChangeParam) => {
         const { status } = info.file;
 
@@ -87,6 +98,7 @@ const CreateServiceContainer = ({ setFormData }: Props) => {
     return (
         <div className="text-sub text-base">
             <Form
+                form={form}
                 name="create"
                 layout="vertical"
                 initialValues={{ serviceCategory: 0 }}
@@ -213,13 +225,17 @@ const CreateServiceContainer = ({ setFormData }: Props) => {
                         </Form.Item>
                     )}
                 </div>
+                <div className="w-full flex gap-4 justify-end">
+                    <Link to={'/provider/services'}>
+                        <Button danger className="bg-transparent">
+                            Hủy
+                        </Button>
+                    </Link>
+                    <Button type="primary" onClick={() => form.submit()}>
+                        Thêm dịch vụ
+                    </Button>
+                </div>
             </Form>
-            <div className="text-right mb-10">
-                <WHButton type="sub mr-5">Hủy</WHButton>
-                <WHButton type="primary">Thêm dịch vụ</WHButton>
-            </div>
-            {/* <div className="col-span-2">Tên trung tâm</div>
-    <div className="col-span-3"></div> */}
         </div>
     );
 };

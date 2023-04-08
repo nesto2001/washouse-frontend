@@ -1,5 +1,6 @@
-import { API_SERVICES, API_SERVICE_DETAILS } from '../common/Constant';
+import { API_CENTER_SERVICES, API_SERVICES, API_SERVICE_DETAILS } from '../common/Constant';
 import { Response } from '../models/CommonModel';
+import { CreateServiceRequest } from '../models/Service/CreateServiceRequest';
 import { ServiceDetailsModel } from '../models/Service/ServiceDetailsModel';
 import { ServiceDetailsResponse } from '../models/Service/ServiceDetailsResponse';
 import { ServicePricesModel } from '../models/Service/ServicePricesModel';
@@ -62,4 +63,11 @@ export const getServices = async (centerId: number): Promise<ServiceDetailsModel
             numOfRating: service.numOfRating,
         };
     });
+};
+
+export const createService = async (request: CreateServiceRequest) => {
+    const { status } = await instance.post(API_SERVICES, request);
+    if (status != 200) {
+        throw new Error();
+    }
 };

@@ -174,6 +174,7 @@ const CenterPromotionsContainer = () => {
                             rules={[
                                 { required: true, message: 'Vui lòng nhập mức giảm giá' },
                                 { max: 100, message: 'Mức giảm giá không được vượt quá 100(%)' },
+                                { min: 1, message: 'Mức giảm giá không được thấp hơn 1(%)' },
                             ]}
                             validateTrigger={'onBlur'}
                         >

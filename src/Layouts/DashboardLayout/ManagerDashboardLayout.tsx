@@ -27,6 +27,7 @@ import { getMe } from '../../repositories/AuthRepository';
 import { getNotifications, readNotification } from '../../repositories/NotificationRepository';
 import { timeSince } from '../../utils/TimeUtils';
 import style from './DashboardLayout.module.scss';
+import NotificationDropdown from '../../components/NotificationDropdown/NotificationDropdown';
 
 type Props = {
     children?: JSX.Element;
@@ -38,27 +39,9 @@ const ManagerDashboardLayout = ({ children }: Props) => {
     const [messageApi, contextHolder] = message.useMessage();
     const userJson = localStorage.getItem('currentUser');
     const [collapsed, setCollapsed] = useState(false);
-    const [notificationList, setNotificationList] = useState<NotificationModel[]>();
-    const [numOfUnread, setNumOfUnread] = useState<number>();
     const [user, setUser] = useState<UserModel | null>(userJson && JSON.parse(userJson));
     const navigate = useNavigate();
 
-    useEffect(() => {
-        user &&
-            getNotifications().then((res) => {
-                setNumOfUnread(res.numOfUnread);
-                setNotificationList(res.notifications);
-            });
-    }, []);
-
-    const handleRead = (id: number) => {
-        readNotification(id);
-        user &&
-            getNotifications().then((res) => {
-                setNumOfUnread(res.numOfUnread);
-                setNotificationList(res.notifications);
-            });
-    };
     const {
         token: { colorBgContainer },
     } = theme.useToken();
@@ -200,56 +183,7 @@ const ManagerDashboardLayout = ({ children }: Props) => {
                             onClick: () => setCollapsed(!collapsed),
                         })}
                         <div className="flex justify-center items-center gap-9 h-full">
-                            <Popover
-                                overlayStyle={{
-                                    top: '60px',
-                                }}
-                                placement="bottomRight"
-                                content={
-                                    <List
-                                        className="w-96"
-                                        pagination={{ align: 'center', pageSize: 5 }}
-                                        itemLayout="horizontal"
-                                        dataSource={notificationList?.sort(
-                                            (nof1: NotificationModel, nof2: NotificationModel) =>
-                                                nof2.createdDate.getTime() - nof1.createdDate.getTime(),
-                                        )}
-                                        header={<div className="text-lg font-bold">Thông báo</div>}
-                                        renderItem={(item, index) => (
-                                            <List.Item
-                                                className="cursor-pointer hover:bg-gray-50"
-                                                onClick={() => {
-                                                    !item.isRead && handleRead(item.id);
-                                                }}
-                                            >
-                                                <List.Item.Meta
-                                                    title={
-                                                        <div className="flex justify-between">
-                                                            <div className="font-bold">Notification số {index}</div>
-                                                            <div className="text-sub-gray">
-                                                                {timeSince(item.createdDate)}
-                                                            </div>
-                                                        </div>
-                                                    }
-                                                    description={
-                                                        <div className="flex justify-between">
-                                                            <div>{item.content}</div>
-                                                            {!item.isRead && <Badge color="red" />}
-                                                        </div>
-                                                    }
-                                                />
-                                            </List.Item>
-                                        )}
-                                    />
-                                }
-                                arrow={false}
-                            >
-                                <Badge count={numOfUnread} size="small">
-                                    <div className="text-xl cursor-pointer">
-                                        <FaBell />
-                                    </div>
-                                </Badge>
-                            </Popover>
+                            <NotificationDropdown child={<FaBell />} showBadge />
                             <div className={style.active__staff}>
                                 <DropdownMenu
                                     items={userDropdown}
