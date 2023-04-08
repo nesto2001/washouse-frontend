@@ -2,7 +2,7 @@ import React from 'react'
 
 type Props = {}
 
-const UserInformationPage = (props: Props) => {
+const UserInformationPage = () => {
   return (
     <div>UserInformationPage</div>
   )

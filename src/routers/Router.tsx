@@ -41,6 +41,8 @@ import {
     StaffDayTimelinePage,
     StaffOrderDetailsPage,
     ManagerCenterStaffPage,
+    UserInformationPage,
+    ProviderRoleChoosingPage,
 } from '../pages/';
 import AdminCenterRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterRequestPage';
 import AdminPostPage from '../pages/AdminPage/AdminPost/AdminPostPage';
@@ -155,6 +157,16 @@ const publicRoutes: Array<RouteProps> = [
         path: '/provider/registration',
         layout: UnregisteredLayout,
         component: ManagerCenterRegistrationPage,
+    },
+    {
+        path: '/provider/role',
+        layout: UnregisteredLayout,
+        component: ProviderRoleChoosingPage,
+    },
+    {
+        path: '/account/information',
+        layout: UnregisteredLayout,
+        component: UserInformationPage,
     },
     {
         path: '/provider/settings/center/staff',

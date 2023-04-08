@@ -36,3 +36,7 @@ export { default as StaffOrderDetailsPage } from './StaffPage/StaffOrder/StaffOr
 export { default as AdminDashboardPage } from './AdminPage/AdminDashboardPage';
 export { default as AdminCenterPage } from './AdminPage/AdminCenter/AdminCenterPage';
 export { default as AdminAccountPage } from './AdminPage/AdminAccount/AdminAccountPage';
+
+//common
+export { default as ProviderRoleChoosingPage } from './CommonPage/ProviderRoleChoosingPage';
+export { default as UserInformationPage } from './CommonPage/UserInformationPage';
