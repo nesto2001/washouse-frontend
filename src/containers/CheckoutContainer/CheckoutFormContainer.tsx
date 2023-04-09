@@ -192,7 +192,6 @@ export const Step1 = ({ formData, onNext, setFormData }: Step1Props) => {
                     <div className="customer__input--address col-span-3">
                         <Form.Item
                             name="address"
-                            initialValue={formData.address}
                             rules={[{ required: true, message: 'Vui lòng nhập địa chỉ cá nhân' }]}
                             validateTrigger={['onBlur']}
                         >
@@ -357,7 +356,7 @@ export const Step2 = ({
     centerOperatingDays,
     centerHasDelivery,
 }: Step2Props) => {
-    const [delivery, setDelivery] = useState(formData.deliveryType ?? 0);
+    const [delivery, setDelivery] = useState(0);
     const [pickupDate, setPickupDate] = useState<string>(dateOptions[0].value);
     const [deliverDate, setDeliverDate] = useState<string>(dateOptions[0].value);
     const [hasDropoffTime, setHasDropoffTime] = useState<boolean>(false);
@@ -644,7 +643,6 @@ export const Step2 = ({
                         <div className="dropoff__address col-span-3">
                             <Form.Item
                                 name="dropoff_address"
-                                initialValue={formData.address}
                                 rules={[{ required: true, message: 'Vui lòng nhập địa chỉ lấy đơn' }]}
                                 validateTrigger={['onBlur']}
                             >
@@ -706,7 +704,6 @@ export const Step2 = ({
                                     name="dropoff_district"
                                     id=""
                                     type="quận / huyện"
-                                    selectedValue={formData.district}
                                     className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
                                     options={districtList.map((district): Option => {
                                         return {
@@ -723,7 +720,6 @@ export const Step2 = ({
                                 Phường / Xã
                             </label>
                             <Form.Item
-                                initialValue={formData.wardId}
                                 name="dropoff_ward"
                                 rules={[
                                     { required: true, message: 'Vui lòng chọn phường / xã' },
@@ -742,7 +738,6 @@ export const Step2 = ({
                                     name="dropoff_ward"
                                     id=""
                                     type="phường / xã"
-                                    selectedValue={formData.wardId}
                                     className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
                                     options={wardList.map((ward) => {
                                         return {
@@ -764,7 +759,6 @@ export const Step2 = ({
                             <Form.Item
                                 name="deliver_address"
                                 rules={[{ required: true, message: 'Vui lòng nhập địa chỉ trả đơn' }]}
-                                initialValue={formData.address}
                                 validateTrigger={['onBlur']}
                             >
                                 <Input
@@ -824,7 +818,6 @@ export const Step2 = ({
                                     isRequired={true}
                                     name="deliver_district"
                                     id=""
-                                    selectedValue={formData.district}
                                     type="quận / huyện"
                                     className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
                                     options={districtList.map((district): Option => {
@@ -859,7 +852,6 @@ export const Step2 = ({
                                     isRequired={true}
                                     name="deliver_ward"
                                     id=""
-                                    selectedValue={formData.wardId}
                                     type="phường / xã"
                                     className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
                                     options={wardList.map((ward) => {
@@ -882,7 +874,6 @@ export const Step2 = ({
                             <div className="dropoff__address col-span-3">
                                 <Form.Item
                                     name="dropoff_address"
-                                    initialValue={formData.address}
                                     rules={[{ required: true, message: 'Vui lòng nhập địa chỉ lấy đơn' }]}
                                     validateTrigger={['onBlur']}
                                 >
@@ -944,7 +935,6 @@ export const Step2 = ({
                                         name="dropoff_district"
                                         id=""
                                         type="quận / huyện"
-                                        selectedValue={formData.district}
                                         className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
                                         options={districtList.map((district): Option => {
                                             return {
@@ -977,7 +967,6 @@ export const Step2 = ({
                                     <Selectbox
                                         isRequired={true}
                                         name="dropoff_ward"
-                                        selectedValue={formData.wardId}
                                         id=""
                                         type="phường / xã"
                                         className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
@@ -997,7 +986,6 @@ export const Step2 = ({
                             <div className="deliver__address col-span-3">
                                 <Form.Item
                                     name="deliver_address"
-                                    initialValue={formData.address}
                                     rules={[{ required: true, message: 'Vui lòng nhập địa chỉ trả đơn' }]}
                                     validateTrigger={['onBlur']}
                                 >
@@ -1057,7 +1045,6 @@ export const Step2 = ({
                                     <Selectbox
                                         isRequired={true}
                                         name="deliver_district"
-                                        selectedValue={formData.district}
                                         id=""
                                         type="quận / huyện"
                                         className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
@@ -1090,7 +1077,6 @@ export const Step2 = ({
                                     ]}
                                 >
                                     <Selectbox
-                                        selectedValue={formData.wardId}
                                         isRequired={true}
                                         name="deliver_ward"
                                         id=""
