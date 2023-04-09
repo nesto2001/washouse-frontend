@@ -19,6 +19,9 @@ import { CreateOrderRequest } from '../../models/Order/CreateOrderRequest';
 import { clearCart } from '../../reducers/CartReducer';
 import { Tooltip, message } from 'antd';
 import { applyPromotion } from '../../repositories/PromotionRepository';
+import { UserModel } from '../../models/User/UserModel';
+import { getMe } from '../../repositories/AuthRepository';
+import Loading from '../../components/Loading/Loading';
 
 type Props = {};
 
@@ -32,6 +35,8 @@ const CheckoutContainer = (props: Props) => {
     const dispatch = useDispatch();
 
     const [center, setCenter] = useState<CenterModel>();
+    const [user, setUser] = useState<UserModel>();
+    const [loading, setLoading] = useState<boolean>(false);
 
     const [promoCode, setPromoCode] = useState<string>('');
 
@@ -65,6 +70,21 @@ const CheckoutContainer = (props: Props) => {
     useEffect(() => {
         setTotal(cartTotal + freight - discount);
     }, [discount, freight, total, cartTotal]);
+
+    useEffect(() => {
+        setLoading(true);
+        getMe()
+            .then((res) => {
+                if (res) {
+                    setUser(res);
+                    setFormData((prev) => ({ ...prev, fullname: res.name, phone: res.phone, email: res.email }));
+                }
+                setLoading(false);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
+    }, []);
 
     //fetch center
     useEffect(() => {
@@ -158,172 +178,196 @@ const CheckoutContainer = (props: Props) => {
     };
 
     return (
-        <div className="checkoutsite__wrapper flex justify-between h-screen container mx-auto text-sub relative">
-            <div className="checkout__main basis-[55%] pt-16 pr-16">
-                <div className="washouse-logo -mb-4">
-                    <Link to="/">
-                        <img className="max-w-[327px]" src={Logo} alt="" />
-                    </Link>
-                </div>
-                <Breadcrumb />
-                <div className="checkout__customer--wrapper text-left mt-6">
-                    {step === 1 && (
-                        <>
-                            <h3 className="font-bold text-xl">Thông tin khách hàng</h3>
-                            <div className="login--nav">
-                                Bạn đã có tài khoản?{' '}
-                                <Link className="text-primary font-bold" to="/login">
-                                    Đăng nhập
-                                </Link>
-                            </div>
-                        </>
-                    )}
-                </div>
-
-                {step === 1 && center && <Step1 onNext={handleNext} formData={formData} setFormData={setFormData} />}
-                {step === 2 && center && (
-                    <Step2
-                        centerHasDelivery={center.hasDelivery}
-                        onNext={handleNext}
-                        setFormData={setFormData}
-                        onBack={handleBack}
-                        formData={formData}
-                        centerOperatingDays={center.centerOperatingHours}
-                    />
-                )}
-                {step === 3 && center && (
-                    <Step3
-                        hasOnlinePayment={center.hasOnlinePayment}
-                        setFormData={setFormData}
-                        onBack={handleBack}
-                        formData={formData}
-                        onSubmit={handleSubmit}
-                    />
-                )}
-            </div>
-            <div className="checkout__sidebar basis-[45%] text-left px-6 pt-6 relative">
-                <div className="checkout__center fixed">
-                    <h2 className="font-bold text-xl">Trung tâm</h2>
-                    <div className="checkout__center--details flex mt-3 mb-6">
-                        <div className="checkout__center--thumbnail md:w-[200px] md:h-[145px] rounded-2xl overflow-hidden">
-                            <img
-                                className="max-h-[145px] max-w-[200px] md:w-[200px] w-full h-full object-cover"
-                                src={center?.thumbnail ?? Placeholder}
-                                alt=""
-                            />
+        <>
+            {!loading ? (
+                <div className="checkoutsite__wrapper flex justify-between h-screen container mx-auto text-sub relative">
+                    <div className="checkout__main basis-[55%] pt-16 pr-16">
+                        <div className="washouse-logo -mb-4">
+                            <Link to="/">
+                                <img className="max-w-[327px]" src={Logo} alt="" />
+                            </Link>
                         </div>
-                        <div className="checkout__center--info ml-6 w-[271px]">
-                            <h1 className="text-xl font-bold pt-3">{center?.title}</h1> {/* center.title */}
-                            <h3 className="text-sm mt-1">{center?.address}, TP. Hồ Chí Minh</h3> {/* center.address */}
-                            <h3 className="text-sm">
-                                {center?.centerOperatingHours[today]?.start &&
-                                    center?.centerOperatingHours[today]?.end && (
-                                        <>
-                                            <FaRegClock className="mr-2 inline-block" />
-                                            <span className="leading-7">
-                                                {center?.centerOperatingHours[today].start?.substring(0, 5)} -{' '}
-                                                {center?.centerOperatingHours[today].end?.substring(0, 5)}
-                                            </span>
-                                        </>
+                        <Breadcrumb />
+                        <div className="checkout__customer--wrapper text-left mt-6">
+                            {step === 1 && (
+                                <>
+                                    <h3 className="font-bold text-xl">Thông tin khách hàng</h3>
+                                    {!user && (
+                                        <div className="login--nav">
+                                            Bạn đã có tài khoản?
+                                            <Link className="text-primary font-bold" to="/login">
+                                                Đăng nhập
+                                            </Link>
+                                        </div>
                                     )}
-                            </h3>{' '}
-                            {/* center.operationHour */}
-                            <h1 className="text-sm">
-                                <FaPhoneAlt className="inline-block mr-2" />
-                                <span className="inline-block align-middle">{center?.phone}</span>
-                            </h1>{' '}
-                            {/* center.phone */}
+                                </>
+                            )}
                         </div>
+
+                        {step === 1 && center && (
+                            <Step1 onNext={handleNext} formData={formData} setFormData={setFormData} />
+                        )}
+                        {step === 2 && center && (
+                            <Step2
+                                centerHasDelivery={center.hasDelivery}
+                                onNext={handleNext}
+                                setFormData={setFormData}
+                                onBack={handleBack}
+                                formData={formData}
+                                centerOperatingDays={center.centerOperatingHours}
+                            />
+                        )}
+                        {step === 3 && center && (
+                            <Step3
+                                hasOnlinePayment={center.hasOnlinePayment}
+                                setFormData={setFormData}
+                                onBack={handleBack}
+                                formData={formData}
+                                onSubmit={handleSubmit}
+                            />
+                        )}
                     </div>
-                    <hr className="border-wh-gray" />
-                    <div className="checkout__order py-6">
-                        <h2 className="font-bold text-xl">Chi tiết đơn hàng</h2>
-                        <div className="">Ước tính xử lý đơn hàng: {totalEst}'</div>
-                        <div className="checkout__order--details mt-5">
-                            {cartItems &&
-                                cartItems.map((item, index) => (
-                                    <div
-                                        key={`cartitem-${index}`}
-                                        className="checkout__order--item py-3 flex gap-4 border-b border-wh-gray"
-                                    >
-                                        <div className="checkout__order--item order__item--thumb flex-shrink rounded-2xl overflow-hidden">
-                                            <img className="max-h-[120px]" src={item.thumbnail ?? Placeholder} alt="" />
-                                        </div>
-                                        <div className="checkout__order--item order__item--info flex-grow flex flex-col">
-                                            <input type="hidden" value={item.id} name="cart__item-id" />
-                                            <div className="flex w-full justify-between items-baseline">
-                                                <h3 className="font-bold text-xl mt-3">
-                                                    <Tooltip
-                                                        className=" max-w-[200px] overflow-ellipsis line-clamp-1"
-                                                        title={item.name}
+                    <div className="checkout__sidebar basis-[45%] text-left px-6 pt-6 relative">
+                        <div className="checkout__center fixed">
+                            <h2 className="font-bold text-xl">Trung tâm</h2>
+                            <div className="checkout__center--details flex mt-3 mb-6">
+                                <div className="checkout__center--thumbnail md:w-[200px] md:h-[145px] rounded-2xl overflow-hidden">
+                                    <img
+                                        className="max-h-[145px] max-w-[200px] md:w-[200px] w-full h-full object-cover"
+                                        src={center?.thumbnail ?? Placeholder}
+                                        alt=""
+                                    />
+                                </div>
+                                <div className="checkout__center--info ml-6 w-[271px]">
+                                    <h1 className="text-xl font-bold pt-3">{center?.title}</h1> {/* center.title */}
+                                    <h3 className="text-sm mt-1">{center?.address}, TP. Hồ Chí Minh</h3>{' '}
+                                    {/* center.address */}
+                                    <h3 className="text-sm">
+                                        {center?.centerOperatingHours[today]?.start &&
+                                            center?.centerOperatingHours[today]?.end && (
+                                                <>
+                                                    <FaRegClock className="mr-2 inline-block" />
+                                                    <span className="leading-7">
+                                                        {center?.centerOperatingHours[today].start?.substring(0, 5)} -{' '}
+                                                        {center?.centerOperatingHours[today].end?.substring(0, 5)}
+                                                    </span>
+                                                </>
+                                            )}
+                                    </h3>{' '}
+                                    {/* center.operationHour */}
+                                    <h1 className="text-sm">
+                                        <FaPhoneAlt className="inline-block mr-2" />
+                                        <span className="inline-block align-middle">{center?.phone}</span>
+                                    </h1>{' '}
+                                    {/* center.phone */}
+                                </div>
+                            </div>
+                            <hr className="border-wh-gray" />
+                            <div className="checkout__order py-6">
+                                <h2 className="font-bold text-xl">Chi tiết đơn hàng</h2>
+                                <div className="">Ước tính xử lý đơn hàng: {totalEst}'</div>
+                                <div className="checkout__order--details mt-5">
+                                    {cartItems &&
+                                        cartItems.map((item, index) => (
+                                            <div
+                                                key={`cartitem-${index}`}
+                                                className="checkout__order--item py-3 flex gap-4 border-b border-wh-gray"
+                                            >
+                                                <div className="checkout__order--item order__item--thumb flex-shrink rounded-2xl overflow-hidden">
+                                                    <img
+                                                        className="max-h-[120px]"
+                                                        src={item.thumbnail ?? Placeholder}
+                                                        alt=""
+                                                    />
+                                                </div>
+                                                <div className="checkout__order--item order__item--info flex-grow flex flex-col">
+                                                    <input type="hidden" value={item.id} name="cart__item-id" />
+                                                    <div className="flex w-full justify-between items-baseline">
+                                                        <h3 className="font-bold text-xl mt-3">
+                                                            <Tooltip
+                                                                className=" max-w-[200px] overflow-ellipsis line-clamp-1"
+                                                                title={item.name}
+                                                            >
+                                                                {item.name}
+                                                            </Tooltip>
+                                                        </h3>
+                                                        <h4 className="text-2xl font-bold mt-3">
+                                                            {formatCurrency(item.price ?? 0)}
+                                                        </h4>
+                                                    </div>
+                                                    <h4
+                                                        className="text-sm flex
+                -                                           grow mt-2"
                                                     >
-                                                        {item.name}
-                                                    </Tooltip>
-                                                </h3>
-                                                <h4 className="text-2xl font-bold mt-3">
-                                                    {formatCurrency(item.price ?? 0)}
-                                                </h4>
+                                                        Chi tiết:{' '}
+                                                        {item.quantity && item.quantity > 0
+                                                            ? item.quantity
+                                                            : item.weight}{' '}
+                                                        {item.unit === 'kg' ? 'kg' : ''}
+                                                    </h4>
+                                                    <h4 className="text-sm flex-grow max-w-[355.94px] line-clamp-2 pt-1">
+                                                        Ghi chú:{' '}
+                                                        {item.customerNote.length > 0 ? item.customerNote : 'không có'}
+                                                    </h4>
+                                                </div>
                                             </div>
-                                            <h4 className="text-sm flex-grow mt-2">
-                                                Chi tiết:{' '}
-                                                {item.quantity && item.quantity > 0 ? item.quantity : item.weight}{' '}
-                                                {item.unit === 'kg' ? 'kg' : ''}
-                                            </h4>
-                                            <h4 className="text-sm flex-grow max-w-[355.94px] line-clamp-2 pt-1">
-                                                Ghi chú: {item.customerNote.length > 0 ? item.customerNote : 'không có'}
-                                            </h4>
+                                        ))}
+                                </div>
+                                <div className="checkout__order--payment mt-6">
+                                    <div className="checkout__order--promotion">
+                                        <form action="">
+                                            <h4>Mã giảm giá</h4>
+                                            <div className="promo__inputgroup flex justify-between mt-3">
+                                                <input
+                                                    type="text"
+                                                    name="promoCode"
+                                                    id=""
+                                                    className="w-[80%] mr-3 max-w-[377px] rounded bg-white border border-wh-gray pl-3"
+                                                    onChange={(e) => setPromoCode(e.target.value)}
+                                                />
+                                                <input
+                                                    type="submit"
+                                                    value="Áp dụng"
+                                                    className="w-[20%] text-sm font-bold rounded px-5 py-2.5 bg-[#b3b3b3] cursor-pointer hover:opacity-70 transition-all"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        handleApplyCode();
+                                                    }}
+                                                />
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div className="checkout__order--summary grid grid-cols-2 mt-8 gap-y-3">
+                                        <div className="checkout__summary--header col-span-1 text-sm">Tổng tiền</div>
+                                        <div className="checkout__order--subtotal col-span-1 text-xl text-right font-semibold">
+                                            {formatCurrency(cartTotal)}
+                                        </div>
+                                        <div className="checkout__summary--header col-span-1 text-sm">Mã giảm giá</div>
+                                        <div className="checkout__order--subtotal col-span-1 text-xl text-right font-semibold">
+                                            {(discount > 0 ? '-' : '') + formatCurrency(discount)}
+                                        </div>
+                                        <div className="checkout__summary--header col-span-1 text-sm">Phí ship</div>
+                                        <div className="checkout__order--subtotal col-span-1 text-xl text-right font-semibold">
+                                            {formatCurrency(freight)}
+                                        </div>
+                                        <hr className="col-span-2 border-wh-gray mt-2" />
+                                        <div className="checkout__summary--header col-span-1 font-semibold pt-1">
+                                            Tổng cộng
+                                        </div>
+                                        <div className="checkout__order--subtotal col-span-1 text-2xl text-right text-primary font-semibold">
+                                            {formatCurrency(total)}
                                         </div>
                                     </div>
-                                ))}
-                        </div>
-                        <div className="checkout__order--payment mt-6">
-                            <div className="checkout__order--promotion">
-                                <form action="">
-                                    <h4>Mã giảm giá</h4>
-                                    <div className="promo__inputgroup flex justify-between mt-3">
-                                        <input
-                                            type="text"
-                                            name="promoCode"
-                                            id=""
-                                            className="w-[80%] mr-3 max-w-[377px] rounded bg-white border border-wh-gray pl-3"
-                                            onChange={(e) => setPromoCode(e.target.value)}
-                                        />
-                                        <input
-                                            type="submit"
-                                            value="Áp dụng"
-                                            className="w-[20%] text-sm font-bold rounded px-5 py-2.5 bg-[#b3b3b3] cursor-pointer hover:opacity-70 transition-all"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                handleApplyCode();
-                                            }}
-                                        />
-                                    </div>
-                                </form>
-                            </div>
-                            <div className="checkout__order--summary grid grid-cols-2 mt-8 gap-y-3">
-                                <div className="checkout__summary--header col-span-1 text-sm">Tổng tiền</div>
-                                <div className="checkout__order--subtotal col-span-1 text-xl text-right font-semibold">
-                                    {formatCurrency(cartTotal)}
-                                </div>
-                                <div className="checkout__summary--header col-span-1 text-sm">Mã giảm giá</div>
-                                <div className="checkout__order--subtotal col-span-1 text-xl text-right font-semibold">
-                                    {(discount > 0 ? '-' : '') + formatCurrency(discount)}
-                                </div>
-                                <div className="checkout__summary--header col-span-1 text-sm">Phí ship</div>
-                                <div className="checkout__order--subtotal col-span-1 text-xl text-right font-semibold">
-                                    {formatCurrency(freight)}
-                                </div>
-                                <hr className="col-span-2 border-wh-gray mt-2" />
-                                <div className="checkout__summary--header col-span-1 font-semibold pt-1">Tổng cộng</div>
-                                <div className="checkout__order--subtotal col-span-1 text-2xl text-right text-primary font-semibold">
-                                    {formatCurrency(total)}
                                 </div>
                             </div>
                         </div>
+                        ;{' '}
                     </div>
                 </div>
-            </div>
-        </div>
+            ) : (
+                <Loading />
+            )}
+        </>
     );
 };
 

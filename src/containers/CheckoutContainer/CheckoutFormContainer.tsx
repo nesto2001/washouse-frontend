@@ -31,7 +31,6 @@ import { PaymentEnum } from '../../types/enum/PaymentEnum';
 import { getHour, getToday } from '../../utils/TimeUtils';
 import './CheckoutContainer.scss';
 import { DeliveryFormData } from '../../types/FormData/DeliveryFormData';
-import { useForm } from 'antd/es/form/Form';
 import { calcDeliveryPrice } from '../../repositories/OrderRepository';
 import { DeliveryPriceRequest } from '../../models/Order/DeliveryPriceRequest';
 import { useSelector } from 'react-redux';
