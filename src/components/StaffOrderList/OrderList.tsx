@@ -6,13 +6,16 @@ import { CenterOrderModel } from '../../models/Staff/CenterOrderModel';
 import OrderListItem from './OrderListItem';
 import { formatCurrency } from '../../utils/FormatUtils';
 import OrderCard from './OrderCard';
+import { Paging } from '../../types/Common/Pagination';
 
 type Props = {
     orders: CenterOrderModel[];
     isLoading: boolean;
+    paging?: Paging;
+    updatePage: (page: number) => void;
 };
 
-const OrderList = ({ orders, isLoading }: Props) => {
+const OrderList = ({ orders, isLoading, paging, updatePage }: Props) => {
     const columns: ColumnsType<CenterOrderModel> = [
         {
             title: 'Mã',
@@ -62,9 +65,14 @@ const OrderList = ({ orders, isLoading }: Props) => {
             ) : (
                 <div className="order__list">
                     {orders.map((order) => order && <OrderCard key={order.id} order={order} />)}
-                    <Pagination defaultCurrent={1} />
                 </div>
             )}
+            <Pagination
+                defaultCurrent={paging?.pageNumber}
+                total={paging?.totalItems}
+                onChange={(page) => updatePage(page)}
+                pageSize={paging?.itemsPerPage}
+            />
         </div>
     );
 };

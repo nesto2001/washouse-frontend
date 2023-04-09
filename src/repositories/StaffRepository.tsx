@@ -7,7 +7,7 @@ import {
     API_STAFF_PROCEED_ORDER,
     API_STAFF_PROCEED_ORDERED_SERVICE,
 } from '../common/Constant';
-import { ListResponse } from '../models/CommonModel';
+import { ListResponse, PaginationModal } from '../models/CommonModel';
 import { PaginationResponse, Response } from '../models/CommonModel';
 import { CenterDeliveryPriceModel } from '../models/DeliveryPrice/DeliveryPriceModel';
 import { ManagerCenterModel } from '../models/Manager/ManagerCenterModel';
@@ -88,7 +88,7 @@ export const getManagerCenterOrders = async ({
     fromDate?: string;
     toDate?: string;
     status?: string;
-}): Promise<CenterOrderModel[]> => {
+}): Promise<PaginationModal<CenterOrderModel>> => {
     const { data } = await instance.get<PaginationResponse<CenterOrderResponse>>(API_MANAGER_CENTER_ORDER, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
@@ -105,32 +105,38 @@ export const getManagerCenterOrders = async ({
     if (data === null) {
         throw new Error();
     }
-    return data.data.items.map((item): CenterOrderModel => {
-        return {
-            id: item.orderId,
-            customerName: item.customerName,
-            discount: item.discount,
-            orderedDate: item.orderDate,
-            status: item.status,
-            totalPayment: item.totalOrderPayment,
-            totalValue: item.totalOrderValue,
-            orderedServices: item.orderedServices.map((ordered): CenterOrderedServiceModel => {
-                return {
-                    name: ordered.serviceName,
-                    category: ordered.serviceCategory,
-                    measurement: ordered.measurement,
-                    customerNote: ordered.customerNote,
-                    id: ordered.orderDetailId,
-                    image: ordered.image,
-                    orderDetailTrackings: ordered.orderDetailTrackings,
-                    staffNote: ordered.staffNote,
-                    status: ordered.status,
-                    price: ordered.price,
-                    unit: ordered.unit,
-                };
-            }),
-        };
-    });
+    return {
+        itemsPerPage: data.data.itemsPerPage,
+        pageNumber: data.data.pageNumber,
+        totalItems: data.data.totalItems,
+        totalPages: data.data.totalPages,
+        items: data.data.items.map((item): CenterOrderModel => {
+            return {
+                id: item.orderId,
+                customerName: item.customerName,
+                discount: item.discount,
+                orderedDate: item.orderDate,
+                status: item.status,
+                totalPayment: item.totalOrderPayment,
+                totalValue: item.totalOrderValue,
+                orderedServices: item.orderedServices.map((ordered): CenterOrderedServiceModel => {
+                    return {
+                        name: ordered.serviceName,
+                        category: ordered.serviceCategory,
+                        measurement: ordered.measurement,
+                        customerNote: ordered.customerNote,
+                        id: ordered.orderDetailId,
+                        image: ordered.image,
+                        orderDetailTrackings: ordered.orderDetailTrackings,
+                        staffNote: ordered.staffNote,
+                        status: ordered.status,
+                        price: ordered.price,
+                        unit: ordered.unit,
+                    };
+                }),
+            };
+        }),
+    };
 };
 
 export const getManagerCenterOrderDetails = async (id: string): Promise<CenterOrderDetailsModel> => {

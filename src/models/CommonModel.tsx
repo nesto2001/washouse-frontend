@@ -21,3 +21,11 @@ export type ListResponse<T> = {
     message: string;
     data: T[];
 };
+
+export type PaginationModal<T> = {
+    pageNumber: number;
+    itemsPerPage: number;
+    totalItems: number;
+    totalPages: number;
+    items: T[];
+};

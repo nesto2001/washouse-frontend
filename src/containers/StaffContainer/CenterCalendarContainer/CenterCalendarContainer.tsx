@@ -76,7 +76,7 @@ const CenterCalendarContainer = (props: Props) => {
         fetchData()
             .then((res) => {
                 setOrderList(
-                    res.map((r) => {
+                    res.items.map((r) => {
                         return {
                             id: r.id,
                             content: r.id,

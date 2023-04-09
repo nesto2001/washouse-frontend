@@ -28,7 +28,7 @@ const CenterTimelineOverallContainer = (props: Props) => {
         };
         fetchData()
             .then((res) => {
-                setOrderList(res);
+                setOrderList(res.items);
             })
             .catch(() => {
                 setOrderList([]);
