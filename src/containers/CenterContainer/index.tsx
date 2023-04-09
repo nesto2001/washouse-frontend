@@ -14,11 +14,15 @@ import { getCenter } from '../../repositories/CenterRepository';
 import { getRating, getURLId } from '../../utils/CommonUtils';
 import { compareTime, getToday } from '../../utils/TimeUtils';
 
-import type { TabsProps } from 'antd';
+import { TabsProps } from 'antd';
 import { Tabs } from 'antd';
 
 import './CenterContainer.scss';
 import { CenterMap } from '../../types/CenterMap';
+import { getPromotionsCenter } from '../../repositories/PromotionRepository';
+import { PromotionModel } from '../../models/Promotion/PromotionModel';
+import CouponTag from '../../components/CouponTag/CouponTag';
+import Slider from 'react-slick';
 
 type Props = {};
 
@@ -43,6 +47,7 @@ const CenterContainer = (props: Props) => {
     const [center, setCenter] = useState<CenterDetailsModel>();
     const [isLoading, setIsLoading] = useState(true);
     const [isBreakDay, setIsBreakDay] = useState<boolean>(false);
+    const [promotions, setPromotions] = useState<PromotionModel[]>();
 
     const id = getURLId(location.pathname);
 
@@ -73,6 +78,9 @@ const CenterContainer = (props: Props) => {
                         setStatus(false);
                         setIsBreakDay(true);
                     }
+                    getPromotionsCenter(res.id).then((pomos) => {
+                        setPromotions(pomos);
+                    });
                 }
             })
             .catch((error) => {
@@ -161,9 +169,26 @@ const CenterContainer = (props: Props) => {
                                 <FaPhoneAlt className="inline-block mr-2" />
                                 {center.phone}
                             </h3>
+                            <div className="flex gap-4 mt-4 flex-wrap">
+                                {promotions ? (
+                                    <>
+                                        {promotions.slice(0, 1).map((promotion) => (
+                                            <CouponTag content={promotion.code} />
+                                        ))}
+                                        {promotions.length > 1 ? (
+                                            <CouponTag content={`+ ${promotions.length - 1} mã khuyến mãi`} primary />
+                                        ) : (
+                                            <></>
+                                        )}
+                                    </>
+                                ) : (
+                                    <></>
+                                )}
+                            </div>
                         </div>
                     </div>
-                    <div className="center__details--services mt-16 text-center overflow-visible">
+
+                    <div className="center__details--services my-16 text-center overflow-visible">
                         <h1 className="center__details-header font-bold text-3xl">Dịch vụ</h1>
                         <div className="service__slider--tabs mt-8 px-2 max-w-[780px]">
                             <Tabs items={items} onChange={onChange} activeKey={selectedKey} />

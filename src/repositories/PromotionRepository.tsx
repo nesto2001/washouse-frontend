@@ -1,4 +1,4 @@
-import { API_PROMOTION, API_PROMOTION_CODE } from '../common/Constant';
+import { API_PROMOTION, API_PROMOTION_CENTER, API_PROMOTION_CODE } from '../common/Constant';
 import { Response } from '../models/CommonModel';
 import { PromotionRequest } from '../models/Promotion/CreatePromotionRequest';
 import { PromotionModel } from '../models/Promotion/PromotionModel';
@@ -46,4 +46,22 @@ export const applyPromotion = async (promoCode: string): Promise<number> => {
     } else {
         return 0;
     }
+};
+
+export const getPromotionsCenter = async (centerId: number): Promise<PromotionModel[]> => {
+    const { data } = await instance.get<Response<PromotionResponse[]>>(
+        API_PROMOTION_CENTER.replace('${id}', centerId.toString()),
+    );
+    return data.data.map((promotion) => {
+        return {
+            id: promotion.id,
+            code: promotion.code,
+            centerId: promotion.centerId,
+            description: promotion.description,
+            discount: promotion.discount,
+            expireDate: new Date(promotion.expireDate),
+            startDate: new Date(promotion.startDate),
+            useTimes: promotion.useTimes,
+        };
+    });
 };

@@ -59,6 +59,7 @@ const API_STAFF_PROCEED_ORDERED_SERVICE = '/api/tracking/orders/${orderId}/order
 //PROMOTION API
 const API_PROMOTION = '/api/promotions';
 const API_PROMOTION_CODE = '/api/promotions/code/${code}';
+const API_PROMOTION_CENTER = '/api/promotions/center/${id}';
 
 //CUSTOMER API
 const API_CUSTOMER = '/api/customers';
@@ -109,4 +110,5 @@ export {
     API_NOTIFICATION,
     API_NOTIFICATION_READ,
     API_CENTER_SERVICES,
+    API_PROMOTION_CENTER,
 };

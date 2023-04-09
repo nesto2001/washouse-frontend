@@ -46,7 +46,7 @@ const CenterPromotionsContainer = () => {
             align: 'center',
             key: 'discount',
             render(_, record) {
-                return <CouponTag discountValue={formatPercentage(record.discount)} />;
+                return <CouponTag content={`Giảm ${formatPercentage(record.discount)}`} />;
             },
         },
         {

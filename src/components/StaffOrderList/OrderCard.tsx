@@ -29,7 +29,11 @@ const OrderCard = ({ order }: Props) => {
                     {formatCurrency(order.totalValue)}
                 </div>
                 <div className="order__item--discount mx-1 text-base w-[86px]">
-                    {order.discount > 0 ? <CouponTag discountValue={formatPercentage(order.discount)} /> : 'Không có'}
+                    {order.discount > 0 ? (
+                        <CouponTag content={`Giảm ${formatPercentage(order.discount)}`} />
+                    ) : (
+                        'Không có'
+                    )}
                 </div>
                 <div className="order__item--payment mx-1 text-base font-bold w-[100px]">
                     {formatCurrency(order.totalPayment)}

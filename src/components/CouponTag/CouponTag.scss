@@ -42,3 +42,8 @@
         transform: rotate(135deg);
     }
 }
+
+.coupon__tag--primary {
+    color: var(--washouse-primary-white);
+    background-color: var(--washouse-primary-blue);
+}

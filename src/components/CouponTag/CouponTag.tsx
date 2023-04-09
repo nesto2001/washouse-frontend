@@ -2,11 +2,12 @@ import React from 'react';
 import './CouponTag.scss';
 
 type Props = {
-    discountValue: string;
+    content: string;
+    primary?: boolean;
 };
 
-const CouponTag = ({ discountValue }: Props) => {
-    return <div className="coupon__tag">Giảm {discountValue}</div>;
+const CouponTag = ({ content, primary }: Props) => {
+    return <div className={`coupon__tag ${primary ? 'coupon__tag--primary' : ''}`}>{content}</div>;
 };
 
 export default CouponTag;
