@@ -248,7 +248,7 @@ const CheckoutContainer = (props: Props) => {
                                                 <>
                                                     <FaRegClock className="mr-2 inline-block" />
                                                     <span className="leading-7">
-                                                        {center?.centerOperatingHours[today].start?.substring(0, 5)} -
+                                                        {center?.centerOperatingHours[today].start?.substring(0, 5)} -{' '}
                                                         {center?.centerOperatingHours[today].end?.substring(0, 5)}
                                                     </span>
                                                 </>
@@ -265,7 +265,7 @@ const CheckoutContainer = (props: Props) => {
                             <hr className="border-wh-gray" />
                             <div className="checkout__order py-6">
                                 <h2 className="font-bold text-xl">Chi tiết đơn hàng</h2>
-                                <div className="">Ước tính xử lý đơn hàng: {totalEst}'</div>
+                                <div className="">Ước tính xử lý đơn hàng: {totalEst} phút</div>
                                 <div className="checkout__order--details mt-5">
                                     {cartItems &&
                                         cartItems.map((item, index) => (
@@ -299,14 +299,14 @@ const CheckoutContainer = (props: Props) => {
                                                         className="text-sm flex
                 -                                           grow mt-2"
                                                     >
-                                                        Chi tiết:
+                                                        Chi tiết:{' '}
                                                         {item.quantity && item.quantity > 0
                                                             ? item.quantity
                                                             : item.weight}
                                                         {item.unit === 'kg' ? 'kg' : ''}
                                                     </h4>
                                                     <h4 className="text-sm flex-grow max-w-[355.94px] line-clamp-2 pt-1">
-                                                        Ghi chú:
+                                                        Ghi chú:{' '}
                                                         {item.customerNote.length > 0 ? item.customerNote : 'không có'}
                                                     </h4>
                                                 </div>
@@ -322,6 +322,7 @@ const CheckoutContainer = (props: Props) => {
                                                     type="text"
                                                     name="promoCode"
                                                     id=""
+                                                    placeholder="Áp dụng mã giảm giá"
                                                     className="w-[80%] mr-3 max-w-[377px] rounded bg-white border border-wh-gray pl-3"
                                                     onChange={(e) => setPromoCode(e.target.value)}
                                                 />
