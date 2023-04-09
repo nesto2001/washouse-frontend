@@ -3,7 +3,7 @@ import React from 'react';
 
 const OthersSpin = () => {
     return (
-        <div className="md:min-h-[632px] flex justify-center items-center">
+        <div className="md:min-h-[632px] flex justify-center items-center flex-grow">
             <Spin />
         </div>
     );

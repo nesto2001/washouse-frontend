@@ -1,4 +1,4 @@
-import { Tag, message } from 'antd';
+import { Spin, Tag, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ErrorScreen from '../../../components/ErrorScreen/ErrorScreen';
@@ -9,6 +9,7 @@ import CenterOrderDetailsGeneral from './CenterOrderDetailsGeneral';
 import CenterOrderDetailsPayment from './CenterOrderDetailsPayment';
 import CenterOrderDetailsTracking from './CenterOrderDetailsTracking';
 import CenterOrderedDetailsContainer from './CenterOrderedDetailsContainer';
+import OthersSpin from '../../../components/OthersSpin/OthersSpin';
 
 type Props = {};
 
@@ -16,17 +17,21 @@ const CenterOrderDetailsContainer = (props: Props) => {
     const [orderDetails, setOrderDetails] = useState<CenterOrderDetailsModel>();
     const [openProceedPop, setOpenProceedPop] = useState(false);
     const [confirmProceedLoading, setConfirmProceedLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const { orderId } = useParams();
     useEffect(() => {
+        setIsLoading(true);
         if (orderId) {
             const fetchData = async () => {
                 return await getManagerCenterOrderDetails(orderId);
             };
             fetchData().then((res) => {
                 setOrderDetails(res);
+                setIsLoading(false);
             });
         }
+        setIsLoading(false);
     }, [orderId]);
 
     const showPopconfirm = () => {
@@ -58,8 +63,12 @@ const CenterOrderDetailsContainer = (props: Props) => {
         setOpenProceedPop(false);
     };
 
+    if (isLoading) {
+        return <OthersSpin />;
+    }
+
     if (!orderDetails) {
-        return <ErrorScreen noNav />;
+        return <OthersSpin />;
     }
 
     return (
@@ -97,7 +106,10 @@ const CenterOrderDetailsContainer = (props: Props) => {
                     <div className="provider__page--title pt-4 pl-6 font-semibold text-2xl">Chi tiết đơn hàng</div>
                     <div className="provider__page--content px-6 mt-6">
                         <div className="provider__services--wrapper">
-                            <CenterOrderedDetailsContainer details={{ orderedDetails: orderDetails.orderedDetails }} />
+                            <CenterOrderedDetailsContainer
+                                orderId={orderDetails.id}
+                                details={{ orderedDetails: orderDetails.orderedDetails }}
+                            />
                         </div>
                     </div>
                 </div>

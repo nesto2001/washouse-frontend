@@ -70,4 +70,5 @@ export const createService = async (request: CreateServiceRequest) => {
     if (status != 200) {
         throw new Error();
     }
+    return status;
 };

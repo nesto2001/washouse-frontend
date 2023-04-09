@@ -138,13 +138,13 @@ const CenterOrderDetailsGeneral = ({
                 >
                     {orderInfo.preferredDropoffTime}
                 </Descriptions.Item>
-                <Descriptions.Item
+                {/* <Descriptions.Item
                     label="Giờ nhận hàng"
                     contentStyle={{ fontSize: 16, fontWeight: 900 }}
                     labelStyle={{ fontSize: 16, fontWeight: 700 }}
                 >
-                    {orderInfo.preferredDeliverTime}
-                </Descriptions.Item>
+                    {orderInfo.preferredDeliverTime??'Chưa có'}
+                </Descriptions.Item> uncomment */}
 
                 <Descriptions.Item
                     label="Ghi chú"
@@ -152,7 +152,7 @@ const CenterOrderDetailsGeneral = ({
                     labelStyle={{ fontSize: 16, fontWeight: 700 }}
                     span={2}
                 >
-                    {orderInfo.customerMessage}
+                    {orderInfo.customerMessage ?? 'Không có'}
                 </Descriptions.Item>
             </Descriptions>
         </>

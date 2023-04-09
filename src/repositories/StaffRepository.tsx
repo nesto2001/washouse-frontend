@@ -4,6 +4,7 @@ import {
     API_MANAGER_CENTER_ORDER,
     API_MANAGER_CENTER_ORDER_DETAILS,
     API_MANAGER_CENTER_SERVICE,
+    API_STAFF_CANCEL_ORDER,
     API_STAFF_PROCEED_ORDER,
     API_STAFF_PROCEED_ORDERED_SERVICE,
 } from '../common/Constant';
@@ -264,14 +265,11 @@ export const getCenterCustomer = async (): Promise<CenterCustomerModel[]> => {
 };
 
 export const proceedOrder = async (orderId: string) => {
-    const response = await instance.put<Response<number>>(
-        API_STAFF_PROCEED_ORDER.replace('${orderId}', orderId),
-        {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-            },
+    const response = await instance.put<Response<number>>(API_STAFF_PROCEED_ORDER.replace('${orderId}', orderId), {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
-    );
+    });
     return response;
 };
 
@@ -287,5 +285,14 @@ export const proceedOrderDetails = async (orderId: string, orderDetailId: number
             },
         },
     );
+    return response;
+};
+
+export const cancelOrder = async (orderId: string) => {
+    const response = await instance.put<Response<number>>(API_STAFF_CANCEL_ORDER.replace('${orderId}', orderId), {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
     return response;
 };

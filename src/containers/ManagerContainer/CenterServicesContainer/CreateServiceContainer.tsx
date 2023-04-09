@@ -1,5 +1,5 @@
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Form, Input, InputNumber, Select, Space, Upload, UploadFile, message } from 'antd';
+import { Button, Form, Input, InputNumber, Select, Space, Tooltip, Upload, UploadFile, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { UploadChangeParam } from 'antd/es/upload';
 import { useEffect, useState } from 'react';
@@ -63,6 +63,7 @@ const CreateServiceContainer = () => {
             prices: values.prices,
         });
     };
+
     const handleChange = (info: UploadChangeParam) => {
         const { status } = info.file;
 
@@ -160,7 +161,7 @@ const CreateServiceContainer = () => {
                 </Form.Item>
                 <div className="flex w-full gap-10">
                     <Form.Item
-                        className="basis-1/2"
+                        className={`${priceType ? 'basis-1/4' : 'basis-1/3'}`}
                         name="priceType"
                         label="Đơn vị định lượng"
                         rules={[{ required: true, message: 'Vui lòng chọn đơn vị định lượng' }]}
@@ -173,56 +174,80 @@ const CreateServiceContainer = () => {
                         ></Select>
                     </Form.Item>
                     {priceType ? (
-                        <Form.Item label="Khoảng giá" className="basis-1/2">
-                            <Form.List name="prices">
-                                {(fields, { add, remove }) => (
-                                    <div>
-                                        {fields.map((field) => (
-                                            <Space key={field.key} align="baseline">
-                                                <Form.Item
-                                                    {...field}
-                                                    name={[field.name, 'maxWeight']}
-                                                    rules={[{ required: true, message: 'Vui lòng nhập khối lượng' }]}
+                        <>
+                            <Form.Item
+                                className="basis-1/4"
+                                label="Giá tối thiểu"
+                                name="minPrice"
+                                rules={[{ required: true, message: 'Vui lòng nhập giá tối thiểu' }]}
+                            >
+                                <Input addonAfter="đ" placeholder="Nhập giá tối thiểu" />
+                            </Form.Item>
+                            <Form.Item label="Khoảng giá" className="basis-1/2">
+                                <Form.List name="prices">
+                                    {(fields, { add, remove }) => (
+                                        <div>
+                                            {fields.map((field) => (
+                                                <Space key={field.key} align="baseline">
+                                                    <Form.Item
+                                                        {...field}
+                                                        name={[field.name, 'maxWeight']}
+                                                        rules={[
+                                                            { required: true, message: 'Vui lòng nhập khối lượng' },
+                                                        ]}
+                                                    >
+                                                        <Input placeholder="Khối lượng" addonAfter="kg"></Input>
+                                                    </Form.Item>
+                                                    <Form.Item
+                                                        {...field}
+                                                        name={[field.name, 'price']}
+                                                        rules={[{ required: true, message: 'Vui lòng nhập đơn giá' }]}
+                                                    >
+                                                        <Input placeholder="Đơn giá" addonAfter="đ" />
+                                                    </Form.Item>
+                                                    <MinusCircleOutlined
+                                                        style={{ verticalAlign: '0.2rem' }}
+                                                        onClick={() => remove(field.name)}
+                                                    />
+                                                </Space>
+                                            ))}
+                                            <Form.Item>
+                                                <Button
+                                                    type="dashed"
+                                                    style={{ backgroundColor: 'white' }}
+                                                    onClick={() => add()}
+                                                    block
+                                                    icon={<PlusOutlined style={{ verticalAlign: '0.1rem' }} />}
                                                 >
-                                                    <Input placeholder="Khối lượng"></Input>
-                                                </Form.Item>
-                                                <Form.Item
-                                                    {...field}
-                                                    name={[field.name, 'price']}
-                                                    rules={[{ required: true, message: 'Vui lòng nhập đơn giá' }]}
-                                                >
-                                                    <Input placeholder="Đơn giá" />
-                                                </Form.Item>
-                                                <MinusCircleOutlined
-                                                    style={{ verticalAlign: '0.2rem' }}
-                                                    onClick={() => remove(field.name)}
-                                                />
-                                            </Space>
-                                        ))}
-                                        <Form.Item>
-                                            <Button
-                                                type="dashed"
-                                                style={{ backgroundColor: 'white' }}
-                                                onClick={() => add()}
-                                                block
-                                                icon={<PlusOutlined style={{ verticalAlign: '0.1rem' }} />}
-                                            >
-                                                Thêm khoảng giá
-                                            </Button>
-                                        </Form.Item>
-                                    </div>
-                                )}
-                            </Form.List>
-                        </Form.Item>
+                                                    Thêm khoảng giá
+                                                </Button>
+                                            </Form.Item>
+                                        </div>
+                                    )}
+                                </Form.List>
+                            </Form.Item>
+                        </>
                     ) : (
-                        <Form.Item
-                            className="basis-1/2"
-                            label="Đơn giá"
-                            name="serviceName"
-                            rules={[{ required: true, message: 'Vui lòng giá tiền' }]}
-                        >
-                            <Input addonAfter="đ" placeholder="Đơn giá/số lượng" />
-                        </Form.Item>
+                        <>
+                            <Form.Item
+                                className="basis-1/3"
+                                label="Đơn giá"
+                                name="price"
+                                rules={[{ required: true, message: 'Vui lòng nhập đơn giá' }]}
+                            >
+                                <Input addonAfter="đ" placeholder="Đơn giá/số lượng" />
+                            </Form.Item>
+                            <Tooltip title="Cân nặng trung bình của 1 đơn vị">
+                                <Form.Item
+                                    className="basis-1/3"
+                                    label="Cân nặng"
+                                    name="rate"
+                                    rules={[{ required: true, message: 'Vui lòng nhập cân nặng' }]}
+                                >
+                                    <Input addonAfter="kg" placeholder="Cân nặng/đơn vị" type="number" />
+                                </Form.Item>
+                            </Tooltip>
+                        </>
                     )}
                 </div>
                 <div className="w-full flex gap-4 justify-end">

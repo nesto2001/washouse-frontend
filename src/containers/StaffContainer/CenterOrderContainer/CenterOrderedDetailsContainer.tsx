@@ -1,18 +1,28 @@
 import React from 'react';
 import Placeholder from '../../../assets/images/placeholder.png';
 import { formatCurrency } from '../../../utils/FormatUtils';
-import { Tag } from 'antd';
+import { Tag, message } from 'antd';
 import { CenterOrderedServiceModel } from '../../../models/Staff/CenterOrderedServiceModel';
+import { proceedOrderDetails } from '../../../repositories/StaffRepository';
 
 type OrderDetailsInfo = {
     orderedDetails: CenterOrderedServiceModel[];
 };
 
 type Props = {
+    orderId: string;
     details: OrderDetailsInfo;
 };
 
-const CenterOrderedDetailsContainer = ({ details }: Props) => {
+const CenterOrderedDetailsContainer = ({ details, orderId }: Props) => {
+    const handleProceed = (orderId: string, orderDetailsId: number) => {
+        const proceedOrdetails = async () => {
+            return await proceedOrderDetails(orderId, orderDetailsId);
+        };
+        proceedOrdetails().then((res) => {
+            message.success('Đã cập nhật tiến trình đơn hàng');
+        });
+    };
     return (
         <>
             {details.orderedDetails.map((det, index) => (
@@ -41,7 +51,11 @@ const CenterOrderedDetailsContainer = ({ details }: Props) => {
                         {formatCurrency((det.price && det.price * det.measurement) ?? 0)}
                     </div>
                     <div className="ordered__item--price font-bold text-xl w-[284px] text-right">
-                        <Tag className="flex w-1/2 justify-center items-center mx-auto h-8" color="default">
+                        <Tag
+                            className="flex w-1/2 justify-center items-center mx-auto h-8 cursor-pointer"
+                            color="default"
+                            onClick={() => handleProceed(orderId, det.id)}
+                        >
                             Đang chờ
                         </Tag>
                     </div>

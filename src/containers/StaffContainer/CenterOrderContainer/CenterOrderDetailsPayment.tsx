@@ -32,7 +32,7 @@ const CenterOrderDetailsPayment = ({ orderPayment }: Props) => {
             <hr className="col-span-2 my-3" />
             <div className="font-medium text-lg">Tổng thanh toán</div>
             <div className="text-right text-primary font-bold text-2xl">
-                {formatCurrency(orderPayment.payment.total )}
+                {formatCurrency(orderPayment.payment.total)}
             </div>
         </div>
     );

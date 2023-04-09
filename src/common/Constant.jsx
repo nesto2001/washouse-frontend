@@ -58,6 +58,8 @@ const API_MANAGER_CENTER_CUSTOMER = '/api/manager/my-center/customers';
 
 const API_STAFF_PROCEED_ORDER = '/api/tracking/orders/${orderId}/tracking';
 const API_STAFF_PROCEED_ORDERED_SERVICE = '/api/tracking/orders/${orderId}/order-details/${orderDetailId}/tracking';
+const API_STAFF_CANCEL_ORDER = '/api/tracking/orders/${orderId}/cancelled';
+
 
 //PROMOTION API
 const API_PROMOTION = '/api/promotions';
@@ -73,6 +75,7 @@ const API_NOTIFICATION = '/api/notifications/me-noti';
 const API_NOTIFICATION_READ = '/api/notifications/read';
 
 export {
+    API_STAFF_CANCEL_ORDER,
     API_CUSTOMER_ORDER,
     API_ADMIN_CENTER,
     API_ORDER_SEARCH,
