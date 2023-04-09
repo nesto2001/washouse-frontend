@@ -40,15 +40,14 @@ const ManagerDashboardLayout = ({ children }: Props) => {
     const [user, setUser] = useState<UserModel | null>(userJson && JSON.parse(userJson));
     const navigate = useNavigate();
 
-
     useMemo(() => {
         const fetchData = async () => {
             return await getManagerCenter();
         };
         fetchData().catch((error) => {
-            if (error) {
-                navigate('/provider/registration');
-            }
+            // if (error) {
+            //     navigate('/provider/registration');
+            // }
         });
     }, [user]);
 

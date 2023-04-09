@@ -13,8 +13,8 @@ export type CreateOrderRequest = {
         customerId?: number;
         deliveryType: number;
         deliveryPrice: number;
-        preferredDropoffTime: string;
-        preferredDeliverTime: string;
+        preferredDropoffTime?: string;
+        preferredDeliverTime?: string;
     };
     orderDetails: OrderDetailsRequest[];
     deliveries: DeliveryInfoRequest[];

@@ -3,7 +3,7 @@ import TextArea from 'antd/es/input/TextArea';
 import React, { useEffect, useState } from 'react';
 import { FaPhoneAlt, FaRegClock } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ModalImg from '../../assets/images/laundry-modal.svg';
 import Placeholder from '../../assets/images/placeholder.png';
 import WHButton from '../../components/Button';
@@ -39,6 +39,8 @@ const CenterServiceContainer = (props: Props) => {
     const [isModalLoading, setIsModalLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [serviceList, setServiceList] = useState<ServiceDetailsModel[]>();
+    const [isPlacingOrder, setIsPlacingOrder] = useState<boolean>(false);
+    const navigate = useNavigate();
     const location = useLocation();
 
     const { centerId, id } = useParams();
@@ -173,6 +175,45 @@ const CenterServiceContainer = (props: Props) => {
         }
     };
 
+    const handlePlaceOrder = async (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+        if (centerId && cartCenterId && cartCenterId !== parseInt(centerId)) {
+            setIsPlacingOrder(true);
+            setModalVisible(true);
+        } else {
+            if ((weightInput && weightInput > 0) || (quantityInput && quantityInput > 0)) {
+                const cartItem: CartItem = {
+                    id: service.id,
+                    name: service.name,
+                    thumbnail: service.image,
+                    unitPrice: service.price ?? (service.prices && getWeightUnitPrice(service.prices, weightInput)),
+                    weight: weightInput ?? null,
+                    quantity: quantityInput ?? null,
+                    unit: quantityInput ? 'pcs' : 'kg',
+                    price: parseFloat(servicePrice.replace(/[^\d]*(\d{1,3})(?:[^\d]|$)/g, '$1')),
+                    centerId: center.id,
+                    minPrice: service.minPrice,
+                    priceChart: service.prices,
+                    rate: service.rate,
+                    customerNote: customerNote,
+                };
+                try {
+                    dispatch(addToCart(cartItem) as any)
+                        .then(() => {
+                            messageApi.success('Đã thêm vào giỏ hàng');
+                            navigate('/cart/checkout');
+                        })
+                        .catch((err: Error) => {
+                            messageApi.error(err.message);
+                        });
+                    // dispatch(addItem(cartItem));
+                } catch (error) {
+                    messageApi.error(`Không thể thêm vào giỏ hàng, vui lòng thử lại sau!`);
+                }
+            }
+        }
+    };
+
     const handleOk = () => {
         setIsModalLoading(true);
         dispatch(clearCart());
@@ -197,6 +238,9 @@ const CenterServiceContainer = (props: Props) => {
                     dispatch(addToCart(cartItem) as any)
                         .then(() => {
                             messageApi.success('Đã thêm vào giỏ hàng');
+                            if (isPlacingOrder) {
+                                navigate('/cart/checkout/');
+                            }
                         })
                         .catch((err: Error) => {
                             messageApi.error(err.message);
@@ -369,7 +413,7 @@ const CenterServiceContainer = (props: Props) => {
                                     <WHButton type="sub" minWidth="180px" form="addcartForm" onClick={handleAddToCart}>
                                         Thêm vào giỏ
                                     </WHButton>
-                                    <WHButton type="primary" minWidth="180px">
+                                    <WHButton type="primary" minWidth="180px" onClick={handlePlaceOrder}>
                                         Đặt dịch vụ
                                     </WHButton>
                                 </div>

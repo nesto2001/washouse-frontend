@@ -1,4 +1,5 @@
 export const BadgeStatusMap: { [key: string]: string } = {
+    None: 'default',
     Received: 'default',
     Pending: 'default',
     Confirmed: 'default',

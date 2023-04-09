@@ -3,7 +3,7 @@ import Placeholder from '../../assets/images/placeholder.png';
 import Logo from '../../assets/images/washouse-tagline.png';
 import Breadcrumb from '../../components/Breadcrumb';
 import './CheckoutContainer.scss';
-
+import dayjs from 'dayjs';
 import { FaPhoneAlt, FaRegClock } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -17,6 +17,8 @@ import { Step1, Step2, Step3 } from './CheckoutFormContainer';
 import { createOrder, getEstimateTime } from '../../repositories/OrderRepository';
 import { CreateOrderRequest } from '../../models/Order/CreateOrderRequest';
 import { clearCart } from '../../reducers/CartReducer';
+import { Tooltip, message } from 'antd';
+import { applyPromotion } from '../../repositories/PromotionRepository';
 
 type Props = {};
 
@@ -30,6 +32,8 @@ const CheckoutContainer = (props: Props) => {
     const dispatch = useDispatch();
 
     const [center, setCenter] = useState<CenterModel>();
+
+    const [promoCode, setPromoCode] = useState<string>('');
 
     const [totalEst, setTotalEst] = useState<number>(0);
 
@@ -106,7 +110,10 @@ const CheckoutContainer = (props: Props) => {
                     deliveryPrice: formData.deliveryPrice,
                     deliveryType: formData.deliveryType,
                     preferredDeliverTime: formData.preferredDeliverTime,
-                    preferredDropoffTime: formData.preferredDropoffTime,
+                    preferredDropoffTime:
+                        formData.preferredDropoffTime.length > 0
+                            ? formData.preferredDropoffTime
+                            : dayjs().format('DD-MM-YYYY HH:mm:ss'),
                 },
                 deliveries: [],
                 orderDetails: cartItems.map((item) => {
@@ -119,7 +126,7 @@ const CheckoutContainer = (props: Props) => {
                 }),
                 paymentMethod: 0,
             };
-            console.log(CreateOrderData);
+            console.log(JSON.stringify(CreateOrderData));
             const placeOrder = async () => {
                 return await createOrder(CreateOrderData);
             };
@@ -134,6 +141,20 @@ const CheckoutContainer = (props: Props) => {
                     console.log(error);
                 });
         }
+    };
+
+    const handleApplyCode = () => {
+        const applyCode = async () => {
+            return await applyPromotion(promoCode);
+        };
+        applyCode()
+            .then((res) => {
+                setDiscount(cartTotal * res);
+                setFormData((prev) => ({ ...prev, promoCode: promoCode }));
+            })
+            .catch((err) => {
+                message.error(err);
+            });
     };
 
     return (
@@ -228,16 +249,28 @@ const CheckoutContainer = (props: Props) => {
                                         <div className="checkout__order--item order__item--thumb flex-shrink rounded-2xl overflow-hidden">
                                             <img className="max-h-[120px]" src={item.thumbnail ?? Placeholder} alt="" />
                                         </div>
-                                        <div className="checkout__order--item order__item--info flex flex-col">
+                                        <div className="checkout__order--item order__item--info flex-grow flex flex-col">
                                             <input type="hidden" value={item.id} name="cart__item-id" />
-                                            <h3 className="font-bold text-xl mt-3">{item.name}</h3>
+                                            <div className="flex w-full justify-between items-baseline">
+                                                <h3 className="font-bold text-xl mt-3">
+                                                    <Tooltip
+                                                        className=" max-w-[200px] overflow-ellipsis line-clamp-1"
+                                                        title={item.name}
+                                                    >
+                                                        {item.name}
+                                                    </Tooltip>
+                                                </h3>
+                                                <h4 className="text-2xl font-bold mt-3">
+                                                    {formatCurrency(item.price ?? 0)}
+                                                </h4>
+                                            </div>
                                             <h4 className="text-sm flex-grow mt-2">
                                                 Chi tiết:{' '}
                                                 {item.quantity && item.quantity > 0 ? item.quantity : item.weight}{' '}
                                                 {item.unit === 'kg' ? 'kg' : ''}
                                             </h4>
-                                            <h4 className="text-2xl font-bold mb-1">
-                                                {formatCurrency(item.price ?? 0)}
+                                            <h4 className="text-sm flex-grow max-w-[355.94px] line-clamp-2 pt-1">
+                                                Ghi chú: {item.customerNote.length > 0 ? item.customerNote : 'không có'}
                                             </h4>
                                         </div>
                                     </div>
@@ -252,12 +285,17 @@ const CheckoutContainer = (props: Props) => {
                                             type="text"
                                             name="promoCode"
                                             id=""
-                                            className="w-[80%] mr-3 max-w-[377px] rounded bg-white border border-wh-gray"
+                                            className="w-[80%] mr-3 max-w-[377px] rounded bg-white border border-wh-gray pl-3"
+                                            onChange={(e) => setPromoCode(e.target.value)}
                                         />
                                         <input
                                             type="submit"
                                             value="Áp dụng"
-                                            className="w-[20%] text-sm font-bold rounded px-5 py-2.5 bg-[#b3b3b3]"
+                                            className="w-[20%] text-sm font-bold rounded px-5 py-2.5 bg-[#b3b3b3] cursor-pointer hover:opacity-70 transition-all"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                handleApplyCode();
+                                            }}
                                         />
                                     </div>
                                 </form>
@@ -269,7 +307,7 @@ const CheckoutContainer = (props: Props) => {
                                 </div>
                                 <div className="checkout__summary--header col-span-1 text-sm">Mã giảm giá</div>
                                 <div className="checkout__order--subtotal col-span-1 text-xl text-right font-semibold">
-                                    {discount > 0 ? '-' : '' + formatCurrency(discount)}
+                                    {(discount > 0 ? '-' : '') + formatCurrency(discount)}
                                 </div>
                                 <div className="checkout__summary--header col-span-1 text-sm">Phí ship</div>
                                 <div className="checkout__order--subtotal col-span-1 text-xl text-right font-semibold">

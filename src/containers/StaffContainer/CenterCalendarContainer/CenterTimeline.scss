@@ -1,55 +1,55 @@
-div.ant-timeline-item-label {
-    width: calc(8% - 12px) !important;
-}
+// div.ant-timeline-item-label {
+//     width: calc(8% - 12px) !important;
+// }
 
-div.ant-timeline-item-content {
-    left: calc(7% - 4px) !important;
-    width: calc(79% - 4px) !important;
-    padding-top: 20px;
-}
+// div.ant-timeline-item-content {
+//     left: calc(7% - 4px) !important;
+//     width: calc(79% - 4px) !important;
+//     padding-top: 20px;
+// }
 
-div.ant-timeline-item-tail,
-div.ant-timeline-item-head {
-    left: 7% !important;
-}
+// div.ant-timeline-item-tail,
+// div.ant-timeline-item-head {
+//     left: 7% !important;
+// }
 
-.ant-timeline .ant-timeline-item-head-custom {
-    padding: 0;
-}
+// .ant-timeline .ant-timeline-item-head-custom {
+//     padding: 0;
+// }
 
-li.ant-timeline-item {
-    min-height: 48px;
-    width: 100%;
-    padding-bottom: 0px !important;
-}
+// li.ant-timeline-item {
+//     min-height: 48px;
+//     width: 100%;
+//     padding-bottom: 0px !important;
+// }
 
-div.ant-timeline-item-content {
-    display: flex;
-    flex-direction: column;
-}
+// div.ant-timeline-item-content {
+//     display: flex;
+//     flex-direction: column;
+// }
 
-.plus-sign {
-    width: 30px;
-    height: 30px;
-    position: relative;
-    &:before,
-    &:after {
-        content: '';
-        position: absolute;
-        background-color: rgba(5, 5, 5, 0.06);
-    }
-    &:before {
-        width: 2px;
-        height: 30px;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-    &:after {
-        width: 1040px;
-        height: 2px;
-        top: 50%;
-        left: 100%;
-        transform: translate(-3%, -50%);
-    }
-}
+// .plus-sign {
+//     width: 30px;
+//     height: 30px;
+//     position: relative;
+//     &:before,
+//     &:after {
+//         content: '';
+//         position: absolute;
+//         background-color: rgba(5, 5, 5, 0.06);
+//     }
+//     &:before {
+//         width: 2px;
+//         height: 30px;
+//         top: 50%;
+//         left: 50%;
+//         transform: translate(-50%, -50%);
+//     }
+//     &:after {
+//         width: 1040px;
+//         height: 2px;
+//         top: 50%;
+//         left: 100%;
+//         transform: translate(-3%, -50%);
+//     }
+// }

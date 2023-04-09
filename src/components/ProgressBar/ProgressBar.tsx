@@ -5,9 +5,11 @@ import { formatDateTime } from '../../utils/TimeUtils';
 
 import style from './ProgressBar.module.scss';
 
-type Props = {};
+type Props = {
+    orderState: TrackingState[];
+};
 
-const ProgressBar = (props: Props) => {
+const ProgressBar = ({ orderState }: Props) => {
     const states: TrackingState[] = [
         {
             id: 1,
@@ -30,29 +32,29 @@ const ProgressBar = (props: Props) => {
             order: 5,
         },
     ];
-    const orderState: TrackingState[] = [
-        {
-            id: 1,
-            order: 1,
-            completed: true,
-            time: new Date(),
-            title: 'Xác nhận',
-        },
-        {
-            id: 2,
-            order: 2,
-            completed: true,
-            time: new Date(),
-            title: 'Nhận hàng',
-        },
-        {
-            id: 3,
-            order: 3,
-            completed: false,
-            time: new Date(),
-            title: 'Đang xử lý',
-        },
-    ];
+    // const orderStates: TrackingState[] = [
+    //     {
+    //         id: 1,
+    //         order: 1,
+    //         completed: true,
+    //         time: new Date(),
+    //         title: 'Xác nhận',
+    //     },
+    //     {
+    //         id: 2,
+    //         order: 2,
+    //         completed: true,
+    //         time: new Date(),
+    //         title: 'Nhận hàng',
+    //     },
+    //     {
+    //         id: 3,
+    //         order: 3,
+    //         completed: false,
+    //         time: new Date(),
+    //         title: 'Đang xử lý',
+    //     },
+    // ];
 
     const mergedStates = states.map((state) => {
         const matchingOrderState = orderState.find((order) => order.order === state.order);
@@ -60,15 +62,16 @@ const ProgressBar = (props: Props) => {
         if (matchingOrderState) {
             return { ...state, ...matchingOrderState };
         }
-
         return state;
     });
+    console.log(mergedStates);
 
-    const currentState = orderState.sort((a, b) => a.order - b.order).pop();
+    const currentState = orderState.pop();
     const [progress, setProgress] = useState(0);
     useEffect(() => {
         if (currentState) setProgress(((currentState.order - 1) / (states.length - 1)) * 100);
     }, [currentState]);
+
     return (
         <>
             <div className={clsx(style.progressbar, 'w-full')}>
@@ -93,7 +96,7 @@ const ProgressBar = (props: Props) => {
                         <h4 className={clsx('text-sm font-bold', state.completed ? 'text-sub' : 'text-primary')}>
                             {state.title}
                         </h4>
-                        <h4 className="text-sm text-sub-gray">{state.time && formatDateTime(state.time)}</h4>
+                        <h4 className="text-sm text-sub-gray">{state.time}</h4>
                     </div>
                 ))}
             </div>

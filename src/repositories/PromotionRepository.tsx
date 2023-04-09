@@ -1,4 +1,4 @@
-import { API_PROMOTION } from '../common/Constant';
+import { API_PROMOTION, API_PROMOTION_CODE } from '../common/Constant';
 import { Response } from '../models/CommonModel';
 import { PromotionRequest } from '../models/Promotion/CreatePromotionRequest';
 import { PromotionModel } from '../models/Promotion/PromotionModel';
@@ -33,5 +33,17 @@ export const createPromotion = async (request: PromotionRequest) => {
     });
     if (status !== 200) {
         throw new Error();
+    }
+};
+
+export const applyPromotion = async (promoCode: string): Promise<number> => {
+    const { data } = await instance.get<Response<number>>(API_PROMOTION_CODE.replace('${code}', promoCode), {});
+    if (data.data === null) {
+        throw new Error('Mã khuyến mã không hợp lệ');
+    }
+    if (data.data) {
+        return data.data;
+    } else {
+        return 0;
     }
 };

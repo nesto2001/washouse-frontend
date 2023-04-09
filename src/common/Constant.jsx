@@ -44,15 +44,21 @@ const API_REQUEST_REJECT = '/api/requests/centers/${id}/reject';
 const API_ORDER_EST = '/api/orders/estimated-time';
 const API_ORDER_DELIVERY = '/api/orders/delivery-price';
 const API_ORDER_CREATE = '/api/orders';
+const API_ORDER_SEARCH = '/api/orders/search';
 
 //MANAGER API
 const API_MANAGER_CENTER = '/api/manager/my-center';
 const API_MANAGER_CENTER_ORDER = '/api/manager/my-center/orders';
+const API_MANAGER_CENTER_ORDER_DETAILS = '/api/manager/my-center/orders/${id}';
 const API_MANAGER_CENTER_SERVICE = '/api/manager/services';
 const API_MANAGER_CENTER_CUSTOMER = '/api/manager/my-center/customers';
 
+const API_STAFF_PROCEED_ORDER = '/api/tracking/orders/${orderId}/tracking';
+const API_STAFF_PROCEED_ORDERED_SERVICE = '/api/tracking/orders/${orderId}/order-details/${orderDetailId}/tracking';
+
 //PROMOTION API
 const API_PROMOTION = '/api/promotions';
+const API_PROMOTION_CODE = '/api/promotions/code/${code}';
 
 //CUSTOMER API
 const API_CUSTOMER = '/api/customers';
@@ -62,6 +68,11 @@ const API_NOTIFICATION = '/api/notifications/me-noti';
 const API_NOTIFICATION_READ = '/api/notifications/read';
 
 export {
+    API_ORDER_SEARCH,
+    API_STAFF_PROCEED_ORDER,
+    API_STAFF_PROCEED_ORDERED_SERVICE,
+    API_MANAGER_CENTER_ORDER_DETAILS,
+    API_PROMOTION_CODE,
     API_ORDER_DELIVERY,
     API_MANAGER_CENTER_CUSTOMER,
     API_MANAGER_CENTER_SERVICE,

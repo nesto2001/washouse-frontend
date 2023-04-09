@@ -17,7 +17,7 @@ const OrderListItem = ({ orderedService }: Props) => {
     const slicedList = orderedService.slice(0, itemShowed).map((data) => (
         <div key={`key-${data.name}`} className={`order__item--details flex items-start ${isCollapsed ? '' : 'mb-3'}`}>
             <div className="order__details--thumb w-28 h-24">
-                <img className="w-full h-full object-cover" src={data.thumbnail ?? Placeholder} alt="" />
+                <img className="w-full h-full object-cover" src={data.image ?? Placeholder} alt="" />
             </div>
             <div className="order__details--service ml-4 w-[200px] mr-4">
                 <div className="order__details--name font-bold text-base">{data.name}</div>

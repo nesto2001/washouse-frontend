@@ -4,9 +4,11 @@ import Error from '../../assets/images/error.png';
 import Button from '../Button';
 import './ErrorScreen.scss';
 
-type Props = {};
+type Props = {
+    noNav?: boolean;
+};
 
-const ErrorScreen = (props: Props) => {
+const ErrorScreen = (noNav: Props) => {
     useEffect(() => {
         const style = document.createElement('style');
         style.innerHTML = `
@@ -29,11 +31,15 @@ const ErrorScreen = (props: Props) => {
             <div className="w-5/12 max-w-[664px] my-6">
                 <img src={Error} alt="" />
             </div>
-            <div className=" mt-5">
-                <Button link="/trung-tam" type="primary">
-                    Quay lại trang chủ
-                </Button>
-            </div>
+            {noNav ? (
+                ''
+            ) : (
+                <div className=" mt-5">
+                    <Button link="/trung-tam" type="primary">
+                        Quay lại trang chủ
+                    </Button>
+                </div>
+            )}
         </div>
     );
 };

@@ -2,26 +2,20 @@ import React from 'react';
 import Placeholder from '../../../assets/images/placeholder.png';
 import { formatCurrency } from '../../../utils/FormatUtils';
 import { Tag } from 'antd';
+import { CenterOrderedServiceModel } from '../../../models/Staff/CenterOrderedServiceModel';
+
+type OrderDetailsInfo = {
+    orderedDetails: CenterOrderedServiceModel[];
+};
 
 type Props = {
-    orderedDetails: OrderDetails[];
-    orderTotal: number;
+    details: OrderDetailsInfo;
 };
 
-type OrderDetails = {
-    serviceName: string;
-    serviceCategory: string;
-    measurement: number;
-    unit: string;
-    image: string;
-    price: number | null;
-    orderDetailTrackings?: [];
-};
-
-const CenterOrderedDetailsContainer = ({ orderedDetails, orderTotal }: Props) => {
+const CenterOrderedDetailsContainer = ({ details }: Props) => {
     return (
         <>
-            {orderedDetails.map((det, index) => (
+            {details.orderedDetails.map((det, index) => (
                 <div key={`item-${index}`} className="ordered__item flex jus items-center mb-6">
                     <div className="ordered__item--thumb w-[120px] h-[100px] rounded-lg overflow-hidden">
                         <img
@@ -34,8 +28,8 @@ const CenterOrderedDetailsContainer = ({ orderedDetails, orderTotal }: Props) =>
                         />
                     </div>
                     <div className="ordered__item--details ml-4 w-[300px]">
-                        <div className="font-bold text-lg">{det.serviceName}</div>
-                        <div className="font-medium text-sub-gray text-sm">Phân loại: {det.serviceCategory}</div>
+                        <div className="font-bold text-lg">{det.name}</div>
+                        <div className="font-medium text-sub-gray text-sm">Phân loại: {det.category}</div>
                     </div>
                     <div className="ordered__item--weight w-[100px] text-base font-bold">
                         {det.measurement} <span className="text-sub-gray">{det.unit}</span>
@@ -53,8 +47,8 @@ const CenterOrderedDetailsContainer = ({ orderedDetails, orderTotal }: Props) =>
                     </div>
                 </div>
             ))}
-            <hr />
-            {/* <div className="order__summary flex mt-4 text-2xl font-bold">
+            {/* <hr />
+            <div className="order__summary flex mt-4 text-2xl font-bold">
                 <div className="flex-grow text-right">Tổng đơn hàng</div>
                 <div className="w-[284px] text-right">{formatCurrency(orderTotal)}</div>
             </div> */}

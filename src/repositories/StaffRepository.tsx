@@ -2,7 +2,10 @@ import {
     API_MANAGER_CENTER,
     API_MANAGER_CENTER_CUSTOMER,
     API_MANAGER_CENTER_ORDER,
+    API_MANAGER_CENTER_ORDER_DETAILS,
     API_MANAGER_CENTER_SERVICE,
+    API_STAFF_PROCEED_ORDER,
+    API_STAFF_PROCEED_ORDERED_SERVICE,
 } from '../common/Constant';
 import { ListResponse } from '../models/CommonModel';
 import { PaginationResponse, Response } from '../models/CommonModel';
@@ -13,8 +16,12 @@ import { ManagerServiceItem } from '../models/Manager/ManagerServiceItem';
 import { ManagerServiceResponse } from '../models/Manager/ManagerServiceResponse';
 import { CenterCustomerModel } from '../models/Staff/CenterCustomerModel';
 import { CenterCustomerResponse } from '../models/Staff/CenterCustomerResponse';
+import { CenterOrderDeliveryModel } from '../models/Staff/CenterOrderDeliveryModel';
+import { CenterOrderDetailsModel } from '../models/Staff/CenterOrderDetailsModel';
+import { CenterOrderDetailsReponse } from '../models/Staff/CenterOrderDetailsResponse';
 import { CenterOrderModel } from '../models/Staff/CenterOrderModel';
 import { CenterOrderResponse } from '../models/Staff/CenterOrderResponse';
+import { CenterOrderTrackingModel } from '../models/Staff/CenterOrderTrackingModel';
 import { CenterOrderedServiceModel } from '../models/Staff/CenterOrderedServiceModel';
 import instance from '../services/axios/AxiosInstance';
 import { OperatingDay } from '../types/OperatingDay';
@@ -112,17 +119,95 @@ export const getManagerCenterOrders = async ({
                     name: ordered.serviceName,
                     category: ordered.serviceCategory,
                     measurement: ordered.measurement,
+                    customerNote: ordered.customerNote,
+                    id: ordered.orderDetailId,
+                    image: ordered.image,
+                    orderDetailTrackings: ordered.orderDetailTrackings,
+                    staffNote: ordered.staffNote,
+                    status: ordered.status,
                     price: ordered.price,
                     unit: ordered.unit,
-                    thumbnail: ordered.image,
                 };
             }),
         };
     });
 };
 
+export const getManagerCenterOrderDetails = async (id: string): Promise<CenterOrderDetailsModel> => {
+    const { data } = await instance.get<Response<CenterOrderDetailsReponse>>(
+        API_MANAGER_CENTER_ORDER_DETAILS.replace('${id}', id),
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        },
+    );
+    if (data === null) {
+        throw new Error();
+    }
+    return {
+        id: data.data.id,
+        customerName: data.data.customerName,
+        customerEmail: data.data.customerEmail,
+        customerMessage: data.data.customerMessage,
+        customerMobile: data.data.customerMobile,
+        customerOrdered: data.data.customerOrdered,
+        deliveryPrice: data.data.deliveryPrice,
+        deliveryType: data.data.deliveryType,
+        locationId: data.data.locationId,
+        preferredDropoffTime: data.data.preferredDropoffTime,
+        preferredDeliverTime: data.data.preferredDeliverTime,
+        totalOrderValue: data.data.totalOrderValue,
+        status: data.data.status,
+        orderDeliveries: data.data.orderDeliveries.map((delivery): CenterOrderDeliveryModel => {
+            return {
+                shipperName: delivery.shipperName,
+                shipperPhone: delivery.shipperPhone,
+                date: delivery.deliveryDate,
+                estimated: delivery.estimatedTime,
+                locationId: delivery.locationId,
+                status: delivery.status,
+                type: delivery.deliveryType,
+            };
+        }),
+        orderPayment: {
+            total: data.data.orderPayment.paymentTotal,
+            platformFee: data.data.orderPayment.paymentMethod,
+            promoCode: data.data.orderPayment.promoCode,
+            discount: data.data.orderPayment.discount,
+            status: data.data.orderPayment.status,
+            createdDate: data.data.orderPayment.createdDate,
+            dateIssue: data.data.orderPayment.dateIssue,
+            method: data.data.orderPayment.paymentMethod,
+            updatedDate: data.data.orderPayment.updatedDate,
+        },
+        orderTrackings: data.data.orderTrackings.map((tracking): CenterOrderTrackingModel => {
+            return {
+                status: tracking.status,
+                createdDate: tracking.createdDate,
+                updatedDate: tracking.updatedDate,
+            };
+        }),
+        orderedDetails: data.data.orderedDetails.map((ordered): CenterOrderedServiceModel => {
+            return {
+                name: ordered.serviceName,
+                category: ordered.serviceCategory,
+                measurement: ordered.measurement,
+                customerNote: ordered.customerNote,
+                id: ordered.orderDetailId,
+                image: ordered.image,
+                orderDetailTrackings: ordered.orderDetailTrackings,
+                staffNote: ordered.staffNote,
+                status: ordered.status,
+                price: ordered.price,
+                unit: ordered.unit,
+            };
+        }),
+    };
+};
+
 export const getManagerServices = async (): Promise<ManagerServiceItem[]> => {
-    const { data } = await instance.get<ListResponse<ManagerServiceResponse>>(API_MANAGER_CENTER_SERVICE, {
+    const { data } = await instance.get<PaginationResponse<ManagerServiceResponse>>(API_MANAGER_CENTER_SERVICE, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
@@ -130,7 +215,7 @@ export const getManagerServices = async (): Promise<ManagerServiceItem[]> => {
     if (data === null) {
         throw new Error();
     }
-    return data.data.map((item): ManagerServiceItem => {
+    return data.data.items.map((item): ManagerServiceItem => {
         return {
             id: item.serviceId,
             categoryId: item.categoryId,
@@ -170,4 +255,33 @@ export const getCenterCustomer = async (): Promise<CenterCustomerModel[]> => {
             phone: item.phone,
         };
     });
+};
+
+export const proceedOrder = async (orderId: string, status: string) => {
+    const response = await instance.put<Response<number>>(
+        API_STAFF_PROCEED_ORDER.replace('${orderId}', orderId),
+        { status: status },
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        },
+    );
+    return response;
+};
+
+export const proceedOrderDetails = async (orderId: string, orderDetailId: number, status: string) => {
+    const response = await instance.put<Response<number>>(
+        API_STAFF_PROCEED_ORDERED_SERVICE.replace('${orderId}', orderId).replace(
+            '${orderDetailId}',
+            orderDetailId.toString(),
+        ),
+        { status: status },
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        },
+    );
+    return response;
 };
