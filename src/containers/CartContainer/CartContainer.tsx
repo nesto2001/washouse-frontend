@@ -231,15 +231,15 @@ const CartContainer = () => {
                                 </div>
                             </div>
                             <div className="sitecart text-left border border-wh-gray rounded-2xl p-6 mt-4">
-                                <div className="mb-4 font-bold"> Ghi chú đơn hàng:</div>
+                                <div className="mb-2 font-bold"> Ghi chú đơn hàng:</div>
                                 <TextArea
                                     className="border-[#424242] focus:border-[#424242] hover:border-[#424242] mt-1 mb-2 placeholder:text-[#b3b3b3]"
-                                    style={{ height: 80 }}
+                                    style={{ height: 80, maxHeight: 160 }}
                                     maxLength={100}
-                                    placeholder="Nhập ghi chú về dịch vụ của bạn, VD: Không sử dụng chất tẩy mạnh, ghi chú về loại nước xả vải,..."
-                                    // onChange={(e) => {
-                                    //     setCustomerNote(e.target.value);
-                                    // }}
+                                    placeholder="Nhập ghi chú về đơn hàng của bạn, VD: Không sử dụng chất tẩy mạnh, ghi chú về loại nước xả vải,..."
+                                    onBlur={(e) => {
+                                        //TODO: Handle update cart (note)
+                                    }}
                                 />
                             </div>
                         </div>
