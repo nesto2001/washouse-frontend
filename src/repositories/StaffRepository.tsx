@@ -7,7 +7,7 @@ import {
     API_STAFF_PROCEED_ORDER,
     API_STAFF_PROCEED_ORDERED_SERVICE,
 } from '../common/Constant';
-import { ListResponse, PaginationModal } from '../models/CommonModel';
+import { ListResponse, PaginationModel } from '../models/CommonModel';
 import { PaginationResponse, Response } from '../models/CommonModel';
 import { CenterDeliveryPriceModel } from '../models/DeliveryPrice/DeliveryPriceModel';
 import { ManagerCenterModel } from '../models/Manager/ManagerCenterModel';
@@ -88,7 +88,7 @@ export const getManagerCenterOrders = async ({
     fromDate?: string;
     toDate?: string;
     status?: string;
-}): Promise<PaginationModal<CenterOrderModel>> => {
+}): Promise<PaginationModel<CenterOrderModel>> => {
     const { data } = await instance.get<PaginationResponse<CenterOrderResponse>>(API_MANAGER_CENTER_ORDER, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,

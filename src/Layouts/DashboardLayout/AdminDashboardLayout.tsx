@@ -9,12 +9,14 @@ import {
 import { Layout, Menu, MenuProps, theme } from 'antd';
 import clsx from 'clsx';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../../assets//images/washouse-notag.png';
 import UserPlaceholder from '../../assets/images/user-placeholder.png';
 import LogoSmall from '../../assets/images/washouse-notext.png';
 import DropdownMenu from '../../components/Dropdown/DropdownMenu';
 import style from './DashboardLayout.module.scss';
+import { BiPowerOff } from 'react-icons/bi';
+import { UserModel } from '../../models/User/UserModel';
 
 type Props = {
     children?: JSX.Element;
@@ -51,8 +53,9 @@ type MenuItemData = {
 
 const AdminDashboardLayout = ({ children }: Props) => {
     const navigate = useNavigate();
+    const userJson = localStorage.getItem('currentUser');
     const [collapsed, setCollapsed] = useState(false);
-    const [user, setUser] = useState({ name: 'Le thanh Dat' });
+    const [user, setUser] = useState<UserModel | null>(userJson && JSON.parse(userJson));
     const {
         token: { colorBgContainer },
     } = theme.useToken();
@@ -129,6 +132,29 @@ const AdminDashboardLayout = ({ children }: Props) => {
             }),
         );
     });
+
+    const userDropdown: MenuProps['items'] = [
+        {
+            label: (
+                <>
+                    <Link
+                        to="/"
+                        onClick={() => {
+                            setUser(null);
+                            localStorage.clear();
+                        }}
+                        className="navbar__dropdown--item flex text-sm py-3 px-2 pl-1"
+                        id="logout"
+                    >
+                        <BiPowerOff size={20} className="mr-5" />
+                        Đăng xuất
+                    </Link>
+                </>
+            ),
+            key: '3',
+        },
+    ];
+
     return (
         <Layout hasSider className="text-left">
             <Sider
@@ -170,7 +196,7 @@ const AdminDashboardLayout = ({ children }: Props) => {
                     })}
                     <div className={style.active__staff}>
                         <DropdownMenu
-                            items={items}
+                            items={userDropdown}
                             content={
                                 <div className="flex items-center justify-center">
                                     <div
@@ -181,10 +207,9 @@ const AdminDashboardLayout = ({ children }: Props) => {
                                     >
                                         <img className="w-full h-full object-cover" src={UserPlaceholder} alt="" />
                                     </div>
-                                    {user.name}
+                                    {user?.name}
                                 </div>
                             }
-                            className=""
                         />
                     </div>
                 </Header>

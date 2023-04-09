@@ -1,18 +1,34 @@
-import { Table, Tabs, TabsProps } from 'antd';
+import { Table, Tabs, TabsProps, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { CenterModel } from '../../../models/Center/CenterModel';
-import { getAllCenter } from '../../../repositories/CenterRepository';
+import { AdminCenterModel } from '../../../models/Admin/AdminCenterModel';
+import { getCenterList } from '../../../repositories/AdminRepository';
+import { CenterStatusMap } from '../../../mapping/CenterStatusMap';
+import { BadgeStatusMap } from '../../../mapping/BadgeStatusMap';
+import { CenterBadgeStatusMap } from '../../../mapping/CenterBadgeStatusMap';
 
 type Props = {};
+
+export type SearchParamsData = {
+    page?: number;
+    pageSize?: number;
+    status: string;
+    searchString: string | null;
+};
 
 const AdminCentersContainer = (props: Props) => {
     const location = useLocation();
     const { pathname } = location;
-    const [centers, setCenters] = useState<CenterModel[]>();
-    const [activeKey, setActiveKey] = useState<string>(location.state?.keyTab ?? '1');
-    const columns: ColumnsType<CenterModel> = [
+    const [centers, setCenters] = useState<AdminCenterModel[]>();
+    const [activeKey, setActiveKey] = useState<string>('All');
+
+    const [searchParams, setSearchParams] = useState<SearchParamsData>({
+        searchString: null,
+        status: '',
+    });
+
+    const columns: ColumnsType<AdminCenterModel> = [
         {
             title: 'Mã',
             dataIndex: 'id',
@@ -36,43 +52,77 @@ const AdminCentersContainer = (props: Props) => {
             dataIndex: 'address',
             key: 'address',
         },
+        {
+            title: 'Số điện thoại',
+            dataIndex: 'phone',
+            key: 'phone',
+        },
+        {
+            title: 'Quản lý',
+            dataIndex: 'managerName',
+            key: 'managerName',
+        },
+        {
+            title: 'Trạng thái',
+            dataIndex: 'status',
+            key: 'status',
+            render: (value) => <Tag color={CenterBadgeStatusMap[value]}>{CenterStatusMap[value]}</Tag>,
+        },
     ];
 
     useEffect(() => {
         console.log(activeKey);
+
         const fetchData = async () => {
-            return await getAllCenter({ sort: 'id' });
+            return await getCenterList(searchParams);
         };
-        fetchData().then((res) => {
-            setCenters(res);
-        });
+        fetchData()
+            .then((res) => {
+                setCenters(res);
+            })
+            .catch(() => {
+                setCenters([]);
+            });
     }, [activeKey]);
 
     const centerTab: TabsProps['items'] = [
         {
-            key: '1',
+            key: 'All',
             label: `Tất cả`,
         },
         {
-            key: '2',
+            key: 'Active',
             label: `Đang hoạt động`,
         },
         {
-            key: '4',
+            key: 'Inactive',
             label: `Tạm ngưng`,
         },
         {
-            key: '5',
+            key: 'Updating',
+            label: `Đang cập nhật`,
+        },
+        {
+            key: 'Closed',
+            label: `Đóng cửa`,
+        },
+        {
+            key: 'Rejected',
+            label: `Từ chối`,
+        },
+        {
+            key: 'Suspended',
             label: `Vi phạm`,
         },
     ];
-    useEffect(() => {
-        const keyTab = pathname === '/admin/centers/' ? '1' : '3';
-        setActiveKey(keyTab);
-    }, [pathname]);
 
     const onChange = (key: string) => {
         setActiveKey(key);
+        if (key !== 'All') {
+            setSearchParams((prev) => ({ ...prev, status: key }));
+        } else {
+            setSearchParams((prev) => ({ ...prev, status: '' }));
+        }
     };
 
     return (

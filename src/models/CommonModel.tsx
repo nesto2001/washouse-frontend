@@ -22,7 +22,7 @@ export type ListResponse<T> = {
     data: T[];
 };
 
-export type PaginationModal<T> = {
+export type PaginationModel<T> = {
     pageNumber: number;
     itemsPerPage: number;
     totalItems: number;

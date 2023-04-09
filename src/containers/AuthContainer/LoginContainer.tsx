@@ -26,8 +26,7 @@ const LoginContainer = () => {
                 return await login({ phone: loginForm.phone.trim(), password: loginForm.password.trim() });
             };
             fetchData().then((res) => {
-                console.log(res);
-                if (res.status === 200 && res.data.statusCode === 0) {
+                if (res.status === 200) {
                     localStorage.setItem('accessToken', res.data.data.accessToken);
                     localStorage.setItem('refreshToken', res.data.data.refreshToken);
                     const fetchData = async () => {

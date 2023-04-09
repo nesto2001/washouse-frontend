@@ -1,62 +1,89 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 import './CustomerContainer.scss';
+import { CenterOrderModel } from '../../models/Staff/CenterOrderModel';
+import { getCustomerOrders } from '../../repositories/CustomerRepository';
+import CustomerOrderList from '../../components/CustomerOrderList/CustomerOrderList';
 
 type Props = {};
 
-const onChange = (key: string) => {
-    console.log(key);
+type SearchParamsData = {
+    searchString?: string;
+    searchType: string;
+    status?: string;
+    page?: number;
+    pageSize?: number;
+    fromDate?: string;
+    toDate?: string;
 };
 
 const items: TabsProps['items'] = [
     {
-        key: '1',
+        key: 'All',
         label: `Tất cả`,
-        children: `Tất cả đơn hàng`,
     },
     {
-        key: '2',
+        key: 'Pending',
         label: `Đang chờ`,
-        children: `Đơn hàng đang chờ`,
     },
     {
-        key: '3',
+        key: 'Confirmed',
         label: `Xác nhận`,
-        children: `Đơn hàng đã xác nhận`,
     },
     {
-        key: '4',
+        key: 'Processing',
         label: `Đang xử lý`,
-        children: `Đơn hàng đang xử lý`,
     },
     {
-        key: '5',
+        key: 'Delivering',
         label: `Vận chuyển`,
-        children: `Đơn hàng đang vận chuyển`,
     },
     {
-        key: '6',
+        key: 'Completed',
         label: `Hoàn thành`,
-        children: `Đơn hàng đã hoàn thành`,
     },
     {
-        key: '7',
+        key: 'Cancelled',
         label: `Đã hủy`,
-        children: `Đơn hàng đã hủy`,
     },
 ];
 
 const CustomerOrdersContainer = (props: Props) => {
+    const [customerOrder, setcustomerOrder] = useState<CenterOrderModel[]>();
+    const [searchParams, setSearchParams] = useState<SearchParamsData>({
+        searchType: 'id',
+        page: 1,
+        pageSize: 10,
+    });
+
+    useEffect(() => {
+        const fetchData = async () => {
+            return await getCustomerOrders(searchParams);
+        };
+        fetchData().then((res) => {
+            setcustomerOrder(res.items);
+        });
+    }, [searchParams]);
+
+    const onChange = (key: string) => {
+        if (key !== 'All') {
+            setSearchParams((prev) => ({ ...prev, status: key }));
+        } else {
+            setSearchParams((prev) => ({ ...prev, status: undefined }));
+        }
+    };
+
     return (
         <>
             <Tabs
-                defaultActiveKey="1"
+                defaultActiveKey="All"
                 items={items}
                 onChange={onChange}
                 className="w-full"
                 tabBarStyle={{ display: 'flex', justifyContent: 'space-between' }}
             />
+            {customerOrder ? <CustomerOrderList customerOrders={customerOrder} /> : <div className="">No data</div>}
         </>
     );
 };

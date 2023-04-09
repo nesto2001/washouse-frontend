@@ -34,6 +34,9 @@ const API_DISTRICT_WARDS = '/api/districts/${id}/wards';
 const API_LOCATION_SEARCH = '/api/locations/search';
 const API_LOCATION_DETAILS = 'api/locations/${locationId}';
 
+//ADMIN API
+const API_ADMIN_CENTER = '/api/admin/centers';
+
 //CENTER REQUEST API
 const API_REQUEST = '/api/requests/centers';
 const API_REQUEST_DETAILS = '/api/requests/centers/${id}';
@@ -63,12 +66,15 @@ const API_PROMOTION_CENTER = '/api/promotions/center/${id}';
 
 //CUSTOMER API
 const API_CUSTOMER = '/api/customers';
+const API_CUSTOMER_ORDER = '/api/orders';
 
 //NOTIFICATION API
 const API_NOTIFICATION = '/api/notifications/me-noti';
 const API_NOTIFICATION_READ = '/api/notifications/read';
 
 export {
+    API_CUSTOMER_ORDER,
+    API_ADMIN_CENTER,
     API_ORDER_SEARCH,
     API_STAFF_PROCEED_ORDER,
     API_STAFF_PROCEED_ORDERED_SERVICE,
