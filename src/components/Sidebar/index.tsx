@@ -14,9 +14,20 @@ type Props = {
     setServicesCheck: React.Dispatch<React.SetStateAction<string[]>>;
     budgetRange: BudgetType;
     setBudgetRange: React.Dispatch<React.SetStateAction<BudgetType>>;
+    toggleOnlinePayment: () => void;
+    toggleDelivery: () => void;
 };
 
-const Sidebar = ({ setSorting, setServicesCheck, setBudgetRange, servicesCheck, sorting, budgetRange }: Props) => {
+const Sidebar = ({
+    setSorting,
+    setServicesCheck,
+    setBudgetRange,
+    servicesCheck,
+    sorting,
+    budgetRange,
+    toggleOnlinePayment,
+    toggleDelivery,
+}: Props) => {
     const [checkboxes, setCheckboxes] = useState<Option[]>([]);
 
     const radios: Option[] = [
@@ -131,7 +142,19 @@ const Sidebar = ({ setSorting, setServicesCheck, setBudgetRange, servicesCheck, 
             <div className="sidebar__service--extra">
                 <div className="sidebar__section--header font-bold text-base mb-3 text-sub">Dịch vụ bổ sung</div>
                 <div className="sidebar__section--content">
-                    <Checkbox name="additions" optionsList={additions} />
+                    <Checkbox
+                        name="additions"
+                        optionsList={additions}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            const value = event.target.value;
+                            if (value === 'delivery') {
+                                toggleDelivery();
+                            }
+                            if (value === 'payment-online') {
+                                toggleOnlinePayment();
+                            }
+                        }}
+                    />
                 </div>
             </div>
         </div>

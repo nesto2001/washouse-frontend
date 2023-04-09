@@ -21,6 +21,8 @@ export const getAllCenter = async ({
     categoryServices,
     budgetRange,
     sort,
+    hasOnlinePayment,
+    hasDelivery,
 }: {
     lat?: number;
     long?: number;
@@ -28,6 +30,8 @@ export const getAllCenter = async ({
     categoryServices?: string;
     budgetRange?: string;
     sort: string;
+    hasOnlinePayment?: boolean;
+    hasDelivery?: boolean;
 }): Promise<CenterModel[]> => {
     const { data } = await instance.get<PaginationResponse<CenterResponse>>(API_CENTER, {
         params: {
@@ -37,6 +41,8 @@ export const getAllCenter = async ({
             BudgetRange: budgetRange,
             CategoryServices: categoryServices,
             SearchString: searchString,
+            HasOnlinePayment: hasOnlinePayment,
+            HasDelivery: hasDelivery,
         },
     });
     return data.data.items.map((item): CenterModel => {

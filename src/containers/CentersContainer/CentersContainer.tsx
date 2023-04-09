@@ -24,6 +24,7 @@ const CentersContainer = () => {
     const [sorting, setSorting] = useState<string>('location');
     const [servicesCheck, setServicesCheck] = useState<string[]>([]);
     const [hasDelivery, setHasDelivery] = useState<boolean>(false);
+    const [hasOnlinePayment, setHasOnlinePayment] = useState<boolean>(false);
     const [budgetRange, setBudgetRange] = useState<BudgetType>({
         min: 0,
         max: 0,
@@ -33,7 +34,7 @@ const CentersContainer = () => {
 
     useEffect(() => {
         getCurrentLocation(setState, setStateNoLocation);
-    }, [sorting, servicesCheck, location]);
+    }, [sorting, servicesCheck, location, hasOnlinePayment, hasDelivery]);
 
     const setState = ({ latitude, longitude }: { latitude: number; longitude: number }) => {
         setIsLoading(true);
@@ -47,6 +48,8 @@ const CentersContainer = () => {
                 sort: sorting,
                 categoryServices: servicesCheck.toString(),
                 searchString: searchParams.get('search') ?? undefined,
+                hasDelivery: hasDelivery,
+                hasOnlinePayment: hasOnlinePayment,
             });
         };
         fetchData()
@@ -94,6 +97,8 @@ const CentersContainer = () => {
                 setServicesCheck={setServicesCheck}
                 budgetRange={budgetRange}
                 setBudgetRange={setBudgetRange}
+                toggleDelivery={() => setHasDelivery(!hasDelivery)}
+                toggleOnlinePayment={() => setHasOnlinePayment(!hasOnlinePayment)}
             />
             <div className="flex basis-5/6">
                 <div className="centers__listing basis-3/5 pt-8 px-10">
