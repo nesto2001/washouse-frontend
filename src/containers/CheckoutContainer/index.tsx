@@ -240,7 +240,7 @@ const CheckoutContainer = (props: Props) => {
                                 </div>
                                 <div className="checkout__center--info ml-6 w-[271px]">
                                     <h1 className="text-xl font-bold pt-3">{center?.title}</h1> {/* center.title */}
-                                    <h3 className="text-sm mt-1">{center?.address}, TP. Hồ Chí Minh</h3>{' '}
+                                    <h3 className="text-sm mt-1">{center?.address}, TP. Hồ Chí Minh</h3>
                                     {/* center.address */}
                                     <h3 className="text-sm">
                                         {center?.centerOperatingHours[today]?.start &&
@@ -248,17 +248,17 @@ const CheckoutContainer = (props: Props) => {
                                                 <>
                                                     <FaRegClock className="mr-2 inline-block" />
                                                     <span className="leading-7">
-                                                        {center?.centerOperatingHours[today].start?.substring(0, 5)} -{' '}
+                                                        {center?.centerOperatingHours[today].start?.substring(0, 5)} -
                                                         {center?.centerOperatingHours[today].end?.substring(0, 5)}
                                                     </span>
                                                 </>
                                             )}
-                                    </h3>{' '}
+                                    </h3>
                                     {/* center.operationHour */}
                                     <h1 className="text-sm">
                                         <FaPhoneAlt className="inline-block mr-2" />
                                         <span className="inline-block align-middle">{center?.phone}</span>
-                                    </h1>{' '}
+                                    </h1>
                                     {/* center.phone */}
                                 </div>
                             </div>
@@ -299,14 +299,14 @@ const CheckoutContainer = (props: Props) => {
                                                         className="text-sm flex
                 -                                           grow mt-2"
                                                     >
-                                                        Chi tiết:{' '}
+                                                        Chi tiết:
                                                         {item.quantity && item.quantity > 0
                                                             ? item.quantity
-                                                            : item.weight}{' '}
+                                                            : item.weight}
                                                         {item.unit === 'kg' ? 'kg' : ''}
                                                     </h4>
                                                     <h4 className="text-sm flex-grow max-w-[355.94px] line-clamp-2 pt-1">
-                                                        Ghi chú:{' '}
+                                                        Ghi chú:
                                                         {item.customerNote.length > 0 ? item.customerNote : 'không có'}
                                                     </h4>
                                                 </div>
@@ -361,7 +361,7 @@ const CheckoutContainer = (props: Props) => {
                                 </div>
                             </div>
                         </div>
-                        ;{' '}
+                        ;
                     </div>
                 </div>
             ) : (

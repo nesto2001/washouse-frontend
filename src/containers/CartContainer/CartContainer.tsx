@@ -1,27 +1,22 @@
-import { useEffect, useState, useRef } from 'react';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import { Space, Tooltip, message } from 'antd';
+import { useEffect, useState } from 'react';
 import { FaPhoneAlt, FaRegClock, FaTrashAlt } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import EmptyCart from '../../assets/images/empty-cart.png';
 import Placeholder from '../../assets/images/placeholder.png';
 import WHButton from '../../components/Button';
+import PriceTable from '../../components/PriceTable';
 import StatusTag from '../../components/StatusTag';
 import { CenterModel } from '../../models/Center/CenterModel';
-import {
-    addMeasurement,
-    decreaseCartItem,
-    editCartItem,
-    increaseCartItem,
-    removeItem,
-} from '../../reducers/CartReducer';
+import { decreaseCartItem, increaseCartItem, removeItem } from '../../reducers/CartReducer';
 import { getCenterBrief } from '../../repositories/CenterRepository';
 import { RootState } from '../../store/CartStore';
+import { PriceRange } from '../../types/PriceRange';
 import { formatCurrency, formatLink } from '../../utils/FormatUtils';
 import { compareTime, getToday } from '../../utils/TimeUtils';
-import { Space, Tooltip, message } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
-import PriceTable from '../../components/PriceTable';
-import { PriceRange } from '../../types/PriceRange';
+import TextArea from 'antd/es/input/TextArea';
 
 type Props = {};
 
@@ -225,7 +220,7 @@ const CartContainer = () => {
                                                     </div>
                                                 </div>
                                                 <div className="w-full">
-                                                    Ghi chú:{' '}
+                                                    Ghi chú:
                                                     {item.customerNote.trim().length > 0
                                                         ? item.customerNote
                                                         : 'không có'}
@@ -234,6 +229,18 @@ const CartContainer = () => {
                                         </div>
                                     ))}
                                 </div>
+                            </div>
+                            <div className="sitecart text-left border border-wh-gray rounded-2xl p-6 mt-4">
+                                <div className="mb-4 font-bold"> Ghi chú đơn hàng:</div>
+                                <TextArea
+                                    className="border-[#424242] focus:border-[#424242] hover:border-[#424242] mt-1 mb-2 placeholder:text-[#b3b3b3]"
+                                    style={{ height: 80 }}
+                                    maxLength={100}
+                                    placeholder="Nhập ghi chú về dịch vụ của bạn, VD: Không sử dụng chất tẩy mạnh, ghi chú về loại nước xả vải,..."
+                                    // onChange={(e) => {
+                                    //     setCustomerNote(e.target.value);
+                                    // }}
+                                />
                             </div>
                         </div>
                         <div className="sitecart__sideinfo basis-1/3">
