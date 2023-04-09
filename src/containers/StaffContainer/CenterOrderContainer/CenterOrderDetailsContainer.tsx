@@ -37,7 +37,7 @@ const CenterOrderDetailsContainer = (props: Props) => {
         setConfirmProceedLoading(true);
         if (orderDetails) {
             const proceed = async () => {
-                return await proceedOrder(orderDetails.id, 'Confirmed');
+                return await proceedOrder(orderDetails.id);
             };
             proceed()
                 .then((res) => {

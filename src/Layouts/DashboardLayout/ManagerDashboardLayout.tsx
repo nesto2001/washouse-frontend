@@ -45,6 +45,9 @@ const ManagerDashboardLayout = ({ children }: Props) => {
             return await getManagerCenter();
         };
         fetchData().catch((error) => {
+            if (user?.roleType == 'User') {
+                navigate('/provider/registration');
+            }
             // if (error) {
             //     navigate('/provider/registration');
             // }
@@ -65,11 +68,12 @@ const ManagerDashboardLayout = ({ children }: Props) => {
             icon: <SolutionOutlined />,
             label: <Link to="/provider/orders">Đơn hàng</Link>,
         },
-        {
-            key: '3',
-            icon: <CarOutlined />,
-            label: 'Vận chuyển',
-        },
+        // {
+        //     key: '3',
+        //     icon: <CarOutlined />,
+        //     label: 'Vận chuyển',
+        // },
+        // uncomment
         {
             key: '4',
             icon: <CalendarOutlined />,
@@ -91,9 +95,10 @@ const ManagerDashboardLayout = ({ children }: Props) => {
             label: 'Trung tâm',
             children: [
                 { key: '8', label: <Link to="/provider/settings/center/profile">Hồ sơ trung tâm</Link> },
-                { key: '9', label: <Link to="/provider/settings/center/rating">Đánh giá trung tâm</Link> },
-                { key: '10', label: <Link to="/provider/settings/center/">Thiết lập trung tâm</Link> },
-                { key: '11', label: <Link to="/provider/settings/center/staff">Danh sách nhân viên</Link> },
+                // { key: '9', label: <Link to="/provider/settings/center/rating">Đánh giá trung tâm</Link> },
+                // { key: '10', label: <Link to="/provider/settings/center/">Thiết lập trung tâm</Link> },
+                // { key: '11', label: <Link to="/provider/settings/center/staff">Danh sách nhân viên</Link> },
+                // uncomment
             ],
         },
         {

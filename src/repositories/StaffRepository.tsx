@@ -263,10 +263,9 @@ export const getCenterCustomer = async (): Promise<CenterCustomerModel[]> => {
     });
 };
 
-export const proceedOrder = async (orderId: string, status: string) => {
+export const proceedOrder = async (orderId: string) => {
     const response = await instance.put<Response<number>>(
         API_STAFF_PROCEED_ORDER.replace('${orderId}', orderId),
-        { status: status },
         {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
@@ -276,13 +275,12 @@ export const proceedOrder = async (orderId: string, status: string) => {
     return response;
 };
 
-export const proceedOrderDetails = async (orderId: string, orderDetailId: number, status: string) => {
+export const proceedOrderDetails = async (orderId: string, orderDetailId: number) => {
     const response = await instance.put<Response<number>>(
         API_STAFF_PROCEED_ORDERED_SERVICE.replace('${orderId}', orderId).replace(
             '${orderDetailId}',
             orderDetailId.toString(),
         ),
-        { status: status },
         {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
