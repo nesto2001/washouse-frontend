@@ -66,7 +66,7 @@ const ProgressBar = ({ orderState }: Props) => {
     });
     console.log(mergedStates);
 
-    const currentState = orderState.pop();
+    const currentState = orderState.slice(-1)[0];
     const [progress, setProgress] = useState(0);
     useEffect(() => {
         if (currentState) setProgress(((currentState.order - 1) / (states.length - 1)) * 100);
