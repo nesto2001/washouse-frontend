@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Tabs } from 'antd';
+import { Spin, Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 import './CustomerContainer.scss';
 import { CenterOrderModel } from '../../models/Staff/CenterOrderModel';
 import { getCustomerOrders } from '../../repositories/CustomerRepository';
 import CustomerOrderList from '../../components/CustomerOrderList/CustomerOrderList';
+import { CustomerOrderModel } from '../../models/Customer/CustomerOrderModel';
+import { UserModel } from '../../models/User/UserModel';
+import Loading from '../../components/Loading/Loading';
 
 type Props = {};
 
@@ -50,7 +53,9 @@ const items: TabsProps['items'] = [
 ];
 
 const CustomerOrdersContainer = (props: Props) => {
-    const [customerOrder, setcustomerOrder] = useState<CenterOrderModel[]>();
+    const userJson = localStorage.getItem('currentUser');
+    const user: UserModel = userJson && JSON.parse(userJson);
+    const [customerOrder, setcustomerOrder] = useState<CustomerOrderModel[]>();
     const [searchParams, setSearchParams] = useState<SearchParamsData>({
         searchType: 'id',
         page: 1,
@@ -83,7 +88,11 @@ const CustomerOrdersContainer = (props: Props) => {
                 className="w-full"
                 tabBarStyle={{ display: 'flex', justifyContent: 'space-between' }}
             />
-            {customerOrder ? <CustomerOrderList customerOrders={customerOrder} /> : <div className="">No data</div>}
+            {customerOrder ? (
+                <CustomerOrderList customerOrders={customerOrder} customerPhone={user.phone} />
+            ) : (
+                <Loading />
+            )}
         </>
     );
 };

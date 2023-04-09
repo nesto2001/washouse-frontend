@@ -46,14 +46,16 @@ const UpdateAddressContainer = (props: Props) => {
         };
         fetchData().then((res) => {
             setUserProfile(res);
-
-            const fetchLocation = async () => {
-                return await getLocation(res.locationId ?? 0);
-            };
-            fetchLocation().then((res) => {
-                setUserAddress(res);
-                setIsLoading(false);
-            });
+            if (res.locationId) {
+                const fetchLocation = async () => {
+                    return await getLocation(res.locationId ?? 0);
+                };
+                fetchLocation().then((res) => {
+                    setUserAddress(res);
+                    setIsLoading(false);
+                });
+            }
+            setIsLoading(false);
         });
     }, []);
 

@@ -2,6 +2,8 @@ import { API_ACCOUNT_DETAILS, API_CUSTOMER, API_CUSTOMER_ORDER } from '../common
 import { AccountModel } from '../models/Account/AccountModel';
 import { AccountResponse } from '../models/Account/AccountResponse';
 import { PaginationModel, PaginationResponse } from '../models/CommonModel';
+import { CustomerOrderModel } from '../models/Customer/CustomerOrderModel';
+import { CustomerOrderResponse } from '../models/Customer/CustomerOrderResponse';
 import { UpdateCustomerRequest } from '../models/Customer/UpdateCustomerRequest';
 import { CenterOrderModel } from '../models/Staff/CenterOrderModel';
 import { CenterOrderResponse } from '../models/Staff/CenterOrderResponse';
@@ -49,8 +51,8 @@ export const getCustomerOrders = async ({
     fromDate?: string;
     toDate?: string;
     status?: string;
-}): Promise<PaginationModel<CenterOrderModel>> => {
-    const { data } = await instance.get<PaginationResponse<CenterOrderResponse>>(API_CUSTOMER_ORDER, {
+}): Promise<PaginationModel<CustomerOrderModel>> => {
+    const { data } = await instance.get<PaginationResponse<CustomerOrderResponse>>(API_CUSTOMER_ORDER, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
@@ -71,9 +73,11 @@ export const getCustomerOrders = async ({
         pageNumber: data.data.pageNumber,
         totalItems: data.data.totalItems,
         totalPages: data.data.totalPages,
-        items: data.data.items.map((item): CenterOrderModel => {
+        items: data.data.items.map((item): CustomerOrderModel => {
             return {
                 id: item.orderId,
+                centerId: item.centerId,
+                centerName: item.centerName,
                 customerName: item.customerName,
                 discount: item.discount,
                 orderedDate: item.orderDate,

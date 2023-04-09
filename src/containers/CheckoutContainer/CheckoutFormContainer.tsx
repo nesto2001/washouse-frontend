@@ -1190,16 +1190,11 @@ export const Step2 = ({
                                             }}
                                         />
                                     </Form.Item>
-                                    {/* <TimePicker
-                                format={format}
-                                placeholder={'Giờ lấy đon'}
-                                // onChange={(range) => handleTimeOnChange(day, range)}
-                            /> */}
                                 </Space.Compact>
                             )}
                         </div>
                         <div className="col-span-1">
-                            <div className="delivery__form--header font-medium text-base mb-3">
+                            {/* <div className="delivery__form--header font-medium text-base mb-3">
                                 Thời gian trả đơn{' '}
                                 <Tooltip
                                     title={
@@ -1241,14 +1236,9 @@ export const Step2 = ({
                                                 setSelectedDeliverTime(time);
                                             }}
                                         />
-                                        {/* <TimePicker
-                                format={format}
-                                placeholder={'Giờ lấy đon'}
-                                // onChange={(range) => handleTimeOnChange(day, range)}
-                            /> */}
                                     </Form.Item>
                                 </Space.Compact>
-                            )}
+                            )} */}
                         </div>
                     </div>
                     {renderDeliveryForm()}

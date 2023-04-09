@@ -1,6 +1,6 @@
 export const OrderStatusMap: { [key: string]: string } = {
     None: 'Chưa có',
-    Received: 'Hỏng biết',
+    Received: 'Đang chờ',
     Pending: 'Đang chờ',
     Confirmed: 'Xác nhận',
     confirmed: 'Xác nhận',

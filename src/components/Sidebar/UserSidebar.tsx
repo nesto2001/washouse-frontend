@@ -79,12 +79,13 @@ const UserSidebar = ({ basis }: UserSidebarProps) => {
                 key: 'order',
                 icon: Order,
             },
-            {
-                label: 'Thông báo',
-                url: '/user/notification',
-                key: 'noti',
-                icon: Noti,
-            },
+            // {
+            //     label: 'Thông báo',
+            //     url: '/user/notification',
+            //     key: 'noti',
+            //     icon: Noti,
+            // },
+            //uncomment
         ],
         [],
     );
