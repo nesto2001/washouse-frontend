@@ -87,28 +87,32 @@ const CenterCalendarContainer = (props: Props) => {
                 );
                 setIsLoading(false);
             })
-            .catch(() => {});
+            .catch(() => {
+                setIsLoading(false);
+            });
     }, []);
 
     const dateCellRender = (value: Dayjs) => {
         const stringValue = value.format('DD-MM-YYYY');
-        const listData = orderList.filter(({ date }) => date.split(' ')[0] === stringValue);
-        return (
-            <Tooltip title={`${listData.length} đơn hàng`}>
-                <ul className="events">
-                    {listData.map((item) => (
-                        <li key={item.content} className="mb-1">
-                            <Link to={`/provider/orders/${item.id}`}>
-                                <Badge
-                                    status={BadgeStatusMap[item.status] as BadgeProps['status']}
-                                    text={item.content}
-                                />
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
-            </Tooltip>
-        );
+        if (orderList) {
+            const listData = orderList.filter(({ date }) => date.split(' ')[0] === stringValue);
+            return (
+                <Tooltip title={`${listData.length} đơn hàng`}>
+                    <ul className="events">
+                        {listData.map((item) => (
+                            <li key={item.content} className="mb-1">
+                                <Link to={`/provider/orders/${item.id}`}>
+                                    <Badge
+                                        status={BadgeStatusMap[item.status] as BadgeProps['status']}
+                                        text={item.content}
+                                    />
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </Tooltip>
+            );
+        }
     };
 
     const onSelect = (value: Dayjs) => {

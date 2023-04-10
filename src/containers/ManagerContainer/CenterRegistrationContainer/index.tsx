@@ -12,6 +12,7 @@ import CenterContactForm from './CenterContactForm';
 import CenterDeliveryForm from './CenterDeliveryForm';
 import { getManagerCenter } from '../../../repositories/StaffRepository';
 import { generateRandomString } from '../../../utils/CommonUtils';
+import Loading from '../../../components/Loading/Loading';
 
 export type CreateCenterFormData = {
     name: string;
@@ -189,6 +190,10 @@ const CenterRegistrationContainer = (props: Props) => {
         border: `1px dashed ${token.colorBorder}`,
         marginTop: 16,
     };
+
+    if (isLoading) {
+        return <Loading screen />;
+    }
 
     return (
         <>

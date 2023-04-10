@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { CategoryOptionsModel } from '../../../models/Category/CategoryOptionsModel';
 import { getCategoryOptions } from '../../../repositories/ServiceCategoryRepository';
 import { createService } from '../../../repositories/ServiceRepository';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const rangeConfig = {
     rules: [{ type: 'array' as const, required: true, message: 'Please select time!' }],
@@ -42,6 +42,8 @@ type CreateServiceFormData = {
 const CreateServiceContainer = () => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [priceType, setPriceType] = useState(true);
+    const navigate = useNavigate();
+
     const [categoryOptions, setCategoryOptions] = useState<CategoryOptionsModel[]>([
         { id: 0, name: 'Chọn loại dịch vụ' },
     ]);
@@ -61,7 +63,16 @@ const CreateServiceContainer = () => {
             minPrice: values.minPrice ?? null,
             serviceGalleries: values.serviceGalleries ?? [],
             prices: values.prices ?? null,
-        });
+        })
+            .then((res) => {
+                if (res) {
+                    message.success('Tạo dịch vụ thành công');
+                    navigate('/provider/services');
+                }
+            })
+            .catch((err) => {
+                message.error('Tạo dịch vụ thất bại, vui lòng thử lại sau');
+            });
     };
 
     const handleChange = (info: UploadChangeParam) => {
@@ -90,7 +101,7 @@ const CreateServiceContainer = () => {
         fetchData().then((res) => {
             setCategoryOptions((prev) => [...prev, ...res]);
         });
-    }, []);
+    }, [form]);
 
     const handlePriceTypeChange = (value: boolean) => {
         setPriceType(value);

@@ -96,7 +96,7 @@ export const getManagerCenterOrders = async ({
         },
         params: {
             page: page,
-            pageSize: pageSize,
+            PageSize: pageSize,
             searchString: searchString,
             fromDate: fromDate,
             toDate: toDate,

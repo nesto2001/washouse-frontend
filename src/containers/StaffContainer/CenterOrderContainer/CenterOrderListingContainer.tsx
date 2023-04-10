@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 
 import { CenterOrderModel } from '../../../models/Staff/CenterOrderModel';
-import { Form, Input, Select, Space, Spin, Tabs, TabsProps, message } from 'antd';
+import { Empty, Form, Input, Select, Space, Spin, Tabs, TabsProps, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { getManagerCenterOrders } from '../../../repositories/StaffRepository';
 import OrderList from '../../../components/StaffOrderList/OrderList';
 import { OrderStatusMap } from '../../../mapping/OrderStatusMap';
 import { Paging } from '../../../types/Common/Pagination';
+import ErrorScreen from '../../../components/ErrorScreen/ErrorScreen';
 
 type Props = {};
 
@@ -17,12 +18,12 @@ const searchType = [
 
 export type SearchParamsData = {
     searchString?: string;
-    searchType: string;
-    status: string;
+    searchType?: string;
+    status?: string;
     page?: number;
     pageSize?: number;
-    fromDate: string;
-    toDate: string;
+    fromDate?: string;
+    toDate?: string;
 };
 
 const CenterOrderListingContainer = (props: Props) => {
@@ -30,16 +31,11 @@ const CenterOrderListingContainer = (props: Props) => {
     const [form] = Form.useForm();
     const [msg, contextHolder] = message.useMessage();
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isError, setIsError] = useState<boolean>(false);
     const [paging, setPaging] = useState<Paging>();
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [searchParams, setSearchParams] = useState<SearchParamsData>({
-        searchString: '',
         searchType: 'id',
-        status: '',
-        fromDate: '',
-        page: 1,
-        pageSize: 10,
-        toDate: '',
     });
 
     const [centerOrders, setCenterOrders] = useState<CenterOrderModel[]>();
@@ -69,6 +65,7 @@ const CenterOrderListingContainer = (props: Props) => {
                 setIsLoading(false);
             })
             .catch((err) => {
+                setIsError(true);
                 msg.error('Không tìm thấy đơn hàng mong muốn');
                 setIsLoading(false);
                 setCenterOrders([]);
@@ -161,6 +158,9 @@ const CenterOrderListingContainer = (props: Props) => {
             ),
         },
     ];
+    if (isError) {
+        return <Empty description="Không có đơn hàng nào" className="mb-5" />;
+    }
 
     return (
         <>
