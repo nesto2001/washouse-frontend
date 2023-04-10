@@ -167,7 +167,7 @@ const CenterRegistrationContainer = (props: Props) => {
             return await createCenter(centerRequest);
         };
         fetchData().then((res) => {
-            if (res.statusCode == 200) {
+            if (res) {
                 message.success('Đã đăng ký trung tâm thành công, vui lòng chờ duyệt bởi quản trị viên.');
                 navigate('/provider/settings/center/profile');
             } else {
