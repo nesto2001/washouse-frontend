@@ -48,9 +48,9 @@ const ManagerDashboardLayout = ({ children }: Props) => {
             if (user?.roleType == 'User') {
                 navigate('/provider/registration');
             }
-            // if (error) {
-            //     navigate('/provider/registration');
-            // }
+            if (error) {
+                navigate('/provider/registration');
+            }
         });
     }, [user]);
 

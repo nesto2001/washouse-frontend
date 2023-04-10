@@ -175,7 +175,19 @@ const CenterContactForm = ({ setFormData, setIsValidated, formData, formInstance
             </Form>
             {/* <div className="col-span-2">Tên trung tâm</div>
     <div className="col-span-3"></div> */}
-            <Modal open={openMap} title="Chọn vị trí" okText="Create" cancelText="Cancel" onOk={() => {}}>
+            <Modal
+                open={openMap}
+                title="Chọn vị trí"
+                okText="Chọn"
+                cancelText="Hủy"
+                onCancel={() => setOpenMap(false)}
+                onOk={() => {
+                    setOpenMap(false);
+                    Modal.destroyAll();
+                }}
+                maskClosable={true}
+                destroyOnClose={true}
+            >
                 <LocationMap setLocation={setLocation} addressLocation={formData.location} />
             </Modal>
         </div>

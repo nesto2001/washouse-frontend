@@ -49,18 +49,18 @@ const CreateServiceContainer = () => {
     const onFinish = (values: CreateServiceFormData) => {
         createService({
             serviceName: values.serviceName,
-            alias: values.alias,
+            alias: values.alias ?? '',
             serviceCategory: values.serviceCategory,
             serviceDescription: values.serviceDescription,
-            serviceImage: values.serviceImage,
+            serviceImage: values.serviceImage ?? 'step3-20230410003841.png',
             timeEstimate: values.timeEstimate,
-            unit: values.unit,
+            unit: values.priceType ? 'kg' : 'pcs',
             rate: values.rate,
             priceType: values.priceType,
-            price: values.price,
-            minPrice: values.minPrice,
-            serviceGalleries: values.serviceGalleries,
-            prices: values.prices,
+            price: values.price ?? null,
+            minPrice: values.minPrice ?? null,
+            serviceGalleries: values.serviceGalleries ?? [],
+            prices: values.prices ?? null,
         });
     };
 

@@ -38,6 +38,7 @@ const StaffRegisterContainer = () => {
                         console.log(res);
                         if (res.status == 200) {
                             localStorage.setItem('accessToken', res.data.data.accessToken);
+                            localStorage.setItem('refreshToken', res.data.data.refreshToken);
                             const fetchData = async () => {
                                 return await getMe();
                             };

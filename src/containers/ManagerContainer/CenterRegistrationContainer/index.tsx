@@ -1,6 +1,6 @@
 import { EnvironmentOutlined, InfoCircleOutlined, SendOutlined } from '@ant-design/icons';
 import { Form, message, Steps, theme } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import WHButton from '../../../components/Button';
 import { CenterRequest } from '../../../models/Center/CreateCenterRequest';
@@ -10,6 +10,8 @@ import { OperatingDay } from '../../../types/OperatingDay';
 import CenterBasicForm from './CenterBasicForm';
 import CenterContactForm from './CenterContactForm';
 import CenterDeliveryForm from './CenterDeliveryForm';
+import { getManagerCenter } from '../../../repositories/StaffRepository';
+import { generateRandomString } from '../../../utils/CommonUtils';
 
 export type CreateCenterFormData = {
     name: string;
@@ -31,6 +33,7 @@ type Props = {};
 
 const CenterRegistrationContainer = (props: Props) => {
     const { token } = theme.useToken();
+    const [isLoading, setIsLoading] = useState(true);
     const [form] = Form.useForm();
     const [current, setCurrent] = useState(0);
     const [isValidated, setIsValidated] = useState(false);
@@ -58,6 +61,22 @@ const CenterRegistrationContainer = (props: Props) => {
         location: { latitude: 0, longitude: 0 },
         hasDelivery: false,
     });
+
+    useEffect(() => {
+        setIsLoading(true);
+        const fetchData = async () => {
+            return await getManagerCenter();
+        };
+        fetchData()
+            .then((res) => {
+                if (res) {
+                    navigate('/provider/dashboard');
+                } else setIsLoading(false);
+            })
+            .catch((error) => {
+                setIsLoading(false);
+            });
+    }, []);
 
     const steps = [
         {
@@ -124,9 +143,9 @@ const CenterRegistrationContainer = (props: Props) => {
                 description: formData.description,
                 hasDelivery: true,
                 phone: formData.phone,
-                savedFileName: formData.savedImage,
-                taxCode: '12341245',
-                taxRegistrationImage: 'taximage.png',
+                savedFileName: formData.savedImage ?? 'step3-20230410003841.png',
+                taxCode: generateRandomString(12),
+                taxRegistrationImage: 'step3-20230410003841.png',
             },
             location: {
                 addressString: formData.address,
