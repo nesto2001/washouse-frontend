@@ -6,6 +6,8 @@ import {
     API_REGISTER_CUSTOMER,
 } from '../common/Constant';
 import { Response } from '../models/CommonModel';
+import { CustomerOrderDetailsModel } from '../models/Customer/CustomerOrderDetailsModel';
+import { CustomerOrderDetailsReponse } from '../models/Customer/CustomerOrderDetailsResponse';
 import { LoginResponse } from '../models/LoginResponse';
 import { CreateOrderRequest } from '../models/Order/CreateOrderRequest';
 import { CreateOrderResponse } from '../models/Order/CreateOrderResponse';
@@ -42,8 +44,8 @@ export const createOrder = async (order: CreateOrderRequest): Promise<CreateOrde
     };
 };
 
-export const getOrderDetails = async (orderId: string, phone: string): Promise<CenterOrderDetailsModel> => {
-    const { data } = await instance.get<Response<CenterOrderDetailsReponse>>(API_ORDER_SEARCH, {
+export const getOrderDetails = async (orderId: string, phone: string): Promise<CustomerOrderDetailsModel> => {
+    const { data } = await instance.get<Response<CustomerOrderDetailsReponse>>(API_ORDER_SEARCH, {
         params: { OrderId: orderId, Phone: phone },
     });
     if (data === null) {
@@ -107,5 +109,6 @@ export const getOrderDetails = async (orderId: string, phone: string): Promise<C
                 unit: ordered.unit,
             };
         }),
+        center: data.data.center,
     };
 };

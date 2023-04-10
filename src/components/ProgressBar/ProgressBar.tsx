@@ -4,6 +4,7 @@ import { TrackingState } from '../../types/Tracking/TrackingState';
 import { formatDateTime } from '../../utils/TimeUtils';
 
 import style from './ProgressBar.module.scss';
+import { OrderStatusMap } from '../../mapping/OrderStatusMap';
 
 type Props = {
     orderState: TrackingState[];
@@ -94,7 +95,7 @@ const ProgressBar = ({ orderState }: Props) => {
                         className={clsx(style.tracking_details, 'min-w-[96px] max-w-[96px]')}
                     >
                         <h4 className={clsx('text-sm font-bold', state.completed ? 'text-sub' : 'text-primary')}>
-                            {state.title}
+                            {state.title && OrderStatusMap[state.title]}
                         </h4>
                         <h4 className="text-sm text-sub-gray">{state.time}</h4>
                     </div>
