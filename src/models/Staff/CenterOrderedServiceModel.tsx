@@ -1,3 +1,5 @@
+import { CenterOrderTrackingModel } from './CenterOrderTrackingModel';
+
 export type CenterOrderedServiceModel = {
     id: number;
     name: string;
@@ -9,5 +11,5 @@ export type CenterOrderedServiceModel = {
     staffNote: string | null;
     status: string | null;
     price: number | null;
-    orderDetailTrackings: [];
+    orderDetailTrackings: CenterOrderTrackingModel[];
 };
