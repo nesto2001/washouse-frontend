@@ -4,6 +4,8 @@ import { formatCurrency } from '../../../utils/FormatUtils';
 import { Tag, message } from 'antd';
 import { CenterOrderedServiceModel } from '../../../models/Staff/CenterOrderedServiceModel';
 import { proceedOrderDetails } from '../../../repositories/StaffRepository';
+import { OrderStatusMap } from '../../../mapping/OrderStatusMap';
+import { BadgeStatusMap } from '../../../mapping/BadgeStatusMap';
 
 type OrderDetailsInfo = {
     orderedDetails: CenterOrderedServiceModel[];
@@ -53,10 +55,10 @@ const CenterOrderedDetailsContainer = ({ details, orderId }: Props) => {
                     <div className="ordered__item--price font-bold text-xl w-[284px] text-right">
                         <Tag
                             className="flex w-1/2 justify-center items-center mx-auto h-8 cursor-pointer"
-                            color="default"
+                            color={BadgeStatusMap[det.orderDetailTrackings[det.orderDetailTrackings.length - 1]]}
                             onClick={() => handleProceed(orderId, det.id)}
                         >
-                            Đang chờ
+                            {OrderStatusMap[det.orderDetailTrackings[det.orderDetailTrackings.length - 1]]}
                         </Tag>
                     </div>
                 </div>
