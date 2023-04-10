@@ -1,9 +1,16 @@
 export const CenterBadgeStatusMap: { [key: string]: string } = {
     Pending: 'default',
+    pending: 'default',
     Active: 'success',
+    active: 'success',
     Inactive: 'error',
+    inactive: 'error',
     Updating: 'warning',
+    updating: 'warning',
     Suspended: 'error',
+    suspended: 'error',
     Closed: 'error',
+    closed: 'error',
     Rejected: 'error',
+    rejected: 'error',
 };

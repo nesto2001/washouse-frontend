@@ -1,10 +1,18 @@
 export const BadgeStatusMap: { [key: string]: string } = {
     None: 'default',
+    none: 'default',
     Received: 'default',
+    received: 'default',
     Pending: 'default',
+    pending: 'default',
     Confirmed: 'default',
+    confirmed: 'default',
     Processing: 'processing',
+    processing: 'processing',
     Ready: 'success',
+    ready: 'success',
     Completed: 'success',
+    completed: 'success',
     Cancelled: 'error',
+    cancelled: 'error',
 };
