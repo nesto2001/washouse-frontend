@@ -277,7 +277,9 @@ const OrderDetailsContainer = (props: Props) => {
                                     </h3>
                                     <h3 className="col-span-1 font-bold text-sub-gray">
                                         Trạng thái
-                                        <div className="text-green">{orderDetails.orderPayment.status}</div>
+                                        <Tag color={BadgeStatusMap[orderDetails.orderPayment.status]}>
+                                            {OrderStatusMap[orderDetails.orderPayment.status]}
+                                        </Tag>
                                     </h3>
                                 </div>
                             </div>
