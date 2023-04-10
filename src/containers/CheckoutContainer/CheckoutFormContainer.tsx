@@ -467,7 +467,6 @@ export const Step2 = ({
 
     //set ward on district chang
     const handleSelectDistrictChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setFormData((prev) => ({ ...prev, district: parseInt(event.target.value) }));
         const fetchData = async () => {
             return await getWards(parseInt(event.target.value));
         };
@@ -477,9 +476,7 @@ export const Step2 = ({
     };
 
     //set ward
-    const handleSelectWardChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setFormData((prev) => ({ ...prev, wardId: parseInt(event.target.value) }));
-    };
+    const handleSelectWardChange = (event: React.ChangeEvent<HTMLSelectElement>) => {};
 
     //set city
     const handleSelectCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {};
