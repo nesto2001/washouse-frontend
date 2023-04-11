@@ -45,6 +45,7 @@ import {
     UserInformationPage,
     ProviderRoleChoosingPage,
     StaffDashboardPage,
+    CustomerNotificationPage,
 } from '../pages/';
 import AdminCenterRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterRequestPage';
 import AdminPostPage from '../pages/AdminPage/AdminPost/AdminPostPage';
@@ -134,6 +135,11 @@ const publicRoutes: Array<RouteProps> = [
         path: '/user/order',
         layout: CustomerSidebarLayout,
         component: CustomerOrdersPage,
+    },
+    {
+        path: '/user/notification',
+        layout: CustomerSidebarLayout,
+        component: CustomerNotificationPage,
     },
     {
         path: '/provider/login',

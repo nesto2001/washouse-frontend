@@ -17,6 +17,7 @@ export const getNotifications = async (): Promise<NotificationListModel> => {
         notifications: data.data.notifications.map((item): NotificationModel => {
             return {
                 accountId: item.accountId,
+                title: item.title,
                 content: item.content,
                 createdDate: parse(item.createdDate, 'dd-MM-yyyy HH:mm:ss', new Date()),
                 id: item.id,

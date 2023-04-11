@@ -6,11 +6,11 @@ import Loading from '../../components/Loading/Loading';
 import Map from '../../components/Map/Map';
 import { AccountModel } from '../../models/Account/AccountModel';
 import { UserModel } from '../../models/User/UserModel';
-import { getUserProfile } from '../../repositories/AccountRepository';
+import { getUserProfile, updateAccountAddress } from '../../repositories/AccountRepository';
 import EmptyAddress from '../../assets/images/empty-address.png';
-import { Form, Modal, Tooltip } from 'antd';
+import { Form, Modal, Tooltip, message } from 'antd';
 import { LocationPlaceModel } from '../../models/LocationPlaceModel';
-import { getDistricts, getLocation, getWards } from '../../repositories/LocationRepository';
+import { getDistricts, getLocation, getWards, searchLocation } from '../../repositories/LocationRepository';
 import Selectbox from '../../components/Selectbox';
 import Input from '../../components/Input/Input';
 import { Option } from '../../types/Options';
@@ -59,8 +59,10 @@ const UpdateAddressContainer = (props: Props) => {
                         return await getLocation(res.locationId ?? 0);
                     };
                     fetchLocation().then((res) => {
-                        setUserAddress(res);
-                        setIsLoading(false);
+                        if (res) {
+                            setUserAddress(res);
+                            setIsLoading(false);
+                        }
                     });
                 }
                 setIsLoading(false);
@@ -79,7 +81,7 @@ const UpdateAddressContainer = (props: Props) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            return await getWards(userAddress?.ward.district.id ?? district ?? 0);
+            return await getWards(district ?? userAddress?.ward.district.id ?? 0);
         };
         fetchData().then((res) => {
             setWardList(res);
@@ -98,7 +100,7 @@ const UpdateAddressContainer = (props: Props) => {
         setModalVisibility(false);
     };
 
-    if (isLoading) {
+    if (isLoading && !userAddress) {
         return <Loading />;
     }
 
@@ -120,7 +122,20 @@ const UpdateAddressContainer = (props: Props) => {
     const handleSelectCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {};
 
     const onFinish = (values: any) => {
-        
+        const getLocation = async () => {
+            return await searchLocation(values.address, values.ward);
+        };
+        getLocation().then((res) => {
+            updateAccountAddress({
+                addressString: values.address,
+                wardId: values.ward,
+                latitude: res.latitude,
+                longitude: res.longitude,
+            }).then((res) => {
+                message.success('Cập nhật địa chỉ thành công');
+                setModalVisibility(false);
+            });
+        });
     };
 
     const onFinishFailed = (errorInfo: any) => {

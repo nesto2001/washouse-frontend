@@ -1,8 +1,9 @@
-import { Badge, Button, Empty, Image, List, Popover } from 'antd';
-import { timeSince } from '../../utils/TimeUtils';
+import { Badge, Button, Empty, List } from 'antd';
+import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { getNotifications, readNotification } from '../../repositories/NotificationRepository';
-import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { timeSince } from '../../utils/TimeUtils';
 
 type Notification = {
     id: number;
@@ -14,11 +15,9 @@ type Notification = {
 
 type Props = {
     size?: number;
-    showBadge: boolean;
-    child: React.ReactNode;
 };
 
-const NotificationDropdown = ({ showBadge, child, size }: Props) => {
+const CustomerNotificationsContainer = ({ size }: Props) => {
     const [numOfUnread, setNumOfUnread] = useState<number>();
     const [notifications, setNotifications] = useState<Notification[]>();
 
@@ -29,7 +28,7 @@ const NotificationDropdown = ({ showBadge, child, size }: Props) => {
                 res.notifications?.map((notif) => {
                     return {
                         id: notif.id,
-                        title: 'Notification title',
+                        title: notif.title,
                         body: notif.content,
                         createdDate: notif.createdDate,
                         isRead: notif.isRead,
@@ -48,7 +47,7 @@ const NotificationDropdown = ({ showBadge, child, size }: Props) => {
                 res.notifications?.map((notif) => {
                     return {
                         id: notif.id,
-                        title: 'Notification title',
+                        title: notif.title,
                         body: notif.content,
                         createdDate: notif.createdDate,
                         isRead: notif.isRead,
@@ -57,20 +56,21 @@ const NotificationDropdown = ({ showBadge, child, size }: Props) => {
             );
         });
     };
+
     return (
-        <Popover
-            align={{ offset: [0, 20] }}
-            placement="bottomRight"
-            content={
-                notifications ? (
+        <div className="usernoti w-full border border-wh-gray rounded-2xl mb-10">
+            <div className="usernoti--header pt-4 pl-6 font-bold text-xl">Thông báo</div>
+            <hr className="mt-3 mb-8" />
+            <div className="usernoti--content flex justify-center px-14 mb-16">
+                {notifications ? (
                     <List
-                        className="w-96"
+                        className="w-full"
                         itemLayout="horizontal"
                         locale={{
                             emptyText: (
                                 <Empty
                                     image={Empty.PRESENTED_IMAGE_DEFAULT}
-                                    imageStyle={{ height: 160, width: 320, margin: '0 auto', marginBottom: 20 }}
+                                    imageStyle={{ height: 160, width: 384, margin: '0 auto', marginBottom: 20 }}
                                     description={
                                         <span className="text-xl font-medium text-sub-gray">
                                             Bạn chưa có thông báo nào
@@ -85,9 +85,8 @@ const NotificationDropdown = ({ showBadge, child, size }: Props) => {
                                     nof2.createdDate.getTime() - nof1.createdDate.getTime(),
                             )
                             .slice(0, size ?? 5)}
-                        header={<div className="text-lg font-bold">Thông báo</div>}
                         footer={
-                            notifications.length ? (
+                            notifications && notifications.length > 0 ? (
                                 <div className="text-center cursor-pointer text-primary">Xem thêm</div>
                             ) : (
                                 <></>
@@ -125,7 +124,9 @@ const NotificationDropdown = ({ showBadge, child, size }: Props) => {
                     <Empty
                         image={Empty.PRESENTED_IMAGE_DEFAULT}
                         imageStyle={{ height: 160, width: 384 }}
-                        description={<span>Đăng nhập để xem thông báo</span>}
+                        description={
+                            <span className="text-xl font-medium text-sub-gray">Đăng nhập để xem thông báo</span>
+                        }
                     >
                         <div className="flex gap-6 w-full justify-center">
                             <Link to={'/register'}>
@@ -138,15 +139,10 @@ const NotificationDropdown = ({ showBadge, child, size }: Props) => {
                             </Link>
                         </div>
                     </Empty>
-                )
-            }
-            arrow={false}
-        >
-            <Badge count={showBadge ? numOfUnread : 0} size="small" overflowCount={99}>
-                <div className="text-xl cursor-pointer">{child}</div>
-            </Badge>
-        </Popover>
+                )}
+            </div>
+        </div>
     );
 };
 
-export default NotificationDropdown;
+export default CustomerNotificationsContainer;

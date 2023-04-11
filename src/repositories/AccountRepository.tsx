@@ -7,21 +7,25 @@ import {
 } from '../common/Constant';
 import { AccountModel } from '../models/Account/AccountModel';
 import { AccountResponse } from '../models/Account/AccountResponse';
+import { Response } from '../models/CommonModel';
 import { UpdateAddressRequest } from '../models/Customer/UpdateAddressRequest';
 import { UpdateAvatarRequest } from '../models/Customer/UpdateAvatarRequest';
 import { UpdateProfileRequest } from '../models/Customer/UpdateCustomerRequest';
 import instance from '../services/axios/AxiosInstance';
 
 export const getUserProfile = async (id: number): Promise<AccountModel> => {
-    const { data } = await instance.get<AccountResponse>(API_ACCOUNT_DETAILS.replace('${id}', id.toString()), {});
+    const { data } = await instance.get<Response<AccountResponse>>(
+        API_ACCOUNT_DETAILS.replace('${id}', id.toString()),
+        {},
+    );
     return {
-        accountId: data.id,
-        avatar: data.profilePic,
-        email: data.email,
-        fullName: data.fullName,
-        dob: data.dob,
-        phone: data.phone,
-        locationId: data.locationId,
+        accountId: data.data.id,
+        avatar: data.data.profilePic,
+        email: data.data.email,
+        fullName: data.data.fullName,
+        dob: data.data.dob,
+        phone: data.data.phone,
+        locationId: data.data.locationId,
     };
 };
 

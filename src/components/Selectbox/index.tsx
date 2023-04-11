@@ -36,7 +36,7 @@ const Selectbox = ({
             className={clsx(className, 'selectbox')}
             ref={ref}
             required={isRequired}
-            value={selectedValue}
+            defaultValue={selectedValue}
         >
             <option key="0" value="0">
                 Chọn {type ?? 'một tùy chọn'}
