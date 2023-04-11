@@ -84,6 +84,9 @@ export const getMe = async (): Promise<UserModel> => {
         name: data.data.name,
         phone: data.data.phone,
         roleType: data.data.roleType,
+        locationId: data.data.locationId,
+        dob: data.data.dob,
+        gender: data.data.gender,
     };
 };
 

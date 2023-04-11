@@ -1,4 +1,6 @@
 export const BadgeStatusMap: { [key: string]: string } = {
+    undefined: 'default',
+    '': 'default',
     None: 'default',
     none: 'default',
     Received: 'default',

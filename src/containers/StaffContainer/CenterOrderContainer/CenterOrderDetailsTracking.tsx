@@ -11,20 +11,20 @@ const CenterOrderDetailsTracking = ({ trackings }: Props) => {
     const [pending, setPending] = useState<string>('');
 
     useEffect(() => {
-        switch (trackings[trackings.length - 1].status) {
-            case 'Pending':
+        switch (trackings[trackings.length - 1].status.toLowerCase()) {
+            case 'pending':
                 setPending('Chờ xác nhận');
                 break;
             case 'confirmed':
                 setPending('Chờ nhận hàng');
                 break;
-            case 'Processing':
+            case 'processing':
                 setPending('Đang xử lý');
                 break;
-            case 'Ready':
+            case 'ready':
                 setPending('Chờ trả hàng');
                 break;
-            case 'Completed':
+            case 'completed':
                 setPending('');
                 break;
         }

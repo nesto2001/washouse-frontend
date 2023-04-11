@@ -1,41 +1,11 @@
-import { API_ACCOUNT_DETAILS, API_CUSTOMER, API_CUSTOMER_ORDER } from '../common/Constant';
+import { API_ACCOUNT_DETAILS, API_CUSTOMER_ORDER } from '../common/Constant';
 import { AccountModel } from '../models/Account/AccountModel';
 import { AccountResponse } from '../models/Account/AccountResponse';
 import { PaginationModel, PaginationResponse } from '../models/CommonModel';
 import { CustomerOrderModel } from '../models/Customer/CustomerOrderModel';
 import { CustomerOrderResponse } from '../models/Customer/CustomerOrderResponse';
-import { UpdateCustomerRequest } from '../models/Customer/UpdateCustomerRequest';
-import { CenterOrderModel } from '../models/Staff/CenterOrderModel';
-import { CenterOrderResponse } from '../models/Staff/CenterOrderResponse';
 import { CenterOrderedServiceModel } from '../models/Staff/CenterOrderedServiceModel';
 import instance from '../services/axios/AxiosInstance';
-
-export const getCustomerProfile = async (id: number): Promise<AccountModel> => {
-    const { data } = await instance.get<AccountResponse>(API_ACCOUNT_DETAILS.replace('${id}', id.toString()), {});
-    return {
-        accountId: data.id,
-        avatar: data.profilePic,
-        email: data.email,
-        fullName: data.fullName,
-        dob: data.dob,
-        phone: data.phone,
-        locationId: data.locationId,
-    };
-};
-
-export const updateCustomerProfile = async (id: number, request: UpdateCustomerRequest) => {
-    const { status } = await instance.put(API_CUSTOMER, request, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
-        params: {
-            customerId: id,
-        },
-    });
-    if (status !== 200) {
-        throw new Error();
-    }
-};
 
 export const getCustomerOrders = async ({
     page,

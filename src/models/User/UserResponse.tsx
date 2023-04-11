@@ -9,5 +9,8 @@ export type UserResponse = {
         roleType: string;
         name: string;
         avatar: string;
+        locationId: number | null;
+        gender: number | null;
+        dob: 'string' | null;
     };
 };

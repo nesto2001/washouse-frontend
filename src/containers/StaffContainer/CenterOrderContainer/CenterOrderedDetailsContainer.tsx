@@ -55,10 +55,18 @@ const CenterOrderedDetailsContainer = ({ details, orderId }: Props) => {
                     <div className="ordered__item--price font-bold text-xl w-[284px] text-right">
                         <Tag
                             className="flex w-1/2 justify-center items-center mx-auto h-8 cursor-pointer"
-                            color={BadgeStatusMap[det.orderDetailTrackings[det.orderDetailTrackings.length - 1].status]}
+                            color={
+                                BadgeStatusMap[
+                                    det.orderDetailTrackings[det.orderDetailTrackings.length - 1]?.status ?? 'None'
+                                ]
+                            }
                             onClick={() => handleProceed(orderId, det.id)}
                         >
-                            {OrderStatusMap[det.orderDetailTrackings[det.orderDetailTrackings.length - 1].status]}
+                            {
+                                OrderStatusMap[
+                                    det.orderDetailTrackings[det.orderDetailTrackings.length - 1]?.status ?? 'None'
+                                ]
+                            }
                         </Tag>
                     </div>
                 </div>

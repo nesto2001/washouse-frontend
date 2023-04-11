@@ -11,6 +11,9 @@ const API_REFRESH_TOKEN = '/api/accounts/token';
 //ACCOUNT API
 const API_ACCOUNT = '/api/accounts/';
 const API_ACCOUNT_DETAILS = '/api/accounts/${id}';
+const API_ACCOUNT_PROFILE = '/api/accounts/profile';
+const API_ACCOUNT_PROFILE_PIC = '/api/accounts/profile-picture';
+const API_ACCOUNT_PROFILE_ADDRESS = '/api/accounts/address';
 
 //UPLOAD API
 const API_MEDIA = '/api/medias';
@@ -75,6 +78,9 @@ const API_NOTIFICATION = '/api/notifications/me-noti';
 const API_NOTIFICATION_READ = '/api/notifications/read';
 
 export {
+    API_ACCOUNT_PROFILE_ADDRESS,
+    API_ACCOUNT_PROFILE_PIC,
+    API_ACCOUNT_PROFILE,
     API_STAFF_CANCEL_ORDER,
     API_CUSTOMER_ORDER,
     API_ADMIN_CENTER,

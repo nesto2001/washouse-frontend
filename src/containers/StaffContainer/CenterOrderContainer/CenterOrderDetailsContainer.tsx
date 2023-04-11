@@ -1,7 +1,7 @@
-import { Spin, Tag, message } from 'antd';
+import { Tag, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import ErrorScreen from '../../../components/ErrorScreen/ErrorScreen';
+import OthersSpin from '../../../components/OthersSpin/OthersSpin';
 import { CenterOrderDetailsModel } from '../../../models/Staff/CenterOrderDetailsModel';
 import { getManagerCenterOrderDetails, proceedOrder } from '../../../repositories/StaffRepository';
 import CenterOrderDetailsDelivery from './CenterOrderDetailsDelivery';
@@ -9,7 +9,6 @@ import CenterOrderDetailsGeneral from './CenterOrderDetailsGeneral';
 import CenterOrderDetailsPayment from './CenterOrderDetailsPayment';
 import CenterOrderDetailsTracking from './CenterOrderDetailsTracking';
 import CenterOrderedDetailsContainer from './CenterOrderedDetailsContainer';
-import OthersSpin from '../../../components/OthersSpin/OthersSpin';
 
 type Props = {};
 
@@ -35,6 +34,10 @@ const CenterOrderDetailsContainer = (props: Props) => {
     }, [orderId]);
 
     const showPopconfirm = () => {
+        if (orderDetails?.status === 'completed') {
+            message.error('Đơn hàng đã hoàn tất, không thể cập nhật tiến trình thêm');
+            return;
+        }
         setOpenProceedPop(true);
     };
 
@@ -46,7 +49,7 @@ const CenterOrderDetailsContainer = (props: Props) => {
             };
             proceed()
                 .then((res) => {
-                    if (res.status == 200) {
+                    if (res.status === 200) {
                         message.success('Cập nhật tiến trình đơn hàng thành công!');
                         setOpenProceedPop(false);
                         setConfirmProceedLoading(false);

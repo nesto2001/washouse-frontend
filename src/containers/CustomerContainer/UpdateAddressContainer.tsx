@@ -17,15 +17,22 @@ import { Option } from '../../types/Options';
 import { LocationDetailsModel } from '../../models/Location/LocationDetailsModel';
 type Props = {};
 
+type UpdateAddressForm = {
+    address?: string;
+    districtId?: number;
+    wardId?: number;
+};
+
 const UpdateAddressContainer = (props: Props) => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [modalVisibility, setModalVisibility] = useState<boolean>(false);
     const [userProfile, setUserProfile] = useState<AccountModel>();
     const [userAddress, setUserAddress] = useState<LocationDetailsModel>();
     const [form] = Form.useForm();
-    const [district, setDistrict] = useState<LocationPlaceModel>();
+    const [district, setDistrict] = useState<number>();
     const [districtList, setDistrictList] = useState<LocationPlaceModel[]>([]);
     const [wardList, setWardList] = useState<LocationPlaceModel[]>([]);
+    const [updateFormData, setUpdateFormData] = useState<UpdateAddressForm>();
 
     const userJson = localStorage.getItem('currentUser');
     const user: UserModel = userJson && JSON.parse(userJson);
@@ -41,27 +48,25 @@ const UpdateAddressContainer = (props: Props) => {
     const iconAnchor: L.PointExpression = [15, 15];
 
     useEffect(() => {
-        const fetchData = async () => {
-            return await getUserProfile(user.accountId);
-        };
-        fetchData().then((res) => {
-            setUserProfile(res);
-            if (res.locationId) {
-                const fetchLocation = async () => {
-                    return await getLocation(res.locationId ?? 0);
-                };
-                fetchLocation().then((res) => {
-                    setUserAddress(res);
-                    setIsLoading(false);
-                });
-            }
-            setIsLoading(false);
-        });
+        if (user) {
+            const fetchData = async () => {
+                return await getUserProfile(user.accountId);
+            };
+            fetchData().then((res) => {
+                setUserProfile(res);
+                if (res.locationId) {
+                    const fetchLocation = async () => {
+                        return await getLocation(res.locationId ?? 0);
+                    };
+                    fetchLocation().then((res) => {
+                        setUserAddress(res);
+                        setIsLoading(false);
+                    });
+                }
+                setIsLoading(false);
+            });
+        }
     }, []);
-
-    const handleNext = () => {
-        form.submit();
-    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -74,7 +79,7 @@ const UpdateAddressContainer = (props: Props) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            return await getWards(userAddress?.ward.district.id ?? district?.id ?? 0);
+            return await getWards(userAddress?.ward.district.id ?? district ?? 0);
         };
         fetchData().then((res) => {
             setWardList(res);
@@ -86,7 +91,7 @@ const UpdateAddressContainer = (props: Props) => {
     };
 
     const handleUpdateAddress = () => {
-        setModalVisibility(false);
+        form.submit();
     };
 
     const handleModalCancel = () => {
@@ -98,26 +103,24 @@ const UpdateAddressContainer = (props: Props) => {
     }
 
     const handleSelectDistrictChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        // setFormData((prev) => ({ ...prev, district: parseInt(event.target.value) }));
-        // const fetchData = async () => {
-        //     return await getWards(parseInt(event.target.value));
-        // };
-        // fetchData().then((res) => {
-        //     setWardList(res);
-        // });
+        setUpdateFormData((prev) => ({ ...prev, districtId: parseInt(event.target.value) }));
+        setDistrict(parseInt(event.target.value));
+        const fetchData = async () => {
+            return await getWards(parseInt(event.target.value));
+        };
+        fetchData().then((res) => {
+            setWardList(res);
+        });
     };
 
     const handleSelectWardChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        // setFormData((prev) => ({ ...prev, wardId: parseInt(event.target.value) }));
+        setUpdateFormData((prev) => ({ ...prev, wardId: parseInt(event.target.value) }));
     };
 
     const handleSelectCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {};
 
     const onFinish = (values: any) => {
-        console.log('Received values of form: ', values);
-        // if (values) {
-        //     onNext();
-        // }
+        
     };
 
     const onFinishFailed = (errorInfo: any) => {

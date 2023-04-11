@@ -9,14 +9,6 @@ type Props = {
 };
 
 const CustomerSidebarLayout = ({ children }: Props) => {
-    const location = useLocation();
-    const [activeNav, setActiveNav] = useState('');
-
-    useEffect(() => {
-        const pathname = location.pathname;
-        const pathArr = pathname.split('/').filter((path) => path !== '');
-        setActiveNav(pathArr[pathArr.length - 1]);
-    }, [location]);
     return (
         <>
             <Navbar></Navbar>

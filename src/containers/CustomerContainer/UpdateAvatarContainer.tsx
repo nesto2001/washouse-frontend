@@ -5,10 +5,9 @@ import WHButton from '../../components/Button';
 
 type Props = {
     currentImage?: string;
-    setImage: React.Dispatch<React.SetStateAction<RcFile | undefined>>;
 };
 
-const UpdateAvatarContainer = ({ currentImage, setImage }: Props) => {
+const UpdateAvatarContainer = ({ currentImage }: Props) => {
     const [imageUrl, setImageUrl] = useState<string>();
 
     const props: UploadProps = {
@@ -19,7 +18,6 @@ const UpdateAvatarContainer = ({ currentImage, setImage }: Props) => {
             reader.onload = () => {
                 setImageUrl(reader.result as string);
             };
-            setImage(file);
             return false;
         },
         accept: 'image/png, image/jpeg',
@@ -38,10 +36,6 @@ const UpdateAvatarContainer = ({ currentImage, setImage }: Props) => {
                     </WHButton>
                 </div>
             </Upload>
-
-            <div className="useravatar--note text-sub-gray text-xs mt-4">
-                Dung lượng file tối đa 1 MB Định dạng:.JPEG, .PNG
-            </div>
         </div>
     );
 };

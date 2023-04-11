@@ -1,9 +1,15 @@
-import { API_ACCOUNT, API_ACCOUNT_DETAILS, API_LOGIN, API_ME } from '../common/Constant';
+import {
+    API_ACCOUNT,
+    API_ACCOUNT_DETAILS,
+    API_ACCOUNT_PROFILE,
+    API_ACCOUNT_PROFILE_ADDRESS,
+    API_ACCOUNT_PROFILE_PIC,
+} from '../common/Constant';
 import { AccountModel } from '../models/Account/AccountModel';
 import { AccountResponse } from '../models/Account/AccountResponse';
-import { LoginResponse } from '../models/LoginResponse';
-import { UserModel } from '../models/User/UserModel';
-import { UserResponse } from '../models/User/UserResponse';
+import { UpdateAddressRequest } from '../models/Customer/UpdateAddressRequest';
+import { UpdateAvatarRequest } from '../models/Customer/UpdateAvatarRequest';
+import { UpdateProfileRequest } from '../models/Customer/UpdateCustomerRequest';
 import instance from '../services/axios/AxiosInstance';
 
 export const getUserProfile = async (id: number): Promise<AccountModel> => {
@@ -35,4 +41,37 @@ export const getAllAccounts = async (): Promise<AccountModel[]> => {
             status: item.status,
         };
     });
+};
+
+export const updateAccountProfile = async (request: UpdateProfileRequest) => {
+    const { status } = await instance.put(API_ACCOUNT_PROFILE, request, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    if (status !== 200) {
+        throw new Error();
+    }
+};
+
+export const updateAccountProfilePic = async (request: UpdateAvatarRequest) => {
+    const { status } = await instance.put(API_ACCOUNT_PROFILE_PIC, request, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    if (status !== 200) {
+        throw new Error();
+    }
+};
+
+export const updateAccountAddress = async (request: UpdateAddressRequest) => {
+    const { status } = await instance.put(API_ACCOUNT_PROFILE_ADDRESS, request, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    if (status !== 200) {
+        throw new Error();
+    }
 };

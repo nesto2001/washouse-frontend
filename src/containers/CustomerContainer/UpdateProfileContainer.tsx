@@ -1,12 +1,10 @@
-import { message } from 'antd';
+import { DatePicker, DatePickerProps, Radio, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import Datepicker from 'tailwind-datepicker-react';
 import WHButton from '../../components/Button';
 import Input from '../../components/Input/Input';
 import Loading from '../../components/Loading/Loading';
-import Radio from '../../components/RadioButton';
 import { AccountModel } from '../../models/Account/AccountModel';
 import { UserModel } from '../../models/User/UserModel';
 import { getMe } from '../../repositories/AuthRepository';
@@ -14,72 +12,43 @@ import { Option } from '../../types/Options';
 import UpdateAvatarContainer from './UpdateAvatarContainer';
 import { RcFile } from 'antd/es/upload';
 import { uploadSingle } from '../../repositories/MediaRepository';
-import { updateCustomerProfile } from '../../repositories/CustomerRepository';
+import dayjs from 'dayjs';
+import Placeholder from '../../assets/images/placeholder.png';
+import { updateAccountProfile } from '../../repositories/AccountRepository';
 
 type UpdateRequestData = {
     fullName?: string;
-    dob?: Date;
-    gender?: number;
+    dob?: string | null;
+    gender?: number | null;
+    avatar?: string | null;
 };
 
 const UpdateProfileContainer = () => {
     const [userProfile, setUserProfile] = useState<UserModel>();
     const [isLoading, setIsLoading] = useState(true);
-    const [image, setImage] = useState<RcFile>();
     const [updateFormData, setUpdateFormData] = useState<UpdateRequestData>();
 
     const navigate = useNavigate();
-    const options = {
-        title: '',
-        autoHide: false,
-        todayBtn: false,
-        clearBtn: false,
-        maxDate: new Date(),
-        minDate: new Date('1950-01-01'),
-        theme: {
-            background: '',
-            todayBtn: '',
-            clearBtn: '',
-            icons: 'text-sm',
-            text: '',
-            disabledText: 'text-gray-300',
-            input: 'bg-white border-wh-gray rounded',
-            inputIcon: '',
-            selected: '',
-        },
-        icons: {
-            // () => ReactElement | JSX.Element
-            prev: () => (
-                <span>
-                    <FaAngleLeft />
-                </span>
-            ),
-            next: () => (
-                <span>
-                    <FaAngleRight />
-                </span>
-            ),
-        },
-        datepickerClassNames: 'top-50 pt-1',
-        language: 'vi',
-    };
 
     const [show, setShow] = useState<boolean>(false);
-    const handleChange = (selectedDate: Date) => {
-        setUpdateFormData((prev) => ({ ...prev, dob: selectedDate }));
+
+    const handleChange: DatePickerProps['onChange'] = (date, dateString) => {
+        setUpdateFormData((prev) => ({ ...prev, dob: dateString }));
     };
+
+    // const handleChange = (selectedDate: dayjs.Dayjs) => {
+    //     setUpdateFormData((prev) => ({ ...prev, dob: selectedDate }));
+    // };
     const handleClose = (state: boolean) => {
         setShow(state);
     };
 
     const handleUpdateProfile = async () => {
-        const response = image ? await uploadSingle(image) : null;
         userProfile &&
-            updateCustomerProfile(userProfile?.accountId, {
-                dob: updateFormData?.dob?.toISOString() ?? new Date().toISOString(),
+            updateAccountProfile({
+                dob: updateFormData?.dob ?? userProfile.dob ?? undefined,
                 fullName: updateFormData?.fullName ?? userProfile.name,
                 gender: updateFormData?.gender ?? 0,
-                savedFileName: response?.data.data.savedFileName ?? undefined,
             })
                 .then(() => {
                     message.success('Cập nhật thành công');
@@ -111,17 +80,15 @@ const UpdateProfileContainer = () => {
         fetchData()
             .then((res) => {
                 setUpdateFormData({
-                    dob: new Date(),
+                    dob: res.dob,
                     fullName: res.name,
-                    gender: 0,
+                    gender: res.gender,
+                    avatar: res.avatar,
                 });
                 setUserProfile(res);
                 setIsLoading(false);
             })
-            .catch(() => {
-                message.error('Vui lòng đăng nhập để xem trang này');
-                navigate('/login');
-            });
+            .catch(() => {});
     }, []);
 
     if (isLoading) {
@@ -154,23 +121,32 @@ const UpdateProfileContainer = () => {
                         <div className="col-span-1 text-right mr-6">Ngày sinh</div>
                         <div className="col-span-3 grid grid-cols-5">
                             <div className="col-span-3 max-w-[192px]">
-                                <Datepicker
-                                    options={{ ...options, defaultDate: updateFormData?.dob }}
+                                <DatePicker
+                                    className="border border-wh-gray py-2 pl-3 undefined rounded"
+                                    format={'DD-MM-YYYY'}
                                     onChange={handleChange}
-                                    show={show}
-                                    setShow={handleClose}
+                                    defaultValue={
+                                        dayjs(userProfile?.dob, 'DD-MM-YYYY') ??
+                                        dayjs(dayjs(), 'DD-MM-YYYY').subtract(15, 'year')
+                                    }
+                                    disabledDate={(date: dayjs.Dayjs) => {
+                                        return date && date > dayjs().subtract(15, 'year');
+                                    }}
+                                    showToday={false}
                                 />
                             </div>
                             <div className="col-span-2"></div>
                         </div>
                         <div className="col-span-1 text-right mr-6">Giới tính</div>
                         <div className="col-span-3 py-2 flex items-center gap-6">
-                            <Radio
-                                optionsList={genderOptions}
+                            <Radio.Group
+                                options={genderOptions}
                                 name="gender"
-                                defaultValue={updateFormData?.gender}
-                                inline
-                            ></Radio>
+                                defaultValue={userProfile?.gender}
+                                onChange={(e) => {
+                                    setUpdateFormData((prev) => ({ ...prev, gender: e.target.value }));
+                                }}
+                            ></Radio.Group>
                         </div>
                         <div className="col-span-1 text-right mr-6"></div>
                         <div className="col-span-3 mt-6">
@@ -182,7 +158,7 @@ const UpdateProfileContainer = () => {
                 </div>
                 <div className="mx-6 bg-wh-gray w-[0.5px]"></div>
                 <div className="userprofile__update--avatar pl-10 pr-2">
-                    <UpdateAvatarContainer currentImage={userProfile?.avatar} setImage={setImage} />
+                    <UpdateAvatarContainer currentImage={userProfile?.avatar ?? Placeholder} />
                 </div>
             </div>
         </div>

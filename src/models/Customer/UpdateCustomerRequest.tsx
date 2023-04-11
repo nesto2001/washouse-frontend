@@ -1,6 +1,5 @@
-export interface UpdateCustomerRequest {
-    fullName: string;
-    dob: string;
-    savedFileName?: string;
-    gender: number;
+export interface UpdateProfileRequest {
+    fullName?: string;
+    dob?: string;
+    gender?: number;
 }

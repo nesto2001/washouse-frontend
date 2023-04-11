@@ -89,6 +89,7 @@ const CenterOrderDetailsGeneral = ({
                             okButtonProps={{ loading: confirmProceedLoading }}
                             onCancel={handleCancel}
                             cancelButtonProps={{ style: { background: 'white' } }}
+                            
                         >
                             <Tag
                                 className="cursor-pointer"

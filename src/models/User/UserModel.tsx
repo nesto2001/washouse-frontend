@@ -5,4 +5,7 @@ export type UserModel = {
     roleType: string;
     name: string;
     avatar: string;
+    dob?: string | null;
+    locationId?: number | null;
+    gender?: number | null;
 };
