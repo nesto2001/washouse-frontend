@@ -3,17 +3,18 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import Placeholder from '../../assets/images/placeholder.png';
 import { CenterModel } from '../../models/Center/CenterModel';
 import { approveCenter, rejectCenter } from '../../repositories/RequestRepository';
+import { AdminCenterModel } from '../../models/Admin/AdminCenterModel';
 
 type Props = {
-    centerRequests: CenterModel[];
-    openDetail: (center: CenterModel) => void;
+    centerRequests: AdminCenterModel[];
+    openDetail: (center: AdminCenterModel) => void;
 };
 
 const CenterList = ({ centerRequests, openDetail }: Props) => {
     return (
         <div className="centerrq__list--wrapper my-5 mt-2">
             <div className="centerrq__list">
-                {centerRequests.map((req: CenterModel) => (
+                {centerRequests.map((req: AdminCenterModel) => (
                     <div
                         className="centerrq__list--item flex border-b border-wh-gray py-2 pb-4 mb-2 cursor-pointer"
                         onClick={() => openDetail(req)}
@@ -35,7 +36,7 @@ const CenterList = ({ centerRequests, openDetail }: Props) => {
                                     {req.phone}
                                 </div>
                             </div>
-                            <div className="centerrq__item--address flex gap-2 text-base">{req.description}</div>
+                            <div className="centerrq__item--address flex gap-2 text-base"></div>
                         </div>
                     </div>
                 ))}

@@ -26,6 +26,7 @@ const AdminCentersContainer = (props: Props) => {
     const [searchParams, setSearchParams] = useState<SearchParamsData>({
         searchString: null,
         status: '',
+        pageSize: 500,
     });
 
     const columns: ColumnsType<AdminCenterModel> = [

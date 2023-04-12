@@ -3,13 +3,15 @@ import { useEffect, useState } from 'react';
 import CenterList from '../../../components/CenterList/CenterList';
 import { CenterModel } from '../../../models/Center/CenterModel';
 import { approveCenter, getCenterRequests, rejectCenter } from '../../../repositories/RequestRepository';
+import { getCenterList } from '../../../repositories/AdminRepository';
+import { AdminCenterModel } from '../../../models/Admin/AdminCenterModel';
 
 const AdminCenterRequestsContainer = () => {
-    const [centerRequests, setCenterRequests] = useState<CenterModel[]>([]);
-    const [center, setCenter] = useState<CenterModel>();
+    const [centerRequests, setCenterRequests] = useState<AdminCenterModel[]>([]);
+    const [center, setCenter] = useState<AdminCenterModel>();
     const [modalVisibility, setModalVisibility] = useState(false);
 
-    const openDetail = (center: CenterModel) => {
+    const openDetail = (center: AdminCenterModel) => {
         setCenter(center);
         setModalVisibility(true);
     };
@@ -58,7 +60,7 @@ const AdminCenterRequestsContainer = () => {
     useEffect(() => {
         if (!modalVisibility) {
             const fetchData = async () => {
-                return await getCenterRequests({});
+                return await getCenterList({ status: 'Pending' });
             };
             fetchData().then((res) => {
                 setCenterRequests(res);
@@ -103,7 +105,7 @@ const AdminCenterRequestsContainer = () => {
                                 {center.phone}
                             </div>
                         </div>
-                        <div className="centerrq__item--address flex gap-2 text-base">{center.description}</div>
+                        <div className="centerrq__item--address flex gap-2 text-base"></div>
                     </div>
                 </Modal>
             )}
