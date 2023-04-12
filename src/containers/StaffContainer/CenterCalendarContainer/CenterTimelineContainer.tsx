@@ -40,12 +40,6 @@ type TimelineItemProps = {
 };
 
 const CenterTimelineContainer = ({ orderList }: Props) => {
-    const [orders, setOrders] = useState<Order[]>(
-        orderList.map((order): Order => {
-            return { id: order.id, name: order.id, orderedDate: order.orderedDate };
-        }),
-    );
-
     useEffect(() => {
         const style = document.createElement('style');
         style.innerHTML = `
@@ -117,12 +111,13 @@ const CenterTimelineContainer = ({ orderList }: Props) => {
     const timelineItems = [];
     for (let i = 0; i < 24; i++) {
         const start = dayjs('02-04-2023', 'DD-MM-YYYY').hour(i).minute(0).second(0);
-        const end = start.hour(i + 1);
-        const ordersInInterval = orderList.filter(
-            (order) =>
-                dayjs(order.orderedDate, 'DD-MM-YYYY HH:mm:ss').isAfter(start) &&
-                dayjs(order.orderedDate, 'DD-MM-YYYY HH:mm:ss').isBefore(end),
-        );
+        const ordersInInterval = orderList.filter((order) => {
+            return (
+                dayjs(order.orderedDate, 'DD-MM-YYYY HH:mm:ss').hour() >= i &&
+                dayjs(order.orderedDate, 'DD-MM-YYYY HH:mm:ss').hour() < i + 1
+            );
+        });
+        console.log(ordersInInterval);
         const tagItems = ordersInInterval.map((order) => (
             <Link to={`/provider/orders/${order.id}`}>
                 <Tag key={order.id} color={BadgeStatusMap[order.status]} className="h-[40px] flex items-center mb-2">
