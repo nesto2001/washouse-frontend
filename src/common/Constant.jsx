@@ -29,6 +29,7 @@ const API_CATEGORY = '/api/service-categories';
 const API_SERVICE_DETAILS = '/api/centers/${centerId}/services/${serviceId}';
 const API_CENTER_SERVICES = '/api/centers/${centerId}/services';
 const API_SERVICES = '/api/services';
+const API_SERVICES_CENTER = '/api/centers/${centerId}/services';
 
 //LOCATION API
 const API_DISTRICT = '/api/districts';
@@ -62,7 +63,6 @@ const API_MANAGER_CENTER_CUSTOMER = '/api/manager/my-center/customers';
 const API_STAFF_PROCEED_ORDER = '/api/tracking/orders/${orderId}/tracking';
 const API_STAFF_PROCEED_ORDERED_SERVICE = '/api/tracking/orders/${orderId}/order-details/${orderDetailId}/tracking';
 const API_STAFF_CANCEL_ORDER = '/api/tracking/orders/${orderId}/cancelled';
-
 
 //PROMOTION API
 const API_PROMOTION = '/api/promotions';
@@ -102,6 +102,7 @@ export {
     API_REQUEST_REJECT,
     API_REQUEST_APPROVE,
     API_REQUEST_DETAILS,
+    API_SERVICES_CENTER,
     API_REQUEST,
     API_LOCATION_SEARCH,
     API_DISTRICT,

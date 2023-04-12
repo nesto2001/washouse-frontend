@@ -1,4 +1,4 @@
-import { API_CENTER_SERVICES, API_SERVICES, API_SERVICE_DETAILS } from '../common/Constant';
+import { API_CENTER_SERVICES, API_SERVICES, API_SERVICES_CENTER, API_SERVICE_DETAILS } from '../common/Constant';
 import { Response } from '../models/CommonModel';
 import { CreateServiceRequest } from '../models/Service/CreateServiceRequest';
 import { ServiceDetailsModel } from '../models/Service/ServiceDetailsModel';
@@ -38,7 +38,7 @@ export const getService = async (centerId: number, id: number): Promise<ServiceD
 
 export const getServices = async (centerId: number): Promise<ServiceDetailsModel[]> => {
     const { data } = await instance.get<Response<ServiceDetailsResponse[]>>(
-        API_SERVICES.replace('${centerId}', centerId.toString()),
+        API_SERVICES_CENTER.replace('${centerId}', centerId.toString()),
     );
     return data.data.map((service) => {
         return {
