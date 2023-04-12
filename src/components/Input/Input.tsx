@@ -50,9 +50,9 @@ const Input = ({
                         name={name}
                         placeholder={placeholder}
                         className="w-full"
-                        value={value ?? ''}
-                        onChange={onChange}
-                        onBlur={onBlur}
+                        value={value ?? undefined}
+                        onChange={onChange ?? undefined}
+                        onBlur={onBlur ?? undefined}
                         autoComplete={autocomplete}
                     />
                     <button
@@ -73,9 +73,9 @@ const Input = ({
                     name={name}
                     className={className ?? `border border-wh-gray py-2 pl-3 ${label && 'mt-3'} rounded w-full`}
                     placeholder={placeholder}
-                    value={value ?? ''}
-                    onChange={onChange}
-                    onBlur={onBlur}
+                    value={value ?? undefined}
+                    onChange={onChange ?? undefined}
+                    onBlur={onBlur ?? undefined}
                     autoComplete={autocomplete}
                 />
             )}

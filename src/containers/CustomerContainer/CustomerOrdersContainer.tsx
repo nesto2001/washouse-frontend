@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Col, DatePicker, Form, Row, Space, Spin, Tabs } from 'antd';
+import { Col, DatePicker, Form, Radio, Row, Space, Spin, Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 import './CustomerContainer.scss';
 import { CenterOrderModel } from '../../models/Staff/CenterOrderModel';
@@ -20,7 +20,7 @@ type RangeValue = [dayjs.Dayjs | null, dayjs.Dayjs | null] | null;
 
 type SearchParamsData = {
     searchString?: string;
-    searchType: string;
+    orderType: string;
     status?: string;
     page?: number;
     pageSize?: number;
@@ -63,10 +63,13 @@ const CustomerOrdersContainer = (props: Props) => {
     const userJson = localStorage.getItem('currentUser');
     const user: UserModel = userJson && JSON.parse(userJson);
     const [customerOrder, setcustomerOrder] = useState<CustomerOrderModel[]>();
-    const [dates, setDates] = useState<RangeValue>(null);
+    const [dates, setDates] = useState<RangeValue>([
+        dayjs(dayjs(), 'DD-MM-YYYY'),
+        dayjs(dayjs().subtract(30, 'day'), 'DD-MM-YYYY'),
+    ]);
     const [value, setValue] = useState<RangeValue>(null);
     const [searchParams, setSearchParams] = useState<SearchParamsData>({
-        searchType: 'id',
+        orderType: 'orderbyme',
         page: 1,
         pageSize: 10,
     });
@@ -113,16 +116,27 @@ const CustomerOrdersContainer = (props: Props) => {
 
     return (
         <>
-            <div className="customer__order--filter w-full px-6">
+            <div className="customer__order--filter w-full px-6 pt-4 mb-3">
                 <Form>
-                    <Row>
-                        <Col span={12}>
-                            
+                    <Row gutter={[100, 20]}>
+                        <Col span={24}>
+                            <strong>Đặt hàng:</strong>
+                            <Radio.Group
+                                className="ml-2"
+                                defaultValue={searchParams.orderType}
+                                onChange={(e) => setSearchParams((prev) => ({ ...prev, orderType: e.target.value }))}
+                            >
+                                <Radio value="orderbyme">Đặt bởi tôi</Radio>
+                                <Radio value="orderbyanother">Đặt hộ tôi</Radio>
+                            </Radio.Group>
                         </Col>
-                    </Row>
-                    <Row gutter={100}>
                         <Col span={12}>
-                            <Input placeholder="Nhập chuỗi tìm kiếm" name="searchString" type="text" />
+                            <Input
+                                placeholder="Nhập chuỗi tìm kiếm"
+                                name="searchString"
+                                type="text"
+                                onBlur={(e) => setSearchParams((prev) => ({ ...prev, searchString: e.target.value }))}
+                            />
                         </Col>
                         <Col span={12}>
                             <RangePicker
@@ -140,6 +154,7 @@ const CustomerOrdersContainer = (props: Props) => {
                                         toDate: dateString[1],
                                     }));
                                 }}
+                                placeholder={['Ngày bắt đầu', 'Ngày kết thúc']}
                                 onOpenChange={onOpenChange}
                             />
                         </Col>

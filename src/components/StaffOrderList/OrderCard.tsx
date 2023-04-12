@@ -10,6 +10,9 @@ import CouponTag from '../CouponTag/CouponTag';
 import { OrderStatusEnum } from '../../types/enum/OrderStatusEnum';
 import { OrderStatusMap } from '../../mapping/OrderStatusMap';
 import { Link } from 'react-router-dom';
+import { Popconfirm } from 'antd';
+import Input from '../Input/Input';
+import TextArea from 'antd/es/input/TextArea';
 
 type Props = {
     order: CenterOrderModel;
@@ -45,7 +48,32 @@ const OrderCard = ({ order }: Props) => {
                     <div className="font-medium text-primary">
                         <Link to={`/provider/orders/${order.id}`}>Xem chi tiết</Link>
                     </div>
-                    {order.status.toLowerCase() === 'pending' && <div className="font-medium text-red">Hủy</div>}
+                    {order.status.toLowerCase() === 'pending' ||
+                        (order.status.toLowerCase() === 'confirmed' && (
+                            <Popconfirm
+                                title="Hủy đơn hàng"
+                                cancelButtonProps={{ style: { background: 'white' } }}
+                                
+                                description={
+                                    <>
+                                        <div className="mb-3">Bạn có chắc chắn muốn hủy đơn hàng này?</div>
+                                        <TextArea
+                                            className="max-h-[80px]"
+                                            name="cancelNote"
+                                            maxLength={100}
+                                            placeholder="Nhập lí do hủy đơn"
+                                            required
+                                        />
+                                    </>
+                                }
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <div className="font-medium text-red" onClick={() => {}}>
+                                    Hủy
+                                </div>
+                            </Popconfirm>
+                        ))}
                 </div>
             </div>
         </div>

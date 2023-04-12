@@ -32,8 +32,8 @@ const CenterServiceContainer = (props: Props) => {
     const [messageApi, contextHolder] = message.useMessage();
     const [service, setService] = useState<ServiceDetailsModel>();
     const [center, setCenter] = useState<CenterModel>();
-    const [weightInput, setWeightInput] = useState<number>(0);
-    const [quantityInput, setQuantityInput] = useState<number>(0);
+    const [weightInput, setWeightInput] = useState<number>(1);
+    const [quantityInput, setQuantityInput] = useState<number>(1);
     const [customerNote, setCustomerNote] = useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
     const [isModalLoading, setIsModalLoading] = useState(false);

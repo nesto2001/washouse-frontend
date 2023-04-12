@@ -13,10 +13,12 @@ export const getCustomerOrders = async ({
     searchString,
     fromDate,
     toDate,
+    orderType,
     status,
 }: {
     page?: number;
     pageSize?: number;
+    orderType: string;
     searchString?: string;
     fromDate?: string;
     toDate?: string;
@@ -30,6 +32,7 @@ export const getCustomerOrders = async ({
             page: page,
             pageSize: pageSize,
             searchString: searchString,
+            orderType: orderType,
             fromDate: fromDate,
             toDate: toDate,
             status: status,
