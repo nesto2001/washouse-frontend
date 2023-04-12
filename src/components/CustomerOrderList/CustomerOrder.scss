@@ -1,0 +1,9 @@
+.customer__ordered--services {
+    max-height: 1000px;
+    transition: max-height 1s ease-out;
+}
+
+.customer__ordered--services.collapsed {
+    transition: max-height 0.2s ease-out;
+    max-height: 128px;
+}

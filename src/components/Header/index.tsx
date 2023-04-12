@@ -22,6 +22,7 @@ import { getMe } from '../../repositories/AuthRepository';
 import NotificationDropdown from '../NotificationDropdown/NotificationDropdown';
 import { NotificationModel } from '../../models/Notification/NotificationModel';
 import { getNotifications } from '../../repositories/NotificationRepository';
+import OrderDropdown from '../OrderDropdown/OrderDropdown';
 
 const Navbar = () => {
     const [latitude, setLatitude] = useState<number>();
@@ -174,9 +175,13 @@ const Navbar = () => {
                             showBadge={false}
                         />
                         <div className="w-[1px] h-[14px] bg-wh-gray"></div>
-                        <div className="wh-link flex items-center gap-1 cursor-pointer">
-                            <BiSearch size={16} /> Tra cứu đơn hàng
-                        </div>
+                        <OrderDropdown
+                            child={
+                                <div className="wh-link flex items-center gap-1 cursor-pointer">
+                                    <BiSearch size={16} /> Tra cứu đơn hàng
+                                </div>
+                            }
+                        ></OrderDropdown>
                         {/* <div className="w-[1px] h-[14px] bg-wh-gray"></div>
                         <Link className="wh-link" to="/provider/login">
                             Tải ứng dụng

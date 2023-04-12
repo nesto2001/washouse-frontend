@@ -21,6 +21,9 @@
         background-color: var(--washouse-hover-blue);
         color: var(--washouse-primary-white);
     }
+    &:hover a {
+        color: var(--washouse-primary-white) !important;
+    }
 }
 
 .sub {

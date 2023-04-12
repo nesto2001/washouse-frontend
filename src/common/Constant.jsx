@@ -77,7 +77,11 @@ const API_CUSTOMER_ORDER = '/api/orders';
 const API_NOTIFICATION = '/api/notifications/me-noti';
 const API_NOTIFICATION_READ = '/api/notifications/read';
 
+//REGEX
+const RE_DIGIT = new RegExp(/^\d+$/);
+
 export {
+    RE_DIGIT,
     API_ACCOUNT_PROFILE_ADDRESS,
     API_ACCOUNT_PROFILE_PIC,
     API_ACCOUNT_PROFILE,

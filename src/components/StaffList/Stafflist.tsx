@@ -7,6 +7,8 @@ import { formatDateString } from '../../utils/TimeUtils';
 import { Button, DatePicker, Form, Input, Modal, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { getManagerCenter } from '../../repositories/StaffRepository';
+import { set } from 'date-fns';
+import OtpInput from '../OTPInput/OtpInput';
 
 type Props = {
     centerStaff: CenterStaffModel[];
@@ -19,11 +21,15 @@ type StaffFormData = {
 
 const Stafflist = ({ centerStaff }: Props) => {
     const [form] = Form.useForm();
+    const [step, setStep] = useState(0);
 
     // const [promotions, setPromotions] = useState<CenterStaffModel[]>([]);
     const [modalVisibility, setModalVisibility] = useState(false);
 
     const [formData, setFormData] = useState<StaffFormData>();
+
+    const [otp, setOtp] = useState('');
+    const onOtpChange = (value: string) => setOtp(value);
 
     const columns: ColumnsType<CenterStaffModel> = [
         {
@@ -71,44 +77,20 @@ const Stafflist = ({ centerStaff }: Props) => {
         },
     ];
 
-    // useEffect(() => {
-    //     if (!modalVisibility) {
-    //         const fetchData = async () => {
-    //             return await getPromotions();
-    //         };
-    //         fetchData().then((res) => {
-    //             setPromotions(res);
-    //         });
-    //     }
-    // }, [modalVisibility]);
-
     const onFinish = (values: StaffFormData) => {
-        console.log(values);
-        // getManagerCenter().then((res) =>
-        //     createPromotion({
-        //         phone: values.phone,
-        //         email: values.email,
-        //         centerId: res.id,
-        //     })
-        //         .then(() => {
-        //             message.success(`Đã tạo thành công.`);
-        //             setModalVisibility(false);
-        //         })
-        //         .catch((error) => {
-        //             if (error) {
-        //                 message.error(`Đã xảy ra lỗi trong quá trình tạo, vui lòng thử lại sau.`);
-        //             }
-        //         }),
-        // );
+        setFormData({ phone: values.phone, email: values.email });
+        setStep(step + 1);
+    };
+
+    const handleCancel = () => {
+        setModalVisibility(false);
+        setStep(0);
     };
 
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
     };
 
-    const handleCreatePromotion = () => {
-        console.log(form);
-    };
     return (
         <>
             <div className="staff__list--wrapper my-5 mt-2">
@@ -123,15 +105,18 @@ const Stafflist = ({ centerStaff }: Props) => {
                 width={400}
                 title="Thêm nhân viên mới"
                 open={modalVisibility}
-                onCancel={() => setModalVisibility(false)}
-                footer={[
-                    <Button key="key" onClick={() => setModalVisibility(false)} danger className="bg-transparent">
-                        Hủy
-                    </Button>,
-                    <Button key="submit" type="primary" onClick={() => form.submit()}>
-                        Lưu
-                    </Button>,
-                ]}
+                onCancel={handleCancel}
+                destroyOnClose={true}
+                footer={
+                    <>
+                        <Button key="key" onClick={handleCancel} danger className="bg-transparent">
+                            Hủy
+                        </Button>
+                        <Button key="next" type="primary" htmlType="submit">
+                            Xác nhận
+                        </Button>
+                    </>
+                }
             >
                 <Form
                     form={form}
@@ -141,24 +126,37 @@ const Stafflist = ({ centerStaff }: Props) => {
                     layout="vertical"
                     autoComplete="off"
                 >
-                    <div className="columns-1">
-                        <Form.Item
-                            label="Số điện thoại nhân viên"
-                            name="phone"
-                            rules={[{ required: true, message: 'Vui lòng nhập số điện thoại nhân viên' }]}
-                            validateTrigger={'onBlur'}
-                        >
-                            <Input type="text" title="Số điện thoại" placeholder="Nhập số điện thoại" />
-                        </Form.Item>
-                        <Form.Item
-                            label="Email nhân viên"
-                            name="email"
-                            rules={[{ required: true, message: 'Vui lòng nhập email nhân viên' }]}
-                            validateTrigger={'onBlur'}
-                        >
-                            <Input type="text" title="Email" placeholder="Nhập email" />
-                        </Form.Item>
-                    </div>
+                    {
+                        <div className="columns-1">
+                            <Form.Item
+                                label="Số điện thoại nhân viên"
+                                name="phone"
+                                rules={[{ required: true, message: 'Vui lòng nhập số điện thoại nhân viên' }]}
+                                validateTrigger={'onBlur'}
+                            >
+                                <Input type="text" title="Số điện thoại" placeholder="Nhập số điện thoại" />
+                            </Form.Item>
+                            <Form.Item
+                                label="Email nhân viên"
+                                name="email"
+                                rules={[{ required: true, message: 'Vui lòng nhập email nhân viên' }]}
+                                validateTrigger={'onBlur'}
+                            >
+                                <Input type="text" title="Email" placeholder="Nhập email" />
+                            </Form.Item>
+                        </div>
+                    }
+                    {/* {step === 1 && (
+                        <div className="columns-1 mt-3 flex flex-col items-center ">
+                            <div className="header text-xl my-2 font-bold text-center">Nhập mã OTP để xác nhận</div>
+                            <div className="header text-center mt-1 mb-4">
+                                Một mã OTP đã được gửi đến email nhân viên ({formData?.email})
+                            </div>
+                            <div className="h-10 w-64 flex justify-center mb-4">
+                                <OtpInput value={otp} valueLength={4} onChange={onOtpChange} />
+                            </div>
+                        </div>
+                    )} */}
                 </Form>
             </Modal>
         </>
