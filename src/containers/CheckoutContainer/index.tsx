@@ -275,7 +275,7 @@ const CheckoutContainer = (props: Props) => {
                                             >
                                                 <div className="checkout__order--item order__item--thumb flex-shrink rounded-2xl overflow-hidden">
                                                     <img
-                                                        className="max-h-[120px]"
+                                                        className="h-[120px] w-[140px] object-cover"
                                                         src={item.thumbnail ?? Placeholder}
                                                         alt=""
                                                     />

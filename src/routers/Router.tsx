@@ -46,6 +46,8 @@ import {
     ProviderRoleChoosingPage,
     StaffDashboardPage,
     CustomerNotificationPage,
+    StaffVerificationPage,
+    ManagerCenterSettingsPage,
 } from '../pages/';
 import AdminCenterRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterRequestPage';
 import AdminPostPage from '../pages/AdminPage/AdminPost/AdminPostPage';
@@ -167,6 +169,11 @@ const publicRoutes: Array<RouteProps> = [
         component: ManagerCenterPage,
     },
     {
+        path: '/provider/settings/center/',
+        layout: ManagerDashboardLayout,
+        component: ManagerCenterSettingsPage,
+    },
+    {
         path: '/provider/registration',
         layout: UnregisteredLayout,
         component: ManagerCenterRegistrationPage,
@@ -175,6 +182,11 @@ const publicRoutes: Array<RouteProps> = [
         path: '/provider/role',
         layout: UnregisteredLayout,
         component: ProviderRoleChoosingPage,
+    },
+    {
+        path: '/provider/staff/verify',
+        layout: BlankCenteredLayout,
+        component: StaffVerificationPage,
     },
     {
         path: '/account/information',

@@ -26,6 +26,7 @@ export { default as StaffDashboardPage } from './StaffPage/StaffDashboardPage';
 export { default as ManagerCenterPage } from './StaffPage/ManagerCenter/ManagerCenterPage';
 export { default as ManagerCenterRegistrationPage } from './StaffPage/ManagerCenter/ManagerCenterRegistrationPage';
 export { default as ManagerCenterStaffPage } from './StaffPage/ManagerCenter/ManagerCenterStaffPage';
+export { default as ManagerCenterSettingsPage } from './StaffPage/ManagerCenter/ManagerCenterSettingsPage';
 export { default as ManagerServicePage } from './StaffPage/ManagerService/ManagerServicePage';
 export { default as ManagerCreateServicePage } from './StaffPage/ManagerService/ManagerCreateServicePage';
 export { default as StaffCustomerPage } from './StaffPage/StaffCustomer/StaffCustomerPage';
@@ -33,6 +34,7 @@ export { default as StaffOrdersPage } from './StaffPage/StaffOrder/StaffOrdersPa
 export { default as StaffCalendarPage } from './StaffPage/StaffCalendar/StaffCalendarPage';
 export { default as StaffDayTimelinePage } from './StaffPage/StaffCalendar/StaffDayTimelinePage';
 export { default as StaffOrderDetailsPage } from './StaffPage/StaffOrder/StaffOrderDetailsPage';
+export { default as StaffVerificationPage } from './StaffPage/StaffVerification/StaffVerificationPage';
 
 //admin
 export { default as AdminDashboardPage } from './AdminPage/AdminDashboardPage';

@@ -1,4 +1,4 @@
-import { Tag, message } from 'antd';
+import { Col, Row, Tag, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import OthersSpin from '../../../components/OthersSpin/OthersSpin';
@@ -109,6 +109,15 @@ const CenterOrderDetailsContainer = (props: Props) => {
                     <div className="provider__page--title pt-4 pl-6 font-semibold text-2xl">Chi tiết đơn hàng</div>
                     <div className="provider__page--content px-6 mt-6">
                         <div className="provider__services--wrapper">
+                            <Row gutter={0} className="h-10 flex items-center font-medium text-base mb-2">
+                                <Col span={9} className="text-center">
+                                    Dịch vụ
+                                </Col>
+                                <Col span={2}>Định lượng</Col>
+                                <Col span={6}>Đơn giá</Col>
+                                <Col span={3}>Thành tiền</Col>
+                                <Col span={2}>Trạng thái</Col>
+                            </Row>
                             <CenterOrderedDetailsContainer
                                 orderId={orderDetails.id}
                                 details={{ orderedDetails: orderDetails.orderedDetails }}

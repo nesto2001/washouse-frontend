@@ -70,7 +70,7 @@ const CenterServiceContainer = (props: Props) => {
                 console.error(error);
                 setIsLoading(false);
             });
-    }, [location]);
+    }, [centerId, id]);
 
     const dispatch = useDispatch();
 

@@ -13,7 +13,7 @@ type Props = {};
 export type SearchParamsData = {
     page?: number;
     pageSize?: number;
-    status: string;
+    status?: string;
     searchString: string | null;
 };
 
@@ -122,7 +122,7 @@ const AdminCentersContainer = (props: Props) => {
         if (key !== 'All') {
             setSearchParams((prev) => ({ ...prev, status: key }));
         } else {
-            setSearchParams((prev) => ({ ...prev, status: '' }));
+            setSearchParams((prev) => ({ ...prev, status: undefined }));
         }
     };
 

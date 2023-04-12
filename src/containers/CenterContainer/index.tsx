@@ -145,7 +145,7 @@ const CenterContainer = (props: Props) => {
             <div className="center__wrapper flex justify-between gap-[40px] mt-9">
                 <div className="center__details text-left basis-2/3">
                     <div className="center__details--main flex">
-                        <div className="center__details--thumbnail max-w-[306px] max-h-[280px] basis-5/12 overflow-hidden">
+                        <div className="center__details--thumbnail max-w-[306px] max-h-[280px] w-[306px] h-[218 px] basis-5/12 overflow-hidden">
                             <img
                                 className="h-full w-full object-cover object-center inline-block"
                                 src={center.thumbnail ?? Placeholder}

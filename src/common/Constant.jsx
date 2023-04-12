@@ -59,6 +59,8 @@ const API_MANAGER_CENTER_ORDER = '/api/manager/my-center/orders';
 const API_MANAGER_CENTER_ORDER_DETAILS = '/api/manager/my-center/orders/${id}';
 const API_MANAGER_CENTER_SERVICE = '/api/manager/services';
 const API_MANAGER_CENTER_CUSTOMER = '/api/manager/my-center/customers';
+const API_MANAGER_ASSIGN_STAFF = '/api/staffs/assign';
+const API_MANAGER_VERIFY_STAFF = '/api/staffs/verify';
 
 const API_STAFF_PROCEED_ORDER = '/api/tracking/orders/${orderId}/tracking';
 const API_STAFF_PROCEED_ORDERED_SERVICE = '/api/tracking/orders/${orderId}/order-details/${orderDetailId}/tracking';
@@ -81,6 +83,8 @@ const API_NOTIFICATION_READ = '/api/notifications/read';
 const RE_DIGIT = new RegExp(/^\d+$/);
 
 export {
+    API_MANAGER_VERIFY_STAFF,
+    API_MANAGER_ASSIGN_STAFF,
     RE_DIGIT,
     API_ACCOUNT_PROFILE_ADDRESS,
     API_ACCOUNT_PROFILE_PIC,

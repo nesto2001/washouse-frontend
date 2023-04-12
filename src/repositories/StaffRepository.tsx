@@ -1,9 +1,11 @@
 import {
+    API_MANAGER_ASSIGN_STAFF,
     API_MANAGER_CENTER,
     API_MANAGER_CENTER_CUSTOMER,
     API_MANAGER_CENTER_ORDER,
     API_MANAGER_CENTER_ORDER_DETAILS,
     API_MANAGER_CENTER_SERVICE,
+    API_MANAGER_VERIFY_STAFF,
     API_STAFF_CANCEL_ORDER,
     API_STAFF_PROCEED_ORDER,
     API_STAFF_PROCEED_ORDERED_SERVICE,
@@ -290,6 +292,28 @@ export const proceedOrderDetails = async (orderId: string, orderDetailId: number
 
 export const cancelOrder = async (orderId: string) => {
     const response = await instance.put<Response<number>>(API_STAFF_CANCEL_ORDER.replace('${orderId}', orderId), {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    return response;
+};
+
+export const assignStaff = async (email: string, phone: string) => {
+    const response = await instance.get<Response<number>>(API_MANAGER_ASSIGN_STAFF, {
+        params: {
+            email: email,
+            phone: phone,
+        },
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    return response;
+};
+
+export const verifyStaff = async (code: string) => {
+    const response = await instance.put<Response<number>>(API_MANAGER_VERIFY_STAFF, code, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },

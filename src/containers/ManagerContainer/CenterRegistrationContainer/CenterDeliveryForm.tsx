@@ -55,7 +55,7 @@ const CenterDeliveryForm = ({ setFormData, setIsValidated, formData, formInstanc
                 </Form.Item>
                 {hasDelivery && (
                     <div className="flex w-full">
-                        <Form.Item className="basis-1/2" label="Bảng phí ship (Khối lượng)" labelCol={{ span: 6 }}>
+                        <Form.Item className="basis-1/2" label="Bảng phí ship" labelCol={{ span: 6 }}>
                             <Form.List
                                 name="weightPrices"
                                 rules={[
@@ -93,75 +93,17 @@ const CenterDeliveryForm = ({ setFormData, setIsValidated, formData, formInstanc
                                                         </Form.Item>
                                                         <Form.Item
                                                             {...field}
-                                                            name={[field.name, 'price']}
+                                                            name={[field.name, 'maxDistance']}
                                                             rules={[
-                                                                { required: true, message: 'Vui lòng nhập đơn giá' },
+                                                                {
+                                                                    required: true,
+                                                                    message: 'Vui lòng nhập khoảng cách',
+                                                                },
                                                             ]}
                                                         >
                                                             <Input
-                                                                style={{ width: 160 }}
-                                                                placeholder="Đơn giá"
-                                                                addonAfter="đ"
-                                                            />
-                                                        </Form.Item>
-                                                        {index > 0 && (
-                                                            <MinusCircleOutlined
-                                                                style={{ verticalAlign: '-0.1rem' }}
-                                                                onClick={() => remove(field.name)}
-                                                            />
-                                                        )}
-                                                    </Space>
-                                                );
-                                            })}
-                                            <Form.Item>
-                                                <Button
-                                                    type="dashed"
-                                                    style={{ backgroundColor: 'white', width: 328 }}
-                                                    onClick={() => add()}
-                                                    block
-                                                    icon={<PlusOutlined style={{ verticalAlign: '0.1rem' }} />}
-                                                >
-                                                    Thêm khoảng giá
-                                                </Button>
-                                            </Form.Item>
-                                        </div>
-                                    );
-                                }}
-                            </Form.List>
-                        </Form.Item>
-                        <Form.Item className="basis-1/2" label={'Bảng phí ship (Khoảng cách)'} labelCol={{ span: 6 }}>
-                            <Form.List
-                                name="distancePrices"
-                                rules={[
-                                    {
-                                        validator: async (_, distancePrices) => {
-                                            if (!distancePrices || distancePrices.length < 2) {
-                                                return Promise.reject(new Error('Ít nhất 2 khoảng giá'));
-                                            }
-                                        },
-                                    },
-                                ]}
-                            >
-                                {(fields, { add, remove }) => {
-                                    if (fields.length === 0) {
-                                        add();
-                                        forceUpdate();
-                                    }
-                                    return (
-                                        <div>
-                                            {fields.map((field, index) => {
-                                                return (
-                                                    <Space key={field.key} align="baseline">
-                                                        <Form.Item
-                                                            {...field}
-                                                            name={[field.name, 'maxWeight']}
-                                                            rules={[
-                                                                { required: true, message: 'Vui lòng nhập khối lượng' },
-                                                            ]}
-                                                        >
-                                                            <Input
-                                                                style={{ width: 160 }}
                                                                 placeholder="Khoảng cách"
+                                                                style={{ width: 160 }}
                                                                 addonAfter="km"
                                                             ></Input>
                                                         </Form.Item>

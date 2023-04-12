@@ -40,7 +40,7 @@ instance.interceptors.response.use(
 
                     return instance(originalRequest);
                 });
-            } else {
+            } else {    
                 localStorage.clear();
             }
         }
