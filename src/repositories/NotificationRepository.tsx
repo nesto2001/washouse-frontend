@@ -12,6 +12,7 @@ export const getNotifications = async (): Promise<NotificationListModel> => {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
     });
+    
     return {
         numOfUnread: data.data.numOfUnread,
         notifications: data.data.notifications.map((item): NotificationModel => {

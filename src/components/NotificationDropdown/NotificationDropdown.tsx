@@ -3,6 +3,8 @@ import { timeSince } from '../../utils/TimeUtils';
 import { getNotifications, readNotification } from '../../repositories/NotificationRepository';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { startSignalRConnection } from '../../hubs/notificationHub';
+import { NotificationModel } from '../../models/Notification/NotificationModel';
 
 type Notification = {
     id: number;
@@ -20,7 +22,7 @@ type Props = {
 
 const NotificationDropdown = ({ showBadge, child, size }: Props) => {
     const [numOfUnread, setNumOfUnread] = useState<number>();
-    const [notifications, setNotifications] = useState<Notification[]>();
+    const [notifications, setNotifications] = useState<Notification[]>([]);
 
     useEffect(() => {
         getNotifications().then((res) => {
@@ -29,7 +31,7 @@ const NotificationDropdown = ({ showBadge, child, size }: Props) => {
                 res.notifications?.map((notif) => {
                     return {
                         id: notif.id,
-                        title: 'Notification title',
+                        title: notif.title,
                         body: notif.content,
                         createdDate: notif.createdDate,
                         isRead: notif.isRead,
@@ -37,6 +39,21 @@ const NotificationDropdown = ({ showBadge, child, size }: Props) => {
                 }),
             );
         });
+    }, []);
+
+    useEffect(() => {
+        const connection = startSignalRConnection();
+        console.log(1221);
+        connection.on('ReceiveNotification', (notification: Notification) => {
+            console.log('abc');
+            setNotifications([...notifications, notification]);
+        });
+
+        connection.start().catch((err) => console.error(err));
+
+        return () => {
+            connection.stop().catch((err) => console.error(err));
+        };
     }, []);
 
     const handleRead = (id: number) => {
@@ -48,7 +65,7 @@ const NotificationDropdown = ({ showBadge, child, size }: Props) => {
                 res.notifications?.map((notif) => {
                     return {
                         id: notif.id,
-                        title: 'Notification title',
+                        title: notif.title,
                         body: notif.content,
                         createdDate: notif.createdDate,
                         isRead: notif.isRead,

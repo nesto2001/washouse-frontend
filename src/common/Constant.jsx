@@ -14,6 +14,7 @@ const API_ACCOUNT_DETAILS = '/api/accounts/${id}';
 const API_ACCOUNT_PROFILE = '/api/accounts/profile';
 const API_ACCOUNT_PROFILE_PIC = '/api/accounts/profile-picture';
 const API_ACCOUNT_PROFILE_ADDRESS = '/api/accounts/address';
+const API_ACCOUNT_WALLET = '/api/accounts/my-wallet';
 
 //UPLOAD API
 const API_MEDIA = '/api/medias';
@@ -82,7 +83,7 @@ const API_NOTIFICATION_READ = '/api/notifications/read';
 //REGEX
 const RE_DIGIT = new RegExp(/^\d+$/);
 
-export {
+export {API_ACCOUNT_WALLET,
     API_MANAGER_VERIFY_STAFF,
     API_MANAGER_ASSIGN_STAFF,
     RE_DIGIT,

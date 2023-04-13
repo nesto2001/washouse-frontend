@@ -4,6 +4,7 @@ import {
     API_ACCOUNT_PROFILE,
     API_ACCOUNT_PROFILE_ADDRESS,
     API_ACCOUNT_PROFILE_PIC,
+    API_ACCOUNT_WALLET,
 } from '../common/Constant';
 import { AccountModel } from '../models/Account/AccountModel';
 import { AccountResponse } from '../models/Account/AccountResponse';
@@ -11,6 +12,8 @@ import { Response } from '../models/CommonModel';
 import { UpdateAddressRequest } from '../models/Customer/UpdateAddressRequest';
 import { UpdateAvatarRequest } from '../models/Customer/UpdateAvatarRequest';
 import { UpdateProfileRequest } from '../models/Customer/UpdateCustomerRequest';
+import { WalletModel } from '../models/Wallet/WalletModel';
+import { WalletResponse } from '../models/Wallet/WalletResponse';
 import instance from '../services/axios/AxiosInstance';
 
 export const getUserProfile = async (id: number): Promise<AccountModel> => {
@@ -78,4 +81,37 @@ export const updateAccountAddress = async (request: UpdateAddressRequest) => {
     if (status !== 200) {
         throw new Error();
     }
+};
+
+export const getMyWallet = async (): Promise<WalletModel> => {
+    const { data } = await instance.get<Response<WalletResponse>>(API_ACCOUNT_WALLET, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    return {
+        walletId: data.data.walletId,
+        balance: data.data.balance,
+        status: data.data.status,
+        transactions: data.data.transactions.map((trans) => {
+            return {
+                status: trans.status,
+                type: trans.type,
+                amount: trans.amount,
+                plusOrMinus: trans.plusOrMinus,
+                timeStamp: trans.timeStamp,
+            };
+        }),
+        walletTransactions: data.data.walletTransactions.map((walTrans) => {
+            return {
+                amount: walTrans.amount,
+                paymentId: walTrans.paymentId,
+                plusOrMinus: walTrans.plusOrMinus,
+                status: walTrans.status,
+                timeStamp: walTrans.timeStamp,
+                type: walTrans.type,
+                updateTimeStamp: walTrans.updateTimeStamp,
+            };
+        }),
+    };
 };

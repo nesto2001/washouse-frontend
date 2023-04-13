@@ -48,7 +48,7 @@ const OrderList = ({ orders, isLoading, paging, updatePage }: Props) => {
     return (
         <div className={`order__list--wrapper my-5 mt-2 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
             <div className="order__list--header mb-6 py-4 bg-wh-lightgray font-bold text-sub rounded-lg">
-                <div className="flex justify-between px-4">
+                <div className="flex justify-between px-4 text-base">
                     <div className="w-[400px]">Dịch vụ</div>
                     <div className="w-[110px] mr-3">Tổng đơn hàng</div>
                     <div className="w-[86px] mr-3">Giảm giá</div>
