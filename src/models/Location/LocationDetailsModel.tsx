@@ -6,7 +6,7 @@ export type LocationDetailsModel = {
         name: string;
         district: {
             id: number;
-            name: number;
+            name: string;
         };
     };
     latitude: number;

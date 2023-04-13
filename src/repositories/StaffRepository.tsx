@@ -181,7 +181,7 @@ export const getManagerCenterOrderDetails = async (id: string): Promise<CenterOr
         }),
         orderPayment: {
             total: data.data.orderPayment.paymentTotal,
-            platformFee: data.data.orderPayment.paymentMethod,
+            platformFee: data.data.orderPayment.platformFee,
             promoCode: data.data.orderPayment.promoCode,
             discount: data.data.orderPayment.discount,
             status: data.data.orderPayment.status,

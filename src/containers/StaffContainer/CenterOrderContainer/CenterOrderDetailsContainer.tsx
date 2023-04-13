@@ -100,6 +100,8 @@ const CenterOrderDetailsContainer = (props: Props) => {
                                     deliveryType: orderDetails.deliveryType,
                                     status: orderDetails.status,
                                     paymentMethod: orderDetails.orderPayment.method,
+                                    discount: orderDetails.orderPayment.discount,
+                                    promoCode: orderDetails.orderPayment.promoCode,
                                 }}
                             />
                         </div>

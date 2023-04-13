@@ -6,9 +6,9 @@ export type LocationDetailsResponse = {
         wardName: string;
         district: {
             districtId: number;
-            districtName : number;
-        }
-    }
+            districtName: string;
+        };
+    };
     latitude: number;
     longitude: number;
 };

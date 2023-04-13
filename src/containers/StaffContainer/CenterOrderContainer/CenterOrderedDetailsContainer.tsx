@@ -43,7 +43,7 @@ const CenterOrderedDetailsContainer = ({ details, orderId }: Props) => {
                         <div className="font-bold text-lg">{det.name}</div>
                         <div className="font-medium text-sub-gray text-sm">Phân loại: {det.category}</div>
                         <div className="font-normal text-sub text-sm mt-2 ">
-                            Ghi chú: {det.customerNote.length > 0 ? det.customerNote : 'không có'}
+                            {/* Ghi chú: {det.customerNote.length > 0 ? det.customerNote : 'không có'} */}
                         </div>
                     </div>
                     <div className="ordered__item--weight w-[100px] text-base font-bold">

@@ -27,7 +27,7 @@ const CenterOrderDetailsPayment = ({ orderPayment }: Props) => {
             </div>
             <div className="font-medium">Chiết khấu</div>
             <div className="text-right text-primary font-bold text-xl">
-                {formatCurrency(orderPayment.payment.discount ?? 0)}
+                - {formatCurrency(orderPayment.orderTotal * orderPayment.payment.discount)}
             </div>
             <hr className="col-span-2 my-3" />
             <div className="font-medium text-lg">Tổng thanh toán</div>

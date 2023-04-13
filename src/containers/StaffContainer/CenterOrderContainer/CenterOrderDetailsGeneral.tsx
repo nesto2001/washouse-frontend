@@ -1,12 +1,14 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Descriptions, Popconfirm, Tag } from 'antd';
+import { Descriptions, Popconfirm, Tag, Tooltip } from 'antd';
 import { LocationDetailsModel } from '../../../models/Location/LocationDetailsModel';
 import { getLocation } from '../../../repositories/LocationRepository';
 import { DeliveryTypeMap } from '../../../mapping/DeliveryTypeMap';
 import { PaymentMethodMap } from '../../../mapping/PaymentMethodMap';
 import { BadgeStatusMap } from '../../../mapping/BadgeStatusMap';
 import { OrderStatusMap } from '../../../mapping/OrderStatusMap';
+import CouponTag from '../../../components/CouponTag/CouponTag';
+import { formatPercentage } from '../../../utils/FormatUtils';
 
 export type OrderInformation = {
     id: string;
@@ -20,6 +22,8 @@ export type OrderInformation = {
     preferredDropoffTime: string;
     deliveryType: number;
     paymentMethod: number;
+    promoCode: string;
+    discount: number;
     status: string;
 };
 
@@ -89,7 +93,6 @@ const CenterOrderDetailsGeneral = ({
                             okButtonProps={{ loading: confirmProceedLoading }}
                             onCancel={handleCancel}
                             cancelButtonProps={{ style: { background: 'white' } }}
-                            
                         >
                             <Tag
                                 className="cursor-pointer"
@@ -131,7 +134,6 @@ const CenterOrderDetailsGeneral = ({
                     {customerLocation &&
                         `${customerLocation.address}, ${customerLocation.ward.name}, ${customerLocation.ward.district.name}, TP. Hồ Chí Minh`}
                 </Descriptions.Item>
-
                 <Descriptions.Item
                     label="Giờ lấy hàng"
                     contentStyle={{ fontSize: 16, fontWeight: 900 }}
@@ -146,7 +148,17 @@ const CenterOrderDetailsGeneral = ({
                 >
                     {orderInfo.preferredDeliverTime??'Chưa có'}
                 </Descriptions.Item> uncomment */}
-
+                <Descriptions.Item
+                    label="Mã giảm giá"
+                    contentStyle={{ fontSize: 16, fontWeight: 900 }}
+                    labelStyle={{ fontSize: 16, fontWeight: 700 }}
+                >
+                    {orderInfo.discount !== 0 ? (
+                        <CouponTag discountValue={orderInfo.discount} content={orderInfo.promoCode}></CouponTag>
+                    ) : (
+                        'Không có'
+                    )}
+                </Descriptions.Item>
                 <Descriptions.Item
                     label="Ghi chú"
                     contentStyle={{ fontSize: 16, fontWeight: 900 }}
