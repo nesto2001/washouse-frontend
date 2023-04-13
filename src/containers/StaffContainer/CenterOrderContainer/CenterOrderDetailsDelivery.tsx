@@ -56,22 +56,22 @@ const CenterOrderDetailsDelivery = ({ deliveries, deliveryType }: Props) => {
                     (!delivery.type && (
                         <>
                             <div className="text-base">
-                                <div className="flex justify-between items-baseline">
+                                <div className="flex justify-between items-baseline mb-4">
                                     <h2 className="font-semibold text-xl">{'Lấy đơn hàng'}</h2>
                                     <h4 className="font-medium text-sm">
                                         <Tag>{DeliveryStatusMap[delivery.status]}</Tag>
                                     </h4>
                                 </div>
                                 <div className="grid grid-cols-2 gap-y-1 mt-2 text-sm">
-                                    <h2 className="col-span-1">Nhân viên:</h2>
+                                    <h2 className="col-span-1 text-sub-gray font-medium">Nhân viên:</h2>
                                     <h2 className="col-span-1 text-right">{delivery.shipperName ?? '-'}</h2>
-                                    <h2 className="col-span-1">SĐT Nhân viên:</h2>
+                                    <h2 className="col-span-1 text-sub-gray font-medium">SĐT Nhân viên:</h2>
                                     <h2 className="col-span-1 text-right">{delivery.shipperPhone ?? '-'}</h2>
-                                    <h2 className="col-span-1">Ngày vận chuyển:</h2>
+                                    <h2 className="col-span-1 text-sub-gray font-medium">Ngày vận chuyển:</h2>
                                     <h2 className="col-span-1 text-right">{delivery.date ?? '-'}</h2>
-                                    <h2 className="col-span-1">Địa điểm:</h2>
+                                    <h2 className="col-span-1 text-sub-gray font-medium">Địa điểm:</h2>
                                     <h2 className="col-span-1 text-right">{`${deliveryInfo[index].address}, ${deliveryInfo[index].ward?.name}, ${deliveryInfo[index].ward?.district.name}, TP. Hồ Chí Minh`}</h2>
-                                    <h2 className="col-span-1">Ước tính</h2>
+                                    <h2 className="col-span-1 text-sub-gray font-medium">Ước tính</h2>
                                     <h2 className="col-span-1 text-right">
                                         {delivery.estimated ? `${delivery.estimated} phút` : '-'}
                                     </h2>
@@ -83,22 +83,22 @@ const CenterOrderDetailsDelivery = ({ deliveries, deliveryType }: Props) => {
                     (delivery.type && (
                         <>
                             <div className="text-base">
-                                <div className="flex justify-between items-baseline">
+                                <div className="flex justify-between items-baseline mb-4">
                                     <h2 className="font-semibold text-xl">Trả đơn hàng</h2>
                                     <h4 className="font-medium text-sm">
                                         <Tag>{DeliveryStatusMap[delivery.status]}</Tag>
                                     </h4>
                                 </div>
                                 <div className="grid grid-cols-2 gap-y-1 mt-2 text-sm">
-                                    <h2 className="col-span-1">Nhân viên:</h2>
+                                    <h2 className="col-span-1 text-sub-gray font-medium">Nhân viên:</h2>
                                     <h2 className="col-span-1 text-right">{delivery.shipperName ?? '-'}</h2>
-                                    <h2 className="col-span-1">SĐT Nhân viên:</h2>
+                                    <h2 className="col-span-1 text-sub-gray font-medium">SĐT Nhân viên:</h2>
                                     <h2 className="col-span-1 text-right">{delivery.shipperPhone ?? '-'}</h2>
-                                    <h2 className="col-span-1">Ngày vận chuyển:</h2>
+                                    <h2 className="col-span-1 text-sub-gray font-medium">Ngày vận chuyển:</h2>
                                     <h2 className="col-span-1 text-right">{delivery.date ?? '-'}</h2>
-                                    <h2 className="col-span-1">Địa điểm:</h2>
+                                    <h2 className="col-span-1 text-sub-gray font-medium">Địa điểm:</h2>
                                     <h2 className="col-span-1 text-right">{`${deliveryInfo[index].address}, ${deliveryInfo[index].ward?.name}, ${deliveryInfo[index].ward?.district.name}, TP. Hồ Chí Minh`}</h2>
-                                    <h2 className="col-span-1">Thời gian ước tính:</h2>
+                                    <h2 className="col-span-1 text-sub-gray font-medium">Thời gian ước tính:</h2>
                                     <h2 className="col-span-1 text-right">
                                         {delivery.estimated ? `${delivery.estimated} phút` : '-'}
                                     </h2>

@@ -37,7 +37,7 @@ const CenterOrderDetailsTracking = ({ trackings }: Props) => {
                 mode="left"
                 items={trackings.map((tracking) => {
                     return {
-                        label: tracking.createdDate,
+                        label: <div className="text-sub-gray font-medium">{tracking.createdDate}</div>,
                         children: <strong>{OrderStatusMap[tracking.status]}</strong>,
                     };
                 })}
