@@ -34,11 +34,11 @@ const CenterOrderDetailsTracking = ({ trackings }: Props) => {
         <div className="h-auto">
             <Timeline
                 pending={pending}
-                mode="alternate"
+                mode="left"
                 items={trackings.map((tracking) => {
                     return {
                         label: tracking.createdDate,
-                        children: OrderStatusMap[tracking.status],
+                        children: <strong>{OrderStatusMap[tracking.status]}</strong>,
                     };
                 })}
             />

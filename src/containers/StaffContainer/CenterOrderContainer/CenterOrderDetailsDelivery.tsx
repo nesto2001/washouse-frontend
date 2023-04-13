@@ -29,14 +29,23 @@ const CenterOrderDetailsDelivery = ({ deliveries, deliveryType }: Props) => {
     const [deliveryInfo, setDeliveryInfo] = useState<DeliveryInfo[]>([]);
 
     useEffect(() => {
-        if (deliveries) {
-            deliveryInfo.map((deli, index) => {
-                getLocation(deli.locationId).then((res) => {
-                    const deliInfo = deliveryInfo[index];
-                    deliInfo.address = res.address;
-                    deliInfo.ward = res.ward;
-                });
+        console.log(deliveries);
+        if (deliveries && deliveryInfo.length === 0) {
+            const promises = deliveries.map((deli, index) => {
+                return getLocation(deli.locationId);
             });
+            Promise.all(promises).then((res) =>
+                setDeliveryInfo(
+                    res.map((deliInfo, index) => {
+                        return {
+                            type: deliveries[index].type,
+                            locationId: deliveries[index].locationId,
+                            address: deliInfo.address,
+                            ward: deliInfo.ward,
+                        };
+                    }),
+                ),
+            );
         }
     }, []);
 
@@ -48,22 +57,24 @@ const CenterOrderDetailsDelivery = ({ deliveries, deliveryType }: Props) => {
                         <>
                             <div className="text-base">
                                 <div className="flex justify-between items-baseline">
-                                    <h2 className="font-semibold text-xl">{JSON.stringify(deliveryInfo)}</h2>
+                                    <h2 className="font-semibold text-xl">{'Lấy đơn hàng'}</h2>
                                     <h4 className="font-medium text-sm">
                                         <Tag>{DeliveryStatusMap[delivery.status]}</Tag>
                                     </h4>
                                 </div>
                                 <div className="grid grid-cols-2 gap-y-1 mt-2 text-sm">
                                     <h2 className="col-span-1">Nhân viên:</h2>
-                                    <h2 className="col-span-1 text-right">{delivery.shipperName}</h2>
+                                    <h2 className="col-span-1 text-right">{delivery.shipperName ?? '-'}</h2>
                                     <h2 className="col-span-1">SĐT Nhân viên:</h2>
-                                    <h2 className="col-span-1 text-right">{delivery.shipperPhone}</h2>
+                                    <h2 className="col-span-1 text-right">{delivery.shipperPhone ?? '-'}</h2>
                                     <h2 className="col-span-1">Ngày vận chuyển:</h2>
-                                    <h2 className="col-span-1 text-right">{delivery.date}</h2>
+                                    <h2 className="col-span-1 text-right">{delivery.date ?? '-'}</h2>
                                     <h2 className="col-span-1">Địa điểm:</h2>
                                     <h2 className="col-span-1 text-right">{`${deliveryInfo[index].address}, ${deliveryInfo[index].ward?.name}, ${deliveryInfo[index].ward?.district.name}, TP. Hồ Chí Minh`}</h2>
                                     <h2 className="col-span-1">Ước tính</h2>
-                                    <h2 className="col-span-1 text-right">{delivery.estimated}</h2>
+                                    <h2 className="col-span-1 text-right">
+                                        {delivery.estimated ? `${delivery.estimated} phút` : '-'}
+                                    </h2>
                                 </div>
                             </div>
                             {index === 0 && deliveryType === 3 && <hr className="my-3 border-wh-gray" />}
@@ -80,15 +91,17 @@ const CenterOrderDetailsDelivery = ({ deliveries, deliveryType }: Props) => {
                                 </div>
                                 <div className="grid grid-cols-2 gap-y-1 mt-2 text-sm">
                                     <h2 className="col-span-1">Nhân viên:</h2>
-                                    <h2 className="col-span-1 text-right">{delivery.shipperName}</h2>
+                                    <h2 className="col-span-1 text-right">{delivery.shipperName ?? '-'}</h2>
                                     <h2 className="col-span-1">SĐT Nhân viên:</h2>
-                                    <h2 className="col-span-1 text-right">{delivery.shipperPhone}</h2>
+                                    <h2 className="col-span-1 text-right">{delivery.shipperPhone ?? '-'}</h2>
                                     <h2 className="col-span-1">Ngày vận chuyển:</h2>
-                                    <h2 className="col-span-1 text-right">{delivery.date}</h2>
+                                    <h2 className="col-span-1 text-right">{delivery.date ?? '-'}</h2>
                                     <h2 className="col-span-1">Địa điểm:</h2>
                                     <h2 className="col-span-1 text-right">{`${deliveryInfo[index].address}, ${deliveryInfo[index].ward?.name}, ${deliveryInfo[index].ward?.district.name}, TP. Hồ Chí Minh`}</h2>
                                     <h2 className="col-span-1">Thời gian ước tính:</h2>
-                                    <h2 className="col-span-1 text-right">{delivery.estimated}'</h2>
+                                    <h2 className="col-span-1 text-right">
+                                        {delivery.estimated ? `${delivery.estimated} phút` : '-'}
+                                    </h2>
                                 </div>
                             </div>
                             {index === 0 && deliveryType === 3 && <hr className="my-3 border-wh-gray" />}
