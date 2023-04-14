@@ -6,7 +6,5 @@ export const startSignalRConnection = () => {
         .withAutomaticReconnect()
         .build();
 
-    connection.start().catch((err) => console.error(err));
-
     return connection;
 };

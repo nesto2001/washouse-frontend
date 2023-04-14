@@ -85,6 +85,12 @@ const UserSidebar = ({ basis }: UserSidebarProps) => {
                 key: 'noti',
                 icon: Noti,
             },
+            {
+                label: 'Ví của tôi',
+                url: '/user/notification',
+                key: 'noti',
+                icon: Noti,
+            },
         ],
         [],
     );
