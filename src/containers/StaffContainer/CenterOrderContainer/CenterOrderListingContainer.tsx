@@ -8,6 +8,7 @@ import OrderList from '../../../components/StaffOrderList/OrderList';
 import { OrderStatusMap } from '../../../mapping/OrderStatusMap';
 import { Paging } from '../../../types/Common/Pagination';
 import ErrorScreen from '../../../components/ErrorScreen/ErrorScreen';
+import React from 'react';
 
 type Props = {};
 
@@ -27,13 +28,15 @@ export type SearchParamsData = {
 };
 
 const CenterOrderListingContainer = (props: Props) => {
-    const navigate = useNavigate();
     const [form] = Form.useForm();
     const [msg, contextHolder] = message.useMessage();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isError, setIsError] = useState<boolean>(false);
-    const [paging, setPaging] = useState<Paging>();
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const [paging, setPaging] = useState<Paging>({
+        itemsPerPage: 10,
+        pageNumber: 1,
+    });
     const [searchParams, setSearchParams] = useState<SearchParamsData>({
         searchType: 'id',
     });
@@ -41,6 +44,7 @@ const CenterOrderListingContainer = (props: Props) => {
     const [centerOrders, setCenterOrders] = useState<CenterOrderModel[]>();
 
     const onChange = (key: string) => {
+        setCurrentPage(1);
         if (key !== '1') {
             setSearchParams((prev) => ({ ...prev, status: key }));
         } else {
@@ -48,10 +52,14 @@ const CenterOrderListingContainer = (props: Props) => {
         }
     };
 
+    useEffect(() => {}, [currentPage]);
     useEffect(() => {
         setIsLoading(true);
         const fetchData = async () => {
-            return await getManagerCenterOrders(searchParams);
+            return await getManagerCenterOrders({
+                ...searchParams,
+                page: currentPage,
+            });
         };
         fetchData()
             .then((res) => {
@@ -76,86 +84,30 @@ const CenterOrderListingContainer = (props: Props) => {
         {
             key: '1',
             label: `Tất cả`,
-            children: (
-                <OrderList
-                    orders={centerOrders}
-                    isLoading={isLoading}
-                    paging={paging}
-                    updatePage={(page) => setCurrentPage(page)}
-                />
-            ),
         },
         {
             key: 'Pending',
             label: `Đang chờ`,
-            children: (
-                <OrderList
-                    orders={centerOrders}
-                    isLoading={isLoading}
-                    paging={paging}
-                    updatePage={(page) => setCurrentPage(page)}
-                />
-            ),
         },
         {
             key: 'Confirmed',
             label: `Xác nhận`,
-            children: (
-                <OrderList
-                    orders={centerOrders}
-                    isLoading={isLoading}
-                    paging={paging}
-                    updatePage={(page) => setCurrentPage(page)}
-                />
-            ),
         },
         {
             key: 'Processing',
             label: `Xử lý`,
-            children: (
-                <OrderList
-                    orders={centerOrders}
-                    isLoading={isLoading}
-                    paging={paging}
-                    updatePage={(page) => setCurrentPage(page)}
-                />
-            ),
         },
         {
             key: 'Ready',
             label: `Sẵn sàng`,
-            children: (
-                <OrderList
-                    orders={centerOrders}
-                    isLoading={isLoading}
-                    paging={paging}
-                    updatePage={(page) => setCurrentPage(page)}
-                />
-            ),
         },
         {
             key: 'Completed',
             label: `Hoàn tất`,
-            children: (
-                <OrderList
-                    orders={centerOrders}
-                    isLoading={isLoading}
-                    paging={paging}
-                    updatePage={(page) => setCurrentPage(page)}
-                />
-            ),
         },
         {
             key: 'Cancelled',
             label: `Đã hủy`,
-            children: (
-                <OrderList
-                    orders={centerOrders}
-                    isLoading={isLoading}
-                    paging={paging}
-                    updatePage={(page) => setCurrentPage(page)}
-                />
-            ),
         },
     ];
     if (isError) {
@@ -204,7 +156,19 @@ const CenterOrderListingContainer = (props: Props) => {
                 </Form>
             </div>
             <div className="provider__services mt-12 mb-72">
-                <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+                {centerOrders && (
+                    <>
+                        <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+                        <OrderList
+                            orders={centerOrders}
+                            isLoading={isLoading}
+                            paging={paging}
+                            updatePage={(page) => {
+                                setCurrentPage(page);
+                            }}
+                        />
+                    </>
+                )}
             </div>
         </>
     );

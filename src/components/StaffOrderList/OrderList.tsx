@@ -7,6 +7,7 @@ import OrderListItem from './OrderListItem';
 import { formatCurrency } from '../../utils/FormatUtils';
 import OrderCard from './OrderCard';
 import { Paging } from '../../types/Common/Pagination';
+import { PaginationProps } from 'rc-pagination';
 
 type Props = {
     orders: CenterOrderModel[];
@@ -16,34 +17,7 @@ type Props = {
 };
 
 const OrderList = ({ orders, isLoading, paging, updatePage }: Props) => {
-    const columns: ColumnsType<CenterOrderModel> = [
-        {
-            title: 'Mã',
-            dataIndex: 'id',
-            key: 'id',
-        },
-
-        {
-            title: 'Tên khách hàng',
-            dataIndex: 'customerName',
-            key: 'customerName',
-        },
-        {
-            title: 'Số điện thoại',
-            dataIndex: 'phone',
-            key: 'phone',
-        },
-        {
-            title: 'Email',
-            dataIndex: 'email',
-            key: 'email',
-        },
-        {
-            title: 'Địa chỉ',
-            dataIndex: 'address',
-            key: 'address',
-        },
-    ];
+    const showTotal: PaginationProps['showTotal'] = (total) => `Có tất cả ${total} đơn hàng`;
 
     return (
         <div className={`order__list--wrapper my-5 mt-2 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
@@ -68,10 +42,13 @@ const OrderList = ({ orders, isLoading, paging, updatePage }: Props) => {
                 </div>
             )}
             <Pagination
+                className="float-right"
+                showTotal={showTotal}
                 defaultCurrent={paging?.pageNumber}
                 total={paging?.totalItems}
                 onChange={(page) => updatePage(page)}
                 pageSize={paging?.itemsPerPage}
+                showSizeChanger={false}
             />
         </div>
     );

@@ -10,9 +10,11 @@ import CouponTag from '../CouponTag/CouponTag';
 import { OrderStatusEnum } from '../../types/enum/OrderStatusEnum';
 import { OrderStatusMap } from '../../mapping/OrderStatusMap';
 import { Link } from 'react-router-dom';
-import { Popconfirm } from 'antd';
+import { Popconfirm, Tag } from 'antd';
 import Input from '../Input/Input';
 import TextArea from 'antd/es/input/TextArea';
+import { TransactionBadgeStatusMap } from '../../mapping/TransactionBadgeStatusMap';
+import { BadgeStatusMap } from '../../mapping/BadgeStatusMap';
 
 type Props = {
     order: CenterOrderModel;
@@ -43,7 +45,9 @@ const OrderCard = ({ order }: Props) => {
                 </div>{' '}
                 {/* insert tooltip here */}
                 <div className="order__item--date text-base mx-1 w-[100px]">{order.orderedDate}</div>
-                <div className="order__item--status text-base mx-1 w-[88px]">{OrderStatusMap[order.status]}</div>
+                <div className="order__item--status text-base mx-1 w-[88px]">
+                    <Tag color={BadgeStatusMap[order.status.toLowerCase()]}>{OrderStatusMap[order.status]}</Tag>
+                </div>
                 <div className="order__item--status text-base mx-1 w-[200px] flex gap-4">
                     <div className="font-medium text-primary">
                         <Link to={`/provider/orders/${order.id}`}>Xem chi tiết</Link>
@@ -53,7 +57,6 @@ const OrderCard = ({ order }: Props) => {
                             <Popconfirm
                                 title="Hủy đơn hàng"
                                 cancelButtonProps={{ style: { background: 'white' } }}
-                                
                                 description={
                                     <>
                                         <div className="mb-3">Bạn có chắc chắn muốn hủy đơn hàng này?</div>
