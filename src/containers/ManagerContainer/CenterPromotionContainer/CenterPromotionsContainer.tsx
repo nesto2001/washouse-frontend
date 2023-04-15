@@ -35,6 +35,7 @@ const CenterPromotionsContainer = () => {
             title: 'STT',
             dataIndex: 'STT',
             key: 'STT',
+            align: 'center',
             render: (_, record, index) => {
                 return index + 1;
             },
@@ -43,6 +44,7 @@ const CenterPromotionsContainer = () => {
             title: 'Mã Code',
             dataIndex: 'code',
             key: 'code',
+            width: 200,
         },
         {
             title: 'Giảm giá',
@@ -88,6 +90,7 @@ const CenterPromotionsContainer = () => {
         },
         {
             title: 'Thao tác',
+            align: 'center',
             render(_, record) {
                 return (
                     <div className="flex gap-6">
@@ -163,6 +166,9 @@ const CenterPromotionsContainer = () => {
                         </Button>
                     </div>
                 }
+                pagination={{
+                    pageSize: 5,
+                }}
                 dataSource={promotions}
                 columns={columns}
                 loading={promotions == null}
