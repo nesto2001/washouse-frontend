@@ -69,6 +69,9 @@ const API_STAFF_PROCEED_ORDER = '/api/tracking/orders/${orderId}/tracking';
 const API_STAFF_PROCEED_ORDERED_SERVICE = '/api/tracking/orders/${orderId}/order-details/${orderDetailId}/tracking';
 const API_STAFF_CANCEL_ORDER = '/api/tracking/orders/${orderId}/cancelled';
 
+//STAFF APT
+const API_STAFF = '/api/staffs';
+
 //PROMOTION API
 const API_PROMOTION = '/api/manager/promotions';
 const API_PROMOTION_CODE = '/api/promotions/code/${code}';
@@ -111,6 +114,7 @@ export {
     API_MANAGER_CENTER_ORDER,
     API_LOCATION_DETAILS,
     API_MANAGER_CENTER,
+    API_STAFF,
     API_REGISTER_PROVIDER,
     API_LOGIN_STAFF,
     API_ORDER_CREATE,

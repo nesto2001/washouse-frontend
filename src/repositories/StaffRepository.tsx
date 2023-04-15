@@ -6,13 +6,13 @@ import {
     API_MANAGER_CENTER_ORDER_DETAILS,
     API_MANAGER_CENTER_SERVICE,
     API_MANAGER_VERIFY_STAFF,
+    API_STAFF,
     API_STAFF_CANCEL_ORDER,
     API_STAFF_PROCEED_ORDER,
     API_STAFF_PROCEED_ORDERED_SERVICE,
 } from '../common/Constant';
 import { ServiceSearchParamsData } from '../containers/ManagerContainer/CenterServicesContainer/ServiceListingContainer';
-import { ListResponse, PaginationModel } from '../models/CommonModel';
-import { PaginationResponse, Response } from '../models/CommonModel';
+import { ListResponse, PaginationModel, PaginationResponse, Response } from '../models/CommonModel';
 import { CenterDeliveryPriceModel } from '../models/DeliveryPrice/DeliveryPriceModel';
 import { ManagerCenterModel } from '../models/Manager/ManagerCenterModel';
 import { ManagerCenterResponse } from '../models/Manager/ManagerCenterResponse';
@@ -27,8 +27,11 @@ import { CenterOrderModel } from '../models/Staff/CenterOrderModel';
 import { CenterOrderResponse } from '../models/Staff/CenterOrderResponse';
 import { CenterOrderTrackingModel } from '../models/Staff/CenterOrderTrackingModel';
 import { CenterOrderedServiceModel } from '../models/Staff/CenterOrderedServiceModel';
+import { CenterStaffModel } from '../models/Staff/CenterStaffModel';
+import { CenterStaffResponse } from '../models/Staff/CenterStaffResponse';
 import instance from '../services/axios/AxiosInstance';
 import { OperatingDay } from '../types/OperatingDay';
+import dayjs from 'dayjs';
 
 export const getManagerCenter = async (): Promise<ManagerCenterModel> => {
     const { data } = await instance.get<Response<ManagerCenterResponse>>(API_MANAGER_CENTER, {
@@ -333,4 +336,33 @@ export const verifyStaff = async (code: string) => {
         },
     });
     return response;
+};
+
+export const getAllStaff = async (): Promise<PaginationModel<CenterStaffModel>> => {
+    const { data } = await instance.get<PaginationResponse<CenterStaffResponse>>(API_STAFF, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    console.log(data);
+    return {
+        itemsPerPage: data.data.itemsPerPage,
+        pageNumber: data.data.pageNumber,
+        totalItems: data.data.totalItems,
+        totalPages: data.data.totalPages,
+        items: data.data.items.map((item): CenterStaffModel => {
+            return {
+                id: item.id,
+                dob: dayjs(item.dob),
+                email: item.email,
+                fullname: item.fullName,
+                idNumber: item.idNumber,
+                isManager: item.isManager,
+                phone: item.phone,
+                status: item.status,
+                idBackImg: item.idBackImg,
+                idFrontImg: item.idFrontImg,
+            };
+        }),
+    };
 };

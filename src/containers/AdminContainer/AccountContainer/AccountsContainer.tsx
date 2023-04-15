@@ -9,8 +9,10 @@ type Props = {};
 const columns: ColumnsType<AccountModel> = [
     {
         title: 'Mã',
-        dataIndex: 'accountId',
-        key: 'accountId',
+        dataIndex: 'id',
+        key: 'id',
+        align: 'center',
+        render: (_, text, index) => <strong>{index + 1}</strong>,
     },
     {
         title: 'Họ và tên',

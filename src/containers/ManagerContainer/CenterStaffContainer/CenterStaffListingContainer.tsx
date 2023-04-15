@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
 import { Form, Input, Select, Space } from 'antd';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CenterStaffModel } from '../../../models/Staff/CenterStaffModel';
 import Stafflist from '../../../components/StaffList/Stafflist';
+import { CenterStaffModel } from '../../../models/Staff/CenterStaffModel';
+import { getAllStaff } from '../../../repositories/StaffRepository';
 
 type Props = {};
 
@@ -47,52 +47,18 @@ export type SearchParamsData = {
 
 const CenterStaffListingContainer = (props: Props) => {
     const navigate = useNavigate();
-    const [centerStaff, setCenterStaff] = useState<CenterStaffModel[]>([
-        {
-            id: 1,
-            status: true,
-            fullname: 'Hoàng Trần',
-            email: 'manager01@gmail.com',
-            phone: '0987347812',
-            dob: '12-05-1993',
-            isManager: true,
-            idNumber: '052201018492',
-        },
-        {
-            id: 2,
-            status: true,
-            fullname: 'Trần Tân Long',
-            email: 'tanlong6121@gmail.com',
-            phone: '0975926021',
-            dob: '06-12-2001',
-            isManager: false,
-            idNumber: '012341246123',
-        },
-        {
-            id: 3,
-            status: false,
-            fullname: 'Lê Thành Đạt',
-            email: 'datlt2001@gmail.com',
-            phone: '0987347812',
-            dob: '19-01-1992',
-            isManager: false,
-            idNumber: '052201018492',
-        },
-    ]);
+    const [centerStaff, setCenterStaff] = useState<CenterStaffModel[]>();
     const [form] = Form.useForm();
     const [searchParams, setSearchParams] = useState<SearchParamsData>({
         searchString: '',
         searchType: 'name',
     });
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         return await getCenterStaff();
-    //     };
-    //     fetchData().then((res) => {
-    //         setCenterStaff(res);
-    //     });
-    // }, [searchParams]);
+    useEffect(() => {
+        getAllStaff().then((res) => {
+            setCenterStaff(res.items);
+        });
+    }, [searchParams]);
 
     const onChange = (key: string) => {
         console.log(key);

@@ -18,8 +18,8 @@ const columns: ColumnsType<ManagerServiceItem> = [
         title: 'Mã',
         dataIndex: 'id',
         key: 'id',
-        align: 'right',
-        render: (text) => <a>{text}</a>,
+        align: 'center',
+        render: (_, text, index) => <strong>{index + 1}</strong>,
     },
     {
         title: 'Tên dịch vụ',

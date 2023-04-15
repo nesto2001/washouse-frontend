@@ -1,17 +1,12 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-import { CenterStaffModel } from '../../models/Staff/CenterStaffModel';
+import { Button, Form, Input, Modal, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
-import { formatDateString } from '../../utils/TimeUtils';
-import { Button, DatePicker, Form, Input, Modal, message } from 'antd';
-import TextArea from 'antd/es/input/TextArea';
-import { getManagerCenter } from '../../repositories/StaffRepository';
-import { set } from 'date-fns';
-import OtpInput from '../OTPInput/OtpInput';
+import { CenterStaffModel } from '../../models/Staff/CenterStaffModel';
+import dayjs from 'dayjs';
 
 type Props = {
-    centerStaff: CenterStaffModel[];
+    centerStaff?: CenterStaffModel[];
 };
 
 type StaffFormData = {
@@ -36,6 +31,8 @@ const Stafflist = ({ centerStaff }: Props) => {
             title: 'Mã',
             dataIndex: 'id',
             key: 'id',
+            align: 'center',
+            render: (_, text, index) => <strong>{index + 1}</strong>,
         },
         {
             title: 'Tên nhân viên',
@@ -45,11 +42,14 @@ const Stafflist = ({ centerStaff }: Props) => {
         {
             title: 'Ngày sinh',
             dataIndex: 'dob',
+            align: 'center',
             key: 'dob',
+            render: (dob: dayjs.Dayjs) => <>{dob.format('DD-MM-YYYY')}</>,
         },
         {
             title: 'Số điện thoại',
             dataIndex: 'phone',
+            align: 'center',
             key: 'phone',
         },
         {
@@ -59,21 +59,24 @@ const Stafflist = ({ centerStaff }: Props) => {
         },
         {
             title: 'Chức vụ',
+            align: 'center',
             dataIndex: 'isManager',
             key: 'isManager',
-            render: (isManager: boolean) => (isManager ? 'Quản lý' : 'Nhân viên'),
+            render: (isManager: boolean) => <div className="font-bold">{isManager ? 'Quản lý' : 'Nhân viên'}</div>,
         },
         {
             title: 'Trạng thái',
             dataIndex: 'status',
+            align: 'center',
             key: 'status',
-            render: (status: boolean) => (status ? 'Hoạt động' : 'Nghỉ'),
+            render: (status: boolean) =>
+                status ? <Tag color="green">Hoạt động</Tag> : <Tag color="red">Tạm nghỉ</Tag>,
         },
         {
             title: 'Thao tác',
             dataIndex: '',
             key: 'action',
-            render: (isManager: boolean) => (isManager ? '' : 'Đình chỉ'),
+            render: (_, record) => (record.isManager ? '' : <div className="text-ws-red cursor-pointer">Đình chỉ</div>),
         },
     ];
 

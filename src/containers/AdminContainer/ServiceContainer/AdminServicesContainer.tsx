@@ -17,6 +17,8 @@ const AdminServicesContainer = (props: Props) => {
             title: 'Mã',
             dataIndex: 'categoryId',
             key: 'categoryId',
+            align: 'center',
+            render: (_, text, index) => <strong>{index + 1}</strong>,
         },
         {
             title: 'Hình ảnh',

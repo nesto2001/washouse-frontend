@@ -1,11 +1,13 @@
-import dayjs from 'dayjs';
-
-export type CenterStaffModel = {
+export type CenterStaffResponse = {
     id: number;
-    fullname: string;
-    dob: dayjs.Dayjs;
+    accountId: number;
+    fullName: string;
+    dob: string;
     phone: string;
+    gender: number;
     email: string;
+    profilePic: string;
+    centerId: number;
     status: boolean;
     isManager: boolean;
     idNumber: string;
