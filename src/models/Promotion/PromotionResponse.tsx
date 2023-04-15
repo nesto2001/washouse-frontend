@@ -8,11 +8,7 @@ export type PromotionResponse = {
     startDate: string;
     expireDate: string;
     createdDate: string;
-    createdBy: string;
     updatedDate: string;
-    updatedBy: string;
     useTimes: number;
-    centerId: number;
-    center: CenterResponse;
-    payments: string;
+    isAvailable: boolean;
 };

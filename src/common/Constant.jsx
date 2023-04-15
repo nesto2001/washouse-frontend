@@ -41,6 +41,7 @@ const API_LOCATION_DETAILS = 'api/locations/${locationId}';
 
 //ADMIN API
 const API_ADMIN_CENTER = '/api/admin/centers';
+const API_ADMIN_POST = '/api/admin/posts';
 
 //CENTER REQUEST API
 const API_REQUEST = '/api/requests/centers';
@@ -68,9 +69,9 @@ const API_STAFF_PROCEED_ORDERED_SERVICE = '/api/tracking/orders/${orderId}/order
 const API_STAFF_CANCEL_ORDER = '/api/tracking/orders/${orderId}/cancelled';
 
 //PROMOTION API
-const API_PROMOTION = '/api/promotions';
+const API_PROMOTION = '/api/manager/promotions';
 const API_PROMOTION_CODE = '/api/promotions/code/${code}';
-const API_PROMOTION_CENTER = '/api/promotions/center/${id}';
+const API_PROMOTION_CENTER = '/api/manager/promotions';
 
 //CUSTOMER API
 const API_CUSTOMER = '/api/customers';
@@ -83,7 +84,9 @@ const API_NOTIFICATION_READ = '/api/notifications/read';
 //REGEX
 const RE_DIGIT = new RegExp(/^\d+$/);
 
-export {API_ACCOUNT_WALLET,
+export {
+    API_ADMIN_POST,
+    API_ACCOUNT_WALLET,
     API_MANAGER_VERIFY_STAFF,
     API_MANAGER_ASSIGN_STAFF,
     RE_DIGIT,

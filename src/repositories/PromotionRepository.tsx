@@ -15,11 +15,10 @@ export const getPromotions = async (): Promise<PromotionModel[]> => {
         return {
             id: promotion.id,
             code: promotion.code,
-            centerId: promotion.centerId,
             description: promotion.description,
             discount: promotion.discount,
-            expireDate: new Date(promotion.expireDate),
-            startDate: new Date(promotion.startDate),
+            expireDate: promotion.expireDate,
+            startDate: promotion.startDate,
             useTimes: promotion.useTimes,
         };
     });
@@ -56,11 +55,11 @@ export const getPromotionsCenter = async (centerId: number): Promise<PromotionMo
         return {
             id: promotion.id,
             code: promotion.code,
-            centerId: promotion.centerId,
+            available: promotion.isAvailable,
             description: promotion.description,
             discount: promotion.discount,
-            expireDate: new Date(promotion.expireDate),
-            startDate: new Date(promotion.startDate),
+            expireDate: promotion.expireDate,
+            startDate: promotion.startDate,
             useTimes: promotion.useTimes,
         };
     });

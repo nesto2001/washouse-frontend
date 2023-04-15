@@ -2,42 +2,72 @@ import { Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { ServiceCategoryDetailModel } from '../../../models/Category/ServiceCategoryDetailModel';
-import { getServiceCategories } from '../../../repositories/ServiceCategoryRepository';
+import { PostModel } from '../../../models/Post/PostModel';
+import { getAdminPosts } from '../../../repositories/PostRepository';
+import Placeholder from '../../../assets/images/placeholder.png';
 
 type Props = {};
 
 const AdminPostsContainer = (props: Props) => {
     const location = useLocation();
     const { pathname } = location;
-    const [services, setServices] = useState<ServiceCategoryDetailModel[]>();
+    const [posts, setPosts] = useState<PostModel[]>();
     const [activeKey, setActiveKey] = useState<string>(location.state?.keyTab ?? '1');
-    const columns: ColumnsType<ServiceCategoryDetailModel> = [
+    const columns: ColumnsType<PostModel> = [
         {
-            title: 'Mã',
-            dataIndex: 'categoryId',
-            key: 'categoryId',
-        },
-        {
-            title: 'Hình ảnh',
-            dataIndex: 'image',
-            key: 'image',
-            render(_, record) {
-                return <img className="w-40 h-24 object-cover" src={record.image}></img>;
+            title: 'STT',
+            dataIndex: 'STT',
+            key: 'STT',
+            render(_, record, index) {
+                return <div className="">{index + 1}</div>;
             },
         },
         {
-            title: 'Tên',
-            dataIndex: 'categoryName',
-            key: 'categoryName',
+            title: 'Hình ảnh',
+            dataIndex: 'thumbnail',
+            key: 'thumbnail',
+            render(_, record) {
+                return <img className="w-40 h-24 object-cover" src={record.thumbnail ?? Placeholder}></img>;
+            },
+        },
+        {
+            title: 'Tiêu đề',
+            dataIndex: 'title',
+            key: 'title',
+            width: 180,
+        },
+        {
+            title: 'Nội dung',
+            dataIndex: 'content',
+            key: 'content',
+            width: 220,
+            render(value) {
+                return <div className="line-clamp-1">{value}</div>;
+            },
+        },
+        {
+            title: 'Trạng thái',
+            dataIndex: 'status',
+            key: 'status',
+        },
+        {
+            title: 'Giờ tạo',
+            dataIndex: 'createdDate',
+            key: 'createdDate',
+        },
+        {
+            title: 'Giờ cập nhật',
+            dataIndex: 'updatedDate',
+            key: 'updatedDate',
         },
         {
             title: 'Thao tác',
-            render(_, record) {
-                return record.homeFlag ? (
-                    <div className="cursor-pointer text-red">Hủy ghim dịch vụ</div>
-                ) : (
-                    <div className="cursor-pointer text-primary">Ghim dịch vụ</div>
+            render(_) {
+                return (
+                    <>
+                        <div className="cursor-pointer text-primary">Hủy đăng</div>
+                        <div className="cursor-pointer text-red">Hủy ghim dịch vụ</div>
+                    </>
                 );
             },
         },
@@ -45,18 +75,10 @@ const AdminPostsContainer = (props: Props) => {
 
     useEffect(() => {
         console.log(activeKey);
-        const fetchData = async () => {
-            return await getServiceCategories();
-        };
-        fetchData().then((res) => {
-            setServices(res);
+        getAdminPosts({}).then((res) => {
+            setPosts(res);
         });
     }, [activeKey]);
-
-    useEffect(() => {
-        const keyTab = pathname === '/admin/centers/' ? '1' : '3';
-        setActiveKey(keyTab);
-    }, [pathname]);
 
     const onChange = (key: string) => {
         setActiveKey(key);
@@ -64,7 +86,7 @@ const AdminPostsContainer = (props: Props) => {
 
     return (
         <div className="provider__services--filter">
-            <Table dataSource={services} columns={columns} loading={services == null}></Table>
+            <Table dataSource={posts} columns={columns} loading={posts == null}></Table>
         </div>
     );
 };

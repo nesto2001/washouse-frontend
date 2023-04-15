@@ -5,6 +5,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Order from '../../assets/images/order-pf.png';
 import Noti from '../../assets/images/noti-pf.png';
+import Wallet from '../../assets/images/wallet-pf.png';
 import Placeholder from '../../assets/images/placeholder.png';
 import User from '../../assets/images/user-pf.png';
 import './Sidebar.scss';
@@ -86,10 +87,22 @@ const UserSidebar = ({ basis }: UserSidebarProps) => {
                 icon: Noti,
             },
             {
-                label: 'Ví của tôi',
-                url: '/user/notification',
-                key: 'noti',
-                icon: Noti,
+                label: 'Ví Washouse',
+                url: '/user/wallet',
+                key: 'wallet',
+                icon: Wallet,
+                children: [
+                    {
+                        label: 'Ví của tôi',
+                        url: '/user/wallet',
+                        key: 'my-wallet',
+                    },
+                    {
+                        label: 'Lịch sử thanh toán',
+                        url: '/user/account/address',
+                        key: 'address',
+                    },
+                ],
             },
         ],
         [],
@@ -186,10 +199,11 @@ const UserSidebar = ({ basis }: UserSidebarProps) => {
             <hr className="my-4 border-wh-gray" />
             <div className="userpage__sidenav--nav">
                 <Menu
+                    className="border-none"
                     mode="inline"
                     openKeys={openKeys}
                     onOpenChange={onOpenChange}
-                    style={{ width: 256 }}
+                    style={{ width: 256, borderRight: 'none' }}
                     items={items}
                     onSelect={onSelect}
                     selectedKeys={selectedKey}

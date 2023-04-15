@@ -1,6 +1,6 @@
 import { Layout, MenuProps, message, theme } from 'antd';
 import clsx from 'clsx';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { BiPowerOff } from 'react-icons/bi';
 import { FaBell } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
@@ -26,15 +26,15 @@ const UnregisteredLayout = ({ children }: Props) => {
     const [user, setUser] = useState<UserModel>(userJson && JSON.parse(userJson));
     const navigate = useNavigate();
 
-    useMemo(() => {
+    useEffect(() => {
         const fetchData = async () => {
             return await getMe();
         };
         fetchData().catch((error) => {
-            // if (error) {
-            //     message.error('Vui lòng đăng nhập để xem trang này');
-            //     navigate('/provider/login');
-            // }
+            if (error) {
+                navigate('/provider/login');
+                message.error('Vui lòng đăng nhập để xem trang này');
+            }
         });
     }, [user]);
 
@@ -100,30 +100,34 @@ const UnregisteredLayout = ({ children }: Props) => {
                             <img className="h-full w-full object-cover" src={Logo} alt="" />
                         </div>
                         <div className="flex justify-end items-center gap-9 h-full">
-                            <NotificationDropdown child={<FaBell />} showBadge />
-                            <div className={style.active__staff}>
-                                <DropdownMenu
-                                    items={userDropdown}
-                                    content={
-                                        <div className="flex items-center justify-center">
-                                            <div
-                                                className={clsx(
-                                                    'w-[40px] h-[40px] rounded-full overflow-hidden',
-                                                    style.active__staff_avatar,
-                                                )}
-                                            >
-                                                <img
-                                                    className="w-full h-full object-cover"
-                                                    src={UserPlaceholder}
-                                                    alt=""
-                                                />
-                                            </div>
-                                            {user.name}
-                                        </div>
-                                    }
-                                    className=""
-                                />
-                            </div>
+                            {user && (
+                                <>
+                                    <NotificationDropdown child={<FaBell />} showBadge />
+                                    <div className={style.active__staff}>
+                                        <DropdownMenu
+                                            items={userDropdown}
+                                            content={
+                                                <div className="flex items-center justify-center">
+                                                    <div
+                                                        className={clsx(
+                                                            'w-[40px] h-[40px] rounded-full overflow-hidden',
+                                                            style.active__staff_avatar,
+                                                        )}
+                                                    >
+                                                        <img
+                                                            className="w-full h-full object-cover"
+                                                            src={UserPlaceholder}
+                                                            alt=""
+                                                        />
+                                                    </div>
+                                                    {user.name ?? ''}
+                                                </div>
+                                            }
+                                            className=""
+                                        />
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </Header>
                     <Content style={{ overflow: 'initial', minHeight: `calc(100vh - 88px)` }}>{children}</Content>

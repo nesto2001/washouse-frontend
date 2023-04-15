@@ -5,5 +5,4 @@ export type PromotionRequest = {
     startDate: string;
     expireDate: string;
     useTimes: number;
-    centerId: number;
 };

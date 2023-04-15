@@ -1,11 +1,10 @@
-import React from 'react'
+import React from 'react';
+import CustomerWalletContainer from '../../containers/CustomerContainer/CustomerWalletContainer';
 
-type Props = {}
+type Props = {};
 
 const CustomerWalletPage = () => {
-  return (
-    <div>CustomerWalletPage</div>
-  )
-}
+    return <CustomerWalletContainer />;
+};
 
-export default CustomerWalletPage
+export default CustomerWalletPage;

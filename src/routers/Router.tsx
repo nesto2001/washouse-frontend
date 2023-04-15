@@ -48,6 +48,8 @@ import {
     CustomerNotificationPage,
     StaffVerificationPage,
     ManagerCenterSettingsPage,
+    CustomerWalletPage,
+    AdminCenterDetailsPage,
 } from '../pages/';
 import AdminCenterRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterRequestPage';
 import AdminPostPage from '../pages/AdminPage/AdminPost/AdminPostPage';
@@ -144,6 +146,11 @@ const publicRoutes: Array<RouteProps> = [
         component: CustomerNotificationPage,
     },
     {
+        path: '/user/wallet',
+        layout: CustomerSidebarLayout,
+        component: CustomerWalletPage,
+    },
+    {
         path: '/provider/login',
         layout: StaffAuthenticateLayout,
         component: StaffLoginPage,
@@ -169,7 +176,7 @@ const publicRoutes: Array<RouteProps> = [
         component: ManagerCenterPage,
     },
     {
-        path: '/provider/settings/center/',
+        path: '/provider/settings/center',
         layout: ManagerDashboardLayout,
         component: ManagerCenterSettingsPage,
     },
@@ -249,22 +256,27 @@ const publicRoutes: Array<RouteProps> = [
         component: AdminCenterRequestPage,
     },
     {
-        path: '/admin/centers/',
+        path: '/admin/centers',
         layout: AdminDashboardLayout,
         component: AdminCenterPage,
     },
     {
-        path: '/admin/accounts/',
+        path: '/admin/centers/:name',
+        layout: AdminDashboardLayout,
+        component: AdminCenterDetailsPage,
+    },
+    {
+        path: '/admin/accounts',
         layout: AdminDashboardLayout,
         component: AdminAccountPage,
     },
     {
-        path: '/admin/service-categories/',
+        path: '/admin/service-categories',
         layout: AdminDashboardLayout,
         component: AdminServicePage,
     },
     {
-        path: '/admin/posts/',
+        path: '/admin/posts',
         layout: AdminDashboardLayout,
         component: AdminPostPage,
     },

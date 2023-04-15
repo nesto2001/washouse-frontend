@@ -49,6 +49,8 @@ const CenterOrderDetailsDelivery = ({ deliveries, deliveryType }: Props) => {
         }
     }, []);
 
+    console.log(deliveryInfo);
+
     return (
         <>
             {deliveries.map((delivery, index) => {
@@ -70,7 +72,11 @@ const CenterOrderDetailsDelivery = ({ deliveries, deliveryType }: Props) => {
                                     <h2 className="col-span-1 text-sub-gray font-medium">Ngày vận chuyển:</h2>
                                     <h2 className="col-span-1 text-right">{delivery.date ?? '-'}</h2>
                                     <h2 className="col-span-1 text-sub-gray font-medium">Địa điểm:</h2>
-                                    <h2 className="col-span-1 text-right">{`${deliveryInfo[index].address}, ${deliveryInfo[index].ward?.name}, ${deliveryInfo[index].ward?.district.name}, TP. Hồ Chí Minh`}</h2>
+                                    <h2 className="col-span-1 text-right">
+                                        {deliveryInfo[index]
+                                            ? `${deliveryInfo[index].address}, ${deliveryInfo[index].ward?.name}, ${deliveryInfo[index].ward?.district.name}, TP. Hồ Chí Minh`
+                                            : ''}
+                                    </h2>
                                     <h2 className="col-span-1 text-sub-gray font-medium">Ước tính</h2>
                                     <h2 className="col-span-1 text-right">
                                         {delivery.estimated ? `${delivery.estimated} phút` : '-'}
@@ -97,7 +103,11 @@ const CenterOrderDetailsDelivery = ({ deliveries, deliveryType }: Props) => {
                                     <h2 className="col-span-1 text-sub-gray font-medium">Ngày vận chuyển:</h2>
                                     <h2 className="col-span-1 text-right">{delivery.date ?? '-'}</h2>
                                     <h2 className="col-span-1 text-sub-gray font-medium">Địa điểm:</h2>
-                                    <h2 className="col-span-1 text-right">{`${deliveryInfo[index].address}, ${deliveryInfo[index].ward?.name}, ${deliveryInfo[index].ward?.district.name}, TP. Hồ Chí Minh`}</h2>
+                                    <h2 className="col-span-1 text-right">
+                                        {deliveryInfo[index]
+                                            ? `${deliveryInfo[index].address}, ${deliveryInfo[index].ward?.name}, ${deliveryInfo[index].ward?.district.name}, TP. Hồ Chí Minh`
+                                            : ''}
+                                    </h2>
                                     <h2 className="col-span-1 text-sub-gray font-medium">Thời gian ước tính:</h2>
                                     <h2 className="col-span-1 text-right">
                                         {delivery.estimated ? `${delivery.estimated} phút` : '-'}

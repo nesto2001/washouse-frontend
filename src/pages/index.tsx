@@ -17,6 +17,7 @@ export { default as CustomerAddressPage } from './CustomerPage/CustomerAddressPa
 export { default as CustomerOrdersPage } from './CustomerPage/CustomerOrdersPage';
 export { default as CustomerPasswordPage } from './CustomerPage/CustomerPasswordPage';
 export { default as CustomerNotificationPage } from './CustomerPage/CustomerNotificationPage';
+export { default as CustomerWalletPage } from './CustomerPage/CustomerWalletPage';
 
 //manager & staff
 export { default as StaffLoginPage } from './StaffPage/StaffAuth/StaffLoginPage';
@@ -39,6 +40,7 @@ export { default as StaffVerificationPage } from './StaffPage/StaffVerification/
 //admin
 export { default as AdminDashboardPage } from './AdminPage/AdminDashboardPage';
 export { default as AdminCenterPage } from './AdminPage/AdminCenter/AdminCenterPage';
+export { default as AdminCenterDetailsPage } from './AdminPage/AdminCenter/AdminCenterDetailsPage';
 export { default as AdminAccountPage } from './AdminPage/AdminAccount/AdminAccountPage';
 
 //common

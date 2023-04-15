@@ -5,6 +5,9 @@ import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     SolutionOutlined,
+    ShopOutlined,
+    UserOutlined,
+    FileOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu, MenuProps, theme } from 'antd';
 import clsx from 'clsx';
@@ -78,7 +81,7 @@ const AdminDashboardLayout = ({ children }: Props) => {
             key: '3',
             state: { keyTabs: '1' },
             url: '/admin/centers/',
-            icon: <SolutionOutlined />,
+            icon: <ShopOutlined />,
             label: 'Trung tâm',
         },
         {
@@ -90,13 +93,13 @@ const AdminDashboardLayout = ({ children }: Props) => {
         {
             key: '5',
             url: '/admin/posts',
-            icon: <CalendarOutlined />,
+            icon: <FileOutlined />,
             label: 'Bài đăng',
         },
         {
             key: '6',
             url: '/admin/accounts',
-            icon: <CalendarOutlined />,
+            icon: <UserOutlined />,
             label: 'Tài khoản',
         },
     ];

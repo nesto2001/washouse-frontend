@@ -1,12 +1,13 @@
 import { Table, Tabs, TabsProps, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { AdminCenterModel } from '../../../models/Admin/AdminCenterModel';
 import { getCenterList } from '../../../repositories/AdminRepository';
 import { CenterStatusMap } from '../../../mapping/CenterStatusMap';
 import { BadgeStatusMap } from '../../../mapping/BadgeStatusMap';
 import { CenterBadgeStatusMap } from '../../../mapping/CenterBadgeStatusMap';
+import { formatLink } from '../../../utils/FormatUtils';
 
 type Props = {};
 
@@ -31,9 +32,12 @@ const AdminCentersContainer = (props: Props) => {
 
     const columns: ColumnsType<AdminCenterModel> = [
         {
-            title: 'Mã',
-            dataIndex: 'id',
-            key: 'id',
+            title: 'STT',
+            dataIndex: 'STT',
+            key: 'STT',
+            render(value, record, index) {
+                return <div className="">{index + 1}</div>;
+            },
         },
         {
             title: 'Hình ảnh',
@@ -68,6 +72,16 @@ const AdminCentersContainer = (props: Props) => {
             dataIndex: 'status',
             key: 'status',
             render: (value) => <Tag color={CenterBadgeStatusMap[value]}>{CenterStatusMap[value]}</Tag>,
+        },
+        {
+            title: 'Thao tác',
+            dataIndex: 'action',
+            key: 'action',
+            render: (value, record) => (
+                <Link state={{ id: record.id }} to={`/admin/centers/${formatLink(record.title)}`} className="">
+                    Xem chi tiết
+                </Link>
+            ),
         },
     ];
 

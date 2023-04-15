@@ -16,8 +16,8 @@ type PromotionFormData = {
     code: string;
     description?: string;
     discount: number;
-    startDate: Date;
-    expireDate: Date;
+    startDate: string;
+    expireDate: string;
     useTimes: number;
 };
 
@@ -31,9 +31,12 @@ const CenterPromotionsContainer = () => {
 
     const columns: ColumnsType<PromotionModel> = [
         {
-            title: 'Mã',
-            dataIndex: 'id',
-            key: 'id',
+            title: 'STT',
+            dataIndex: 'STT',
+            key: 'STT',
+            render: (_, record, index) => {
+                return index + 1;
+            },
         },
         {
             title: 'Mã Code',
@@ -55,7 +58,7 @@ const CenterPromotionsContainer = () => {
             align: 'center',
             key: 'startDate',
             render(_, record) {
-                return <div>{formatDateEn(record.startDate)}</div>;
+                return <div>{dayjs(record.startDate, 'DD-MM-YYYY').format('DD-MM-YYYY') ?? ''}</div>;
             },
         },
         {
@@ -64,7 +67,7 @@ const CenterPromotionsContainer = () => {
             align: 'center',
             key: 'expireDate',
             render(_, record) {
-                return <div>{formatDateEn(record.expireDate)}</div>;
+                return <div>{dayjs(record.expireDate, 'DD-MM-YYYY').format('DD-MM-YYYY') ?? ''}</div>;
             },
         },
         {
@@ -76,7 +79,12 @@ const CenterPromotionsContainer = () => {
         {
             title: 'Thao tác',
             render(_, record) {
-                return <div className="text-red cursor-pointer">Hủy mã khuyến mãi</div>;
+                return (
+                    <>
+                        <div className="text-primary cursor-pointer">Chỉnh sửa</div>
+                        <div className="text-red cursor-pointer">Hủy mã</div>
+                    </>
+                );
             },
         },
     ];
@@ -93,27 +101,23 @@ const CenterPromotionsContainer = () => {
     }, [modalVisibility]);
 
     const onFinish = (values: PromotionFormData) => {
-        console.log(values);
-        getManagerCenter().then((res) =>
-            createPromotion({
-                code: values.code,
-                description: values.description,
-                discount: values.discount / 100,
-                expireDate: values.expireDate?.toISOString(),
-                startDate: values.startDate?.toISOString(),
-                useTimes: values.useTimes,
-                centerId: res.id,
+        createPromotion({
+            code: values.code.toUpperCase(),
+            description: values.description,
+            discount: values.discount / 100,
+            expireDate: dayjs(values.expireDate).format('DD-MM-YYYY'),
+            startDate: dayjs(values.startDate).format('DD-MM-YYYY'),
+            useTimes: values.useTimes,
+        })
+            .then(() => {
+                message.success(`Đã tạo thành công.`);
+                setModalVisibility(false);
             })
-                .then(() => {
-                    message.success(`Đã tạo thành công.`);
-                    setModalVisibility(false);
-                })
-                .catch((error) => {
-                    if (error) {
-                        message.error(`Đã xảy ra lỗi trong quá trình xét duyệt, vui lòng thử lại sau.`);
-                    }
-                }),
-        );
+            .catch((error) => {
+                if (error) {
+                    message.error(`Đã xảy ra lỗi trong quá trình xét duyệt, vui lòng thử lại sau.`);
+                }
+            });
     };
 
     const onFinishFailed = (errorInfo: any) => {
@@ -139,10 +143,12 @@ const CenterPromotionsContainer = () => {
             ></Table>
 
             <Modal
-                width={600}
+                width={480}
                 title="Thêm mới mã khuyến mãi"
+                zIndex={9998}
                 open={modalVisibility}
                 onCancel={() => setModalVisibility(false)}
+                destroyOnClose
                 footer={[
                     <Button key="key" onClick={() => setModalVisibility(false)} danger className="bg-transparent">
                         Hủy
@@ -153,13 +159,17 @@ const CenterPromotionsContainer = () => {
                 ]}
             >
                 <Form
+                    className="pt-4"
                     form={form}
                     name="createPromotion"
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
                     autoComplete="off"
+                    labelCol={{ span: 8 }}
+                    wrapperCol={{ span: 16 }}
+                    labelWrap
                 >
-                    <div className="columns-2">
+                    <div className="columns-1">
                         <Form.Item
                             label="Mã khuyến mãi"
                             name="code"
@@ -181,17 +191,26 @@ const CenterPromotionsContainer = () => {
                             <Input type="number" title="Giảm giá" addonAfter="%" placeholder="Nhập mức giảm giá" />
                         </Form.Item>
                     </div>
-                    <div className="columns-2">
+                    <div className="columns-1">
                         <Form.Item
                             label="Ngày hiệu lực"
                             name="startDate"
                             rules={[{ required: true, message: 'Vui lòng thêm ngày hiệu lực' }]}
+                            initialValue={dayjs(dayjs(), 'DD-MM-YYYY')}
                         >
                             <DatePicker
+                                format={'DD-MM-YYYY'}
+                                getPopupContainer={(triggerNode) => {
+                                    return triggerNode.parentNode as HTMLElement;
+                                }}
+                                className="w-full"
                                 placeholder="Nhập ngày hiệu lực"
-                                defaultValue={dayjs()}
                                 onChange={(e) => {
                                     console.log(e);
+                                }}
+                                disabledDate={(current) => {
+                                    // Disable dates before today
+                                    return current && current < dayjs().startOf('day');
                                 }}
                             />
                         </Form.Item>
@@ -200,20 +219,31 @@ const CenterPromotionsContainer = () => {
                             name="expireDate"
                             rules={[{ required: true, message: 'Vui lòng thêm hạn sử dụng' }]}
                         >
-                            <DatePicker placeholder="Nhập hạn sử dụng" />
+                            <DatePicker
+                                format={'DD-MM-YYYY'}
+                                getPopupContainer={(triggerNode) => {
+                                    return triggerNode.parentNode as HTMLElement;
+                                }}
+                                placeholder="Nhập hạn sử dụng"
+                                className="w-full"
+                                dropdownClassName="absolute"
+                                popupStyle={{ position: 'absolute' }}
+                            />
                         </Form.Item>
                     </div>
-                    <Form.Item
-                        label="Lượt sử dụng"
-                        name="useTimes"
-                        rules={[{ required: true, message: 'Vui lòng nhập lượt sử dụng' }]}
-                        validateTrigger={'onBlur'}
-                    >
-                        <Input type="number" title="Lượt sử dụng" placeholder="Nhập lượt sử dụng" />
-                    </Form.Item>
-                    <Form.Item label="Mô tả" name={'description'}>
-                        <TextArea placeholder="Nhập mô tả" />
-                    </Form.Item>
+                    <div className="columns-1">
+                        <Form.Item
+                            label="Lượt sử dụng"
+                            name="useTimes"
+                            rules={[{ required: true, message: 'Vui lòng nhập lượt sử dụng' }]}
+                            validateTrigger={'onBlur'}
+                        >
+                            <Input type="number" title="Lượt sử dụng" placeholder="Nhập lượt sử dụng" />
+                        </Form.Item>
+                        <Form.Item label="Mô tả" name={'description'}>
+                            <TextArea placeholder="Nhập mô tả" />
+                        </Form.Item>
+                    </div>
                 </Form>
             </Modal>
         </div>

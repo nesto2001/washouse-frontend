@@ -10,7 +10,7 @@ type Props = {
 
 const DropdownMenu = ({ items, content, className }: Props) => {
     return (
-        <div className="z-[9999] h-full">
+        <div className="z-[9997] h-full">
             <Dropdown menu={{ items }} className={className}>
                 <a onClick={(e) => e.preventDefault()}>
                     <Space>

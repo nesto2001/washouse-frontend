@@ -1,10 +1,8 @@
 export type PromotionModel = {
-    id: number;
     code: string;
     description: string;
     discount: number;
-    startDate: Date;
-    expireDate: Date;
+    startDate: string;
+    expireDate: string;
     useTimes: number;
-    centerId: number;
 };
