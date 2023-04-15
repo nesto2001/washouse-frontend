@@ -6,7 +6,7 @@ import { formatCurrency, formatLink } from '../../utils/FormatUtils';
 import WHButton from '../Button';
 import CustomerOrderedService from './CustomerOrderedService';
 import { CenterOrderedServiceModel } from '../../models/Staff/CenterOrderedServiceModel';
-import { Form, Input, List, Modal, Rate } from 'antd';
+import { Form, Input, List, Modal, Rate, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { FeedbackOrderRequest } from '../../models/Feedback/FeedbackOrderRequest';
 import { feedbackOrder } from '../../repositories/FeedbackRepository';
@@ -38,9 +38,13 @@ const CustomerOrderList = ({ customerOrders, customerPhone }: Props) => {
                 rating: values.orderRating,
                 content: values.orderRatingContent ?? undefined,
             };
-            feedbackOrder(orderFeedback).then((res) => {
-                console.log(res);
-            });
+            feedbackOrder(orderFeedback)
+                .then((res) => {
+                    message.success('Đã gửi đơn đánh giá!');
+                })
+                .catch(() => {
+                    message.error('Gửi đơn đánh giá không thành công, vui lòng thử lại sau!');
+                });
         };
 
         const config = {
