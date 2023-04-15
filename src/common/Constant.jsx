@@ -30,6 +30,7 @@ const API_CATEGORY = '/api/service-categories';
 const API_SERVICE_DETAILS = '/api/centers/${centerId}/services/${serviceId}';
 const API_CENTER_SERVICES = '/api/centers/${centerId}/services';
 const API_SERVICES = '/api/services';
+const API_SERVICE_DETAILS_ID = '/api/services/${id}';
 const API_SERVICES_CENTER = '/api/centers/${centerId}/services';
 
 //LOCATION API
@@ -116,6 +117,7 @@ export {
     API_ORDER_EST,
     API_REQUEST_REJECT,
     API_REQUEST_APPROVE,
+    API_SERVICE_DETAILS_ID,
     API_REQUEST_DETAILS,
     API_SERVICES_CENTER,
     API_REQUEST,

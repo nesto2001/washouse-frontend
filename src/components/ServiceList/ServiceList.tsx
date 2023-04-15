@@ -5,6 +5,7 @@ import { formatCurrency } from '../../utils/FormatUtils';
 import { PaginationProps } from 'rc-pagination';
 import { Paging } from '../../types/Common/Pagination';
 import { ServiceStatusMap } from '../../mapping/OrderStatusMap';
+import { Link } from 'react-router-dom';
 type Props = {
     serviceList: ManagerServiceItem[];
     layout: 'grid' | 'list' | 'table';
@@ -61,10 +62,12 @@ const columns: ColumnsType<ManagerServiceItem> = [
     {
         title: 'Thao tác',
         key: 'action',
+        align: 'center',
+
         render: (_, record) => (
-            <Space size="middle">
+            <Link to={`/provider/services/${record.id}`}>
                 <div className="text-primary cursor-pointer font-bold">Xem chi tiết</div>
-            </Space>
+            </Link>
         ),
     },
 ];

@@ -55,6 +55,7 @@ import AdminCenterRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminC
 import AdminPostPage from '../pages/AdminPage/AdminPost/AdminPostPage';
 import AdminServicePage from '../pages/AdminPage/AdminService/AdminServicePage';
 import ManagerPromotionsPage from '../pages/StaffPage/ManagerPromotion/ManagerPromotionsPage';
+import ManagerUpdateServicePage from '../pages/StaffPage/ManagerService/ManagerUpdateServicePage';
 
 interface RouteProps {
     path: string;
@@ -214,6 +215,11 @@ const publicRoutes: Array<RouteProps> = [
         path: '/provider/services/create',
         layout: ManagerDashboardLayout,
         component: ManagerCreateServicePage,
+    },
+    {
+        path: '/provider/services/:serviceId',
+        layout: ManagerDashboardLayout,
+        component: ManagerUpdateServicePage,
     },
     {
         path: '/provider/customers',
