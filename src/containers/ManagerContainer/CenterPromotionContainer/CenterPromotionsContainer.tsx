@@ -1,17 +1,21 @@
-import { Button, DatePicker, Input, Table, Tag, Tooltip, message } from 'antd';
-import { ColumnsType } from 'antd/es/table';
-import { useEffect, useState } from 'react';
-import { Form } from 'antd';
-import { PromotionModel } from '../../../models/Promotion/PromotionModel';
-import { createPromotion, deactivatePromotion, getPromotions } from '../../../repositories/PromotionRepository';
-import { formatDateEn } from '../../../utils/TimeUtils';
-import { formatPercentage } from '../../../utils/FormatUtils';
-import Modal from 'antd/es/modal/Modal';
+import { EditOutlined, PoweroffOutlined } from '@ant-design/icons';
+import { Button, DatePicker, Form, Input, Popconfirm, Table, Tag, Tooltip, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
+import Modal from 'antd/es/modal/Modal';
+import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { getManagerCenter } from '../../../repositories/StaffRepository';
+import { useEffect, useState, useCallback } from 'react';
 import CouponTag from '../../../components/CouponTag/CouponTag';
-import { EditOutlined, StopOutlined, PoweroffOutlined } from '@ant-design/icons';
+import { PromotionModel } from '../../../models/Promotion/PromotionModel';
+import {
+    activatePromotion,
+    createPromotion,
+    deactivatePromotion,
+    getPromotions,
+    updatePromotion,
+} from '../../../repositories/PromotionRepository';
+import { formatPercentage } from '../../../utils/FormatUtils';
+import { FaQuestionCircle } from 'react-icons/fa';
 
 type PromotionFormData = {
     code: string;
@@ -22,13 +26,28 @@ type PromotionFormData = {
     useTimes: number;
 };
 
+export type ActivatePromotionFormData = {
+    id?: number;
+    expireDate?: dayjs.Dayjs;
+    useTimes?: number;
+};
+
+export type UpdatePromotionFormData = {
+    id?: number;
+    expireDate?: dayjs.Dayjs;
+    startDate?: dayjs.Dayjs;
+    useTimes?: number;
+};
+
 const CenterPromotionsContainer = () => {
     const [form] = Form.useForm();
-
     const [promotions, setPromotions] = useState<PromotionModel[]>();
     const [modalVisibility, setModalVisibility] = useState(false);
-
+    const [state, updateState] = useState({});
+    const forceUpdate = useCallback(() => updateState({}), []);
     const [formData, setFormData] = useState<PromotionFormData>();
+    const [activateFormData, setActivateFormData] = useState<ActivatePromotionFormData>({});
+    const [updateFormData, setUpdateFormData] = useState<UpdatePromotionFormData>({});
 
     const columns: ColumnsType<PromotionModel> = [
         {
@@ -94,23 +113,179 @@ const CenterPromotionsContainer = () => {
             render(_, record) {
                 return (
                     <div className="flex gap-6">
-                        <div className="text-primary cursor-pointer">
-                            <Tooltip title="Chỉnh sửa">
-                                <EditOutlined style={{ fontSize: 18 }} />
-                            </Tooltip>
-                        </div>
+                        <Popconfirm
+                            placement="topRight"
+                            title={'Vui lòng nhập thông tin mã khuyến mãi'}
+                            description={
+                                <>
+                                    <div className="columns-1 p-2 flex flex-col gap-4">
+                                        <div>
+                                            <div>Ngày bắt đầu</div>
+                                            <DatePicker
+                                                format={'DD-MM-YYYY'}
+                                                className="w-full"
+                                                placement="bottomRight"
+                                                showToday={false}
+                                                placeholder="Nhập ngày bắt đầu"
+                                                value={updateFormData.startDate}
+                                                onChange={(value) => {
+                                                    if (value) {
+                                                        setUpdateFormData((prev) => ({
+                                                            ...prev,
+                                                            startDate: value,
+                                                        }));
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                        <div>
+                                            <div>Hạn sử dụng</div>
+                                            <DatePicker
+                                                format={'DD-MM-YYYY'}
+                                                className="w-full"
+                                                placement="bottomRight"
+                                                placeholder="Nhập hạn sử dụng"
+                                                showToday={false}
+                                                value={updateFormData.expireDate}
+                                                onChange={(value) => {
+                                                    if (value) {
+                                                        setUpdateFormData((prev) => ({
+                                                            ...prev,
+                                                            expireDate: value,
+                                                        }));
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                        <div>
+                                            <div>Lượt sử dụng</div>
+                                            <Input
+                                                type="number"
+                                                title="Lượt sử dụng"
+                                                placeholder="Nhập lượt sử dụng"
+                                                value={updateFormData.useTimes}
+                                                onChange={(value) => {
+                                                    value.target.value &&
+                                                        setUpdateFormData((prev) => ({
+                                                            ...prev,
+                                                            useTimes: +value.target.value,
+                                                        }));
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </>
+                            }
+                            icon={false}
+                            onOpenChange={() => setUpdateFormData({})}
+                            onConfirm={() => {
+                                if (updateFormData.expireDate || updateFormData.useTimes || updateFormData.startDate) {
+                                    updatePromotion({
+                                        ...updateFormData,
+                                        id: record.id,
+                                    })
+                                        .then(() => {
+                                            message.success(`Cập nhật thành công mã khuyến mãi.`);
+                                            forceUpdate();
+                                        })
+                                        .catch(() => message.error(`Đã xảy ra lỗi xảy ra, vui lòng thử lại sau.`));
+                                }
+                            }}
+                            okText="Cập nhật mã"
+                            showCancel={false}
+                        >
+                            <div className="text-primary cursor-pointer">
+                                <Tooltip title="Chỉnh sửa">
+                                    <EditOutlined style={{ fontSize: 18 }} />
+                                </Tooltip>
+                            </div>
+                        </Popconfirm>
                         {record.available ? (
-                            <div className="text-red cursor-pointer" onClick={() => deactivatePromotion(record.id)}>
-                                <Tooltip title="Ngưng mã">
-                                    <PoweroffOutlined style={{ fontSize: 18 }} />
-                                </Tooltip>
-                            </div>
+                            <Popconfirm
+                                placement="topRight"
+                                title={'Bạn có chắc chắn sẽ hủy mã khuyến mãi này?'}
+                                okText={'Chắc chắn'}
+                                showCancel={false}
+                                onConfirm={() => {
+                                    deactivatePromotion(record.id).then(() => {
+                                        message.success(`Hủy thành công mã khuyến mãi.`);
+                                        forceUpdate();
+                                    });
+                                }}
+                            >
+                                <div className="text-red cursor-pointer">
+                                    <Tooltip title="Ngưng mã">
+                                        <PoweroffOutlined style={{ fontSize: 18 }} />
+                                    </Tooltip>
+                                </div>
+                            </Popconfirm>
                         ) : (
-                            <div className="text-green cursor-pointer">
-                                <Tooltip title="Kích hoạt mã">
-                                    <PoweroffOutlined style={{ fontSize: 18 }} />
-                                </Tooltip>
-                            </div>
+                            <Popconfirm
+                                placement="topRight"
+                                title={'Vui lòng nhập thông tin mã khuyến mãi'}
+                                description={
+                                    <>
+                                        <div className="columns-1 p-2 flex flex-col gap-4">
+                                            <div>
+                                                <div>Hạn sử dụng</div>
+                                                <DatePicker
+                                                    format={'DD-MM-YYYY'}
+                                                    className="w-full"
+                                                    placement="bottomRight"
+                                                    showToday={false}
+                                                    placeholder="Nhập hạn sử dụng"
+                                                    value={activateFormData.expireDate}
+                                                    onChange={(value) => {
+                                                        if (value) {
+                                                            setActivateFormData((prev) => ({
+                                                                ...prev,
+                                                                expireDate: value,
+                                                            }));
+                                                        }
+                                                    }}
+                                                />
+                                            </div>
+                                            <div>
+                                                <div>Lượt sử dụng</div>
+                                                <Input
+                                                    type="number"
+                                                    title="Lượt sử dụng"
+                                                    placeholder="Nhập lượt sử dụng"
+                                                    value={activateFormData.useTimes}
+                                                    onChange={(value) => {
+                                                        value.target.value &&
+                                                            setActivateFormData((prev) => ({
+                                                                ...prev,
+                                                                useTimes: +value.target.value,
+                                                            }));
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </>
+                                }
+                                icon={false}
+                                onOpenChange={() => setActivateFormData({})}
+                                onConfirm={() => {
+                                    if (activateFormData.expireDate || activateFormData.useTimes) {
+                                        activatePromotion({
+                                            ...activateFormData,
+                                            id: record.id,
+                                        }).then(() => {
+                                            message.success(`Kích hoạt thành công mã khuyến mãi.`);
+                                            forceUpdate();
+                                        });
+                                    }
+                                }}
+                                okText="Kích hoạt mã"
+                                showCancel={false}
+                            >
+                                <div className="text-green cursor-pointer">
+                                    <Tooltip title="Kích hoạt mã">
+                                        <PoweroffOutlined style={{ fontSize: 18 }} />
+                                    </Tooltip>
+                                </div>
+                            </Popconfirm>
                         )}
                     </div>
                 );
@@ -120,14 +295,11 @@ const CenterPromotionsContainer = () => {
 
     useEffect(() => {
         if (!modalVisibility) {
-            const fetchData = async () => {
-                return await getPromotions();
-            };
-            fetchData().then((res) => {
+            getPromotions().then((res) => {
                 setPromotions(res);
             });
         }
-    }, [modalVisibility]);
+    }, [modalVisibility, state]);
 
     const onFinish = (values: PromotionFormData) => {
         createPromotion({
@@ -232,9 +404,6 @@ const CenterPromotionsContainer = () => {
                         >
                             <DatePicker
                                 format={'DD-MM-YYYY'}
-                                getPopupContainer={(triggerNode) => {
-                                    return triggerNode.parentNode as HTMLElement;
-                                }}
                                 className="w-full"
                                 placeholder="Nhập ngày hiệu lực"
                                 onChange={(e) => {
@@ -253,13 +422,9 @@ const CenterPromotionsContainer = () => {
                         >
                             <DatePicker
                                 format={'DD-MM-YYYY'}
-                                getPopupContainer={(triggerNode) => {
-                                    return triggerNode.parentNode as HTMLElement;
-                                }}
                                 placeholder="Nhập hạn sử dụng"
                                 className="w-full"
-                                dropdownClassName="absolute"
-                                popupStyle={{ position: 'absolute' }}
+                                style={{ zIndex: 9999 }}
                             />
                         </Form.Item>
                     </div>

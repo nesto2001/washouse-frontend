@@ -1,4 +1,14 @@
-import { API_PROMOTION, API_PROMOTION_CENTER, API_PROMOTION_CODE, API_PROMOTION_DEACTIVATE } from '../common/Constant';
+import {
+    API_PROMOTION,
+    API_PROMOTION_ACTIVATE,
+    API_PROMOTION_CENTER,
+    API_PROMOTION_CODE,
+    API_PROMOTION_DEACTIVATE,
+} from '../common/Constant';
+import {
+    ActivatePromotionFormData,
+    UpdatePromotionFormData,
+} from '../containers/ManagerContainer/CenterPromotionContainer/CenterPromotionsContainer';
 import { Response } from '../models/CommonModel';
 import { PromotionRequest } from '../models/Promotion/CreatePromotionRequest';
 import { PromotionModel } from '../models/Promotion/PromotionModel';
@@ -67,10 +77,49 @@ export const getPromotionsCenter = async (centerId: number): Promise<PromotionMo
 };
 
 export const deactivatePromotion = async (promotionId: number) => {
-    const response = await instance.put(API_PROMOTION_DEACTIVATE, promotionId, {
+    const response = await instance.put(API_PROMOTION_DEACTIVATE, undefined, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
+        params: {
+            promotionId: promotionId,
+        },
     });
     return response;
+};
+
+export const activatePromotion = async ({ id, expireDate, useTimes }: ActivatePromotionFormData) => {
+    const response = await instance.put(API_PROMOTION_ACTIVATE, undefined, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+        params: {
+            promotionId: id,
+            expireDate: expireDate?.format('DD-MM-YYYY'),
+            useTimes: useTimes,
+        },
+    });
+    return response;
+};
+
+export const updatePromotion = async ({ id, expireDate, useTimes, startDate }: UpdatePromotionFormData) => {
+    const { status } = await instance.put(
+        API_PROMOTION,
+        {
+            expireDate: expireDate?.format('DD-MM-YYYY') ?? undefined,
+            startDate: startDate?.format('DD-MM-YYYY') ?? undefined,
+            useTimes: useTimes ?? undefined,
+        },
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+            params: {
+                promotionId: id,
+            },
+        },
+    );
+    if (status !== 200) {
+        throw new Error();
+    }
 };

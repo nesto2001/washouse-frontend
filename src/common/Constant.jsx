@@ -73,6 +73,7 @@ const API_PROMOTION = '/api/manager/promotions';
 const API_PROMOTION_CODE = '/api/promotions/code/${code}';
 const API_PROMOTION_CENTER = '/api/manager/promotions';
 const API_PROMOTION_DEACTIVATE = '/api/manager/promotions/deactivate';
+const API_PROMOTION_ACTIVATE = '/api/manager/promotions/activate';
 
 //CUSTOMER API
 const API_CUSTOMER = '/api/customers';
@@ -126,6 +127,7 @@ export {
     API_REGISTER_CUSTOMER,
     API_SERVICE_DETAILS,
     BASE_URL,
+    API_PROMOTION_ACTIVATE,
     API_LOGIN,
     API_ME,
     API_ACCOUNT,
