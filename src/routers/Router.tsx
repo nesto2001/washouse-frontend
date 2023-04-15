@@ -50,6 +50,7 @@ import {
     ManagerCenterSettingsPage,
     CustomerWalletPage,
     AdminCenterDetailsPage,
+    StaffDeliveryPage,
 } from '../pages/';
 import AdminCenterRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterRequestPage';
 import AdminPostPage from '../pages/AdminPage/AdminPost/AdminPostPage';
@@ -250,6 +251,11 @@ const publicRoutes: Array<RouteProps> = [
         path: '/provider/calendar/day/:year/:month/:day',
         layout: ManagerDashboardLayout,
         component: StaffDayTimelinePage,
+    },
+    {
+        path: '/provider/delivery',
+        layout: ManagerDashboardLayout,
+        component: StaffDeliveryPage,
     },
     {
         path: '/admin/dashboard',

@@ -9,7 +9,6 @@ const StaffVerificationContainer = (props: Props) => {
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const code = params.get('code');
-    
 
     useEffect(() => {
         if (code) {

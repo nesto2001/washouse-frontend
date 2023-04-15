@@ -88,6 +88,8 @@ export const getManagerCenterOrders = async ({
     fromDate,
     toDate,
     status,
+    deliveryType,
+    deliveryStatus,
 }: {
     page?: number;
     pageSize?: number;
@@ -95,6 +97,8 @@ export const getManagerCenterOrders = async ({
     fromDate?: string;
     toDate?: string;
     status?: string;
+    deliveryType?: boolean;
+    deliveryStatus?: string;
 }): Promise<PaginationModel<CenterOrderModel>> => {
     const { data } = await instance.get<PaginationResponse<CenterOrderResponse>>(API_MANAGER_CENTER_ORDER, {
         headers: {
@@ -107,6 +111,8 @@ export const getManagerCenterOrders = async ({
             fromDate: fromDate,
             toDate: toDate,
             status: status,
+            deliveryType: deliveryType,
+            deliveryStatus: deliveryStatus,
         },
     });
     if (data === null) {
@@ -126,6 +132,17 @@ export const getManagerCenterOrders = async ({
                 status: item.status,
                 totalPayment: item.totalOrderPayment,
                 totalValue: item.totalOrderValue,
+                centerId: item.centerId,
+                centerName: item.centerName,
+                deliveries: item.deliveries.map((delivery) => {
+                    return {
+                        addressString: delivery.addressString,
+                        deliveryStatus: delivery.deliveryStatus,
+                        districtName: delivery.districtName,
+                        wardName: delivery.wardName,
+                    };
+                }),
+                deliveryType: item.deliveryType,
                 orderedServices: item.orderedServices.map((ordered): CenterOrderedServiceModel => {
                     return {
                         name: ordered.serviceName,
@@ -267,18 +284,35 @@ export const getManagerServices = async (
 };
 
 export const getCenterCustomer = async (): Promise<CenterCustomerModel[]> => {
-    const { data } = await instance.get<ListResponse<CenterCustomerResponse>>(API_MANAGER_CENTER_CUSTOMER, {
+    const { data } = await instance.get<PaginationResponse<CenterCustomerResponse>>(API_MANAGER_CENTER_CUSTOMER, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
     });
-    return data.data.map((item): CenterCustomerModel => {
+
+    return data.data.items.map((item): CenterCustomerModel => {
+        let genderText = '';
+        switch (item.gender) {
+            case 0:
+                genderText = 'Nam';
+                break;
+            case 1:
+                genderText = 'Nữ';
+                break;
+            case 2:
+                genderText = 'Khác';
+                break;
+            default:
+                genderText = '-';
+        }
         return {
             id: item.id,
             address: item.addressString,
             email: item.email,
             fullname: item.fullname,
             phone: item.phone,
+            dob: item.dateOfBirth ?? '',
+            gender: genderText,
         };
     });
 };

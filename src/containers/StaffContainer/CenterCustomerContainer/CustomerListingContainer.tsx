@@ -31,6 +31,7 @@ const CustomerListingContainer = (props: Props) => {
             return await getCenterCustomer();
         };
         fetchData().then((res) => {
+            console.log(res);
             setCustomers(res);
         });
     }, [searchParams]);

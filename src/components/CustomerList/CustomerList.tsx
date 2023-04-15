@@ -2,18 +2,9 @@ import Table, { ColumnsType } from 'antd/es/table';
 import React from 'react';
 import { formatDateString } from '../../utils/TimeUtils';
 import { CenterCustomerModel } from '../../models/Staff/CenterCustomerModel';
+import dayjs from 'dayjs';
 
 type Props = { customers: CenterCustomerModel[] };
-
-type CustomerType = {
-    id: number;
-    fullname: string;
-    phone: string;
-    address: string;
-    email: string;
-    avatar?: string;
-    dob?: string;
-};
 
 // const customers: CenterCustomerModel[] = [
 //     {
@@ -43,11 +34,21 @@ type CustomerType = {
 //     },
 // ];
 
+// id: item.id,
+// address: item.addressString,
+// email: item.email,
+// fullname: item.fullname,
+// phone: item.phone,
+// dob: item.dateOfBirth ?? '',
+// gender: genderText,
 const columns: ColumnsType<CenterCustomerModel> = [
     {
-        title: 'Mã',
-        dataIndex: 'id',
-        key: 'id',
+        title: 'STT',
+        dataIndex: 'STT',
+        key: 'STT',
+        render: (_, record, index) => {
+            return index + 1;
+        },
     },
     {
         title: 'Tên khách hàng',
@@ -56,8 +57,16 @@ const columns: ColumnsType<CenterCustomerModel> = [
     },
     {
         title: 'Giới tính',
-        dataIndex: 'fullname',
-        key: 'fullname',
+        dataIndex: 'gender',
+        align: 'center',
+        key: 'gender',
+    },
+    {
+        title: 'Sinh nhật',
+        dataIndex: 'dob',
+        key: 'dob',
+        align: 'center',
+        render: (date: string) => (date ? dayjs(date, 'DD-MM-YYYY').format('DD-MM-YYYY') : '-'),
     },
     {
         title: 'Số điện thoại',
@@ -73,13 +82,10 @@ const columns: ColumnsType<CenterCustomerModel> = [
         title: 'Địa chỉ',
         dataIndex: 'address',
         key: 'address',
-        width: 360,
-    },
-    {
-        title: 'Sinh nhật',
-        dataIndex: 'dob',
-        key: 'dob',
-        render: (date: string) => (date ? formatDateString(date) : ''),
+        width: 280,
+        render: (value) => {
+            return value ?? '-';
+        },
     },
 ];
 

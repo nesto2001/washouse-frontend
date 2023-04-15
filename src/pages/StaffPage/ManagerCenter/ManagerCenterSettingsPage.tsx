@@ -1,4 +1,5 @@
 import React from 'react';
+import CenterSettingsContainer from '../../../containers/ManagerContainer/CenterProfileManager/CenterSettingsContainer';
 
 type Props = {};
 
@@ -11,7 +12,9 @@ const ManagerCenterSettingsPage = () => {
                     Chỉnh sửa các thiết lập liên quan đến trung tâm
                 </div>
                 <div className="provider__page--content px-6 mt-8">
-                    <div className="provider__staff--wrapper"></div>
+                    <div className="provider__staff--wrapper">
+                        <CenterSettingsContainer />
+                    </div>
                 </div>
             </div>
         </div>

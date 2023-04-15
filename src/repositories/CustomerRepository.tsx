@@ -18,7 +18,7 @@ export const getCustomerOrders = async ({
 }: {
     page?: number;
     pageSize?: number;
-    orderType: string;
+    orderType: string | null;
     searchString?: string;
     fromDate?: string;
     toDate?: string;
@@ -57,6 +57,7 @@ export const getCustomerOrders = async ({
                 status: item.status,
                 totalPayment: item.totalOrderPayment,
                 totalValue: item.totalOrderValue,
+                isFeedback: item.isFeedback,
                 orderedServices: item.orderedServices.map((ordered): CenterOrderedServiceModel => {
                     return {
                         name: ordered.serviceName,

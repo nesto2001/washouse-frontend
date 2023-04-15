@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Col, DatePicker, Form, Radio, Row, Space, Spin, Tabs } from 'antd';
+import { Col, DatePicker, Empty, Form, Modal, Radio, Row, Space, Spin, Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 import './CustomerContainer.scss';
 import { CenterOrderModel } from '../../models/Staff/CenterOrderModel';
@@ -20,7 +20,7 @@ type RangeValue = [dayjs.Dayjs | null, dayjs.Dayjs | null] | null;
 
 type SearchParamsData = {
     searchString?: string;
-    orderType: string;
+    orderType: string | null;
     status?: string;
     page?: number;
     pageSize?: number;
@@ -62,6 +62,7 @@ const items: TabsProps['items'] = [
 const CustomerOrdersContainer = (props: Props) => {
     const userJson = localStorage.getItem('currentUser');
     const user: UserModel = userJson && JSON.parse(userJson);
+    const [isLoading, setisLoading] = useState<boolean>(true);
     const [customerOrder, setcustomerOrder] = useState<CustomerOrderModel[]>();
     const [dates, setDates] = useState<RangeValue>([
         dayjs(dayjs(), 'DD-MM-YYYY'),
@@ -69,23 +70,32 @@ const CustomerOrdersContainer = (props: Props) => {
     ]);
     const [value, setValue] = useState<RangeValue>(null);
     const [searchParams, setSearchParams] = useState<SearchParamsData>({
-        orderType: 'orderbyme',
+        orderType: null,
         page: 1,
         pageSize: 10,
     });
 
     useEffect(() => {
+        setisLoading(true);
         const fetchData = async () => {
             return await getCustomerOrders(searchParams);
         };
-        fetchData().then((res) => {
-            setcustomerOrder(res.items);
-        });
+        fetchData()
+            .then((res) => {
+                setcustomerOrder(res.items);
+                setisLoading(false);
+            })
+            .catch(() => {
+                setcustomerOrder(undefined);
+                setisLoading(false);
+            });
     }, [searchParams]);
 
     const onChange = (key: string) => {
         if (key !== 'All') {
             setSearchParams((prev) => ({ ...prev, status: key }));
+        } else {
+            setSearchParams((prev) => ({ ...prev, status: undefined }));
         }
     };
 
@@ -124,6 +134,7 @@ const CustomerOrdersContainer = (props: Props) => {
                                 defaultValue={searchParams.orderType}
                                 onChange={(e) => setSearchParams((prev) => ({ ...prev, orderType: e.target.value }))}
                             >
+                                <Radio value={null}>Tất cả</Radio>
                                 <Radio value="orderbyme">Đặt bởi tôi</Radio>
                                 <Radio value="orderbyanother">Đặt hộ tôi</Radio>
                             </Radio.Group>
@@ -166,8 +177,10 @@ const CustomerOrdersContainer = (props: Props) => {
                 className="w-full"
                 tabBarStyle={{ display: 'flex', justifyContent: 'space-between' }}
             />
-            {customerOrder ? (
+            {!isLoading && customerOrder ? (
                 <CustomerOrderList customerOrders={customerOrder} customerPhone={user.phone} />
+            ) : !isLoading && !customerOrder ? (
+                <Empty description="Không tìm thấy đơn hàng nào" />
             ) : (
                 <Loading />
             )}

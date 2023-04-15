@@ -4,4 +4,6 @@ export type CenterCustomerModel = {
     phone: string;
     email: string;
     address: string;
+    dob: string;
+    gender: string;
 };

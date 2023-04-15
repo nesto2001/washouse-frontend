@@ -87,10 +87,15 @@ const API_CUSTOMER_ORDER = '/api/orders';
 const API_NOTIFICATION = '/api/notifications/me-noti';
 const API_NOTIFICATION_READ = '/api/notifications/read';
 
+const API_FEEDBACK_ORDER = '/api/feedbacks/orders';
+const API_FEEDBACK_SERVICE = '/api/feedbacks/services';
+
 //REGEX
 const RE_DIGIT = new RegExp(/^\d+$/);
 
 export {
+    API_FEEDBACK_ORDER,
+    API_FEEDBACK_SERVICE,
     API_PROMOTION_DEACTIVATE,
     API_ADMIN_POST,
     API_ACCOUNT_WALLET,

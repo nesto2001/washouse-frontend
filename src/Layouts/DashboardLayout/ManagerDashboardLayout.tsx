@@ -71,7 +71,7 @@ const ManagerDashboardLayout = ({ children }: Props) => {
         {
             key: '3',
             icon: <CarOutlined />,
-            label: 'Vận chuyển',
+            label: <Link to="/provider/delivery">Vận chuyển</Link>,
         },
         {
             key: '4',

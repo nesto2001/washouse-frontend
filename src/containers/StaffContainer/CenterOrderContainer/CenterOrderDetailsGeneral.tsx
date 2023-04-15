@@ -28,11 +28,11 @@ export type OrderInformation = {
 };
 
 type Props = {
-    confirmProceedLoading: boolean;
-    openProceedPop: boolean;
-    handleCancel: () => void;
-    handleOk: () => void;
-    showPopconfirm: () => void;
+    confirmProceedLoading?: boolean;
+    openProceedPop?: boolean;
+    handleCancel?: () => void;
+    handleOk?: () => void;
+    showPopconfirm?: () => void;
     orderInfo: OrderInformation;
 };
 

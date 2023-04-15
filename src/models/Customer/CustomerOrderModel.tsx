@@ -10,5 +10,6 @@ export type CustomerOrderModel = {
     status: string;
     centerId: number;
     centerName: string;
+    isFeedback: boolean;
     orderedServices: CenterOrderedServiceModel[];
 };
