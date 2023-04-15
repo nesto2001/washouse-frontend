@@ -10,6 +10,7 @@ export type CenterOrderedServiceModel = {
     customerNote: string;
     staffNote: string | null;
     status: string | null;
-    price: number | null;
+    price: number;
+    unitPrice: number;
     orderDetailTrackings: CenterOrderTrackingModel[];
 };

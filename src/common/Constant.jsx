@@ -72,6 +72,7 @@ const API_STAFF_CANCEL_ORDER = '/api/tracking/orders/${orderId}/cancelled';
 const API_PROMOTION = '/api/manager/promotions';
 const API_PROMOTION_CODE = '/api/promotions/code/${code}';
 const API_PROMOTION_CENTER = '/api/manager/promotions';
+const API_PROMOTION_DEACTIVATE = '/api/manager/promotions/deactivate';
 
 //CUSTOMER API
 const API_CUSTOMER = '/api/customers';
@@ -85,6 +86,7 @@ const API_NOTIFICATION_READ = '/api/notifications/read';
 const RE_DIGIT = new RegExp(/^\d+$/);
 
 export {
+    API_PROMOTION_DEACTIVATE,
     API_ADMIN_POST,
     API_ACCOUNT_WALLET,
     API_MANAGER_VERIFY_STAFF,

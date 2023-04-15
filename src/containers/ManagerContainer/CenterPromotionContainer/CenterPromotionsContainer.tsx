@@ -1,9 +1,9 @@
-import { Button, DatePicker, Input, Table, message } from 'antd';
+import { Button, DatePicker, Input, Table, Tag, Tooltip, message } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 import { Form } from 'antd';
 import { PromotionModel } from '../../../models/Promotion/PromotionModel';
-import { createPromotion, getPromotions } from '../../../repositories/PromotionRepository';
+import { createPromotion, deactivatePromotion, getPromotions } from '../../../repositories/PromotionRepository';
 import { formatDateEn } from '../../../utils/TimeUtils';
 import { formatPercentage } from '../../../utils/FormatUtils';
 import Modal from 'antd/es/modal/Modal';
@@ -11,6 +11,7 @@ import TextArea from 'antd/es/input/TextArea';
 import dayjs from 'dayjs';
 import { getManagerCenter } from '../../../repositories/StaffRepository';
 import CouponTag from '../../../components/CouponTag/CouponTag';
+import { EditOutlined, StopOutlined, PoweroffOutlined } from '@ant-design/icons';
 
 type PromotionFormData = {
     code: string;
@@ -77,13 +78,38 @@ const CenterPromotionsContainer = () => {
             key: 'useTimes',
         },
         {
+            title: 'Trạng thái',
+            dataIndex: 'available',
+            align: 'center',
+            key: 'available',
+            render: (value: boolean) => {
+                return value ? <Tag color="success">Đang hoạt động</Tag> : <Tag color="error">Chưa hoạt động</Tag>;
+            },
+        },
+        {
             title: 'Thao tác',
             render(_, record) {
                 return (
-                    <>
-                        <div className="text-primary cursor-pointer">Chỉnh sửa</div>
-                        <div className="text-red cursor-pointer">Hủy mã</div>
-                    </>
+                    <div className="flex gap-6">
+                        <div className="text-primary cursor-pointer">
+                            <Tooltip title="Chỉnh sửa">
+                                <EditOutlined style={{ fontSize: 18 }} />
+                            </Tooltip>
+                        </div>
+                        {record.available ? (
+                            <div className="text-red cursor-pointer" onClick={() => deactivatePromotion(record.id)}>
+                                <Tooltip title="Ngưng mã">
+                                    <PoweroffOutlined style={{ fontSize: 18 }} />
+                                </Tooltip>
+                            </div>
+                        ) : (
+                            <div className="text-green cursor-pointer">
+                                <Tooltip title="Kích hoạt mã">
+                                    <PoweroffOutlined style={{ fontSize: 18 }} />
+                                </Tooltip>
+                            </div>
+                        )}
+                    </div>
                 );
             },
         },

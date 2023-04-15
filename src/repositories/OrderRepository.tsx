@@ -106,6 +106,7 @@ export const getOrderDetails = async (orderId: string, phone: string): Promise<C
                 staffNote: ordered.staffNote,
                 status: ordered.status,
                 price: ordered.price,
+                unitPrice: ordered.unitPrice,
                 unit: ordered.unit,
             };
         }),

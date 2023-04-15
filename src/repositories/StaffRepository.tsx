@@ -134,6 +134,7 @@ export const getManagerCenterOrders = async ({
                         staffNote: ordered.staffNote,
                         status: ordered.status,
                         price: ordered.price,
+                        unitPrice: ordered.unitPrice,
                         unit: ordered.unit,
                     };
                 }),
@@ -209,6 +210,7 @@ export const getManagerCenterOrderDetails = async (id: string): Promise<CenterOr
                 staffNote: ordered.staffNote,
                 status: ordered.status,
                 price: ordered.price,
+                unitPrice: ordered.unitPrice,
                 unit: ordered.unit,
             };
         }),

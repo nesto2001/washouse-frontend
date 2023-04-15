@@ -50,10 +50,10 @@ const CenterOrderedDetailsContainer = ({ details, orderId }: Props) => {
                         {det.measurement} <span className="text-sub-gray">{det.unit}</span>
                     </div>
                     <div className="ordered__item--unitprice font-bold text-lg w-[200px]">
-                        {formatCurrency(det.price ?? 0)}
+                        {formatCurrency(det.unitPrice)}
                     </div>
                     <div className="ordered__item--price font-bold text-xl w-[100px] text-right">
-                        {formatCurrency((det.price && det.price * det.measurement) ?? 0)}
+                        {formatCurrency(det.price)}
                     </div>
                     <div className="ordered__item--price font-bold text-xl w-[284px] text-right">
                         <Tag

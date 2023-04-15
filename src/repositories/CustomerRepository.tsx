@@ -69,6 +69,7 @@ export const getCustomerOrders = async ({
                         staffNote: ordered.staffNote,
                         status: ordered.status,
                         price: ordered.price,
+                        unitPrice: ordered.unitPrice,
                         unit: ordered.unit,
                     };
                 }),

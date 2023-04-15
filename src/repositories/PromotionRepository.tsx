@@ -1,4 +1,4 @@
-import { API_PROMOTION, API_PROMOTION_CENTER, API_PROMOTION_CODE } from '../common/Constant';
+import { API_PROMOTION, API_PROMOTION_CENTER, API_PROMOTION_CODE, API_PROMOTION_DEACTIVATE } from '../common/Constant';
 import { Response } from '../models/CommonModel';
 import { PromotionRequest } from '../models/Promotion/CreatePromotionRequest';
 import { PromotionModel } from '../models/Promotion/PromotionModel';
@@ -20,6 +20,7 @@ export const getPromotions = async (): Promise<PromotionModel[]> => {
             expireDate: promotion.expireDate,
             startDate: promotion.startDate,
             useTimes: promotion.useTimes,
+            available: promotion.isAvailable,
         };
     });
 };
@@ -63,4 +64,13 @@ export const getPromotionsCenter = async (centerId: number): Promise<PromotionMo
             useTimes: promotion.useTimes,
         };
     });
+};
+
+export const deactivatePromotion = async (promotionId: number) => {
+    const response = await instance.put(API_PROMOTION_DEACTIVATE, promotionId, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    return response;
 };
