@@ -1,13 +1,8 @@
-import { Pagination, Spin, Table } from 'antd';
-import { ColumnsType } from 'antd/es/table';
-import React from 'react';
-import { ManagerCenterModel } from '../../models/Manager/ManagerCenterModel';
-import { CenterOrderModel } from '../../models/Staff/CenterOrderModel';
-import OrderListItem from './OrderListItem';
-import { formatCurrency } from '../../utils/FormatUtils';
-import OrderCard from './OrderCard';
-import { Paging } from '../../types/Common/Pagination';
+import { Pagination, Spin } from 'antd';
 import { PaginationProps } from 'rc-pagination';
+import { CenterOrderModel } from '../../models/Staff/CenterOrderModel';
+import { Paging } from '../../types/Common/Pagination';
+import OrderCard from './OrderCard';
 
 type Props = {
     orders: CenterOrderModel[];

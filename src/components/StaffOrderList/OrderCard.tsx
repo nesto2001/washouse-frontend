@@ -1,20 +1,14 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
-
-import OrderListItem from './OrderListItem';
-import { formatCurrency, formatPercentage } from '../../utils/FormatUtils';
 import { CenterOrderModel } from '../../models/Staff/CenterOrderModel';
+import { formatCurrency, formatPercentage } from '../../utils/FormatUtils';
+import OrderListItem from './OrderListItem';
 
-import './OrderList.scss';
-import CouponTag from '../CouponTag/CouponTag';
-import { OrderStatusEnum } from '../../types/enum/OrderStatusEnum';
-import { OrderStatusMap } from '../../mapping/OrderStatusMap';
-import { Link } from 'react-router-dom';
 import { Popconfirm, Tag } from 'antd';
-import Input from '../Input/Input';
 import TextArea from 'antd/es/input/TextArea';
-import { TransactionBadgeStatusMap } from '../../mapping/TransactionBadgeStatusMap';
+import { Link } from 'react-router-dom';
 import { BadgeStatusMap } from '../../mapping/BadgeStatusMap';
+import { OrderStatusMap } from '../../mapping/OrderStatusMap';
+import CouponTag from '../CouponTag/CouponTag';
+import './OrderList.scss';
 
 type Props = {
     order: CenterOrderModel;

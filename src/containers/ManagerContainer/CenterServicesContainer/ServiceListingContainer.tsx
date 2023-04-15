@@ -8,6 +8,7 @@ import { CategoryOptionsModel } from '../../../models/Category/CategoryOptionsMo
 import { useNavigate } from 'react-router-dom';
 import { ManagerServiceItem } from '../../../models/Manager/ManagerServiceItem';
 import { getManagerServices } from '../../../repositories/StaffRepository';
+import { Paging } from '../../../types/Common/Pagination';
 
 type Props = {};
 
@@ -22,7 +23,7 @@ const searchPriceType = [
     { value: false, label: 'Số lượng' },
 ];
 
-export type SearchParamsData = {
+export type ServiceSearchParamsData = {
     searchString: string | null;
     searchType: string | null;
     categoryId: number | null;
@@ -31,69 +32,76 @@ export type SearchParamsData = {
         max: number;
     } | null;
     priceType: boolean | null;
+    page: number;
 };
 
 const ServiceListingContainer = (props: Props) => {
     const navigate = useNavigate();
     const [serviceList, setServiceList] = useState<ManagerServiceItem[]>([]);
     const [form] = Form.useForm();
-    const [searchParams, setSearchParams] = useState<SearchParamsData>({
+    const [searchParams, setSearchParams] = useState<ServiceSearchParamsData>({
         searchString: '',
         searchType: 'name',
         categoryId: 0,
         priceRange: { min: 0, max: 0 },
         priceType: null,
+        page: 1,
+    });
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [paging, setPaging] = useState<Paging>({
+        itemsPerPage: 10,
+        pageNumber: 1,
     });
     const [categoryOptions, setCategoryOptions] = useState<CategoryOptionsModel[]>([
         { id: 0, name: 'Chọn loại dịch vụ' },
     ]);
 
     useEffect(() => {
-        const fetchData = async () => {
-            return await getManagerServices();
-        };
-        fetchData().then((res) => {
-            setServiceList(res);
+        getManagerServices({
+            ...searchParams,
+            page: currentPage,
+        }).then((res) => {
+            setServiceList(res.items);
+            setPaging({
+                itemsPerPage: res.itemsPerPage,
+                pageNumber: res.pageNumber,
+                totalItems: res.totalItems,
+                totalPages: res.totalPages,
+            });
         });
-    }, [searchParams]);
+    }, [searchParams, currentPage]);
 
     const serviceTab: TabsProps['items'] = [
         {
-            key: '1',
+            key: 'All',
             label: `Tất cả`,
-            children: <ServiceList layout="table" serviceList={serviceList} />,
         },
         {
-            key: '2',
+            key: 'active',
             label: `Đang hoạt động`,
-            children: `Content of Tab Pane 2`,
         },
         {
-            key: '3',
+            key: 'inactive',
             label: `Tạm ngưng`,
-            children: `Content of Tab Pane 3`,
         },
         {
-            key: '4',
+            key: 'suspended',
             label: `Vi phạm`,
-            children: `Content of Tab Pane 3`,
         },
         {
-            key: '5',
+            key: 'hidden',
             label: `Đã ẩn`,
-            children: `Content of Tab Pane 3`,
         },
     ];
 
     const onChange = (key: string) => {
-        console.log(key);
+        if (key !== 'All') {
+            setSearchParams((prev) => ({ ...prev, status: key }));
+        }
     };
 
     useEffect(() => {
-        const fetchData = async () => {
-            return await getCategoryOptions();
-        };
-        fetchData().then((res) => {
+        getCategoryOptions().then((res) => {
             setCategoryOptions((prev) => [...prev, ...res]);
         });
     }, []);
@@ -242,6 +250,12 @@ const ServiceListingContainer = (props: Props) => {
                             Thêm dịch vụ
                         </Button>
                     }
+                />
+                <ServiceList
+                    layout="table"
+                    serviceList={serviceList}
+                    paging={paging}
+                    updatePage={(page) => setCurrentPage(page)}
                 />
             </div>
         </>

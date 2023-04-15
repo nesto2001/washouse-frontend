@@ -1,72 +1,23 @@
-import { Space } from 'antd';
+import { Pagination, Space, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
-import React from 'react';
-import Placeholder from '../../assets/images/placeholder.png';
-import { formatCurrency } from '../../utils/FormatUtils';
-import RatingStars from '../RatingStars/RatingStars';
 import { ManagerServiceItem } from '../../models/Manager/ManagerServiceItem';
+import { formatCurrency } from '../../utils/FormatUtils';
+import { PaginationProps } from 'rc-pagination';
+import { Paging } from '../../types/Common/Pagination';
+import { ServiceStatusMap } from '../../mapping/OrderStatusMap';
 type Props = {
     serviceList: ManagerServiceItem[];
     layout: 'grid' | 'list' | 'table';
+    paging?: Paging;
+    updatePage: (page: number) => void;
 };
-
-type servicesType = {
-    id: number;
-    name: string;
-    category: string;
-    image: string | null;
-    priceType: boolean;
-    price: number;
-    isAvailable: boolean;
-    status: string;
-    rating: number;
-    numOfRating: number;
-};
-
-// const services: servicesType[] = [
-//     {
-//         id: 1,
-//         name: 'Giặt sấy quần áo tổng hợp',
-//         category: 'Dịch vụ giặt sấy',
-//         priceType: false,
-//         image: 'download-20230317075207.png',
-//         price: 35000,
-//         isAvailable: true,
-//         status: 'Approved',
-//         rating: 4.5,
-//         numOfRating: 15,
-//     },
-//     {
-//         id: 7,
-//         name: 'Giặt sấy quần áo trắng',
-//         category: 'Dịch vụ giặt sấy',
-//         priceType: false,
-//         image: null,
-//         price: 40000,
-//         isAvailable: true,
-//         status: 'Approved',
-//         rating: 4.8,
-//         numOfRating: 12,
-//     },
-//     {
-//         id: 9,
-//         name: 'Giặt hấp áo len',
-//         category: 'Dịch vụ giặt hấp',
-//         priceType: false,
-//         image: 'download-20230317075207.png',
-//         price: 45000,
-//         isAvailable: false,
-//         status: 'Approved',
-//         rating: 4.9,
-//         numOfRating: 48,
-//     },
-// ];
 
 const columns: ColumnsType<ManagerServiceItem> = [
     {
         title: 'Mã',
         dataIndex: 'id',
         key: 'id',
+        align: 'right',
         render: (text) => <a>{text}</a>,
     },
     {
@@ -77,8 +28,8 @@ const columns: ColumnsType<ManagerServiceItem> = [
     },
     {
         title: 'Phân loại',
-        dataIndex: 'categoryId',
-        key: 'category',
+        dataIndex: 'categoryName',
+        key: 'categoryName',
     },
     {
         title: 'Định lượng',
@@ -90,6 +41,7 @@ const columns: ColumnsType<ManagerServiceItem> = [
         title: 'Đơn giá',
         dataIndex: 'price',
         key: 'price',
+        align: 'right',
         render: (value) => formatCurrency(value ?? 0),
     },
     {
@@ -103,24 +55,38 @@ const columns: ColumnsType<ManagerServiceItem> = [
         title: 'Trạng thái',
         dataIndex: 'status',
         key: 'status',
+        align: 'center',
+        render: (value) => <Tag color="success">{ServiceStatusMap[value.toLowerCase()]}</Tag>,
     },
     {
         title: 'Thao tác',
         key: 'action',
         render: (_, record) => (
             <Space size="middle">
-                <a>Chỉnh sửa</a>
-                <a>Xóa</a>
+                <div className="text-primary cursor-pointer font-bold">Xem chi tiết</div>
             </Space>
         ),
     },
 ];
-
-const ServiceList = ({ serviceList, layout }: Props) => {
+const ServiceList = ({ serviceList, paging, updatePage }: Props) => {
     return (
         <div className="service__list--wrapper my-5 mt-2">
             <div className="service__list">
-                <Table columns={columns} dataSource={serviceList} loading={serviceList.length <= 0} />
+                <Table
+                    columns={columns}
+                    dataSource={serviceList}
+                    loading={serviceList.length <= 0}
+                    pagination={false}
+                />
+                <Pagination
+                    className="float-right mt-4"
+                    showTotal={((total) => `Có tất cả ${total} dịch vụ`) as PaginationProps['showTotal']}
+                    defaultCurrent={paging?.pageNumber}
+                    total={paging?.totalItems}
+                    onChange={(page) => updatePage(page)}
+                    pageSize={paging?.itemsPerPage}
+                    showSizeChanger={false}
+                />
             </div>
         </div>
     );

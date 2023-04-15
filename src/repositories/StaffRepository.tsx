@@ -10,6 +10,7 @@ import {
     API_STAFF_PROCEED_ORDER,
     API_STAFF_PROCEED_ORDERED_SERVICE,
 } from '../common/Constant';
+import { ServiceSearchParamsData } from '../containers/ManagerContainer/CenterServicesContainer/ServiceListingContainer';
 import { ListResponse, PaginationModel } from '../models/CommonModel';
 import { PaginationResponse, Response } from '../models/CommonModel';
 import { CenterDeliveryPriceModel } from '../models/DeliveryPrice/DeliveryPriceModel';
@@ -217,8 +218,13 @@ export const getManagerCenterOrderDetails = async (id: string): Promise<CenterOr
     };
 };
 
-export const getManagerServices = async (): Promise<ManagerServiceItem[]> => {
+export const getManagerServices = async (
+    queryData: ServiceSearchParamsData,
+): Promise<PaginationModel<ManagerServiceItem>> => {
     const { data } = await instance.get<PaginationResponse<ManagerServiceResponse>>(API_MANAGER_CENTER_SERVICE, {
+        params: {
+            page: queryData.page,
+        },
         headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
@@ -226,29 +232,35 @@ export const getManagerServices = async (): Promise<ManagerServiceItem[]> => {
     if (data === null) {
         throw new Error();
     }
-    return data.data.items.map((item): ManagerServiceItem => {
-        return {
-            id: item.serviceId,
-            categoryId: item.categoryId,
-            categoryName: item.serviceName,
-            homeFlag: item.homeFlag,
-            hotFlag: item.hotFlag,
-            isAvailable: item.isAvailable,
-            minPrice: item.minPrice,
-            name: item.serviceName,
-            numOfRating: item.numOfRating,
-            price: item.price,
-            prices: item.prices.map((price) => {
-                return {
-                    maxValue: price.maxValue,
-                    price: price.price,
-                };
-            }),
-            priceType: item.priceType,
-            rating: item.rating,
-            status: item.status,
-        };
-    });
+    return {
+        itemsPerPage: data.data.itemsPerPage,
+        pageNumber: data.data.pageNumber,
+        totalItems: data.data.totalItems,
+        totalPages: data.data.totalPages,
+        items: data.data.items.map((item): ManagerServiceItem => {
+            return {
+                id: item.serviceId,
+                categoryId: item.categoryId,
+                categoryName: item.categoryName,
+                homeFlag: item.homeFlag,
+                hotFlag: item.hotFlag,
+                isAvailable: item.isAvailable,
+                minPrice: item.minPrice,
+                name: item.serviceName,
+                numOfRating: item.numOfRating,
+                price: item.price,
+                prices: item.prices.map((price) => {
+                    return {
+                        maxValue: price.maxValue,
+                        price: price.price,
+                    };
+                }),
+                priceType: item.priceType,
+                rating: item.rating,
+                status: item.status,
+            };
+        }),
+    };
 };
 
 export const getCenterCustomer = async (): Promise<CenterCustomerModel[]> => {

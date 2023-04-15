@@ -1,16 +1,10 @@
-import React from 'react';
-import { CenterOrderModel } from '../../models/Staff/CenterOrderModel';
-import { OrderStatusMap } from '../../mapping/OrderStatusMap';
-import { formatCurrency, formatLink, formatPercentage } from '../../utils/FormatUtils';
-import { CustomerOrderModel } from '../../models/Customer/CustomerOrderModel';
 import { Link, useNavigate } from 'react-router-dom';
 import Laundromat from '../../assets/images/laundromat-2.png';
-import CustomerOrderedService from './CustomerOrderedService';
+import { OrderStatusMap } from '../../mapping/OrderStatusMap';
+import { CustomerOrderModel } from '../../models/Customer/CustomerOrderModel';
+import { formatCurrency, formatLink } from '../../utils/FormatUtils';
 import WHButton from '../Button';
-import { CenterOrderedServiceModel } from '../../models/Staff/CenterOrderedServiceModel';
-import { useDispatch } from 'react-redux';
-import { CartItem } from '../../types/CartType/CartItem';
-import { UnitMap } from '../../mapping/UnitMap';
+import CustomerOrderedService from './CustomerOrderedService';
 
 type Props = {
     customerOrders: CustomerOrderModel[];

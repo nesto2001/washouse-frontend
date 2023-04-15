@@ -10,3 +10,23 @@ export const BadgeStatusMap: { [key: string]: string } = {
     completed: 'green',
     cancelled: 'error',
 };
+
+export const TransactionBadgeStatusMap: { [key: string]: string } = {
+    '': 'default',
+    Pending: 'default',
+    pending: 'default',
+    success: 'success',
+    Success: 'success',
+    failed: 'error',
+    Failed: 'Error',
+};
+
+export const ServiceBadgeStatusMap: { [key: string]: string } = {
+    '': 'default',
+    Pending: 'default',
+    pending: 'default',
+    success: 'success',
+    Success: 'success',
+    failed: 'error',
+    Failed: 'Error',
+};

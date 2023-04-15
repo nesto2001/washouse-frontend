@@ -8,7 +8,7 @@ import Deposit from '../../assets/images/deposit.svg';
 import Withdrawal from '../../assets/images/withdrawal.svg';
 import Payment from '../../assets/images/payment.svg';
 import { TransactionStatusMap } from '../../mapping/TransactionStatusMap';
-import { TransactionBadgeStatusMap } from '../../mapping/TransactionBadgeStatusMap';
+import { TransactionBadgeStatusMap } from '../../mapping/BadgeStatusMap';
 import { TransactionModel } from '../../models/Wallet/TransactionModel';
 
 type Props = {};

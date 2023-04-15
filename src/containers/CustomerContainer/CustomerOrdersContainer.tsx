@@ -86,8 +86,6 @@ const CustomerOrdersContainer = (props: Props) => {
     const onChange = (key: string) => {
         if (key !== 'All') {
             setSearchParams((prev) => ({ ...prev, status: key }));
-        } else {
-            setSearchParams((prev) => ({ ...prev, status: undefined }));
         }
     };
 

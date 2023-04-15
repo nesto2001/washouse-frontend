@@ -5,6 +5,7 @@ export type ManagerServiceResponse = {
     serviceName: string;
     alias: string;
     categoryId: number;
+    categoryName: string;
     description: string;
     priceType: boolean;
     image: string;
