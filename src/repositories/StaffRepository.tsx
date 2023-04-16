@@ -22,6 +22,7 @@ import { ManagerServiceItem } from '../models/Manager/ManagerServiceItem';
 import { ManagerServiceResponse } from '../models/Manager/ManagerServiceResponse';
 import { CenterCustomerModel } from '../models/Staff/CenterCustomerModel';
 import { CenterCustomerResponse } from '../models/Staff/CenterCustomerResponse';
+import { CenterOrderDeliveryBriefModel } from '../models/Staff/CenterOrderDeliveryBriefModel';
 import { CenterOrderDeliveryModel } from '../models/Staff/CenterOrderDeliveryModel';
 import { CenterOrderDetailsModel } from '../models/Staff/CenterOrderDetailsModel';
 import { CenterOrderDetailsReponse } from '../models/Staff/CenterOrderDetailsResponse';
@@ -31,6 +32,7 @@ import { CenterOrderTrackingModel } from '../models/Staff/CenterOrderTrackingMod
 import { CenterOrderedServiceModel } from '../models/Staff/CenterOrderedServiceModel';
 import { CenterStaffModel } from '../models/Staff/CenterStaffModel';
 import { CenterStaffResponse } from '../models/Staff/CenterStaffResponse';
+import { AssignDeliveryRequest } from '../models/Staff/StaffOrder/AssignDeliveryRequest';
 import instance from '../services/axios/AxiosInstance';
 import { OperatingDay } from '../types/OperatingDay';
 import dayjs from 'dayjs';
@@ -136,8 +138,9 @@ export const getManagerCenterOrders = async ({
                 totalValue: item.totalOrderValue,
                 centerId: item.centerId,
                 centerName: item.centerName,
-                deliveries: item.deliveries.map((delivery) => {
+                deliveries: item.deliveries.map((delivery): CenterOrderDeliveryBriefModel => {
                     return {
+                        deliveryType: delivery.deliveryType,
                         addressString: delivery.addressString,
                         deliveryStatus: delivery.deliveryStatus,
                         districtName: delivery.districtName,
@@ -401,6 +404,19 @@ export const getAllStaff = async (): Promise<PaginationModel<CenterStaffModel>> 
             };
         }),
     };
+};
+
+export const assignOrderDelivery = async (orderId: string, type: string, request: AssignDeliveryRequest) => {
+    const response = await instance.put<Response<number>>(API_MANAGER_ASSIGN_STAFF, request, {
+        params: {
+            orderId: orderId,
+            type: type,
+        },
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    return response;
 };
 
 export const activateStaff = async (id: number) => {

@@ -6,15 +6,26 @@ import { formatCurrency, formatLink } from '../../utils/FormatUtils';
 import WHButton from '../Button';
 import CustomerOrderedService from './CustomerOrderedService';
 import { CenterOrderedServiceModel } from '../../models/Staff/CenterOrderedServiceModel';
-import { Form, Input, List, Modal, Rate } from 'antd';
+import { Form, Input, List, Modal, Rate, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { FeedbackOrderRequest } from '../../models/Feedback/FeedbackOrderRequest';
-import { feedbackOrder } from '../../repositories/FeedbackRepository';
+import { FeedbackServiceRequest } from '../../models/Feedback/FeedbackServiceRequest';
+import { feedbackOrder, feedbackService } from '../../repositories/FeedbackRepository';
+import { CustomerOrderedServiceModel } from '../../models/Customer/CustomerOrderedServiceModel';
 
 type Props = {
     customerOrders: CustomerOrderModel[];
     customerPhone: string;
 };
+
+interface FeedbackForm {
+    orderRating: number;
+    orderRatingContent: string;
+    services: {
+        id: number;
+        rating: number;
+    }[];
+}
 
 const CustomerOrderList = ({ customerOrders, customerPhone }: Props) => {
     const navigate = useNavigate();
@@ -29,8 +40,8 @@ const CustomerOrderList = ({ customerOrders, customerPhone }: Props) => {
         Modal.destroyAll();
     };
 
-    const handleFeedback = (orderedService: CenterOrderedServiceModel[], orderId: string, centerId: number) => {
-        const onFinish = (values: any) => {
+    const handleFeedback = (orderedService: CustomerOrderedServiceModel[], orderId: string, centerId: number) => {
+        const onFinish = (values: FeedbackForm) => {
             console.log(values);
             const orderFeedback: FeedbackOrderRequest = {
                 centerId: centerId,
@@ -38,9 +49,24 @@ const CustomerOrderList = ({ customerOrders, customerPhone }: Props) => {
                 rating: values.orderRating,
                 content: values.orderRatingContent ?? undefined,
             };
-            feedbackOrder(orderFeedback).then((res) => {
-                console.log(res);
-            });
+            feedbackOrder(orderFeedback)
+                .then((res) => {
+                    message.success('Đã gửi đơn đánh giá!');
+                })
+                .catch(() => {
+                    message.error('Gửi đơn đánh giá không thành công, vui lòng thử lại sau!');
+                });
+            if (values.services.length > 0) {
+                values.services.map((service) => {
+                    const serviceFeedback: FeedbackServiceRequest = {
+                        centerId: centerId,
+                        rating: service.rating,
+                        serviceId: service.id,
+                        content: undefined,
+                    };
+                    feedbackService(serviceFeedback).then().catch();
+                });
+            }
         };
 
         const config = {
@@ -78,7 +104,7 @@ const CustomerOrderList = ({ customerOrders, customerPhone }: Props) => {
                                         ]}
                                     >
                                         <div className="flex w-full justify-between">
-                                            <Form.Item noStyle name={['services', index, 'id']} initialValue={index}>
+                                            <Form.Item noStyle name={['services', index, 'id']} initialValue={item.id}>
                                                 {item.name}
                                             </Form.Item>
                                         </div>

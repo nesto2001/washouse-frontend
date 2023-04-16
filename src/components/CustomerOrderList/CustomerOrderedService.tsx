@@ -3,15 +3,16 @@ import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 import { CenterOrderedServiceModel } from '../../models/Staff/CenterOrderedServiceModel';
 import { formatCurrency } from '../../utils/FormatUtils';
 import './CustomerOrder.scss';
+import { CustomerOrderedServiceModel } from '../../models/Customer/CustomerOrderedServiceModel';
 
 type Props = {
-    orderedServices: CenterOrderedServiceModel[];
+    orderedServices: CustomerOrderedServiceModel[];
 };
 
 const CustomerOrderedService = ({ orderedServices }: Props) => {
     const [viewItem, setViewItem] = useState(1);
     const [timeOut, setTimeOut] = useState(0);
-    const [slicedList, setSlicedList] = useState<CenterOrderedServiceModel[]>(orderedServices.slice(0, viewItem));
+    const [slicedList, setSlicedList] = useState<CustomerOrderedServiceModel[]>(orderedServices.slice(0, viewItem));
 
     useMemo(() => {
         const timeout = setTimeout(() => {
@@ -37,9 +38,7 @@ const CustomerOrderedService = ({ orderedServices }: Props) => {
                                 Phân loại: {ord.category}
                             </div>
                         </div>
-                        <div className="ordered__service--note flex-grow mt-2">
-                            Ghi chú: {ord.customerNote ?? 'không có'}
-                        </div>
+                        <div className="ordered__service--note flex-grow mt-2">Ghi chú: không có</div>
                     </div>
                     <div className="ordered__service--measurement w-[200px] self-center">
                         {ord.measurement} {ord.unit}

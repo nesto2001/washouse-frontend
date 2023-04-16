@@ -1,4 +1,5 @@
 import { CenterOrderedServiceModel } from '../Staff/CenterOrderedServiceModel';
+import { CustomerOrderedServiceModel } from './CustomerOrderedServiceModel';
 
 export type CustomerOrderModel = {
     id: string;
@@ -11,5 +12,5 @@ export type CustomerOrderModel = {
     centerId: number;
     centerName: string;
     isFeedback: boolean;
-    orderedServices: CenterOrderedServiceModel[];
+    orderedServices: CustomerOrderedServiceModel[];
 };
