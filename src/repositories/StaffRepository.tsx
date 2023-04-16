@@ -7,7 +7,9 @@ import {
     API_MANAGER_CENTER_SERVICE,
     API_MANAGER_VERIFY_STAFF,
     API_STAFF,
+    API_STAFF_ACTIVATE,
     API_STAFF_CANCEL_ORDER,
+    API_STAFF_DEACTIVATE,
     API_STAFF_PROCEED_ORDER,
     API_STAFF_PROCEED_ORDERED_SERVICE,
 } from '../common/Constant';
@@ -408,6 +410,32 @@ export const assignOrderDelivery = async (orderId: string, type: string, request
     const response = await instance.put<Response<number>>(
         `/api/manager/my-center/orders/${orderId}/deliveries/${type}/assign`,
         request,
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        },
+    );
+    return response;
+};
+
+export const activateStaff = async (id: number) => {
+    const response = await instance.put(
+        API_STAFF_ACTIVATE.replace('${id}', id.toString()),
+        {},
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        },
+    );
+    return response;
+};
+
+export const deactivateStaff = async (id: number) => {
+    const response = await instance.put(
+        API_STAFF_DEACTIVATE.replace('${id}', id.toString()),
+        {},
         {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('accessToken')}`,

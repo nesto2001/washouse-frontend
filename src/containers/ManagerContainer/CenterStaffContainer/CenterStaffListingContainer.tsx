@@ -1,5 +1,5 @@
 import { Form, Input, Select, Space } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Stafflist from '../../../components/StaffList/Stafflist';
 import { CenterStaffModel } from '../../../models/Staff/CenterStaffModel';
@@ -17,34 +17,6 @@ export type SearchParamsData = {
     searchType: string | null;
 };
 
-// const customerTab: TabsProps['items'] = [
-//     {
-//         key: '1',
-//         label: `Tất cả`,
-//         children: <ServiceList layout="table" />,
-//     },
-//     {
-//         key: '2',
-//         label: `Đang hoạt động`,
-//         children: `Content of Tab Pane 2`,
-//     },
-//     {
-//         key: '3',
-//         label: `Tạm ngưng`,
-//         children: `Content of Tab Pane 3`,
-//     },
-//     {
-//         key: '4',
-//         label: `Vi phạm`,
-//         children: `Content of Tab Pane 3`,
-//     },
-//     {
-//         key: '5',
-//         label: `Đã ẩn`,
-//         children: `Content of Tab Pane 3`,
-//     },
-// ];
-
 const CenterStaffListingContainer = (props: Props) => {
     const navigate = useNavigate();
     const [centerStaff, setCenterStaff] = useState<CenterStaffModel[]>();
@@ -53,12 +25,14 @@ const CenterStaffListingContainer = (props: Props) => {
         searchString: '',
         searchType: 'name',
     });
+    const [state, updateState] = useState({});
+    const forceUpdate = useCallback(() => updateState({}), []);
 
     useEffect(() => {
         getAllStaff().then((res) => {
             setCenterStaff(res.items);
         });
-    }, [searchParams]);
+    }, [searchParams, state]);
 
     const onChange = (key: string) => {
         console.log(key);
@@ -104,7 +78,7 @@ const CenterStaffListingContainer = (props: Props) => {
                 </Form>
             </div>
             <div className="provider__services mt-12 mb-72">
-                <Stafflist centerStaff={centerStaff} />
+                <Stafflist centerStaff={centerStaff} forceUpdate={forceUpdate} />
             </div>
         </>
     );

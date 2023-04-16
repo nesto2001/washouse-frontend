@@ -1,12 +1,14 @@
 import { useState } from 'react';
 
-import { Button, Form, Input, Modal, Tag } from 'antd';
+import { Button, Form, Input, Modal, Tag, message } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { CenterStaffModel } from '../../models/Staff/CenterStaffModel';
 import dayjs from 'dayjs';
+import { activateStaff, deactivateStaff } from '../../repositories/StaffRepository';
 
 type Props = {
     centerStaff?: CenterStaffModel[];
+    forceUpdate: () => void;
 };
 
 type StaffFormData = {
@@ -14,7 +16,7 @@ type StaffFormData = {
     email: string;
 };
 
-const Stafflist = ({ centerStaff }: Props) => {
+const Stafflist = ({ centerStaff, forceUpdate }: Props) => {
     const [form] = Form.useForm();
     const [step, setStep] = useState(0);
 
@@ -76,7 +78,34 @@ const Stafflist = ({ centerStaff }: Props) => {
             title: 'Thao tác',
             dataIndex: '',
             key: 'action',
-            render: (_, record) => (record.isManager ? '' : <div className="text-ws-red cursor-pointer">Đình chỉ</div>),
+            render: (_, record) =>
+                record.isManager ? (
+                    ''
+                ) : !record.status ? (
+                    <div
+                        className="text-ws-red cursor-pointer"
+                        onClick={() =>
+                            activateStaff(record.id).then((res) => {
+                                forceUpdate();
+                                message.success('Cập nhật trạng thái nhân viên thành công.');
+                            })
+                        }
+                    >
+                        Activate
+                    </div>
+                ) : (
+                    <div
+                        className="text-ws-red cursor-pointer"
+                        onClick={() =>
+                            deactivateStaff(record.id).then((res) => {
+                                forceUpdate();
+                                message.success('Cập nhật trạng thái nhân viên thành công.');
+                            })
+                        }
+                    >
+                        Deactivate
+                    </div>
+                ),
         },
     ];
 
