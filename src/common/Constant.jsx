@@ -71,6 +71,8 @@ const API_STAFF_CANCEL_ORDER = '/api/tracking/orders/${orderId}/cancelled';
 
 //STAFF APT
 const API_STAFF = '/api/staffs';
+const API_STAFF_ACTIVATE = '/api/staffs/${id}/activate';
+const API_STAFF_DEACTIVATE = '/api/staffs/${id}/deactivate';
 
 //PROMOTION API
 const API_PROMOTION = '/api/manager/promotions';
@@ -154,4 +156,6 @@ export {
     API_NOTIFICATION_READ,
     API_CENTER_SERVICES,
     API_PROMOTION_CENTER,
+    API_STAFF_ACTIVATE,
+    API_STAFF_DEACTIVATE,
 };
