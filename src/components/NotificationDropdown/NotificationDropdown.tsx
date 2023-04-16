@@ -59,22 +59,22 @@ const NotificationDropdown = ({ showBadge, child, size }: Props) => {
         });
     }, [update]);
 
-    // useEffect(() => {
-    //     connection.on('UpdateOrderStatus', (notification: Notification) => {
-    //         console.log(notification, '1');
-    //         forceUpdate();
-    //         openNotification(notification.title, notification.body);
-    //     });
+    useEffect(() => {
+        connection.on('UpdateOrderStatus', (notification: Notification) => {
+            console.log(notification, '1');
+            forceUpdate();
+            openNotification(notification.title, notification.body);
+        });
 
-    //     connection
-    //         .start()
-    //         .then(() => console.log('connection start'))
-    //         .catch((err) => console.error(err, 'Lỗi kết nối signalR'));
+        connection
+            .start()
+            .then(() => console.log('connection start'))
+            .catch((err) => console.error(err, 'Lỗi kết nối signalR'));
 
-    //     return () => {
-    //         connection.stop().catch((err) => console.error(err));
-    //     };
-    // }, [connection]);
+        return () => {
+            connection.stop().catch((err) => console.error(err));
+        };
+    }, [connection]);
 
     const handleRead = (id: number) => {
         readNotification(id);
