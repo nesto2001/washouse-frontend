@@ -68,6 +68,7 @@ const API_MANAGER_VERIFY_STAFF = '/api/staffs/verify';
 const API_STAFF_PROCEED_ORDER = '/api/tracking/orders/${orderId}/tracking';
 const API_STAFF_PROCEED_ORDERED_SERVICE = '/api/tracking/orders/${orderId}/order-details/${orderDetailId}/tracking';
 const API_STAFF_CANCEL_ORDER = '/api/tracking/orders/${orderId}/cancelled';
+const API_STAFF_ASSIGN_DELIVERY = '';
 
 //STAFF APT
 const API_STAFF = '/api/staffs';

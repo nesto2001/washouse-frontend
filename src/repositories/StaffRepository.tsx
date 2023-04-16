@@ -405,14 +405,14 @@ export const getAllStaff = async (): Promise<PaginationModel<CenterStaffModel>> 
 };
 
 export const assignOrderDelivery = async (orderId: string, type: string, request: AssignDeliveryRequest) => {
-    const response = await instance.put<Response<number>>(API_MANAGER_ASSIGN_STAFF, request, {
-        params: {
-            orderId: orderId,
-            type: type,
+    const response = await instance.put<Response<number>>(
+        `/api/manager/my-center/orders/${orderId}/deliveries/${type}/assign`,
+        request,
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
         },
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
-    });
+    );
     return response;
 };
