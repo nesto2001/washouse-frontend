@@ -1,4 +1,5 @@
 import { CenterOrderedServiceResponse } from '../Staff/CenterOrderedServiceResponse';
+import { CustomerOrderedServiceResponse } from './CustomerOrderedServiceResponse';
 
 export type CustomerOrderResponse = {
     orderId: string;
@@ -11,5 +12,5 @@ export type CustomerOrderResponse = {
     centerName: string;
     status: string;
     isFeedback: boolean;
-    orderedServices: CenterOrderedServiceResponse[];
+    orderedServices: CustomerOrderedServiceResponse[];
 };

@@ -10,6 +10,7 @@ import { Paging } from '../../../types/Common/Pagination';
 import ErrorScreen from '../../../components/ErrorScreen/ErrorScreen';
 import Destination from '../../../assets/images/destination.png';
 import React from 'react';
+import { BadgeStatusMap } from '../../../mapping/BadgeStatusMap';
 
 type Props = {
     setSelectedOrder: React.Dispatch<React.SetStateAction<string | undefined>>;
@@ -184,57 +185,110 @@ const CenterDeliveryContainer = ({ setSelectedOrder, openPanel }: Props) => {
                         <div className="delivery__item--header flex justify-between items-center">
                             <div className="delivery__item--id font-semibold">Mã đơn: #{order.id}</div>
                             <div className="delivery__item--status">
-                                <Tag color="default">{order.status}</Tag>
+                                <Tag className="cursor-pointer" color={BadgeStatusMap[order.status]}>
+                                    {OrderStatusMap[order.status]}
+                                </Tag>
                             </div>
                         </div>
                         <div
-                            className={`deliveries justify-between gap-0 ${
-                                openPanel ? 'flex-col w-[406px]' : 'flex w-full max-w-[680px]'
+                            className={`deliveries justify-between ${
+                                openPanel ? 'flex-col w-[406px]' : 'flex w-full max-w-[680px]  gap-6'
                             }`}
                         >
-                            {order.deliveries.map(
-                                (delivery) =>
-                                    delivery && (
-                                        <>
+                            {order.deliveries.map((delivery, index) =>
+                                order.deliveries.length > 1 ? (
+                                    <>
+                                        {!delivery.deliveryType && (
                                             <div className="deliveries__to flex-shrink">
                                                 <div className="delivery__item--type font-bold text-sub-gray text-base my-2">
                                                     Lấy đơn
                                                 </div>
                                                 <div className="delivery__item--destination flex gap-3">
-                                                    <Avatar src={Destination} size={50} />
+                                                    <div className="flex-grow">
+                                                        <Avatar src={Destination} size={50} />
+                                                    </div>
                                                     <div className="destination__info flex flex-col justify-center">
                                                         <div className="destination__info--address font-bold text-base">
-                                                            123 Thủy Lợi
+                                                            {delivery.addressString}
                                                         </div>
                                                         <div className="destination__info--administrative font-medium text-sub-gray">
-                                                            Phước Long A, Quận 9, TP. Hồ Chí Minh
+                                                            {`${delivery.wardName}, ${delivery.districtName}, TP. Hồ Chí Minh`}
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div
-                                                className={`${
-                                                    openPanel ? 'w-full h-[1px] my-3' : 'w-[1px]'
-                                                } bg-wh-gray`}
-                                            ></div>
+                                        )}
+                                        {delivery.deliveryType && (
+                                            <>
+                                                <div
+                                                    className={`${
+                                                        openPanel ? 'w-full h-[1px] my-3' : 'w-[1px]'
+                                                    } bg-wh-gray`}
+                                                ></div>
+                                                <div className="deliveries__back">
+                                                    <div className="delivery__item--type font-bold text-sub-gray text-base my-2">
+                                                        Trả đơn
+                                                    </div>
+                                                    <div className="delivery__item--destination flex gap-3">
+                                                        <div className="">
+                                                            <Avatar src={Destination} size={50} />
+                                                        </div>
+                                                        <div className="destination__info flex flex-col justify-center">
+                                                            <div className="destination__info--address font-bold text-base">
+                                                                {delivery.addressString}
+                                                            </div>
+                                                            <div className="destination__info--administrative font-medium text-sub-gray">
+                                                                {`${delivery.wardName}, ${delivery.districtName}, TP. Hồ Chí Minh`}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
+                                    </>
+                                ) : (
+                                    <>
+                                        {delivery.deliveryType ? (
                                             <div className="deliveries__back">
                                                 <div className="delivery__item--type font-bold text-sub-gray text-base my-2">
                                                     Trả đơn
                                                 </div>
                                                 <div className="delivery__item--destination flex gap-3">
-                                                    <Avatar src={Destination} size={50} />
+                                                    <div className="">
+                                                        <Avatar src={Destination} size={50} />
+                                                    </div>
                                                     <div className="destination__info flex flex-col justify-center">
                                                         <div className="destination__info--address font-bold text-base">
-                                                            123 Thủy Lợi
+                                                            {delivery.addressString}
                                                         </div>
                                                         <div className="destination__info--administrative font-medium text-sub-gray">
-                                                            Phước Long A, Quận 9, TP. Hồ Chí Minh
+                                                            {`${delivery.wardName}, ${delivery.districtName}, TP. Hồ Chí Minh`}
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </>
-                                    ),
+                                        ) : (
+                                            <div className="deliveries__to flex-shrink">
+                                                <div className="delivery__item--type font-bold text-sub-gray text-base my-2">
+                                                    Lấy đơn
+                                                </div>
+                                                <div className="delivery__item--destination flex gap-3">
+                                                    <div className="">
+                                                        <Avatar src={Destination} size={50} />
+                                                    </div>
+                                                    <div className="destination__info flex flex-col justify-center">
+                                                        <div className="destination__info--address font-bold text-base">
+                                                            {delivery.addressString}
+                                                        </div>
+                                                        <div className="destination__info--administrative font-medium text-sub-gray">
+                                                            {`${delivery.wardName}, ${delivery.districtName}, TP. Hồ Chí Minh`}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </>
+                                ),
                             )}
                         </div>
                         <hr className="my-3" />
@@ -247,32 +301,6 @@ const CenterDeliveryContainer = ({ setSelectedOrder, openPanel }: Props) => {
                         </div>
                     </div>
                 ))}
-                <div className="provider__delivery--item w-[440px] p-4 border border-wh-gray rounded-xl">
-                    <div className="delivery__item--header flex justify-between items-center">
-                        <div className="delivery__item--id font-semibold">Mã đơn: #20230412_00000001</div>
-                        <div className="delivery__item--status">
-                            <Tag color="default">Đang chờ</Tag>
-                        </div>
-                    </div>
-                    <div className="delivery__item--type font-bold text-sub-gray text-base my-2">Chiều đi</div>
-                    <div className="delivery__item--destination flex gap-3">
-                        <Avatar src={Destination} size={50} />
-                        <div className="destination__info flex flex-col justify-center">
-                            <div className="destination__info--address font-bold text-base">123 Thủy Lợi</div>
-                            <div className="destination__info--administrative font-medium text-sub-gray">
-                                Phước Long A, Quận 9, TP. Hồ Chí Minh
-                            </div>
-                        </div>
-                    </div>
-                    <hr className="my-3" />
-                    <div className="delivery__item--customer">
-                        <div className="font-medium text-sub-gray">Khách hàng</div>
-                        <div className="delivery__item--customerinfo flex justify-between items-baseline">
-                            <div className="text-base font-bold">Lê Thành Đạt</div>
-                            <div className="font-medium">0966751198</div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     );

@@ -4,6 +4,7 @@ import { AccountResponse } from '../models/Account/AccountResponse';
 import { PaginationModel, PaginationResponse } from '../models/CommonModel';
 import { CustomerOrderModel } from '../models/Customer/CustomerOrderModel';
 import { CustomerOrderResponse } from '../models/Customer/CustomerOrderResponse';
+import { CustomerOrderedServiceModel } from '../models/Customer/CustomerOrderedServiceModel';
 import { CenterOrderedServiceModel } from '../models/Staff/CenterOrderedServiceModel';
 import instance from '../services/axios/AxiosInstance';
 
@@ -58,19 +59,14 @@ export const getCustomerOrders = async ({
                 totalPayment: item.totalOrderPayment,
                 totalValue: item.totalOrderValue,
                 isFeedback: item.isFeedback,
-                orderedServices: item.orderedServices.map((ordered): CenterOrderedServiceModel => {
+                orderedServices: item.orderedServices.map((ordered): CustomerOrderedServiceModel => {
                     return {
+                        id: ordered.serviceId,
                         name: ordered.serviceName,
                         category: ordered.serviceCategory,
                         measurement: ordered.measurement,
-                        customerNote: ordered.customerNote,
-                        id: ordered.orderDetailId,
                         image: ordered.image,
-                        orderDetailTrackings: ordered.orderDetailTrackings,
-                        staffNote: ordered.staffNote,
-                        status: ordered.status,
                         price: ordered.price,
-                        unitPrice: ordered.unitPrice,
                         unit: ordered.unit,
                     };
                 }),
