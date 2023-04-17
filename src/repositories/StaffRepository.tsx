@@ -323,11 +323,15 @@ export const getCenterCustomer = async (): Promise<CenterCustomerModel[]> => {
 };
 
 export const proceedOrder = async (orderId: string) => {
-    const response = await instance.put<Response<number>>(API_STAFF_PROCEED_ORDER.replace('${orderId}', orderId), {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+    const response = await instance.put<Response<number>>(
+        API_STAFF_PROCEED_ORDER.replace('${orderId}', orderId),
+        {},
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
         },
-    });
+    );
     return response;
 };
 
@@ -337,6 +341,7 @@ export const proceedOrderDetails = async (orderId: string, orderDetailId: number
             '${orderDetailId}',
             orderDetailId.toString(),
         ),
+        {},
         {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
@@ -347,11 +352,15 @@ export const proceedOrderDetails = async (orderId: string, orderDetailId: number
 };
 
 export const cancelOrder = async (orderId: string) => {
-    const response = await instance.put<Response<number>>(API_STAFF_CANCEL_ORDER.replace('${orderId}', orderId), {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+    const response = await instance.put<Response<number>>(
+        API_STAFF_CANCEL_ORDER.replace('${orderId}', orderId),
+        {},
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
         },
-    });
+    );
     return response;
 };
 

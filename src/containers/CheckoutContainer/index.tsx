@@ -22,6 +22,7 @@ import { applyPromotion } from '../../repositories/PromotionRepository';
 import { UserModel } from '../../models/User/UserModel';
 import { getMe } from '../../repositories/AuthRepository';
 import Loading from '../../components/Loading/Loading';
+import { DeliveryInfoRequest } from '../../models/Order/DeliveryInfoRequest';
 
 type Props = {};
 
@@ -135,7 +136,13 @@ const CheckoutContainer = (props: Props) => {
                             ? formData.preferredDropoffTime
                             : dayjs().format('DD-MM-YYYY HH:mm:ss'),
                 },
-                deliveries: [],
+                deliveries: formData.deliveryInfo.map((delivery): DeliveryInfoRequest => {
+                    return {
+                        addressString: delivery.addressString,
+                        deliveryType: delivery.deliveryType,
+                        wardId: delivery.wardId,
+                    };
+                }),
                 orderDetails: cartItems.map((item) => {
                     return {
                         serviceId: item.id,

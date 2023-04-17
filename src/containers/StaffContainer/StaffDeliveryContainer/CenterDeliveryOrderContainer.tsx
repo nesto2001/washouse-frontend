@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import CenterOrderDetailsGeneral from '../CenterOrderContainer/CenterOrderDetailsGeneral';
 import { Button, Col, Descriptions, Form, Input, Modal, Row, Tag, message } from 'antd';
 import CenterOrderedDetailsContainer from '../CenterOrderContainer/CenterOrderedDetailsContainer';
@@ -27,7 +27,28 @@ interface AssignDeliveryForm {
 const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
     const [modal, contextHolder] = Modal.useModal();
     const [form] = Form.useForm();
+    const [isLarge, setIsLarge] = useState(false);
+    const stickyDivRef = useRef<HTMLDivElement>(null);
+    const contentRef = useRef<HTMLDivElement>(null);
+
     const trackings = orderDetails.orderDeliveries;
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const stickyDivRect = stickyDivRef.current?.getBoundingClientRect();
+            if (stickyDivRect?.top! <= 84) {
+                setIsLarge(true);
+            } else {
+                setIsLarge(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, [isLarge]);
 
     const submitForm = () => {
         form.submit();
@@ -96,7 +117,12 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
     return (
         <>
             {contextHolder}
-            <div className="flex justify-between max-w-[1070px] w-[1020px] h-[764px]">
+            <div
+                className={`flex justify-between max-w-[1070px] w-[1020px] h-[764px] transition-[height] duration-300 ${
+                    isLarge ? 'h-[828px]' : 'h-[764px]'
+                }`}
+                ref={stickyDivRef}
+            >
                 <div className="w-[632px]">
                     {trackings.map((tracking) =>
                         trackings.length > 1 ? (

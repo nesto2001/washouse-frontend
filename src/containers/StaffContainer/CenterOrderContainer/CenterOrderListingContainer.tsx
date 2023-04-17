@@ -9,6 +9,7 @@ import { OrderStatusMap } from '../../../mapping/OrderStatusMap';
 import { Paging } from '../../../types/Common/Pagination';
 import ErrorScreen from '../../../components/ErrorScreen/ErrorScreen';
 import React from 'react';
+import OthersSpin from '../../../components/OthersSpin/OthersSpin';
 
 type Props = {};
 
@@ -110,6 +111,11 @@ const CenterOrderListingContainer = (props: Props) => {
             label: `Đã hủy`,
         },
     ];
+
+    if (isLoading) {
+        return <OthersSpin />;
+    }
+
     if (isError) {
         return <Empty description="Không có đơn hàng nào" className="mb-5" />;
     }

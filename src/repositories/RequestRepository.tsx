@@ -123,6 +123,11 @@ export const approveCenter = async (id: number): Promise<CenterDetailsModel> => 
     const { data } = await instance.put<Response<CenterDetailsResponse>>(
         API_REQUEST_APPROVE.replace('${id}', id.toString()),
         {},
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        },
     );
     return {
         id: data.data.id,
@@ -170,6 +175,11 @@ export const rejectCenter = async (id: number): Promise<CenterDetailsModel> => {
     const { data } = await instance.put<Response<CenterDetailsResponse>>(
         API_REQUEST_REJECT.replace('${id}', id.toString()),
         {},
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        },
     );
     return {
         id: data.data.id,

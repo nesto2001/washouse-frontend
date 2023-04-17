@@ -77,7 +77,7 @@ export const getPromotionsCenter = async (centerId: number): Promise<PromotionMo
 };
 
 export const deactivatePromotion = async (promotionId: number) => {
-    const response = await instance.put(API_PROMOTION_DEACTIVATE, undefined, {
+    const response = await instance.put(API_PROMOTION_DEACTIVATE, {}, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
@@ -89,7 +89,7 @@ export const deactivatePromotion = async (promotionId: number) => {
 };
 
 export const activatePromotion = async ({ id, expireDate, useTimes }: ActivatePromotionFormData) => {
-    const response = await instance.put(API_PROMOTION_ACTIVATE, undefined, {
+    const response = await instance.put(API_PROMOTION_ACTIVATE, {}, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },

@@ -39,28 +39,40 @@ const CenterDeliveryOverallContainer = (props: Props) => {
                 </div>
                 <div className="provider__page--content px-6 mt-8">
                     <div className="provider__services--wrapper">
-                        <CenterDeliveryContainer setSelectedOrder={setSelectedOrder} openPanel={openPanel} />
+                        <CenterDeliveryContainer
+                            setSelectedOrder={setSelectedOrder}
+                            selectedOrder={selectedOrder}
+                            openPanel={openPanel}
+                        />
                     </div>
                 </div>
             </div>
-            {selectedOrderDetails && (
-                <div className="relative  w-[2100px] max-w-[1070px] ">
-                    <div className="bg-white mx-autorounded border border-wh-lightgray sticky top-6">
-                        <div className="flex justify-between pt-4 px-6">
-                            <div className="provider__page--title  font-semibold text-2xl">Thông tin vận chuyển</div>
-                            <div
-                                className="provider__page--closebtn cursor-pointer"
-                                onClick={() => setSelectedOrder(undefined)}
-                            >
-                                <CloseOutlined />
+            {
+                <div
+                    className={`relative ${
+                        openPanel ? 'w-[2100px] opacity-100' : 'w-0 opacity-0'
+                    } transition-all ease-out duration-[500] max-w-[1070px] `}
+                >
+                    {selectedOrderDetails && (
+                        <div className="bg-white mx-autorounded border border-wh-lightgray sticky top-6">
+                            <div className="flex justify-between pt-4 px-6">
+                                <div className="provider__page--title  font-semibold text-2xl">
+                                    Thông tin vận chuyển
+                                </div>
+                                <div
+                                    className="provider__page--closebtn cursor-pointer"
+                                    onClick={() => setSelectedOrder(undefined)}
+                                >
+                                    <CloseOutlined />
+                                </div>
+                            </div>
+                            <div className="provider__page--content mt-2 px-6">
+                                <CenterDeliveryOrderContainer orderDetails={selectedOrderDetails} />
                             </div>
                         </div>
-                        <div className="provider__page--content mt-2 px-6">
-                            <CenterDeliveryOrderContainer orderDetails={selectedOrderDetails} />
-                        </div>
-                    </div>
+                    )}
                 </div>
-            )}
+            }
         </>
     );
 };

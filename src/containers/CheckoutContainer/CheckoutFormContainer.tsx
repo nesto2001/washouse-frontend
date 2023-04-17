@@ -558,7 +558,7 @@ export const Step2 = ({
     };
 
     const onFinish = (values: any) => {
-        console.log('submit');
+        console.log(values);
         const dropoffTime =
             (values.dropoff?.date?.value ? values.dropoff?.date?.value + ' ' : '') +
                 (selectedDropoffTime?.format('HH:mm:ss') ?? '') ?? undefined;
@@ -587,22 +587,25 @@ export const Step2 = ({
             deliveryType: false,
             wardId: values.dropoff_ward,
         };
+        console.log(dropoffAddress, 'dropaddr');
         const deliverAddress: DeliveryFormData = {
             addressString: values.deliver_address,
             deliveryType: true,
             wardId: values.deliver_ward,
         };
-        if (dropoffAddress && deliverAddress) {
+        console.log(deliverAddress, 'deliaddr');
+
+        if (dropoffAddress && dropoffAddress.wardId && deliverAddress && deliverAddress.wardId) {
             setFormData((prev) => ({
                 ...prev,
                 deliveryInfo: [dropoffAddress, deliverAddress],
             }));
-        } else if (dropoffAddress) {
+        } else if (dropoffAddress && dropoffAddress.wardId) {
             setFormData((prev) => ({
                 ...prev,
                 deliveryInfo: [dropoffAddress],
             }));
-        } else if (deliverAddress) {
+        } else if (deliverAddress && deliverAddress.wardId) {
             setFormData((prev) => ({
                 ...prev,
                 deliveryInfo: [deliverAddress],

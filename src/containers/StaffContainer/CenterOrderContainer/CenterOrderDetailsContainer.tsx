@@ -1,5 +1,5 @@
 import { Col, Row, Tag, message } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import OthersSpin from '../../../components/OthersSpin/OthersSpin';
 import { CenterOrderDetailsModel } from '../../../models/Staff/CenterOrderDetailsModel';
@@ -17,6 +17,8 @@ const CenterOrderDetailsContainer = (props: Props) => {
     const [openProceedPop, setOpenProceedPop] = useState(false);
     const [confirmProceedLoading, setConfirmProceedLoading] = useState(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [state, updateState] = useState({});
+    const forceUpdate = useCallback(() => updateState({}), []);
 
     const { orderId } = useParams();
     useEffect(() => {
@@ -25,13 +27,15 @@ const CenterOrderDetailsContainer = (props: Props) => {
             const fetchData = async () => {
                 return await getManagerCenterOrderDetails(orderId);
             };
-            fetchData().then((res) => {
-                setOrderDetails(res);
-                setIsLoading(false);
-            });
+            fetchData()
+                .then((res) => {
+                    setOrderDetails(res);
+                })
+                .finally(() => {
+                    setIsLoading(false);
+                });
         }
-        setIsLoading(false);
-    }, [orderId]);
+    }, [orderId, state]);
 
     const showPopconfirm = () => {
         if (orderDetails?.status === 'completed') {
@@ -53,6 +57,7 @@ const CenterOrderDetailsContainer = (props: Props) => {
                         message.success('Cập nhật tiến trình đơn hàng thành công!');
                         setOpenProceedPop(false);
                         setConfirmProceedLoading(false);
+                        forceUpdate();
                     }
                 })
                 .catch(() => {

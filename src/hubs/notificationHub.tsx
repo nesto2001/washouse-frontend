@@ -1,9 +1,31 @@
-import * as signalR from '@microsoft/signalr';
+import * as React from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
+import { BASE_URL } from '../common/Constant';
 
-export const startSignalRConnection = () => {
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl('https://api-washouse.azurewebsites.net/messageHub')
-        .withAutomaticReconnect()
-        .build();
-    return connection;
+export let connection: HubConnection;
+
+export const useSignalRConnection = (): boolean => {
+    const [connected, setConnected] = useState(false);
+    useEffect(() => {
+        const newConnection = new HubConnectionBuilder()
+            .withUrl(BASE_URL + '/messageHub')
+            .withAutomaticReconnect()
+            .build();
+
+        connection = newConnection;
+
+        newConnection.start().then(() => {
+            console.log('Kết nối SignalR');
+            setConnected(true);
+        });
+
+        return () => {
+            connection?.stop().then(() => {
+                console.log('Ngắt kết nối SignalR');
+            });
+        };
+    }, []);
+
+    return connected;
 };

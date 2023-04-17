@@ -11,9 +11,11 @@ import ErrorScreen from '../../../components/ErrorScreen/ErrorScreen';
 import Destination from '../../../assets/images/destination.png';
 import React from 'react';
 import { BadgeStatusMap } from '../../../mapping/BadgeStatusMap';
+import OthersSpin from '../../../components/OthersSpin/OthersSpin';
 
 type Props = {
     setSelectedOrder: React.Dispatch<React.SetStateAction<string | undefined>>;
+    selectedOrder: string | undefined;
     openPanel: boolean;
 };
 
@@ -34,7 +36,7 @@ export type SearchParamsData = {
     deliveryStatus?: string;
 };
 
-const CenterDeliveryContainer = ({ setSelectedOrder, openPanel }: Props) => {
+const CenterDeliveryContainer = ({ setSelectedOrder, openPanel, selectedOrder }: Props) => {
     const [form] = Form.useForm();
     const [orders, setOrders] = useState<CenterOrderModel[]>([]);
     const [msg, contextHolder] = message.useMessage();
@@ -119,6 +121,11 @@ const CenterDeliveryContainer = ({ setSelectedOrder, openPanel }: Props) => {
     //         label: `Đã hủy`,
     //     },
     // ];
+
+    if (isLoading) {
+        return <OthersSpin />;
+    }
+
     if (isError) {
         return <Empty description="Không có đơn hàng nào" className="mb-5" />;
     }
@@ -179,7 +186,9 @@ const CenterDeliveryContainer = ({ setSelectedOrder, openPanel }: Props) => {
                     <div
                         className={`provider__delivery--item ${
                             openPanel ? 'w-[440px]' : 'w-full max-w-[680px]'
-                        } p-4 border border-wh-gray rounded-xl cursor-pointer`}
+                        } transition-all ease-in-out duration-500 p-4 border border-wh-gray ${
+                            order.id === selectedOrder ? ' border border-wh-primary' : ' border border-wh-gray'
+                        } rounded-xl cursor-pointer`}
                         onClick={(e) => handleViewOrder(order.id)}
                     >
                         <div className="delivery__item--header flex justify-between items-center">
@@ -193,7 +202,7 @@ const CenterDeliveryContainer = ({ setSelectedOrder, openPanel }: Props) => {
                         <div
                             className={`deliveries justify-between ${
                                 openPanel ? 'flex-col w-[406px]' : 'flex w-full max-w-[680px]  gap-6'
-                            }`}
+                            } transition-[width] ease-linear duration-500`}
                         >
                             {order.deliveries.map((delivery, index) =>
                                 order.deliveries.length > 1 ? (
