@@ -1,4 +1,4 @@
-import { Pagination, Spin } from 'antd';
+import { Empty, Pagination, Spin } from 'antd';
 import { PaginationProps } from 'rc-pagination';
 import { CenterOrderModel } from '../../models/Staff/CenterOrderModel';
 import { Paging } from '../../types/Common/Pagination';
@@ -14,6 +14,9 @@ type Props = {
 const OrderList = ({ orders, isLoading, paging, updatePage }: Props) => {
     const showTotal: PaginationProps['showTotal'] = (total) => `Có tất cả ${total} đơn hàng`;
 
+    if (!orders || orders.length == 0) {
+        return <Empty description="Không có đơn hàng nào" className="mb-5" />;
+    }
     return (
         <div className={`order__list--wrapper my-5 mt-2 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
             <div className="order__list--header mb-6 py-4 bg-wh-lightgray font-bold text-sub rounded-lg">

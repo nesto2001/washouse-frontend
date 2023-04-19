@@ -22,11 +22,8 @@ const LoginContainer = () => {
     const handleSubmit = () => {
         setIsFetching(true);
         if (loginForm.phone && loginForm.password) {
-            const fetchData = async () => {
-                return await login({ phone: loginForm.phone.trim(), password: loginForm.password.trim() });
-            };
-            fetchData().then((res) => {
-                if (res.status === 200) {
+            login({ phone: loginForm.phone.trim(), password: loginForm.password.trim() }).then((res) => {
+                if (res.status === 200 && res.data.message.toLowerCase().includes('success')) {
                     localStorage.setItem('accessToken', res.data.data.accessToken);
                     localStorage.setItem('refreshToken', res.data.data.refreshToken);
                     const fetchData = async () => {
