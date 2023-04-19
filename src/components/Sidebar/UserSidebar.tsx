@@ -11,6 +11,8 @@ import User from '../../assets/images/user-pf.png';
 import './Sidebar.scss';
 import { AccountModel } from '../../models/Account/AccountModel';
 import { getUserProfile } from '../../repositories/AccountRepository';
+import { getMe } from '../../repositories/AuthRepository';
+import { UserModel } from '../../models/User/UserModel';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -45,7 +47,7 @@ type UserSidebarProps = {
 const UserSidebar = ({ basis }: UserSidebarProps) => {
     const [openKeys, setOpenKeys] = useState(['account']);
     const [selectedKey, setSelectedKey] = useState<Array<string>>(['profile']);
-    const [userProfile, setUserProfile] = useState<AccountModel>();
+    const [userProfile, setUserProfile] = useState<UserModel>();
 
     const navigate = useNavigate();
 
@@ -145,7 +147,7 @@ const UserSidebar = ({ basis }: UserSidebarProps) => {
         const user: AccountModel = userJson && JSON.parse(userJson);
 
         const fetchData = async () => {
-            return await getUserProfile(user.accountId);
+            return await getMe();
         };
         fetchData()
             .then((res) => {
@@ -187,10 +189,10 @@ const UserSidebar = ({ basis }: UserSidebarProps) => {
         <div className={clsx('userpage__sidenav text-left px-7 mt-16', basis ?? '')}>
             <div className="userpage__sidenav--user flex items-center">
                 <div className="sidenav__user--avatar max-w-[72px] max-h-[72px] h-[72px] rounded-full overflow-hidden">
-                    <img className="object-cover h-full" src={Placeholder} alt="" />
+                    <img className="object-cover h-full" src={userProfile?.avatar ?? Placeholder} alt="" />
                 </div>
                 <div className="sidenav__user--info ml-4">
-                    <div className="user__info--name font-bold">{userProfile?.fullName}</div>
+                    <div className="user__info--name font-bold">{userProfile?.name}</div>
                     <div className="user__info--action font-medium text-sub-gray">
                         <Link to="/user/account/profile">Sửa hồ sơ</Link>
                     </div>

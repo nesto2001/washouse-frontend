@@ -7,6 +7,7 @@ const API_ME = '/api/accounts/me';
 const API_REGISTER_CUSTOMER = '/api/accounts/customers';
 const API_REGISTER_PROVIDER = '/api/accounts/managers';
 const API_REFRESH_TOKEN = '/api/accounts/token';
+const API_CHANGE_PASSWORD = '/api/accounts/me/change-password';
 
 //ACCOUNT API
 const API_ACCOUNT = '/api/accounts/';
@@ -119,6 +120,7 @@ export {
     API_ORDER_DELIVERY,
     API_MANAGER_CENTER_CUSTOMER,
     API_MANAGER_CENTER_SERVICE,
+    API_CHANGE_PASSWORD,
     API_MANAGER_CENTER_ORDER,
     API_LOCATION_DETAILS,
     API_MANAGER_CENTER,

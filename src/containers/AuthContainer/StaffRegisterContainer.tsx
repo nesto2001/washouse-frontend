@@ -156,11 +156,7 @@ const StaffRegisterContainer = () => {
                 Bằng việc đăng ký, bạn đã đồng ý với Washouse về{' '}
                 <Link to="/terms" className="text-primary">
                     Điều khoản, điều kiện sử dụng dịch vụ
-                </Link>{' '}
-                {/* &{' '}
-                 <Link to="/privacy" className="text-primary">
-                    Chính sách bảo mật
-                </Link> */}
+                </Link>
             </div>
             <div className="register__form--action mt-3">
                 <Form.Item noStyle>

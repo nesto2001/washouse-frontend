@@ -1,4 +1,5 @@
 import {
+    API_CHANGE_PASSWORD,
     API_LOGIN,
     API_LOGIN_STAFF,
     API_ME,
@@ -96,4 +97,22 @@ export const refresh = async ({ accessToken, refreshToken }: { accessToken: stri
         refreshToken: refreshToken,
     });
     return response;
+};
+
+export const changePassword = async (oldPassword: string, newPassword: string) => {
+    const { data } = await instance.put<Response<UserModel>>(
+        API_CHANGE_PASSWORD,
+        {
+            oldPass: oldPassword,
+            newPass: newPassword,
+        },
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        },
+    );
+    if (data.message === 'Wrong password') {
+        return Promise.reject();
+    }
 };
