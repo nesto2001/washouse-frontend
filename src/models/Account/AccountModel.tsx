@@ -1,10 +1,11 @@
 export type AccountModel = {
-    accountId: number;
+    id: number;
     phone: string;
     email: string;
     fullName: string;
+    gender: number;
     dob: string;
-    avatar?: string;
-    locationId?: number;
-    status?: boolean;
+    status: boolean;
+    isAdmin: boolean;
+    profilePic: string;
 };

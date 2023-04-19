@@ -121,11 +121,13 @@ const CenterOrderDetailsContainer = (props: Props) => {
                                     Dịch vụ
                                 </Col>
                                 <Col span={2}>Định lượng</Col>
-                                <Col span={6}>Đơn giá</Col>
+                                <Col span={5}>Đơn giá</Col>
                                 <Col span={3}>Thành tiền</Col>
                                 <Col span={2}>Trạng thái</Col>
                             </Row>
                             <CenterOrderedDetailsContainer
+                                forceUpdate={forceUpdate}
+                                orderStatus={orderDetails.status}
                                 orderId={orderDetails.id}
                                 details={{ orderedDetails: orderDetails.orderedDetails }}
                             />

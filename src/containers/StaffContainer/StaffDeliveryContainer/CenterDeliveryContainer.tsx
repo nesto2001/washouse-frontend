@@ -50,7 +50,7 @@ const CenterDeliveryContainer = ({ setSelectedOrder, openPanel, selectedOrder }:
     const [searchParams, setSearchParams] = useState<SearchParamsData>({
         searchType: 'id',
         deliveryType: true,
-        deliveryStatus: 'Waiting',
+        deliveryStatus: 'Pending',
     });
 
     // const [centerOrders, setCenterOrders] = useState<CenterOrderModel[]>();

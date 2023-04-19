@@ -30,3 +30,13 @@ export const ServiceBadgeStatusMap: { [key: string]: string } = {
     failed: 'error',
     Failed: 'Error',
 };
+
+export const DeliveryBadgeStatusMap: { [key: string]: string } = {
+    '': 'default',
+    Pending: 'default',
+    pending: 'default',
+    Delivering: 'processing',
+    delivering: 'processing',
+    Completed: 'success',
+    completed: 'success',
+};

@@ -67,6 +67,7 @@ const API_MANAGER_VERIFY_STAFF = '/api/staffs/verify';
 
 const API_STAFF_PROCEED_ORDER = '/api/tracking/orders/${orderId}/tracking';
 const API_STAFF_PROCEED_ORDERED_SERVICE = '/api/tracking/orders/${orderId}/order-details/${orderDetailId}/tracking';
+const API_STAFF_UPDATE_ORDERED_SERVICE = '/api/manager/my-center/orders/${orderId}/details/${orderDetailId}';
 const API_STAFF_CANCEL_ORDER = '/api/tracking/orders/${orderId}/cancelled';
 const API_STAFF_ASSIGN_DELIVERY = '';
 
@@ -97,6 +98,7 @@ const API_FEEDBACK_SERVICE = '/api/feedbacks/services';
 const RE_DIGIT = new RegExp(/^\d+$/);
 
 export {
+    API_STAFF_UPDATE_ORDERED_SERVICE,
     API_FEEDBACK_ORDER,
     API_FEEDBACK_SERVICE,
     API_PROMOTION_DEACTIVATE,

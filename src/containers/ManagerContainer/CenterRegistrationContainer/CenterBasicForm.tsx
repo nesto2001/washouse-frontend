@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { UploadChangeParam } from 'antd/lib/upload/interface';
-import { Button, Checkbox, Form, Input, Upload, UploadFile, message, TimePicker, FormInstance } from 'antd';
-import { RangeValue } from 'rc-picker/lib/interface';
 import { PlusOutlined } from '@ant-design/icons';
+import { Form, FormInstance, Input, TimePicker, Upload, UploadFile, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
+import { UploadChangeParam } from 'antd/lib/upload/interface';
 import dayjs from 'dayjs';
+import { RangeValue } from 'rc-picker/lib/interface';
+import React, { useEffect, useState } from 'react';
 import { CreateCenterFormData } from '.';
 import { DayMap } from '../../../mapping/DayMap';
-import '../ManagerContainer.scss';
 import { uploadSingle } from '../../../repositories/MediaRepository';
 
 const format = 'HH:mm';

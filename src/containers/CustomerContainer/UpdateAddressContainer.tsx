@@ -15,6 +15,8 @@ import Selectbox from '../../components/Selectbox';
 import Input from '../../components/Input/Input';
 import { Option } from '../../types/Options';
 import { LocationDetailsModel } from '../../models/Location/LocationDetailsModel';
+import { CustomerAccountModel } from '../../models/Account/CustomerAccountModel';
+import { AddressDataType } from '../../types/AddressDataType';
 type Props = {};
 
 type UpdateAddressForm = {
@@ -26,8 +28,8 @@ type UpdateAddressForm = {
 const UpdateAddressContainer = (props: Props) => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [modalVisibility, setModalVisibility] = useState<boolean>(false);
-    const [userProfile, setUserProfile] = useState<AccountModel>();
-    const [userAddress, setUserAddress] = useState<LocationDetailsModel>();
+    const [userProfile, setUserProfile] = useState<CustomerAccountModel>();
+    const [userAddress, setUserAddress] = useState<AddressDataType>();
     const [form] = Form.useForm();
     const [district, setDistrict] = useState<number>();
     const [districtList, setDistrictList] = useState<LocationPlaceModel[]>([]);
@@ -54,17 +56,18 @@ const UpdateAddressContainer = (props: Props) => {
             };
             fetchData().then((res) => {
                 setUserProfile(res);
-                if (res.locationId) {
-                    const fetchLocation = async () => {
-                        return await getLocation(res.locationId ?? 0);
-                    };
-                    fetchLocation().then((res) => {
-                        if (res) {
-                            setUserAddress(res);
-                            setIsLoading(false);
-                        }
-                    });
-                }
+                setUserAddress(res.address);
+                // if (res.locationId) {
+                //     const fetchLocation = async () => {
+                //         return await getLocation(res.locationId ?? 0);
+                //     };
+                //     fetchLocation().then((res) => {
+                //         if (res) {
+                //             setUserAddress(res);
+                //             setIsLoading(false);
+                //         }
+                //     });
+                // }
                 setIsLoading(false);
             });
         }
@@ -81,7 +84,7 @@ const UpdateAddressContainer = (props: Props) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            return await getWards(district ?? userAddress?.ward.district.id ?? 0);
+            return await getWards(district ?? userAddress?.ward.district.districtId ?? 0);
         };
         fetchData().then((res) => {
             setWardList(res);
@@ -150,7 +153,7 @@ const UpdateAddressContainer = (props: Props) => {
                 <div className="useraddress--content flex justify-between pl-14 pr-6 mb-16">
                     <div className="useraddress--details">
                         <div className="useraddress--user flex justify-start items-center">
-                            <div className="font-medium">{userProfile.fullName}</div>
+                            <div className="font-medium">{userProfile.fullname}</div>
                             <div className="mx-3 border bg-wh-gray w-[0.5px] h-6"></div>
                             <div className="text-sm text-sub-gray">{userProfile.phone}</div>
                         </div>
@@ -161,15 +164,15 @@ const UpdateAddressContainer = (props: Props) => {
                             </div>
                             <div className="col-span-1 min-w-[150px] flex flex-col">
                                 <div className="font-medium text-sub-gray">Quận / huyện</div>
-                                <div className="mt-3">{userAddress.ward.district.name}</div>
+                                <div className="mt-3">{userAddress.ward.district.districtName}</div>
                             </div>
                             <div className="col-span-1 min-w-[150px] flex flex-col">
                                 <div className="font-medium text-sub-gray">Phường / xã</div>
-                                <div className="mt-3">{userAddress.ward.name}</div>
+                                <div className="mt-3">{userAddress.ward.wardName}</div>
                             </div>
                             <div className="col-span-3 min-w-[140px] flex flex-col">
                                 <div className="font-medium text-sub-gray">Địa chỉ cụ thể</div>
-                                <div className="mt-3 h-16">{userAddress.address}</div>
+                                <div className="mt-3 h-16">{userAddress.addressString}</div>
                             </div>
                         </div>
                         <div className="useraddress--update">
@@ -214,10 +217,10 @@ const UpdateAddressContainer = (props: Props) => {
                     form={form}
                     name="account_address"
                     initialValues={{
-                        address: userAddress?.address,
+                        address: userAddress?.addressString,
                         city: 1,
-                        district: userAddress?.ward.district.id,
-                        ward: userAddress?.ward.id,
+                        district: userAddress?.ward.district.districtId,
+                        ward: userAddress?.ward.wardId,
                     }}
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
@@ -294,7 +297,7 @@ const UpdateAddressContainer = (props: Props) => {
                                     id=""
                                     type="quận / huyện"
                                     className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                    selectedValue={userAddress?.ward.district.id}
+                                    // selectedValue={userAddress?.ward.district.districtId}
                                     options={districtList.map((district): Option => {
                                         return {
                                             value: district.id.toString(),
@@ -329,7 +332,7 @@ const UpdateAddressContainer = (props: Props) => {
                                     id=""
                                     type="phường / xã"
                                     className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                    selectedValue={userAddress?.ward.id}
+                                    // selectedValue={userAddress?.ward.wardId}
                                     options={wardList.map((ward) => {
                                         return {
                                             value: ward.id,

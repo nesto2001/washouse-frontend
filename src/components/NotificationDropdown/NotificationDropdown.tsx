@@ -56,7 +56,7 @@ const NotificationDropdown = ({ showBadge, child, size }: Props) => {
     }, [update]);
 
     useEffect(() => {
-        connection.on('UpdateOrderStatus/1', (notification: Notification) => {
+        connection.on('UpdateOrderStatus', (notification: Notification) => {
             forceUpdate();
             openNotification(notification.title, notification.body);
         });

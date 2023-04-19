@@ -12,6 +12,7 @@ import {
     API_STAFF_DEACTIVATE,
     API_STAFF_PROCEED_ORDER,
     API_STAFF_PROCEED_ORDERED_SERVICE,
+    API_STAFF_UPDATE_ORDERED_SERVICE,
 } from '../common/Constant';
 import { ServiceSearchParamsData } from '../containers/ManagerContainer/CenterServicesContainer/ServiceListingContainer';
 import { ListResponse, PaginationModel, PaginationResponse, Response } from '../models/CommonModel';
@@ -33,6 +34,7 @@ import { CenterOrderedServiceModel } from '../models/Staff/CenterOrderedServiceM
 import { CenterStaffModel } from '../models/Staff/CenterStaffModel';
 import { CenterStaffResponse } from '../models/Staff/CenterStaffResponse';
 import { AssignDeliveryRequest } from '../models/Staff/StaffOrder/AssignDeliveryRequest';
+import { UpdateOrderDetailsRequest } from '../models/Staff/StaffOrder/UpdateOrderDetailsRequest';
 import instance from '../services/axios/AxiosInstance';
 import { OperatingDay } from '../types/OperatingDay';
 import dayjs from 'dayjs';
@@ -342,6 +344,26 @@ export const proceedOrderDetails = async (orderId: string, orderDetailId: number
             orderDetailId.toString(),
         ),
         {},
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        },
+    );
+    return response;
+};
+
+export const updateOrderDetails = async (
+    orderId: string,
+    orderDetailId: number,
+    request: UpdateOrderDetailsRequest,
+) => {
+    const response = await instance.put<Response<number>>(
+        API_STAFF_UPDATE_ORDERED_SERVICE.replace('${orderId}', orderId).replace(
+            '${orderDetailId}',
+            orderDetailId.toString(),
+        ),
+        request,
         {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('accessToken')}`,

@@ -14,6 +14,8 @@ import { RiUserLocationFill } from 'react-icons/ri';
 import { getLocation } from '../../../repositories/LocationRepository';
 import { AssignDeliveryRequest } from '../../../models/Staff/StaffOrder/AssignDeliveryRequest';
 import { assignOrderDelivery } from '../../../repositories/StaffRepository';
+import { DeliveryStatusMap } from '../../../mapping/DeliveryStatusMap';
+import { DeliveryBadgeStatusMap } from '../../../mapping/BadgeStatusMap';
 
 type Props = {
     orderDetails: CenterOrderDetailsModel;
@@ -133,10 +135,10 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                                             Chiều đi
                                             <div className="">
                                                 <Tag
-                                                    color="default"
+                                                    color={DeliveryBadgeStatusMap[tracking.status]}
                                                     style={{ fontSize: 14, paddingTop: 2, paddingBottom: 2, margin: 0 }}
                                                 >
-                                                    {tracking.status}
+                                                    {DeliveryStatusMap[tracking.status]}
                                                 </Tag>
                                             </div>
                                         </div>
@@ -180,8 +182,16 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                                 )}
                                 {tracking.type && (
                                     <div className="order__details bg-white rounded border border-wh-lightgray mb-6 md:min-h-[200px]">
-                                        <div className="provider__page--subtitle pt-4 px-6 font-semibold text-xl text-sub">
+                                        <div className="provider__page--subtitle pt-4 px-6 font-semibold text-xl text-sub flex justify-between items-baseline">
                                             Chiều về
+                                            <div className="">
+                                                <Tag
+                                                    color={DeliveryBadgeStatusMap[tracking.status]}
+                                                    style={{ fontSize: 14, paddingTop: 2, paddingBottom: 2, margin: 0 }}
+                                                >
+                                                    {DeliveryStatusMap[tracking.status]}
+                                                </Tag>
+                                            </div>
                                         </div>
                                         <div className="provider__page--content px-6 mt-2">
                                             <div className="provider__services--wrapper flex justify-between gap-6">
@@ -210,14 +220,17 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                                                     />
                                                 </div>
                                             </div>
-                                            {orderDetails.status.toLowerCase() === 'ready' && (
-                                                <div
-                                                    className="float-right mt-3"
-                                                    onClick={() => handleAssign(tracking.type ? 'deliver' : 'dropoff')}
-                                                >
-                                                    <Button type="primary">Vận chuyển</Button>
-                                                </div>
-                                            )}
+                                            {orderDetails.status.toLowerCase() === 'ready' &&
+                                                tracking.status.toLowerCase() === 'pending' && (
+                                                    <div
+                                                        className="float-right mt-3"
+                                                        onClick={() =>
+                                                            handleAssign(tracking.type ? 'deliver' : 'dropoff')
+                                                        }
+                                                    >
+                                                        <Button type="primary">Vận chuyển</Button>
+                                                    </div>
+                                                )}
                                         </div>
                                     </div>
                                 )}
@@ -230,10 +243,10 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                                             Chiều đi
                                             <div className="">
                                                 <Tag
-                                                    color="default"
+                                                    color={DeliveryBadgeStatusMap[tracking.status]}
                                                     style={{ fontSize: 14, paddingTop: 2, paddingBottom: 2, margin: 0 }}
                                                 >
-                                                    Đang chờ
+                                                    {DeliveryStatusMap[tracking.status]}
                                                 </Tag>
                                             </div>
                                         </div>
@@ -277,8 +290,21 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                                 )) ||
                                     (tracking.type && (
                                         <div className="order__details bg-white rounded border border-wh-lightgray mb-6 md:min-h-[200px]">
-                                            <div className="provider__page--subtitle pt-4 px-6 font-semibold text-xl text-sub">
+                                            <div className="provider__page--subtitle pt-4 px-6 font-semibold text-xl text-sub flex justify-between items-baseline">
                                                 Chiều về
+                                                <div className="">
+                                                    <Tag
+                                                        color={DeliveryBadgeStatusMap[tracking.status]}
+                                                        style={{
+                                                            fontSize: 14,
+                                                            paddingTop: 2,
+                                                            paddingBottom: 2,
+                                                            margin: 0,
+                                                        }}
+                                                    >
+                                                        {DeliveryStatusMap[tracking.status]}
+                                                    </Tag>
+                                                </div>
                                             </div>
                                             <div className="provider__page--content px-6 mt-2">
                                                 <div className="provider__services--wrapper flex justify-between gap-6">
@@ -296,7 +322,7 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                                                     <div className="w-[1.5px] h-[80px] rounded-full overflow-hidden bg-wh-gray"></div>
                                                     <div className="delivery__info--destination flex-grow">
                                                         <div className="font-medium text-lg">
-                                                            <RiUserLocationFill className="inline" /> Địa chỉ lấy đơn
+                                                            <RiUserLocationFill className="inline" /> Địa chỉ trả đơn
                                                         </div>
                                                         <div className="text-sub text-base">{tracking.locationId}</div>
                                                     </div>
@@ -307,16 +333,17 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                                                         />
                                                     </div>
                                                 </div>
-                                                {orderDetails.status.toLowerCase() === 'ready' && (
-                                                    <div
-                                                        className="float-right mt-3"
-                                                        onClick={() =>
-                                                            handleAssign(tracking.type ? 'deliver' : 'dropoff')
-                                                        }
-                                                    >
-                                                        <Button type="primary">Vận chuyển</Button>
-                                                    </div>
-                                                )}
+                                                {orderDetails.status.toLowerCase() === 'ready' &&
+                                                    tracking.status.toLowerCase() === 'pending' && (
+                                                        <div
+                                                            className="float-right mt-3"
+                                                            onClick={() =>
+                                                                handleAssign(tracking.type ? 'deliver' : 'dropoff')
+                                                            }
+                                                        >
+                                                            <Button type="primary">Vận chuyển</Button>
+                                                        </div>
+                                                    )}
                                             </div>
                                         </div>
                                     ))}

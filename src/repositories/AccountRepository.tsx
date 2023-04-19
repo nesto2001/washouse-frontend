@@ -8,43 +8,64 @@ import {
 } from '../common/Constant';
 import { AccountModel } from '../models/Account/AccountModel';
 import { AccountResponse } from '../models/Account/AccountResponse';
-import { Response } from '../models/CommonModel';
+import { CustomerAccountModel } from '../models/Account/CustomerAccountModel';
+import { CustomerAccountResponse } from '../models/Account/CustomerAccountResponse';
+import { PaginationResponse, Response } from '../models/CommonModel';
 import { UpdateAddressRequest } from '../models/Customer/UpdateAddressRequest';
 import { UpdateAvatarRequest } from '../models/Customer/UpdateAvatarRequest';
 import { UpdateProfileRequest } from '../models/Customer/UpdateCustomerRequest';
+import { UserModel } from '../models/User/UserModel';
+import { UserResponse } from '../models/User/UserResponse';
 import { WalletModel } from '../models/Wallet/WalletModel';
 import { WalletResponse } from '../models/Wallet/WalletResponse';
 import instance from '../services/axios/AxiosInstance';
 
-export const getUserProfile = async (id: number): Promise<AccountModel> => {
-    const { data } = await instance.get<Response<AccountResponse>>(
+export const getUserProfile = async (id: number): Promise<CustomerAccountModel> => {
+    const { data } = await instance.get<Response<CustomerAccountResponse>>(
         API_ACCOUNT_DETAILS.replace('${id}', id.toString()),
         {},
     );
     return {
-        accountId: data.data.id,
-        avatar: data.data.profilePic,
-        email: data.data.email,
-        fullName: data.data.fullName,
+        accountId: data.data.accountId,
+        address: {
+            addressString: data.data.address.addressString,
+            ward: {
+                wardId: data.data.address.ward.wardId,
+                wardName: data.data.address.ward.wardName,
+                district: {
+                    districtId: data.data.address.ward.district.districtId,
+                    districtName: data.data.address.ward.district.districtName,
+                },
+            },
+            latitude: data.data.address.latitude,
+            longitude: data.data.address.longitude,
+        },
+        addressString: data.data.addressString,
         dob: data.data.dob,
+        email: data.data.email,
+        fullname: data.data.fullname,
+        gender: data.data.gender,
+        id: data.data.id,
         phone: data.data.phone,
-        locationId: data.data.locationId,
+        profilePic: data.data.profilePic,
+        walletId: data.data.walletId,
     };
 };
 
 export const getAllAccounts = async (): Promise<AccountModel[]> => {
-    const { data } = await instance.get<AccountResponse[]>(API_ACCOUNT, {
+    const { data } = await instance.get<PaginationResponse<AccountResponse>>(API_ACCOUNT, {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
     });
-    return data.map((item): AccountModel => {
+    return data.data.items.map((item): AccountModel => {
         return {
-            accountId: item.id,
-            avatar: item.profilePic,
+            id: item.id,
+            profilePic: item.profilePic,
             email: item.email,
+            gender: item.gender,
+            isAdmin: item.isAdmin,
             fullName: item.fullName,
             dob: item.dob,
             phone: item.phone,
-            locationId: item.locationId,
             status: item.status,
         };
     });

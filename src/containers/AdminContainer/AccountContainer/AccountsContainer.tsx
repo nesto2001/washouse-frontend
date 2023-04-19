@@ -1,16 +1,17 @@
-import { Table } from 'antd';
+import { Table, Tag, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
 import { AccountModel } from '../../../models/Account/AccountModel';
 import { getAllAccounts } from '../../../repositories/AccountRepository';
 import { ColumnsType } from 'antd/es/table';
+import { FaPowerOff } from 'react-icons/fa';
 
 type Props = {};
 
 const columns: ColumnsType<AccountModel> = [
     {
-        title: 'Mã',
-        dataIndex: 'id',
-        key: 'id',
+        title: 'STT',
+        dataIndex: 'stt',
+        key: 'stt',
         align: 'center',
         render: (_, text, index) => <strong>{index + 1}</strong>,
     },
@@ -30,11 +31,44 @@ const columns: ColumnsType<AccountModel> = [
         key: 'email',
     },
     {
+        title: 'Ngày sinh',
+        dataIndex: 'dob',
+        key: 'dob',
+        width: 120,
+    },
+    {
+        title: 'Vai trò',
+        dataIndex: 'isAdmin',
+        key: 'role',
+        align: 'center',
+        render: (value) => {
+            return <div className="">{value ? 'Quản trị viên' : 'Người dùng'}</div>;
+        },
+    },
+    {
+        title: 'Trạng thái',
+        dataIndex: 'status',
+        key: 'status',
+        align: 'center',
+        render: (value: boolean) => {
+            return <Tag color={value ? 'success' : 'error'}>{value ? 'Hoạt động' : 'Không hoạt động'}</Tag>;
+        },
+    },
+    {
         title: 'Thao tác',
         dataIndex: '',
-        key: 'x',
+        key: 'action',
+        align: 'center',
         render: (_, record) => {
-            return record.status ? <a className="text-red">Deactivate</a> : <a className="text-primary">Activate</a>;
+            return record.status ? (
+                <Tooltip title="Hủy kích hoạt" className="text-red hover:opacity-70 cursor-pointer text-center">
+                    <FaPowerOff className="inline-block" />
+                </Tooltip>
+            ) : (
+                <Tooltip title="Kích hoạt" className="text-green hover:opacity-70 cursor-pointer text-center">
+                    <FaPowerOff className="inline-block" />
+                </Tooltip>
+            );
         },
     },
 ];

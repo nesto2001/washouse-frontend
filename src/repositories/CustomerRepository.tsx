@@ -1,11 +1,8 @@
-import { API_ACCOUNT_DETAILS, API_CUSTOMER_ORDER } from '../common/Constant';
-import { AccountModel } from '../models/Account/AccountModel';
-import { AccountResponse } from '../models/Account/AccountResponse';
+import { API_CUSTOMER_ORDER } from '../common/Constant';
 import { PaginationModel, PaginationResponse } from '../models/CommonModel';
 import { CustomerOrderModel } from '../models/Customer/CustomerOrderModel';
 import { CustomerOrderResponse } from '../models/Customer/CustomerOrderResponse';
 import { CustomerOrderedServiceModel } from '../models/Customer/CustomerOrderedServiceModel';
-import { CenterOrderedServiceModel } from '../models/Staff/CenterOrderedServiceModel';
 import instance from '../services/axios/AxiosInstance';
 
 export const getCustomerOrders = async ({
