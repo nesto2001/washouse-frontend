@@ -29,7 +29,6 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
     const [form] = Form.useForm();
     const [isLarge, setIsLarge] = useState(false);
     const stickyDivRef = useRef<HTMLDivElement>(null);
-    const contentRef = useRef<HTMLDivElement>(null);
 
     const trackings = orderDetails.orderDeliveries;
 

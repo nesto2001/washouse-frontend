@@ -112,13 +112,6 @@ const CenterOrderListingContainer = (props: Props) => {
         },
     ];
 
-    if (isLoading) {
-        return <OthersSpin />;
-    }
-
-    if (isError) {
-        return <Empty description="Không có đơn hàng nào" className="mb-5" />;
-    }
 
     return (
         <>
