@@ -47,6 +47,8 @@ export const getFeedbacks = async (serviceId: number): Promise<PaginationModel<F
                 serviceName: item.serviceName,
                 createDate: dayjs(item.createdDate, 'DD-MM-YYYY HH:mm:ss'),
                 replyDate: dayjs(item.replyDate, 'DD-MM-YYYY HH:mm:ss'),
+                accountAvatar: item.accountAvatar,
+                accountName: item.accountName,
             };
         }),
     };

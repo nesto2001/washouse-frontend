@@ -512,14 +512,12 @@ const CenterServiceContainer = (props: Props) => {
                                                         <div className="feedback__info__user flex justify-between w-full">
                                                             <div className="flex gap-4">
                                                                 <img
-                                                                    src={
-                                                                        'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
-                                                                    }
-                                                                    className="rounded-full w-12"
+                                                                    src={item.accountAvatar}
+                                                                    className="rounded-full w-12 h-12"
                                                                 ></img>
                                                                 <div className="flex flex-col justify-center">
                                                                     <div className="font-bold text-base">
-                                                                        Lê Thành Đạt
+                                                                        {item.accountName}
                                                                     </div>
                                                                     <div className="rating--stars mt-2">
                                                                         <RatingStars

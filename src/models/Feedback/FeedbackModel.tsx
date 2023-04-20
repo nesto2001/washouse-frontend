@@ -10,6 +10,8 @@ export type FeedbackModel = {
     serviceId: number;
     serviceName: string;
     replyMessage: string;
+    accountName: string;
+    accountAvatar: string;
     createDate: dayjs.Dayjs;
     replyDate: dayjs.Dayjs;
 };

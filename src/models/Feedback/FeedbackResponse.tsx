@@ -12,4 +12,6 @@ export type FeedbackResponse = {
     replyMessage: string;
     replyBy: string;
     replyDate: string;
+    accountName: string;
+    accountAvatar: string;
 };
