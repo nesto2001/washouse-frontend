@@ -1,8 +1,8 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import WHButton from '../../components/Button';
 import Input from '../../components/Input/Input';
 import Google from '../../assets/images/google.png';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { BiErrorAlt } from 'react-icons/bi';
 import { getMe, login, loginStaff } from '../../repositories/AuthRepository';
@@ -11,6 +11,10 @@ import { Form } from 'antd';
 type Props = {};
 
 const StaffLoginContainer = () => {
+    let { state } = useLocation();
+
+    const backUrl = state && state.backUrl !== null ? state.backUrl : '';
+
     const [loginForm, setLoginForm] = useState({
         phone: '',
         password: '',
@@ -27,7 +31,6 @@ const StaffLoginContainer = () => {
                 return await loginStaff({ phone: loginForm.phone.trim(), password: loginForm.password.trim() });
             };
             fetchData().then((res) => {
-                console.log(res);
                 if (res.status == 200) {
                     localStorage.setItem('accessToken', res.data.data.accessToken);
                     localStorage.setItem('refreshToken', res.data.data.refreshToken);
@@ -35,12 +38,18 @@ const StaffLoginContainer = () => {
                         return await getMe();
                     };
                     fetchData().then((res) => {
+                        console.log(backUrl);
                         setIsFetching(false);
                         localStorage.setItem('currentUser', JSON.stringify(res));
-                        if (res.roleType.toLowerCase() === 'admin') {
+                        if (backUrl) {
+                            console.log(backUrl);
+                            navigate(backUrl);
+                        } else if (res.roleType.toLowerCase() === 'admin') {
                             navigate('/admin/dashboard');
-                        } else {
+                        } else if (res.roleType.toLowerCase() === 'manager') {
                             navigate('/provider/dashboard');
+                        } else {
+                            navigate('/provider/staff/dashboard');
                         }
                     });
                 } else {

@@ -400,11 +400,18 @@ export const assignStaff = async (email: string, phone: string) => {
 };
 
 export const verifyStaff = async (code: string) => {
-    const response = await instance.put<Response<number>>(API_MANAGER_VERIFY_STAFF, code, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+    const response = await instance.put<Response<number>>(
+        API_MANAGER_VERIFY_STAFF,
+        {},
+        {
+            params: {
+                code: code,
+            },
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
         },
-    });
+    );
     return response;
 };
 

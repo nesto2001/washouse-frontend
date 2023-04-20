@@ -4,7 +4,7 @@ import { Button, Form, Input, Modal, Tag, message } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { CenterStaffModel } from '../../models/Staff/CenterStaffModel';
 import dayjs from 'dayjs';
-import { activateStaff, deactivateStaff } from '../../repositories/StaffRepository';
+import { activateStaff, assignStaff, deactivateStaff } from '../../repositories/StaffRepository';
 
 type Props = {
     centerStaff?: CenterStaffModel[];
@@ -18,15 +18,10 @@ type StaffFormData = {
 
 const Stafflist = ({ centerStaff, forceUpdate }: Props) => {
     const [form] = Form.useForm();
-    const [step, setStep] = useState(0);
 
-    // const [promotions, setPromotions] = useState<CenterStaffModel[]>([]);
     const [modalVisibility, setModalVisibility] = useState(false);
 
     const [formData, setFormData] = useState<StaffFormData>();
-
-    const [otp, setOtp] = useState('');
-    const onOtpChange = (value: string) => setOtp(value);
 
     const columns: ColumnsType<CenterStaffModel> = [
         {
@@ -110,13 +105,11 @@ const Stafflist = ({ centerStaff, forceUpdate }: Props) => {
     ];
 
     const onFinish = (values: StaffFormData) => {
-        setFormData({ phone: values.phone, email: values.email });
-        setStep(step + 1);
+        assignStaff(values.email, values.phone).then((res) => console.log(res));
     };
 
     const handleCancel = () => {
         setModalVisibility(false);
-        setStep(0);
     };
 
     const onFinishFailed = (errorInfo: any) => {
@@ -144,7 +137,7 @@ const Stafflist = ({ centerStaff, forceUpdate }: Props) => {
                         <Button key="key" onClick={handleCancel} danger className="bg-transparent">
                             Hủy
                         </Button>
-                        <Button key="next" type="primary" htmlType="submit">
+                        <Button key="next" type="primary" htmlType="submit" onClick={() => form.submit()}>
                             Xác nhận
                         </Button>
                     </>
