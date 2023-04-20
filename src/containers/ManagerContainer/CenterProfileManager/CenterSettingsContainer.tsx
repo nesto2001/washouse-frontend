@@ -28,6 +28,7 @@ const settings: SettingsType[] = [
 const CenterSettingsContainer = (props: Props) => {
     const [myCenter, setMyCenter] = useState<ManagerCenterModel>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [popupLoading, setPopupLoading] = useState<boolean>(false);
     const [switchOn, setSwitchOn] = useState<boolean>(false);
     const navigate = useNavigate();
     const [modal, contextHolder] = Modal.useModal();
@@ -40,19 +41,20 @@ const CenterSettingsContainer = (props: Props) => {
                 setIsLoading(false);
                 setSwitchOn(
                     res.status.toLowerCase() === 'active'
-                        ? true
-                        : res.status.toLowerCase() === 'inactive'
                         ? false
-                        : false,
+                        : res.status.toLowerCase() === 'inactive'
+                        ? true
+                        : true,
                 );
             })
             .catch();
     }, []);
 
-    const handleDeactivate = () => {};
-
+    const handleDeactivate = () => {
+        setPopupLoading(true);
+    };
     const handleCancel = () => {
-        return;
+        setSwitchOn(switchOn);
     };
 
     const handleSwitchToggle = () => {
@@ -71,9 +73,9 @@ const CenterSettingsContainer = (props: Props) => {
             maskClosable: true,
             onOk: handleDeactivate,
             onCancel: handleCancel,
-            closable: true,
+            confirmLoading: popupLoading,
         };
-        modal.info(content);
+        modal.confirm(content);
     };
 
     if (isLoading) {

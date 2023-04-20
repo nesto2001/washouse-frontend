@@ -12,6 +12,7 @@ import './Sidebar.scss';
 import { AccountModel } from '../../models/Account/AccountModel';
 import { getUserProfile } from '../../repositories/AccountRepository';
 import { CustomerAccountModel } from '../../models/Account/CustomerAccountModel';
+import { UserModel } from '../../models/User/UserModel';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -143,18 +144,19 @@ const UserSidebar = ({ basis }: UserSidebarProps) => {
 
     useEffect(() => {
         const userJson = localStorage.getItem('currentUser');
-        const user: AccountModel = userJson && JSON.parse(userJson);
+        const user: UserModel = userJson && JSON.parse(userJson);
 
         const fetchData = async () => {
-            return await getUserProfile(user.id);
+            return await getUserProfile(user.accountId);
         };
         fetchData()
             .then((res) => {
                 setUserProfile(res);
             })
-            .catch(() => {
+            .catch((error) => {
+                console.log(error);
                 message.error('Vui lòng đăng nhập để xem trang này');
-                navigate('/login');
+                // navigate('/login');
             });
     }, []);
 

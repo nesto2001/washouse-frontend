@@ -11,9 +11,9 @@ const API_CHANGE_PASSWORD = '/api/accounts/me/change-password';
 
 //ACCOUNT API
 const API_ACCOUNT = '/api/accounts/';
-const API_ACCOUNT_DETAILS = '/api/accounts/${id}';
-const API_ACCOUNT_PROFILE = '/api/accounts/profile';
-const API_ACCOUNT_PROFILE_PIC = '/api/accounts/profile-picture';
+const API_ACCOUNT_DETAILS = '/api/customers/account/${id}';
+const API_ACCOUNT_PROFILE = '/api/accounts/profile'; //PUT
+const API_ACCOUNT_PROFILE_PIC = '/api/accounts/profile-picture'; //PUT
 const API_ACCOUNT_PROFILE_ADDRESS = '/api/accounts/address';
 const API_ACCOUNT_WALLET = '/api/accounts/my-wallet';
 

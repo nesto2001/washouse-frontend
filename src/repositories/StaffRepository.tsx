@@ -475,3 +475,16 @@ export const deactivateStaff = async (id: number) => {
     );
     return response;
 };
+
+export const deactivateMyCenter = async (id: number) => {
+    const response = await instance.put(
+        API_STAFF_DEACTIVATE.replace('${id}', id.toString()),
+        {},
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        },
+    );
+    return response;
+};

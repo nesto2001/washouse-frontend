@@ -14,7 +14,8 @@ import { RcFile } from 'antd/es/upload';
 import { uploadSingle } from '../../repositories/MediaRepository';
 import dayjs from 'dayjs';
 import Placeholder from '../../assets/images/placeholder.png';
-import { updateAccountProfile } from '../../repositories/AccountRepository';
+import { getUserProfile, updateAccountProfile } from '../../repositories/AccountRepository';
+import { CustomerAccountModel } from '../../models/Account/CustomerAccountModel';
 
 type UpdateRequestData = {
     fullName?: string;
@@ -24,7 +25,7 @@ type UpdateRequestData = {
 };
 
 const UpdateProfileContainer = () => {
-    const [userProfile, setUserProfile] = useState<UserModel>();
+    const [userProfile, setUserProfile] = useState<CustomerAccountModel>();
     const [isLoading, setIsLoading] = useState(true);
     const [updateFormData, setUpdateFormData] = useState<UpdateRequestData>();
 
@@ -47,7 +48,7 @@ const UpdateProfileContainer = () => {
         userProfile &&
             updateAccountProfile({
                 dob: updateFormData?.dob ?? userProfile.dob ?? undefined,
-                fullName: updateFormData?.fullName ?? userProfile.name,
+                fullName: updateFormData?.fullName ?? userProfile.fullname,
                 gender: updateFormData?.gender ?? 0,
             })
                 .then(() => {
@@ -72,18 +73,18 @@ const UpdateProfileContainer = () => {
 
     useEffect(() => {
         const userJson = localStorage.getItem('currentUser');
-        const user: AccountModel = userJson && JSON.parse(userJson);
+        const user: UserModel = userJson && JSON.parse(userJson);
 
         const fetchData = async () => {
-            return await getMe();
+            return await getUserProfile(user.accountId);
         };
         fetchData()
             .then((res) => {
                 setUpdateFormData({
                     dob: res.dob,
-                    fullName: res.name,
+                    fullName: res.fullname,
                     gender: res.gender,
-                    avatar: res.avatar,
+                    avatar: res.profilePic,
                 });
                 setUserProfile(res);
                 setIsLoading(false);
@@ -158,7 +159,7 @@ const UpdateProfileContainer = () => {
                 </div>
                 <div className="mx-6 bg-wh-gray w-[0.5px]"></div>
                 <div className="userprofile__update--avatar pl-10 pr-2">
-                    <UpdateAvatarContainer currentImage={userProfile?.avatar ?? Placeholder} />
+                    <UpdateAvatarContainer currentImage={userProfile?.profilePic ?? Placeholder} />
                 </div>
             </div>
         </div>
