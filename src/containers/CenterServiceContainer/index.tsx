@@ -76,7 +76,6 @@ const CenterServiceContainer = (props: Props) => {
             });
     }, [centerId, id]);
     useEffect(() => {
-        setIsLoading(true);
         service &&
             getFeedbacks(service?.id)
                 .then((res) => {
@@ -84,7 +83,6 @@ const CenterServiceContainer = (props: Props) => {
                 })
                 .catch((error) => {
                     console.error(error);
-                    setIsLoading(false);
                 });
     }, [service]);
 
