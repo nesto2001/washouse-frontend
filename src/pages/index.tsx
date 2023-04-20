@@ -37,6 +37,7 @@ export { default as StaffDayTimelinePage } from './StaffPage/StaffCalendar/Staff
 export { default as StaffOrderDetailsPage } from './StaffPage/StaffOrder/StaffOrderDetailsPage';
 export { default as StaffVerificationPage } from './StaffPage/StaffVerification/StaffVerificationPage';
 export { default as StaffDeliveryPage } from './StaffPage/StaffDelivery/StaffDeliveryPage';
+export { default as StaffFeedbacksPage } from './StaffPage/StaffFeedbacks/StaffFeedbacksPage';
 
 //admin
 export { default as AdminDashboardPage } from './AdminPage/AdminDashboardPage';

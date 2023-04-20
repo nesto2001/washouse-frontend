@@ -103,7 +103,7 @@ const CenterCalendarContainer = (props: Props) => {
                             <li key={item.content} className="mb-1">
                                 <Link to={`/provider/orders/${item.id}`}>
                                     <Badge
-                                        status={BadgeStatusMap[item.status] as BadgeProps['status']}
+                                        status={BadgeStatusMap[item.status.toLowerCase()] as BadgeProps['status']} //check
                                         text={item.content}
                                     />
                                 </Link>

@@ -41,7 +41,7 @@ const Stafflist = ({ centerStaff, forceUpdate }: Props) => {
             dataIndex: 'dob',
             align: 'center',
             key: 'dob',
-            render: (dob: dayjs.Dayjs) => <>{dob.format('DD-MM-YYYY')}</>,
+            render: (dob: dayjs.Dayjs) => <>{dob ? dob.format('DD-MM-YYYY') : '-'}</>,
         },
         {
             title: 'Số điện thoại',

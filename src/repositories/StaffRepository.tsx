@@ -10,6 +10,7 @@ import {
     API_STAFF_ACTIVATE,
     API_STAFF_CANCEL_ORDER,
     API_STAFF_DEACTIVATE,
+    API_STAFF_FEEDBACKS,
     API_STAFF_PROCEED_ORDER,
     API_STAFF_PROCEED_ORDERED_SERVICE,
     API_STAFF_UPDATE_ORDERED_SERVICE,
@@ -33,6 +34,8 @@ import { CenterOrderTrackingModel } from '../models/Staff/CenterOrderTrackingMod
 import { CenterOrderedServiceModel } from '../models/Staff/CenterOrderedServiceModel';
 import { CenterStaffModel } from '../models/Staff/CenterStaffModel';
 import { CenterStaffResponse } from '../models/Staff/CenterStaffResponse';
+import { CenterFeedbackModel } from '../models/Staff/StaffFeedback/CenterFeedbackModel';
+import { CenterFeedbackResponse } from '../models/Staff/StaffFeedback/CenterFeedbackResponse';
 import { AssignDeliveryRequest } from '../models/Staff/StaffOrder/AssignDeliveryRequest';
 import { UpdateOrderDetailsRequest } from '../models/Staff/StaffOrder/UpdateOrderDetailsRequest';
 import instance from '../services/axios/AxiosInstance';
@@ -430,7 +433,7 @@ export const getAllStaff = async (): Promise<PaginationModel<CenterStaffModel>> 
         items: data.data.items.map((item): CenterStaffModel => {
             return {
                 id: item.id,
-                dob: dayjs(item.dob),
+                dob: item.dob ? dayjs(item.dob, 'DD-MM-YYYY') : null,
                 email: item.email,
                 fullname: item.fullName,
                 idNumber: item.idNumber,
@@ -494,4 +497,29 @@ export const deactivateMyCenter = async (id: number) => {
         },
     );
     return response;
+};
+
+export const getCenterFeedbacks = async (): Promise<CenterFeedbackModel[]> => {
+    const { data } = await instance.get<PaginationResponse<CenterFeedbackResponse>>(API_STAFF_FEEDBACKS, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    return data.data.items.map((item): CenterFeedbackModel => {
+        return {
+            id: item.id,
+            rating: item.rating,
+            content: item.content,
+            orderId: item.orderId,
+            centerId: item.centerId,
+            centerName: item.centerName,
+            serviceId: item.serviceId,
+            serviceName: item.serviceName,
+            createdBy: item.createdBy,
+            createdDate: item.createdDate,
+            replyBy: item.replyBy,
+            replyMessage: item.replyMessage,
+            replyDate: item.replyDate,
+        };
+    });
 };

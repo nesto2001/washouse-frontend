@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 export type CenterStaffModel = {
     id: number;
     fullname: string;
-    dob: dayjs.Dayjs;
+    dob: dayjs.Dayjs | null;
     phone: string;
     email: string;
     status: boolean;

@@ -51,6 +51,7 @@ import {
     CustomerWalletPage,
     AdminCenterDetailsPage,
     StaffDeliveryPage,
+    StaffFeedbacksPage,
 } from '../pages/';
 import AdminCenterRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterRequestPage';
 import AdminPostPage from '../pages/AdminPage/AdminPost/AdminPostPage';
@@ -256,6 +257,11 @@ const publicRoutes: Array<RouteProps> = [
         path: '/provider/delivery',
         layout: ManagerDashboardLayout,
         component: StaffDeliveryPage,
+    },
+    {
+        path: '/provider/settings/center/rating',
+        layout: ManagerDashboardLayout,
+        component: StaffFeedbacksPage,
     },
     {
         path: '/admin/dashboard',

@@ -16,23 +16,25 @@ const CenterOrderDetailsPayment = ({ orderPayment }: Props) => {
     return (
         <div className="grid grid-cols-2 text-base items-baseline mb-6">
             <div className="font-medium">Tổng đơn hàng</div>
-            <div className="text-right text-primary font-bold text-xl">{formatCurrency(orderPayment.orderTotal)}</div>
+            <div className="text-right text-primary font-bold text-xl">
+                {formatCurrency(orderPayment.orderTotal ?? 0)}
+            </div>
             <div className="font-medium">Phí vận chuyển</div>
             <div className="text-right text-primary font-bold text-xl">
-                {formatCurrency(orderPayment.orderDeliveryPrice)}
+                {formatCurrency(orderPayment.orderDeliveryPrice ?? 0)}
             </div>
             <div className="font-medium">Phí nền tảng</div>
             <div className="text-right text-primary font-bold text-xl">
-                {formatCurrency(orderPayment.payment.platformFee)}
+                {formatCurrency(orderPayment.payment.platformFee ?? 0)}
             </div>
             <div className="font-medium">Chiết khấu</div>
             <div className="text-right text-primary font-bold text-xl">
-                - {formatCurrency(orderPayment.orderTotal * orderPayment.payment.discount)}
+                - {formatCurrency((orderPayment.orderTotal ?? 0) * (orderPayment.payment.discount ?? 0))}
             </div>
             <hr className="col-span-2 my-3" />
             <div className="font-medium text-lg">Tổng thanh toán</div>
             <div className="text-right text-primary font-bold text-2xl">
-                {formatCurrency(orderPayment.payment.total)}
+                {formatCurrency(orderPayment.payment.total ?? 0)}
             </div>
         </div>
     );
