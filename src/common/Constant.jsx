@@ -95,6 +95,7 @@ const API_NOTIFICATION_READ = '/api/notifications/read';
 
 const API_FEEDBACK_ORDER = '/api/feedbacks/orders';
 const API_FEEDBACK_SERVICE = '/api/feedbacks/services';
+const API_FEEDBACK_SERVICE_ID = '/api/feedbacks/services/${serviceId}';
 
 //REGEX
 const RE_DIGIT = new RegExp(/^\d+$/);
@@ -126,6 +127,7 @@ export {
     API_MANAGER_CENTER_SERVICE,
     API_CHANGE_PASSWORD,
     API_MANAGER_CENTER_ORDER,
+    API_FEEDBACK_SERVICE_ID,
     API_LOCATION_DETAILS,
     API_MANAGER_CENTER,
     API_STAFF,

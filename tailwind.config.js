@@ -18,6 +18,8 @@ module.exports = {
             'ws-red': '#b60000',
             'ws-black': '#424242',
             'ws-primary-hover': '#0236d1',
+            'ws-light-gray': '#f2f3f3',
+            'ws-gray': '#0236d1',
         },
     },
     plugins: [require('@tailwindcss/line-clamp')],

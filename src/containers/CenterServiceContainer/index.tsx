@@ -1,4 +1,4 @@
-import { Button, message, Modal, Space } from 'antd';
+import { Button, Image, List, message, Modal, Space } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import React, { useEffect, useState } from 'react';
 import { FaPhoneAlt, FaRegClock } from 'react-icons/fa';
@@ -24,6 +24,9 @@ import { CartItem } from '../../types/CartType/CartItem';
 import { calculatePrice, getRating, getWeightUnitPrice, splitDescription } from '../../utils/CommonUtils';
 import { formatCurrency } from '../../utils/FormatUtils';
 import { compareTime, getToday } from '../../utils/TimeUtils';
+import { getFeedbacks } from '../../repositories/FeedbackRepository';
+import { FeedbackModel } from '../../models/Feedback/FeedbackModel';
+import { BsReplyFill } from 'react-icons/bs';
 
 type Props = {};
 
@@ -40,6 +43,7 @@ const CenterServiceContainer = (props: Props) => {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [serviceList, setServiceList] = useState<ServiceDetailsModel[]>();
     const [isPlacingOrder, setIsPlacingOrder] = useState<boolean>(false);
+    const [feedbacks, setFeedbacks] = useState<FeedbackModel[]>();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -71,6 +75,18 @@ const CenterServiceContainer = (props: Props) => {
                 setIsLoading(false);
             });
     }, [centerId, id]);
+    useEffect(() => {
+        setIsLoading(true);
+        service &&
+            getFeedbacks(service?.id)
+                .then((res) => {
+                    setFeedbacks(res.items);
+                })
+                .catch((error) => {
+                    console.error(error);
+                    setIsLoading(false);
+                });
+    }, [service]);
 
     const dispatch = useDispatch();
 
@@ -442,31 +458,103 @@ const CenterServiceContainer = (props: Props) => {
                         </div>
                     </div>
                     <div className="service__details--others mt-4 mb-20 md:w-[820px]">
-                        <h3 className="text-xl font-bold pl-9">Dịch vụ khác</h3>
-                        <hr className="mt-2" />
                         {serviceList && (
-                            <Carousel
-                                showItem={serviceList.length < 3 ? serviceList.length : 3}
-                                items={serviceList.map((s) => {
-                                    return (
-                                        <ServiceCard
-                                            key={s.id}
-                                            id={s.id}
-                                            thumbnail={s.image}
-                                            title={s.name}
-                                            description={splitDescription(s.description, 100)}
-                                            price={s.price ?? undefined}
-                                            minPrice={s.minPrice}
-                                            action={true}
-                                            actionContent="Xem dịch vụ"
-                                            actionType="primary"
-                                            minHeight="100px"
-                                            cardHeight="432px"
-                                            actionLink={`/centers/center/${center.id}/service/${s.id}`}
-                                        ></ServiceCard>
-                                    );
-                                })}
-                            ></Carousel>
+                            <>
+                                <h3 className="text-xl font-bold pl-9">Dịch vụ khác</h3>
+                                <hr className="mt-2" />
+
+                                <Carousel
+                                    showItem={serviceList.length < 3 ? serviceList.length : 3}
+                                    items={serviceList.map((s) => {
+                                        return (
+                                            <ServiceCard
+                                                key={s.id}
+                                                id={s.id}
+                                                thumbnail={s.image}
+                                                title={s.name}
+                                                description={splitDescription(s.description, 100)}
+                                                price={s.price ?? undefined}
+                                                minPrice={s.minPrice}
+                                                action={true}
+                                                actionContent="Xem dịch vụ"
+                                                actionType="primary"
+                                                minHeight="100px"
+                                                cardHeight="432px"
+                                                actionLink={`/centers/center/${center.id}/service/${s.id}`}
+                                            ></ServiceCard>
+                                        );
+                                    })}
+                                ></Carousel>
+                            </>
+                        )}
+                    </div>
+                    <div className="service__details--others mt-4 mb-20 md:w-[820px]">
+                        {(feedbacks?.length ?? 0) > 0 ? (
+                            <>
+                                <h3 className="text-xl font-bold pl-9">Đánh giá</h3>
+                                <hr className="my-2" />
+                                <div className="flex flex-col gap-10">
+                                    <List
+                                        className="w-full mb-8"
+                                        itemLayout="horizontal"
+                                        dataSource={feedbacks?.sort((a, b) =>
+                                            b.createDate.isAfter(a.createDate) ? 1 : -1,
+                                        )}
+                                        pagination={{
+                                            align: 'end',
+                                            pageSize: 5,
+                                            showSizeChanger: false,
+                                        }}
+                                        renderItem={(item, index) => (
+                                            <List.Item className="cursor-pointer hover:bg-gray-50">
+                                                <div className="feedback__item flex flex-col gap-4 w-full">
+                                                    <div className="feedback__info flex">
+                                                        <div className="feedback__info__user flex justify-between w-full">
+                                                            <div className="flex gap-4">
+                                                                <img
+                                                                    src={
+                                                                        'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
+                                                                    }
+                                                                    className="rounded-full w-12"
+                                                                ></img>
+                                                                <div className="flex flex-col justify-center">
+                                                                    <div className="font-bold text-base">
+                                                                        Lê Thành Đạt
+                                                                    </div>
+                                                                    <div className="rating--stars mt-2">
+                                                                        <RatingStars
+                                                                            rating={item.rating ?? 0}
+                                                                            starSize={20}
+                                                                        ></RatingStars>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div>{item.createDate.format('DD/MM/YYYY')}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div>{item.content}</div>
+                                                    {item.replyMessage && (
+                                                        <div className="flex w-full justify-between bg-ws-light-gray rounded-lg p-2">
+                                                            <div className="flex gap-6">
+                                                                <BsReplyFill className="text-lg" />
+                                                                <div>
+                                                                    <div className="font-semibold">
+                                                                        Phản hồi của chủ cửa hàng:
+                                                                    </div>
+                                                                    <div>{item.replyMessage}</div>
+                                                                </div>
+                                                            </div>
+                                                            <div>{item.replyDate.format('DD/MM/YYYY')}</div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </List.Item>
+                                        )}
+                                    />
+                                </div>
+                            </>
+                        ) : (
+                            <></>
                         )}
                     </div>
                 </div>
