@@ -1,11 +1,12 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import WHButton from '../../components/Button';
 import Input from '../../components/Input/Input';
 import Google from '../../assets/images/google.png';
 import { Link, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { BiErrorAlt } from 'react-icons/bi';
-import { getMe, login } from '../../repositories/AuthRepository';
+import { getMe, login, loginGoogle } from '../../repositories/AuthRepository';
+import GoogleAuth from '../../components/Google/GoogleAuth';
 
 type Props = {};
 
@@ -48,6 +49,57 @@ const LoginContainer = () => {
             setIsFetching(false);
         }
     };
+
+    const handleGoogleLogin = () => {
+        const redirectUri = `${window.location.origin}/login`;
+        const scope =
+            'openid https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile';
+        const clientId = '1020768387339-ilabkav1tjbbeclvqfvlu5as9s1fdnog.apps.googleusercontent.com';
+
+        const url =
+            `https://accounts.google.com/o/oauth2/auth?` +
+            `client_id=${clientId}&` +
+            `redirect_uri=${redirectUri}&` +
+            `response_type=code&` +
+            `scope=${scope}`;
+        // window.open(url, '', 'width=500,height=700');
+        window.location = url as unknown as Location;
+    };
+
+    const handleGoogleAuthRedirect = async () => {
+        const searchParams = new URLSearchParams(window.location.search);
+        const authCode = searchParams.get('code');
+        const redirectUri = `${window.location.origin}/login`;
+
+        if (!authCode) {
+            console.error('No authorization code found in URL');
+            return;
+        }
+
+        loginGoogle({ code: authCode, redirectUri: redirectUri }).then((res) => {
+            if (res.status === 200 && res.data.message.toLowerCase().includes('success')) {
+                localStorage.setItem('accessToken', res.data.data.accessToken);
+                localStorage.setItem('refreshToken', res.data.data.refreshToken);
+                const fetchData = async () => {
+                    return await getMe();
+                };
+                fetchData().then((res) => {
+                    localStorage.setItem('currentUser', JSON.stringify(res));
+                    if (res.roleType.toLowerCase() === 'admin') {
+                        navigate('/admin/dashboard');
+                    } else {
+                        navigate('/trung-tam');
+                    }
+                });
+            }
+        });
+    };
+
+    useEffect(() => {
+        if (window.location.search.includes('code=')) {
+            handleGoogleAuthRedirect();
+        }
+    }, []);
 
     return (
         <>
@@ -124,10 +176,10 @@ const LoginContainer = () => {
                     <div className="px-2 text-sub-gray font-medium">hoặc</div>
                     <div className="border-b border-wh-gray w-full"></div>
                 </div>
-                <WHButton minWidth="100%" type="sub">
+                <WHButton minWidth="100%" type="sub" onClick={handleGoogleLogin}>
                     <>
                         <img className="max-w-[24px] inline-block mr-2" src={Google} alt="" />
-                        Đăng nhập với Google
+                        Đăng nhập với
                     </>
                 </WHButton>
             </div>

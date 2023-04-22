@@ -2,6 +2,7 @@ const BASE_URL = process.env.REACT_APP_FIREBASE_API_URL;
 
 //AUTH API
 const API_LOGIN = '/api/accounts/login';
+const API_LOGIN_GOOGLE = '/api/accounts/login/google';
 const API_LOGIN_STAFF = '/api/accounts/login-staff';
 const API_ME = '/api/accounts/me';
 const API_REGISTER_CUSTOMER = '/api/accounts/customers';
@@ -129,6 +130,7 @@ export {
     API_MANAGER_CENTER_ORDER,
     API_FEEDBACK_SERVICE_ID,
     API_LOCATION_DETAILS,
+    API_LOGIN_GOOGLE,
     API_MANAGER_CENTER,
     API_STAFF,
     API_REGISTER_PROVIDER,

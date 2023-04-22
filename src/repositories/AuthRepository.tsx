@@ -1,6 +1,7 @@
 import {
     API_CHANGE_PASSWORD,
     API_LOGIN,
+    API_LOGIN_GOOGLE,
     API_LOGIN_STAFF,
     API_ME,
     API_REFRESH_TOKEN,
@@ -17,6 +18,14 @@ export const login = async ({ phone, password }: { phone: string; password: stri
     const response = await instance.post<Response<LoginResponse>>(API_LOGIN, {
         phone,
         password,
+    });
+    return response;
+};
+
+export const loginGoogle = async ({ code, redirectUri }: { code: string; redirectUri: string }) => {
+    const response = await instance.post<Response<LoginResponse>>(API_LOGIN_GOOGLE, {
+        code,
+        redirectUri,
     });
     return response;
 };
