@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import Sleep from '../../../assets/images/sleep.png';
-import { Avatar, List, Modal, Popconfirm, Switch } from 'antd';
+import { Avatar, List, Modal, Popconfirm, Switch, Tabs, TabsProps } from 'antd';
 import { ManagerCenterModel } from '../../../models/Manager/ManagerCenterModel';
 import { getManagerCenter } from '../../../repositories/StaffRepository';
 import { useNavigate } from 'react-router-dom';
 import ErrorScreen from '../../../components/ErrorScreen/ErrorScreen';
 import OthersSpin from '../../../components/OthersSpin/OthersSpin';
+import CenterDeliveryForm from '../CenterRegistrationContainer/CenterDeliveryForm';
+import CenterDeliverySettingContainer from './CenterDeliverySettingContainer';
 
 type Props = {};
 
@@ -30,6 +32,7 @@ const CenterSettingsContainer = (props: Props) => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [popupLoading, setPopupLoading] = useState<boolean>(false);
     const [switchOn, setSwitchOn] = useState<boolean>(false);
+    const [activeTab, setActiveTab] = useState(1);
     const navigate = useNavigate();
     const [modal, contextHolder] = Modal.useModal();
 
@@ -86,23 +89,46 @@ const CenterSettingsContainer = (props: Props) => {
         return <ErrorScreen />;
     }
 
+    const onChange = (key: string) => {
+        setActiveTab(parseInt(key));
+    };
+
+    const items: TabsProps['items'] = [
+        {
+            key: '1',
+            label: `Thiết lập cơ bản`,
+        },
+        {
+            key: '2',
+            label: `Thiết lập vận chuyển`,
+        },
+        {
+            key: '3',
+            label: `Thiết lập thanh toán`,
+        },
+    ];
+
     return (
         <>
             {contextHolder}
-            <List
-                className="settings-list text-base"
-                itemLayout="horizontal"
-                dataSource={settings}
-                renderItem={(item) => (
-                    <List.Item actions={[<Switch checked={switchOn} onChange={handleSwitchToggle} />]}>
-                        <List.Item.Meta
-                            avatar={<Avatar size={50} src={item.thumbnail} />}
-                            title={<div className="text-base font-medium">{item.title}</div>}
-                            description={<div className="text-sm">{item.description}</div>}
-                        />
-                    </List.Item>
-                )}
-            />
+            <Tabs items={items} onChange={onChange} />
+            {activeTab === 1 && (
+                <List
+                    className="settings-list text-base"
+                    itemLayout="horizontal"
+                    dataSource={settings}
+                    renderItem={(item) => (
+                        <List.Item actions={[<Switch checked={switchOn} onChange={handleSwitchToggle} />]}>
+                            <List.Item.Meta
+                                avatar={<Avatar size={50} src={item.thumbnail} />}
+                                title={<div className="text-base font-medium">{item.title}</div>}
+                                description={<div className="text-sm">{item.description}</div>}
+                            />
+                        </List.Item>
+                    )}
+                />
+            )}
+            {activeTab === 2 && <CenterDeliverySettingContainer />}
         </>
     );
 };

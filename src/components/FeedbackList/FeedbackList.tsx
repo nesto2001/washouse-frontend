@@ -69,13 +69,11 @@ const FeedbackList = ({ feedbacks }: Props) => {
         },
     ];
 
-    const handleSelectRow = (record: CenterFeedbackModel, index: number) => {};
-
     return (
         <div>
             <Table
                 columns={columns}
-                dataSource={feedbacks}
+                dataSource={feedbacks}  
                 onRow={(record, rowIndex) => {
                     return {
                         onClick: (event) => {

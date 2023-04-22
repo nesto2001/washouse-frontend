@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 
 import { CenterOrderModel } from '../../../models/Staff/CenterOrderModel';
-import { Empty, Form, Input, Select, Space, Spin, Tabs, TabsProps, message } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { Button, Empty, Form, Input, Select, Space, Spin, Tabs, TabsProps, message } from 'antd';
+import { Link, useNavigate } from 'react-router-dom';
 import { getManagerCenterOrders } from '../../../repositories/StaffRepository';
 import OrderList from '../../../components/StaffOrderList/OrderList';
 import { OrderStatusMap } from '../../../mapping/OrderStatusMap';
@@ -112,7 +112,6 @@ const CenterOrderListingContainer = (props: Props) => {
         },
     ];
 
-
     return (
         <>
             {contextHolder}
@@ -157,6 +156,13 @@ const CenterOrderListingContainer = (props: Props) => {
             <div className="provider__services mt-12 mb-72">
                 {centerOrders && (
                     <>
+                        <div className="w-full h-8 mb-3">
+                            <Link to="/provider/orders/create">
+                                <Button type="primary" className="float-right">
+                                    Tạo đơn hàng mới
+                                </Button>
+                            </Link>
+                        </div>
                         <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
                         <OrderList
                             orders={centerOrders}

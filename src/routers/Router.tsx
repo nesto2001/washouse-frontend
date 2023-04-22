@@ -52,6 +52,7 @@ import {
     AdminCenterDetailsPage,
     StaffDeliveryPage,
     StaffFeedbacksPage,
+    StaffCreateOrderPage,
 } from '../pages/';
 import AdminCenterRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterRequestPage';
 import AdminPostPage from '../pages/AdminPage/AdminPost/AdminPostPage';
@@ -232,6 +233,11 @@ const publicRoutes: Array<RouteProps> = [
         path: '/provider/orders',
         layout: ManagerDashboardLayout,
         component: StaffOrdersPage,
+    },
+    {
+        path: '/provider/orders/create',
+        layout: ManagerDashboardLayout,
+        component: StaffCreateOrderPage,
     },
     {
         path: '/provider/orders/:orderId',

@@ -149,6 +149,9 @@ const CenterAddress = ({ center, centerAddress }: Props) => {
                         open={modalVisibility}
                         onOk={handleUpdateAddress}
                         onCancel={handleModalCancel}
+                        cancelButtonProps={{ style: { background: 'white' } }}
+                        okText="Lưu"
+                        cancelText="Hủy"
                     >
                         <Form
                             form={form}
