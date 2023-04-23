@@ -60,12 +60,38 @@ const ManagerDashboardPage = () => {
     return (
         <>
             <div className="flex flex-col gap-4">
-                <div className="bg-white basis-2/3 mx-auto rounded border border-wh-lightgray">
+                <div className="bg-white basis-2/3 mx-auto rounded border border-wh-lightgray min-w-[1033px]">
                     <div className="provider__page--content px-6 mt-8">
                         <div className="provider__staff--wrapper">
                             <div className="grid grid-cols-3 gap-4 mt-4 mb-8">
                                 <Card className="col-span-3 row-span-3">
-                                    <div className="font-extrabold text-2xl mb-8">Thống kê đơn hàng theo ngày</div>
+                                    <div className="font-extrabold text-2xl mb-8">Tổng quan đơn hàng</div>
+                                    <div className="grid grid-cols-3 gap-4 gap-y-4">
+                                        <div className="col-span-1 text-center hover:bg-gray-500 hover:bg-opacity-20 cursor-pointer transition-colors ease-in-out py-4 rounded-md">
+                                            <div className="font-medium text-base text-primary">0</div>
+                                            <div className="">Chờ xác nhận</div>
+                                        </div>
+                                        <div className="col-span-1 text-center border-x hover:bg-gray-500 hover:bg-opacity-20 cursor-pointer transition-colors ease-in-out py-4 rounded-md">
+                                            <div className="font-medium text-base text-primary">0</div>
+                                            <div className="">Đang xử lý</div>
+                                        </div>
+                                        <div className="col-span-1 text-center hover:bg-gray-500 hover:bg-opacity-20 cursor-pointer transition-colors ease-in-out py-4 rounded-md">
+                                            <div className="font-medium text-base text-primary">0</div>
+                                            <div className="">Sẵn sàng</div>
+                                        </div>
+                                        <div className="col-span-1 text-center hover:bg-gray-500 hover:bg-opacity-20 cursor-pointer transition-colors ease-in-out py-4 rounded-md">
+                                            <div className="font-medium text-base text-primary">0</div>
+                                            <div className="">Đã hủy</div>
+                                        </div>
+                                        <div className="col-span-1 text-center border-x hover:bg-gray-500 hover:bg-opacity-20 cursor-pointer transition-colors ease-in-out py-4 rounded-md">
+                                            <div className="font-medium text-base text-primary">0</div>
+                                            <div className="">Chờ vận chuyển</div>
+                                        </div>
+                                        <div className="col-span-1 text-center hover:bg-gray-500 hover:bg-opacity-20 cursor-pointer transition-colors ease-in-out py-4 rounded-md">
+                                            <div className="font-medium text-base text-primary">0</div>
+                                            <div className="">Hoàn tất</div>
+                                        </div>
+                                    </div>
                                 </Card>
                             </div>
                         </div>
