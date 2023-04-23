@@ -123,7 +123,7 @@ const Stafflist = ({ centerStaff, forceUpdate }: Props) => {
                     <Button className="float-right mb-4" type="primary" onClick={() => setModalVisibility(true)}>
                         Thêm nhân viên
                     </Button>
-                    <Table columns={columns} dataSource={centerStaff} />
+                    <Table columns={columns} dataSource={centerStaff} loading={centerStaff == null} />
                 </div>
             </div>
             <Modal
