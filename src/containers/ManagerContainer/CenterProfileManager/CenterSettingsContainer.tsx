@@ -1,14 +1,13 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
-import Sleep from '../../../assets/images/sleep.png';
-import { Avatar, List, Modal, Popconfirm, Switch, Tabs, TabsProps } from 'antd';
-import { ManagerCenterModel } from '../../../models/Manager/ManagerCenterModel';
-import { getManagerCenter } from '../../../repositories/StaffRepository';
+import { Avatar, List, Modal, Switch, Tabs, TabsProps } from 'antd';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Sleep from '../../../assets/images/sleep.png';
 import ErrorScreen from '../../../components/ErrorScreen/ErrorScreen';
 import OthersSpin from '../../../components/OthersSpin/OthersSpin';
-import CenterDeliveryForm from '../CenterRegistrationContainer/CenterDeliveryForm';
-import CenterDeliverySettingsContainer from './CenterDeliverySettingsContainer';
+import { ManagerCenterModel } from '../../../models/Manager/ManagerCenterModel';
+import { getManagerCenter } from '../../../repositories/StaffRepository';
+import CenterDeliverySettingContainer from './CenterDeliverySettingContainer';
+import CenterSecuritySettingContainer from './CenterSecuritySettingContainer';
 
 type Props = {};
 
@@ -106,6 +105,10 @@ const CenterSettingsContainer = (props: Props) => {
         //     key: '3',
         //     label: `Thiết lập thanh toán`,
         // },
+        {
+            key: '4',
+            label: `Thiết lập bảo mật`,
+        },
     ];
 
     return (
@@ -128,7 +131,8 @@ const CenterSettingsContainer = (props: Props) => {
                     )}
                 />
             )}
-            {activeTab === 2 && <CenterDeliverySettingsContainer />}
+            {activeTab === 2 && <CenterDeliverySettingContainer />}
+            {activeTab === 4 && <CenterSecuritySettingContainer />}
         </>
     );
 };
