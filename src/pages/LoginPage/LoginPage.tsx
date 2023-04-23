@@ -2,10 +2,17 @@ import { Link } from 'react-router-dom';
 import BackgroundSm from '../../assets/images/vector-bg-2.png';
 import Logo from '../../assets/images/washouse-tagline.png';
 import LoginContainer from '../../containers/AuthContainer/LoginContainer';
+import { useState } from 'react';
+import Loading from '../../components/Loading/Loading';
 
 type Props = {};
 
 const LoginPage = () => {
+    const [loading, setLoading] = useState<boolean>(false);
+
+    if (loading) {
+        return <Loading screen />;
+    }
     return (
         <>
             <div className="login__form h-screen basis-2/5 flex items-center px-5 pr-48 text-sub relative">
@@ -19,7 +26,7 @@ const LoginPage = () => {
                     <h2 className="text-xl font-semibold mt-1">Chào mừng bạn đã quay trở lại!</h2>
                     <div className="login__form--input mt-3">
                         <form>
-                            <LoginContainer />
+                            <LoginContainer setLoading={setLoading} />
                         </form>
                     </div>
                 </div>

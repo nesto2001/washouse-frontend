@@ -27,20 +27,22 @@ export const getUserProfile = async (id: number): Promise<CustomerAccountModel> 
     );
     return {
         accountId: data.data.accountId,
-        address: {
-            addressString: data.data.address.addressString,
-            ward: {
-                wardId: data.data.address.ward.wardId,
-                wardName: data.data.address.ward.wardName,
-                district: {
-                    districtId: data.data.address.ward.district.districtId,
-                    districtName: data.data.address.ward.district.districtName,
-                },
-            },
-            latitude: data.data.address.latitude,
-            longitude: data.data.address.longitude,
-        },
-        addressString: data.data.addressString,
+        address: data.data.address
+            ? {
+                  addressString: data.data.address.addressString,
+                  ward: {
+                      wardId: data.data.address.ward.wardId,
+                      wardName: data.data.address.ward.wardName,
+                      district: {
+                          districtId: data.data.address.ward.district.districtId,
+                          districtName: data.data.address.ward.district.districtName,
+                      },
+                  },
+                  latitude: data.data.address.latitude,
+                  longitude: data.data.address.longitude,
+              }
+            : undefined,
+        addressString: data.data.addressString ?? undefined,
         dob: data.data.dob,
         email: data.data.email,
         fullname: data.data.fullname,

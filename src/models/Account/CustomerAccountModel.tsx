@@ -7,8 +7,8 @@ export type CustomerAccountModel = {
     phone: string;
     email: string;
     profilePic: string;
-    addressString: string;
-    address: AddressDataType;
+    addressString?: string;
+    address?: AddressDataType;
     gender: number;
     dob: string;
     walletId: number;

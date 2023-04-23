@@ -6,10 +6,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { BiErrorAlt } from 'react-icons/bi';
 import { getMe, login, loginGoogle } from '../../repositories/AuthRepository';
+import Loading from '../../components/Loading/Loading';
 
-type Props = {};
+type Props = {
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-const LoginContainer = () => {
+const LoginContainer = ({ setLoading }: Props) => {
     const [loginForm, setLoginForm] = useState({
         phone: '',
         password: '',
@@ -95,8 +98,11 @@ const LoginContainer = () => {
     };
 
     useEffect(() => {
+        setLoading(true);
         if (window.location.search.includes('code=')) {
             handleGoogleAuthRedirect();
+        } else {
+            setLoading(false);
         }
     }, []);
 
@@ -178,7 +184,7 @@ const LoginContainer = () => {
                 <WHButton minWidth="100%" type="sub" onClick={handleGoogleLogin}>
                     <>
                         <img className="max-w-[24px] inline-block mr-2" src={Google} alt="" />
-                        Đăng nhập với
+                        Đăng nhập với Google
                     </>
                 </WHButton>
             </div>
