@@ -73,9 +73,12 @@ const AdminDashboardLayout = ({ children }: Props) => {
         {
             key: '2',
             url: '/admin/centers/request',
-            state: { keyTabs: '3' },
             icon: <SolutionOutlined />,
             label: 'Kiểm duyệt',
+            children: [
+                { key: '8', label: 'Trung tâm tạo mới', url: '/admin/centers/request' },
+                { key: '9', label: 'Cập nhật trung tâm', url: '/admin/centers/update-request' },
+            ],
         },
         {
             key: '3',

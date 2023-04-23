@@ -55,6 +55,7 @@ import {
     StaffCreateOrderPage,
 } from '../pages/';
 import AdminCenterRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterRequestPage';
+import AdminCenterUpdateRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterUpdateRequestPage';
 import AdminCreatePostPage from '../pages/AdminPage/AdminPost/AdminCreatePostPage';
 import AdminPostPage from '../pages/AdminPage/AdminPost/AdminPostPage';
 import AdminServicePage from '../pages/AdminPage/AdminService/AdminServicePage';
@@ -279,6 +280,11 @@ const publicRoutes: Array<RouteProps> = [
         path: '/admin/centers/request',
         layout: AdminDashboardLayout,
         component: AdminCenterRequestPage,
+    },
+    {
+        path: '/admin/centers/update-request',
+        layout: AdminDashboardLayout,
+        component: AdminCenterUpdateRequestPage,
     },
     {
         path: '/admin/centers',

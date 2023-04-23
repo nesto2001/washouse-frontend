@@ -2,10 +2,10 @@ import { Button, Modal, message } from 'antd';
 import { useEffect, useState } from 'react';
 import CenterList from '../../../components/CenterList/CenterList';
 import { AdminCenterModel } from '../../../models/Admin/AdminCenterModel';
-import { getCenterList } from '../../../repositories/AdminRepository';
+import { getCenterRequestList } from '../../../repositories/AdminRepository';
 import { approveCenter, rejectCenter } from '../../../repositories/RequestRepository';
 
-const AdminCenterRequestsContainer = () => {
+const AdminCenterUpdateRequestsContainer = () => {
     const [centerRequests, setCenterRequests] = useState<AdminCenterModel[]>([]);
     const [center, setCenter] = useState<AdminCenterModel>();
     const [modalVisibility, setModalVisibility] = useState(false);
@@ -52,10 +52,7 @@ const AdminCenterRequestsContainer = () => {
 
     useEffect(() => {
         if (!modalVisibility) {
-            const fetchData = async () => {
-                return await getCenterList({ status: 'Pending' });
-            };
-            fetchData().then((res) => {
+            getCenterRequestList({}).then((res) => {
                 setCenterRequests(res);
             });
         }
@@ -106,4 +103,4 @@ const AdminCenterRequestsContainer = () => {
     );
 };
 
-export default AdminCenterRequestsContainer;
+export default AdminCenterUpdateRequestsContainer;

@@ -44,6 +44,7 @@ const API_LOCATION_DETAILS = 'api/locations/${locationId}';
 
 //ADMIN API
 const API_ADMIN_CENTER = '/api/admin/centers';
+const API_ADMIN_CENTER_REQUEST = '/api/requests/centers';
 const API_ADMIN_POST = '/api/admin/posts';
 
 //CENTER REQUEST API
@@ -133,6 +134,7 @@ export {
     API_LOGIN_GOOGLE,
     API_MANAGER_CENTER,
     API_STAFF,
+    API_ADMIN_CENTER_REQUEST,
     API_REGISTER_PROVIDER,
     API_LOGIN_STAFF,
     API_ORDER_CREATE,

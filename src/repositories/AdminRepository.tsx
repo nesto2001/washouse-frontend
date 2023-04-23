@@ -1,4 +1,4 @@
-import { API_ADMIN_CENTER } from '../common/Constant';
+import { API_ADMIN_CENTER, API_ADMIN_CENTER_REQUEST } from '../common/Constant';
 import { AdminCenterModel } from '../models/Admin/AdminCenterModel';
 import { AdminCenterResponse } from '../models/Admin/AdminCenterResponse';
 import { PaginationResponse } from '../models/CommonModel';
@@ -20,6 +20,43 @@ export const getCenterList = async ({
             Page: page,
             PageSize: pageSize,
             Status: status,
+            SearchString: searchString,
+        },
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    return data.data.items.map((item): AdminCenterModel => {
+        return {
+            id: item.id,
+            thumbnail: item.thumbnail,
+            title: item.title,
+            alias: item.alias,
+            rating: item.rating,
+            numOfRating: item.numOfRating,
+            phone: item.phone,
+            address: item.centerAddress,
+            status: item.status,
+            taxCode: item.taxCode,
+            managerId: item.managerId,
+            managerName: item.managerName,
+        };
+    });
+};
+
+export const getCenterRequestList = async ({
+    page,
+    pageSize,
+    searchString,
+}: {
+    page?: number;
+    pageSize?: number;
+    searchString?: string | null;
+}): Promise<AdminCenterModel[]> => {
+    const { data } = await instance.get<PaginationResponse<AdminCenterResponse>>(API_ADMIN_CENTER_REQUEST, {
+        params: {
+            Page: page,
+            PageSize: pageSize,
             SearchString: searchString,
         },
         headers: {
