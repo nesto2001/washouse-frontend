@@ -171,17 +171,6 @@ const StaffRegisterContainer = () => {
                         Đăng ký
                     </WHButton>
                 </Form.Item>
-                <div className="action--separator flex justify-between items-center my-3">
-                    <div className="border-b border-wh-gray w-full"></div>
-                    <div className="px-2 text-sub-gray font-medium">hoặc</div>
-                    <div className="border-b border-wh-gray w-full"></div>
-                </div>
-                <WHButton minWidth="100%" type="sub">
-                    <>
-                        <img className="max-w-[24px] inline-block mr-2" src={Google} alt="" />
-                        Đăng nhập với Google
-                    </>
-                </WHButton>
             </div>
             <div className="register__form--redirect mt-3">
                 <h3 className="font-semibold">
