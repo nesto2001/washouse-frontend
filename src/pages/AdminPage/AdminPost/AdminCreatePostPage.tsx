@@ -1,18 +1,16 @@
-import AdminPostsContainer from '../../../containers/AdminContainer/PostContainer/AdminPostsContainer';
+import AdminCreatePostContainer from '../../../containers/AdminContainer/PostContainer/AdminCreatePostContainer';
 
 type Props = {};
 
-const AdminPostPage = () => {
+const AdminCreatePostPage = () => {
     return (
         <div className="flex gap-4">
             <div className="bg-white basis-2/3 mx-auto rounded border border-wh-lightgray">
                 <div className="provider__page--title pt-4 pl-6 font-semibold text-2xl">Bài đăng</div>
-                <div className="provider__page--subtitle mt-2 pl-6 text-sub-gray text-base">
-                    Quản lý các bài đăng của hệ thống
-                </div>
+                <div className="provider__page--subtitle mt-2 pl-6 text-sub-gray text-base">Tạo bài đăng mới</div>
                 <div className="provider__page--content px-6 mt-8">
                     <div className="provider__services--wrapper">
-                        <AdminPostsContainer />
+                        <AdminCreatePostContainer />
                     </div>
                 </div>
             </div>
@@ -20,4 +18,4 @@ const AdminPostPage = () => {
     );
 };
 
-export default AdminPostPage;
+export default AdminCreatePostPage;

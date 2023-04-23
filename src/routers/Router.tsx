@@ -55,6 +55,7 @@ import {
     StaffCreateOrderPage,
 } from '../pages/';
 import AdminCenterRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterRequestPage';
+import AdminCreatePostPage from '../pages/AdminPage/AdminPost/AdminCreatePostPage';
 import AdminPostPage from '../pages/AdminPage/AdminPost/AdminPostPage';
 import AdminServicePage from '../pages/AdminPage/AdminService/AdminServicePage';
 import ManagerPromotionsPage from '../pages/StaffPage/ManagerPromotion/ManagerPromotionsPage';
@@ -303,6 +304,11 @@ const publicRoutes: Array<RouteProps> = [
         path: '/admin/posts',
         layout: AdminDashboardLayout,
         component: AdminPostPage,
+    },
+    {
+        path: '/admin/posts/create',
+        layout: AdminDashboardLayout,
+        component: AdminCreatePostPage,
     },
 ];
 

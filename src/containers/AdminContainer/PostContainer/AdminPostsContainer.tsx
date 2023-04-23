@@ -1,7 +1,7 @@
-import { Table } from 'antd';
+import { Button, Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { PostModel } from '../../../models/Post/PostModel';
 import { getAdminPosts } from '../../../repositories/PostRepository';
 import Placeholder from '../../../assets/images/placeholder.png';
@@ -86,6 +86,11 @@ const AdminPostsContainer = (props: Props) => {
 
     return (
         <div className="provider__services--filter">
+            <Link to={'/admin/posts/create'}>
+                <Button className="float-right mb-4" type="primary">
+                    Tạo bài đăng
+                </Button>
+            </Link>
             <Table dataSource={posts} columns={columns} loading={posts == null}></Table>
         </div>
     );
