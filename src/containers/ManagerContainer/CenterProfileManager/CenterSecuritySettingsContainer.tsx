@@ -4,7 +4,7 @@ import '../ManagerContainer.scss';
 
 type Props = {};
 
-const CenterSecuritySettingContainer = ({}: Props) => {
+const CenterSecuritySettingsContainer = ({}: Props) => {
     const [hasDelivery, sethasDelivery] = useState<boolean>(false);
     const [, updateState] = useState({});
     const forceUpdate = useCallback(() => updateState({}), []);
@@ -43,4 +43,4 @@ const CenterSecuritySettingContainer = ({}: Props) => {
     );
 };
 
-export default CenterSecuritySettingContainer;
+export default CenterSecuritySettingsContainer;

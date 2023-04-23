@@ -6,8 +6,8 @@ import ErrorScreen from '../../../components/ErrorScreen/ErrorScreen';
 import OthersSpin from '../../../components/OthersSpin/OthersSpin';
 import { ManagerCenterModel } from '../../../models/Manager/ManagerCenterModel';
 import { getManagerCenter } from '../../../repositories/StaffRepository';
-import CenterDeliverySettingContainer from './CenterDeliverySettingContainer';
-import CenterSecuritySettingContainer from './CenterSecuritySettingContainer';
+import CenterDeliverySettingsContainer from './CenterDeliverySettingsContainer';
+import CenterSecuritySettingsContainer from './CenterSecuritySettingsContainer';
 
 type Props = {};
 
@@ -131,8 +131,8 @@ const CenterSettingsContainer = (props: Props) => {
                     )}
                 />
             )}
-            {activeTab === 2 && <CenterDeliverySettingContainer />}
-            {activeTab === 4 && <CenterSecuritySettingContainer />}
+            {activeTab === 2 && <CenterDeliverySettingsContainer />}
+            {activeTab === 4 && <CenterSecuritySettingsContainer />}
         </>
     );
 };
