@@ -1,18 +1,58 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import BackgroundSm from '../../assets/images/vector-bg-2.png';
 import Logo from '../../assets/images/washouse-tagline.png';
 import LoginContainer from '../../containers/AuthContainer/LoginContainer';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Loading from '../../components/Loading/Loading';
+import { getMe, loginGoogle } from '../../repositories/AuthRepository';
 
 type Props = {};
 
 const LoginPage = () => {
-    const [loading, setLoading] = useState<boolean>(false);
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState<boolean>(true);
+
+    const handleGoogleAuthRedirect = async () => {
+        const searchParams = new URLSearchParams(window.location.search);
+        const authCode = searchParams.get('code');
+        const redirectUri = `${window.location.origin}/login`;
+
+        if (!authCode) {
+            console.error('No authorization code found in URL');
+            return;
+        }
+
+        loginGoogle({ code: authCode, redirectUri: redirectUri }).then((res) => {
+            if (res.status === 200 && res.data.message.toLowerCase().includes('success')) {
+                localStorage.setItem('accessToken', res.data.data.accessToken);
+                localStorage.setItem('refreshToken', res.data.data.refreshToken);
+                const fetchData = async () => {
+                    return await getMe();
+                };
+                fetchData().then((res) => {
+                    localStorage.setItem('currentUser', JSON.stringify(res));
+                    if (res.roleType.toLowerCase() === 'admin') {
+                        navigate('/admin/dashboard');
+                    } else {
+                        navigate('/trung-tam');
+                    }
+                });
+            }
+        });
+    };
+
+    useEffect(() => {
+        if (!window.location.search.includes('code=')) {
+            setLoading(false);
+        } else {
+            handleGoogleAuthRedirect();
+        }
+    }, []);
 
     if (loading) {
         return <Loading screen />;
     }
+
     return (
         <>
             <div className="login__form h-screen basis-2/5 flex items-center px-5 pr-48 text-sub relative">

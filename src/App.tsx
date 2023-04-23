@@ -1,25 +1,15 @@
+import { ConfigProvider } from 'antd';
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { Provider } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { DefaultLayout } from './Layouts';
-import { publicRoutes } from './routers/Router';
-import { Provider } from 'react-redux';
-import CartStore from './store/CartStore';
-import { ConfigProvider } from 'antd';
 import themeConfig from './antd-theme.json';
 import ScrollToTop from './components/ScrollTop/ScrollToTop';
-import { HubConnection } from '@microsoft/signalr';
-import { useSignalRConnection } from './hubs/notificationHub';
-import Loading from './components/Loading/Loading';
+import { publicRoutes } from './routers/Router';
+import CartStore from './store/CartStore';
 
 function App() {
-    const connected = useSignalRConnection();
-
-    if (!connected) {
-        return <Loading screen />;
-    }
-
     return (
         <React.StrictMode>
             <ConfigProvider theme={themeConfig}>

@@ -56,10 +56,12 @@ const NotificationDropdown = ({ showBadge, child, size }: Props) => {
     }, [update]);
 
     useEffect(() => {
-        connection.on('UpdateOrderStatus', (notification: Notification) => {
-            forceUpdate();
-            openNotification(notification.title, notification.body);
-        });
+        if (connection) {
+            connection.on('UpdateOrderStatus', (notification: Notification) => {
+                forceUpdate();
+                openNotification(notification.title, notification.body);
+            });
+        }
     }, [connection]);
 
     const handleRead = (id: number) => {

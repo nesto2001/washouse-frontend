@@ -12,23 +12,6 @@ import HomeServices from '../../containers/HomeContainer/HomeServices';
 import './Homepage.scss';
 
 const HomePage = () => {
-    const [isLoading, setIsLoading] = useState(true);
-    const hasVisited = sessionStorage.getItem('hasVisited');
-
-    useEffect(() => {
-        if (!hasVisited) {
-            setTimeout(() => {
-                setIsLoading(false);
-                sessionStorage.setItem('hasVisited', JSON.stringify(true));
-            }, 2000);
-        } else {
-            setIsLoading(false);
-        }
-    });
-
-    if (isLoading) {
-        return <Loading screen />;
-    }
     return (
         <>
             <div id="hero" className="homepage__section h-[768px] w-full">

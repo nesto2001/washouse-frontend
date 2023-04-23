@@ -68,44 +68,6 @@ const LoginContainer = ({ setLoading }: Props) => {
         window.location = url as unknown as Location;
     };
 
-    const handleGoogleAuthRedirect = async () => {
-        const searchParams = new URLSearchParams(window.location.search);
-        const authCode = searchParams.get('code');
-        const redirectUri = `${window.location.origin}/login`;
-
-        if (!authCode) {
-            console.error('No authorization code found in URL');
-            return;
-        }
-
-        loginGoogle({ code: authCode, redirectUri: redirectUri }).then((res) => {
-            if (res.status === 200 && res.data.message.toLowerCase().includes('success')) {
-                localStorage.setItem('accessToken', res.data.data.accessToken);
-                localStorage.setItem('refreshToken', res.data.data.refreshToken);
-                const fetchData = async () => {
-                    return await getMe();
-                };
-                fetchData().then((res) => {
-                    localStorage.setItem('currentUser', JSON.stringify(res));
-                    if (res.roleType.toLowerCase() === 'admin') {
-                        navigate('/admin/dashboard');
-                    } else {
-                        navigate('/trung-tam');
-                    }
-                });
-            }
-        });
-    };
-
-    useEffect(() => {
-        setLoading(true);
-        if (window.location.search.includes('code=')) {
-            handleGoogleAuthRedirect();
-        } else {
-            setLoading(false);
-        }
-    }, []);
-
     return (
         <>
             <div className="login__form--phone">
