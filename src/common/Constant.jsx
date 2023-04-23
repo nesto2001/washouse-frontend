@@ -46,6 +46,7 @@ const API_LOCATION_DETAILS = 'api/locations/${locationId}';
 const API_ADMIN_CENTER = '/api/admin/centers';
 const API_ADMIN_CENTER_REQUEST = '/api/requests/centers';
 const API_ADMIN_POST = '/api/admin/posts';
+const API_ADMIN_POST_DETAIL = '/api/admin/posts/${id}';
 
 //CENTER REQUEST API
 const API_REQUEST = '/api/requests/centers';
@@ -125,6 +126,7 @@ export {
     API_MANAGER_CENTER_ORDER_DETAILS,
     API_PROMOTION_CODE,
     API_ORDER_DELIVERY,
+    API_ADMIN_POST_DETAIL,
     API_MANAGER_CENTER_CUSTOMER,
     API_MANAGER_CENTER_SERVICE,
     API_CHANGE_PASSWORD,

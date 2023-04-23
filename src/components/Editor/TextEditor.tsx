@@ -2,11 +2,11 @@ import { Editor } from '@tinymce/tinymce-react';
 
 type EditorProps = {
     content?: string;
-    placeholder?: string;
+    initContent?: string;
     onBlur?: (content: string) => void;
     onChange?: (content: string) => void;
 };
-function TextEditor({ onBlur, onChange, content, placeholder }: EditorProps) {
+function TextEditor({ onBlur, onChange, content, initContent }: EditorProps) {
     const handleEditorChange = (content: any, editor: any) => {
         onChange && onChange(content as string);
     };
@@ -15,7 +15,7 @@ function TextEditor({ onBlur, onChange, content, placeholder }: EditorProps) {
             <Editor
                 onEditorChange={handleEditorChange}
                 apiKey="q92bsnsqdkmwsm0nivhpqnyf7kng1rud67z99qxhb28o6c39"
-                initialValue=""
+                initialValue={initContent ?? ''}
                 init={{
                     height: 500,
                     resize: false,

@@ -120,7 +120,7 @@ const AdminCreatePostContainer = () => {
                         </Button>
                     </Link>
                     <Button type="primary" onClick={() => form.submit()}>
-                        Thêm dịch vụ
+                        Tạo bài đăng
                     </Button>
                 </div>
             </Form>

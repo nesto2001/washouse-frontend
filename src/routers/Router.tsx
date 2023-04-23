@@ -57,6 +57,7 @@ import {
 import AdminCenterRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterRequestPage';
 import AdminCenterUpdateRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterUpdateRequestPage';
 import AdminCreatePostPage from '../pages/AdminPage/AdminPost/AdminCreatePostPage';
+import AdminPostDetailPage from '../pages/AdminPage/AdminPost/AdminPostDetailPage';
 import AdminPostPage from '../pages/AdminPage/AdminPost/AdminPostPage';
 import AdminServicePage from '../pages/AdminPage/AdminService/AdminServicePage';
 import ManagerPromotionsPage from '../pages/StaffPage/ManagerPromotion/ManagerPromotionsPage';
@@ -305,6 +306,11 @@ const publicRoutes: Array<RouteProps> = [
         path: '/admin/service-categories',
         layout: AdminDashboardLayout,
         component: AdminServicePage,
+    },
+    {
+        path: '/admin/posts/:id',
+        layout: AdminDashboardLayout,
+        component: AdminPostDetailPage,
     },
     {
         path: '/admin/posts',

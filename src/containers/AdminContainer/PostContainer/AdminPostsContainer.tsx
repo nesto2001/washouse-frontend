@@ -62,11 +62,12 @@ const AdminPostsContainer = (props: Props) => {
         },
         {
             title: 'Thao tác',
-            render(_) {
+            render(_, record) {
                 return (
                     <>
-                        <div className="cursor-pointer text-primary">Hủy đăng</div>
-                        <div className="cursor-pointer text-red">Hủy ghim dịch vụ</div>
+                        <Link to={`/admin/posts/${record.id}`}>
+                            <div className="cursor-pointer text-primary">Xem chi tiết</div>
+                        </Link>
                     </>
                 );
             },

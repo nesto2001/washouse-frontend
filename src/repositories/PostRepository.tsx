@@ -1,7 +1,7 @@
 import { stat } from 'fs';
-import { API_ADMIN_POST } from '../common/Constant';
+import { API_ADMIN_POST, API_ADMIN_POST_DETAIL } from '../common/Constant';
 import { AddPostRequest } from '../containers/AdminContainer/PostContainer/AdminCreatePostContainer';
-import { PaginationResponse } from '../models/CommonModel';
+import { PaginationResponse, Response } from '../models/CommonModel';
 import { PostModel } from '../models/Post/PostModel';
 import { PostResponse } from '../models/Post/PostResponse';
 import instance from '../services/axios/AxiosInstance';
@@ -49,4 +49,22 @@ export const createPost = async (request: AddPostRequest) => {
     if (status !== 200) {
         return Promise.reject();
     }
+};
+
+export const getPostDetail = async (id: number): Promise<PostModel> => {
+    const { data } = await instance.get<Response<PostResponse>>(API_ADMIN_POST_DETAIL.replace('${id}', id.toString()), {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    return {
+        id: data.data.id,
+        type: data.data.type,
+        thumbnail: data.data.thumbnail,
+        title: data.data.title,
+        content: data.data.content,
+        status: data.data.status,
+        createdDate: data.data.createdDate,
+        updatedDate: data.data.updatedDate,
+    };
 };
