@@ -20,8 +20,7 @@ const Stafflist = ({ centerStaff, forceUpdate }: Props) => {
     const [form] = Form.useForm();
 
     const [modalVisibility, setModalVisibility] = useState(false);
-
-    const [formData, setFormData] = useState<StaffFormData>();
+    const [staffDetail, setStaffDetail] = useState<CenterStaffModel>();
 
     const columns: ColumnsType<CenterStaffModel> = [
         {
@@ -73,34 +72,42 @@ const Stafflist = ({ centerStaff, forceUpdate }: Props) => {
             title: 'Thao tác',
             dataIndex: '',
             key: 'action',
-            render: (_, record) =>
-                record.isManager ? (
-                    ''
-                ) : !record.status ? (
-                    <div
-                        className="text-ws-red cursor-pointer"
-                        onClick={() =>
-                            activateStaff(record.id).then((res) => {
-                                forceUpdate();
-                                message.success('Cập nhật trạng thái nhân viên thành công.');
-                            })
-                        }
-                    >
-                        Activate
+            // render: (_, record) =>
+            //     record.isManager ? (
+            //         ''
+            //     ) : !record.status ? (
+            //         <div
+            //             className="text-ws-red cursor-pointer"
+            //             onClick={() =>
+            //                 activateStaff(record.id).then((res) => {
+            //                     forceUpdate();
+            //                     message.success('Cập nhật trạng thái nhân viên thành công.');
+            //                 })
+            //             }
+            //         >
+            //             Activate
+            //         </div>
+            //     ) : (
+            //         <div
+            //             className="text-ws-red cursor-pointer"
+            //             onClick={() =>
+            //                 deactivateStaff(record.id).then((res) => {
+            //                     forceUpdate();
+            //                     message.success('Cập nhật trạng thái nhân viên thành công.');
+            //                 })
+            //             }
+            //         >
+            //             Deactivate
+            //         </div>
+            //     ),
+
+            render(_, record) {
+                return (
+                    <div className="text-primary cursor-pointer" onClick={() => setStaffDetail(record)}>
+                        Xem chi tiết
                     </div>
-                ) : (
-                    <div
-                        className="text-ws-red cursor-pointer"
-                        onClick={() =>
-                            deactivateStaff(record.id).then((res) => {
-                                forceUpdate();
-                                message.success('Cập nhật trạng thái nhân viên thành công.');
-                            })
-                        }
-                    >
-                        Deactivate
-                    </div>
-                ),
+                );
+            },
         },
     ];
 
@@ -183,6 +190,91 @@ const Stafflist = ({ centerStaff, forceUpdate }: Props) => {
                         </div>
                     )} */}
                 </Form>
+            </Modal>
+            <Modal
+                width={400}
+                title={
+                    <div className="flex gap-4">
+                        <div>Chi tiết nhân viên</div>
+                        {staffDetail?.status ? <Tag color="green">Hoạt động</Tag> : <Tag color="red">Tạm nghỉ</Tag>}
+                    </div>
+                }
+                open={staffDetail != undefined}
+                onCancel={() => setStaffDetail(undefined)}
+                destroyOnClose={true}
+                footer={
+                    <>
+                        <Button
+                            key="key"
+                            type="default"
+                            onClick={() => setStaffDetail(undefined)}
+                            className="bg-transparent"
+                        >
+                            Đóng
+                        </Button>
+                        {staffDetail &&
+                            (staffDetail.isManager ? (
+                                ''
+                            ) : !staffDetail.status ? (
+                                <Button
+                                    type="primary"
+                                    onClick={() =>
+                                        activateStaff(staffDetail.id).then((res) => {
+                                            setStaffDetail(undefined);
+                                            forceUpdate();
+                                            message.success('Cập nhật trạng thái nhân viên thành công.');
+                                        })
+                                    }
+                                >
+                                    Activate
+                                </Button>
+                            ) : (
+                                <Button
+                                    className="bg-ws-red text-white"
+                                    danger
+                                    onClick={() =>
+                                        deactivateStaff(staffDetail.id).then((res) => {
+                                            setStaffDetail(undefined);
+                                            forceUpdate();
+                                            message.success('Cập nhật trạng thái nhân viên thành công.');
+                                        })
+                                    }
+                                >
+                                    <div className="text-white">Deactivate</div>
+                                </Button>
+                            ))}
+                    </>
+                }
+            >
+                <div className="flex flex-col gap-2 mt-4">
+                    <div>
+                        Họ và tên: <span className="font-bold">{staffDetail?.fullname}</span>
+                    </div>
+                    {staffDetail?.dob && (
+                        <div>
+                            Ngày tháng năm sinh:{' '}
+                            <span className="font-bold">{staffDetail.dob.format('DD-MM-YYYY')}</span>
+                        </div>
+                    )}
+                    {staffDetail?.phone && (
+                        <div>
+                            Số điện thoại: <span className="font-bold">{staffDetail?.phone}</span>
+                        </div>
+                    )}
+                    {staffDetail?.email && (
+                        <div>
+                            Email: <span className="font-bold">{staffDetail?.email}</span>
+                        </div>
+                    )}
+                    {staffDetail?.email && (
+                        <div>
+                            Vị trí làm việc:{' '}
+                            <span className="font-bold">
+                                {staffDetail?.isManager ? 'Quản lý trung tâm' : 'Nhân viên'}
+                            </span>
+                        </div>
+                    )}
+                </div>
             </Modal>
         </>
     );
