@@ -6,7 +6,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { BiErrorAlt } from 'react-icons/bi';
 import { getMe, login, loginGoogle } from '../../repositories/AuthRepository';
-import GoogleAuth from '../../components/Google/GoogleAuth';
 
 type Props = {};
 
