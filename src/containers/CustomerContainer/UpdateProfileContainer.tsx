@@ -45,16 +45,25 @@ const UpdateProfileContainer = () => {
     };
 
     const handleUpdateProfile = async () => {
-        userProfile &&
-            updateAccountProfile({
-                dob: updateFormData?.dob ?? userProfile.dob ?? undefined,
-                fullName: updateFormData?.fullName ?? userProfile.fullname,
-                gender: updateFormData?.gender ?? 0,
-            })
-                .then(() => {
-                    message.success('Cập nhật thành công');
+        if (updateFormData?.fullName!.length! < 3) {
+            if (updateFormData?.fullName!.length! < 1) {
+                message.error('Vui lòng nhập họ và tên');
+                return;
+            }
+            message.error('Họ và tên phải có tối thiểu 2 ký tự');
+            return;
+        } else if (updateFormData?.fullName && updateFormData?.fullName.length > 2) {
+            userProfile &&
+                updateAccountProfile({
+                    dob: updateFormData?.dob ?? userProfile.dob ?? undefined,
+                    fullName: updateFormData?.fullName ?? userProfile.fullname,
+                    gender: updateFormData?.gender ?? 0,
                 })
-                .catch(() => message.error('Có lỗi xảy ra, vui lòng thử lại sau'));
+                    .then(() => {
+                        message.success('Cập nhật thành công');
+                    })
+                    .catch(() => message.error('Có lỗi xảy ra, vui lòng thử lại sau'));
+        }
     };
     const genderOptions: Option[] = [
         {

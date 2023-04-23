@@ -5,6 +5,7 @@ import Table, { ColumnsType } from 'antd/es/table';
 import { CenterStaffModel } from '../../models/Staff/CenterStaffModel';
 import dayjs from 'dayjs';
 import { activateStaff, assignStaff, deactivateStaff } from '../../repositories/StaffRepository';
+import { FaPowerOff } from 'react-icons/fa';
 
 type Props = {
     centerStaff?: CenterStaffModel[];
@@ -72,6 +73,7 @@ const Stafflist = ({ centerStaff, forceUpdate }: Props) => {
             title: 'Thao tác',
             dataIndex: '',
             key: 'action',
+            align: 'center',
             // render: (_, record) =>
             //     record.isManager ? (
             //         ''
@@ -100,7 +102,6 @@ const Stafflist = ({ centerStaff, forceUpdate }: Props) => {
             //             Deactivate
             //         </div>
             //     ),
-
             render(_, record) {
                 return (
                     <div className="text-primary cursor-pointer" onClick={() => setStaffDetail(record)}>

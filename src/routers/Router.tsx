@@ -53,6 +53,9 @@ import {
     StaffDeliveryPage,
     StaffFeedbacksPage,
     StaffCreateOrderPage,
+    ManagerFinanceWalletPage,
+    ManagerFinanceSettingsPage,
+    ManagerCenterGalleryPage,
 } from '../pages/';
 import AdminCenterRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterRequestPage';
 import AdminCenterUpdateRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterUpdateRequestPage';
@@ -268,9 +271,24 @@ const publicRoutes: Array<RouteProps> = [
         component: StaffDeliveryPage,
     },
     {
+        path: '/provider/finance/wallet',
+        layout: ManagerDashboardLayout,
+        component: ManagerFinanceWalletPage,
+    },
+    {
+        path: '/provider/finance/settings',
+        layout: ManagerDashboardLayout,
+        component: ManagerFinanceSettingsPage,
+    },
+    {
         path: '/provider/settings/center/rating',
         layout: ManagerDashboardLayout,
         component: StaffFeedbacksPage,
+    },
+    {
+        path: '/provider/settings/center/gallery',
+        layout: ManagerDashboardLayout,
+        component: ManagerCenterGalleryPage,
     },
     {
         path: '/admin/dashboard',

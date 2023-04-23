@@ -93,18 +93,6 @@ const UserSidebar = ({ basis }: UserSidebarProps) => {
                 url: '/user/wallet',
                 key: 'wallet',
                 icon: Wallet,
-                children: [
-                    {
-                        label: 'Ví của tôi',
-                        url: '/user/wallet',
-                        key: 'my-wallet',
-                    },
-                    {
-                        label: 'Lịch sử thanh toán',
-                        url: '/user/account/address',
-                        key: 'address',
-                    },
-                ],
             },
         ],
         [],
@@ -189,8 +177,8 @@ const UserSidebar = ({ basis }: UserSidebarProps) => {
     return (
         <div className={clsx('userpage__sidenav text-left px-7 mt-16', basis ?? '')}>
             <div className="userpage__sidenav--user flex items-center">
-                <div className="sidenav__user--avatar max-w-[72px] max-h-[72px] h-[72px] rounded-full overflow-hidden">
-                    <img className="object-cover h-full" src={userProfile?.profilePic ?? Placeholder} alt="" />
+                <div className="sidenav__user--avatar max-w-[72px] max-h-[72px] h-[72px] w-[72px] rounded-full overflow-hidden border-[1.5px]">
+                    <img className="object-cover h-full w-full" src={userProfile?.profilePic ?? Placeholder} alt="" />
                 </div>
                 <div className="sidenav__user--info ml-4">
                     <div className="user__info--name font-bold">{userProfile?.fullname}</div>

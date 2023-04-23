@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import ErrorScreen from '../../../components/ErrorScreen/ErrorScreen';
 import OthersSpin from '../../../components/OthersSpin/OthersSpin';
 import CenterDeliveryForm from '../CenterRegistrationContainer/CenterDeliveryForm';
-import CenterDeliverySettingContainer from './CenterDeliverySettingContainer';
+import CenterDeliverySettingsContainer from './CenterDeliverySettingsContainer';
 
 type Props = {};
 
@@ -102,10 +102,10 @@ const CenterSettingsContainer = (props: Props) => {
             key: '2',
             label: `Thiết lập vận chuyển`,
         },
-        {
-            key: '3',
-            label: `Thiết lập thanh toán`,
-        },
+        // {
+        //     key: '3',
+        //     label: `Thiết lập thanh toán`,
+        // },
     ];
 
     return (
@@ -114,7 +114,7 @@ const CenterSettingsContainer = (props: Props) => {
             <Tabs items={items} onChange={onChange} />
             {activeTab === 1 && (
                 <List
-                    className="settings-list text-base"
+                    className="settings-list text-base mb-3"
                     itemLayout="horizontal"
                     dataSource={settings}
                     renderItem={(item) => (
@@ -128,7 +128,7 @@ const CenterSettingsContainer = (props: Props) => {
                     )}
                 />
             )}
-            {activeTab === 2 && <CenterDeliverySettingContainer />}
+            {activeTab === 2 && <CenterDeliverySettingsContainer />}
         </>
     );
 };

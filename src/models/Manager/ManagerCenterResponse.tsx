@@ -18,6 +18,7 @@ export type ManagerCenterResponse = {
     taxRegistrationImage: string;
     monthOff: false;
     hasDelivery: boolean;
+    hasOnlinePayment: boolean
     locationId: number;
     centerDeliveryPrices: CenterDeliveryPriceResponse[];
     centerLocation: LocationResponse;

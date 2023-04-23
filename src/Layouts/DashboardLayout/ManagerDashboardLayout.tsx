@@ -9,6 +9,7 @@ import {
     ShopOutlined,
     SolutionOutlined,
     UserOutlined,
+    WalletOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu, MenuProps, message, theme } from 'antd';
 import clsx from 'clsx';
@@ -90,17 +91,27 @@ const ManagerDashboardLayout = ({ children }: Props) => {
         },
         {
             key: '7',
-            icon: <ShopOutlined />,
-            label: 'Trung tâm',
+            icon: <WalletOutlined />,
+            label: <Link to="/provider/promotions">Tài chính</Link>,
             children: [
-                { key: '8', label: <Link to="/provider/settings/center/profile">Hồ sơ trung tâm</Link> },
-                { key: '9', label: <Link to="/provider/settings/center/rating">Đánh giá trung tâm</Link> },
-                { key: '10', label: <Link to="/provider/settings/center/">Thiết lập trung tâm</Link> },
-                { key: '11', label: <Link to="/provider/settings/center/staff">Danh sách nhân viên</Link> },
+                { key: '8', label: <Link to="/provider/finance/wallet">Số dư</Link> },
+                { key: '9', label: <Link to="/provider/finance/settings">Thiết lập thanh toán</Link> },
             ],
         },
         {
-            key: '12',
+            key: '10',
+            icon: <ShopOutlined />,
+            label: 'Trung tâm',
+            children: [
+                { key: '11', label: <Link to="/provider/settings/center/profile">Hồ sơ trung tâm</Link> },
+                // { key: '12', label: <Link to="/provider/settings/center/gallery">Hình ảnh trung tâm</Link> },
+                { key: '13', label: <Link to="/provider/settings/center/rating">Đánh giá trung tâm</Link> },
+                { key: '14', label: <Link to="/provider/settings/center/">Thiết lập trung tâm</Link> },
+                { key: '15', label: <Link to="/provider/settings/center/staff">Danh sách nhân viên</Link> },
+            ],
+        },
+        {
+            key: '16',
             icon: <UserOutlined />,
             label: <Link to="/provider/customers">Khách hàng</Link>,
         },

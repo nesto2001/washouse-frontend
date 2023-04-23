@@ -76,6 +76,7 @@ export const getManagerCenter = async (): Promise<ManagerCenterModel> => {
         centerResourses: data.data.centerResourses,
         description: data.data.description,
         hasDelivery: data.data.hasDelivery,
+        hasOnlinePayment: data.data.hasOnlinePayment,
         isAvailable: data.data.isAvailable,
         locationId: data.data.locationId,
         monthOff: data.data.monthOff,
