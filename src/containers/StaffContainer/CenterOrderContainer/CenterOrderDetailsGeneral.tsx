@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Descriptions, Popconfirm, Tag, Tooltip } from 'antd';
+import { Button, Descriptions, Popconfirm, Tag, Tooltip } from 'antd';
 import { LocationDetailsModel } from '../../../models/Location/LocationDetailsModel';
 import { getLocation } from '../../../repositories/LocationRepository';
 import { DeliveryTypeMap } from '../../../mapping/DeliveryTypeMap';
@@ -168,6 +168,11 @@ const CenterOrderDetailsGeneral = ({
                     {orderInfo.customerMessage ?? 'Không có'}
                 </Descriptions.Item>
             </Descriptions>
+            <div className="center__order--footer flex justify-end my-3">
+                <Button type="primary" size="large">
+                    Cập nhật tiến trình
+                </Button>
+            </div>
         </>
     );
 };
