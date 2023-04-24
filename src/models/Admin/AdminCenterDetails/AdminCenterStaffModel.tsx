@@ -4,6 +4,7 @@ export type AdminCenterStaffModel = {
     fullName: string;
     email: string;
     phone: string;
+    isManager: boolean
     gender: number;
     status: boolean;
     idNumber: string;

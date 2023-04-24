@@ -6,6 +6,7 @@ export type AdminCenterStaffResponse = {
     phone: string;
     gender: number;
     status: boolean;
+    isManager: boolean
     idNumber: string;
     idFrontImg: string;
     idBackImg: string;

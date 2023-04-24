@@ -25,9 +25,9 @@ const Stafflist = ({ centerStaff, forceUpdate }: Props) => {
 
     const columns: ColumnsType<CenterStaffModel> = [
         {
-            title: 'Mã',
-            dataIndex: 'id',
-            key: 'id',
+            title: 'STT',
+            dataIndex: 'stt',
+            key: 'stt',
             align: 'center',
             render: (_, text, index) => <strong>{index + 1}</strong>,
         },

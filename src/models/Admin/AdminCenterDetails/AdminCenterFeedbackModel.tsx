@@ -1,10 +1,12 @@
+import dayjs from 'dayjs';
+
 export type AdminCenterFeedbackModel = {
     id: number;
     rating: number;
     content: string;
     createdBy: string;
-    createdDate: string;
+    createdDate: dayjs.Dayjs;
     replyMessage: string;
     replyBy: string;
-    replyDate: string;
+    replyDate: dayjs.Dayjs;
 };

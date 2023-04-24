@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { API_ADMIN_CENTER, API_ADMIN_CENTER_DETAILS, API_ADMIN_CENTER_REQUEST } from '../common/Constant';
 import { AdminCenterDetailsModel } from '../models/Admin/AdminCenterDetails/AdminCenterDetailsModel';
 import { AdminCenterDetailsResponse } from '../models/Admin/AdminCenterDetails/AdminCenterDetailsResponse';
@@ -130,10 +131,10 @@ export const getCenterDetails = async (id: number): Promise<AdminCenterDetailsMo
                 content: item.content,
                 rating: item.rating,
                 createdBy: item.createdBy,
-                createdDate: item.createdDate,
+                createdDate: dayjs(item.createdDate, 'DD-MM-YYYY HH:mm:ss'),
                 replyBy: item.replyBy,
                 replyMessage: item.replyMessage,
-                replyDate: item.replyDate,
+                replyDate: dayjs(item.replyDate, 'DD-MM-YYYY HH:mm:ss'),
             };
         }),
         services: data.data.services.map((item): AdminCenterServiceModel => {
@@ -162,6 +163,7 @@ export const getCenterDetails = async (id: number): Promise<AdminCenterDetailsMo
                 fullName: item.fullName,
                 gender: item.gender,
                 id: item.id,
+                isManager: item.isManager,
                 idBackImg: item.idBackImg,
                 idFrontImg: item.idFrontImg,
                 idNumber: item.idNumber,

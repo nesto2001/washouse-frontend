@@ -64,7 +64,7 @@ const AdminCenterDetailsService = ({ centerServices, paging, updatePage }: Props
     ];
 
     return (
-        <>
+        <div className="pt-3">
             <Table
                 columns={columns}
                 dataSource={centerServices}
@@ -80,7 +80,7 @@ const AdminCenterDetailsService = ({ centerServices, paging, updatePage }: Props
                 pageSize={paging?.itemsPerPage}
                 showSizeChanger={false}
             />
-        </>
+        </div>
     );
 };
 
