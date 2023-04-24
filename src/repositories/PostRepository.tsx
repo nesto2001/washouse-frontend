@@ -1,4 +1,9 @@
-import { API_ADMIN_POST, API_ADMIN_POST_DETAIL } from '../common/Constant';
+import {
+    API_ADMIN_POST,
+    API_ADMIN_POST_DETAIL,
+    API_ADMIN_POST_DETAIL_PUBLIC,
+    API_PUBLIC_POST,
+} from '../common/Constant';
 import { AddPostRequest } from '../containers/AdminContainer/PostContainer/AdminCreatePostContainer';
 import { PaginationResponse, Response } from '../models/CommonModel';
 import { PostModel } from '../models/Post/PostModel';
@@ -31,6 +36,7 @@ export const getAdminPosts = async ({
         return {
             id: item.id,
             type: item.type,
+            description: item.description,
             thumbnail: item.thumbnail,
             title: item.title,
             content: item.content,
@@ -57,6 +63,41 @@ export const getPostDetail = async (id: number): Promise<PostModel> => {
     return {
         id: data.data.id,
         type: data.data.type,
+        description: data.data.description,
+        thumbnail: data.data.thumbnail,
+        title: data.data.title,
+        content: data.data.content,
+        status: data.data.status,
+        createdDate: data.data.createdDate,
+        updatedDate: data.data.updatedDate,
+    };
+};
+
+export const getPublicPosts = async (): Promise<PostModel[]> => {
+    const { data } = await instance.get<PaginationResponse<PostResponse>>(API_PUBLIC_POST);
+    return data.data.items.map((item): PostModel => {
+        return {
+            id: item.id,
+            type: item.type,
+            description: item.description,
+            thumbnail: item.thumbnail,
+            title: item.title,
+            content: item.content,
+            status: item.status,
+            createdDate: item.createdDate,
+            updatedDate: item.updatedDate,
+        };
+    });
+};
+
+export const getPostDetailPublic = async (id: number): Promise<PostModel> => {
+    const { data } = await instance.get<Response<PostResponse>>(
+        API_ADMIN_POST_DETAIL_PUBLIC.replace('${id}', id.toString()),
+    );
+    return {
+        id: data.data.id,
+        type: data.data.type,
+        description: data.data.description,
         thumbnail: data.data.thumbnail,
         title: data.data.title,
         content: data.data.content,

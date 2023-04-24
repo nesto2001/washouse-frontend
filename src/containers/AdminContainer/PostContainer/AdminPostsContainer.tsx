@@ -1,16 +1,16 @@
-import { Button, Table } from 'antd';
+import { Button, Table, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import Placeholder from '../../../assets/images/placeholder.png';
+import { PostBadgeStatusMap, PostStatusMap } from '../../../mapping/PostStatusMap';
 import { PostModel } from '../../../models/Post/PostModel';
 import { getAdminPosts } from '../../../repositories/PostRepository';
-import Placeholder from '../../../assets/images/placeholder.png';
 
 type Props = {};
 
 const AdminPostsContainer = (props: Props) => {
     const location = useLocation();
-    const { pathname } = location;
     const [posts, setPosts] = useState<PostModel[]>();
     const [activeKey, setActiveKey] = useState<string>(location.state?.keyTab ?? '1');
     const columns: ColumnsType<PostModel> = [
@@ -18,8 +18,9 @@ const AdminPostsContainer = (props: Props) => {
             title: 'STT',
             dataIndex: 'STT',
             key: 'STT',
+            align: 'center',
             render(_, record, index) {
-                return <div className="">{index + 1}</div>;
+                return <div className="font-bold">{index + 1}</div>;
             },
         },
         {
@@ -37,9 +38,9 @@ const AdminPostsContainer = (props: Props) => {
             width: 180,
         },
         {
-            title: 'Nội dung',
-            dataIndex: 'content',
-            key: 'content',
+            title: 'Mô tả',
+            dataIndex: 'description',
+            key: 'description',
             width: 220,
             render(value) {
                 return <div className="line-clamp-1">{value}</div>;
@@ -49,17 +50,21 @@ const AdminPostsContainer = (props: Props) => {
             title: 'Trạng thái',
             dataIndex: 'status',
             key: 'status',
+            align: 'center',
+            render(_, record) {
+                return (
+                    <Tag color={PostBadgeStatusMap[record.status.toLowerCase()]}>
+                        {PostStatusMap[record.status.toLowerCase()]}
+                    </Tag>
+                );
+            },
         },
         {
             title: 'Giờ tạo',
             dataIndex: 'createdDate',
             key: 'createdDate',
         },
-        {
-            title: 'Giờ cập nhật',
-            dataIndex: 'updatedDate',
-            key: 'updatedDate',
-        },
+
         {
             title: 'Thao tác',
             render(_, record) {

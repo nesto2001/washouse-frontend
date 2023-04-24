@@ -2,10 +2,10 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Button, DatePicker, Form, Input, Switch, Upload, UploadFile, message } from 'antd';
 import { UploadChangeParam } from 'antd/es/upload';
 import { useCallback, useEffect, useState } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import TextEditor from '../../../components/Editor/TextEditor';
-import { getPostDetail } from '../../../repositories/PostRepository';
 import { PostModel } from '../../../models/Post/PostModel';
+import { getPostDetail } from '../../../repositories/PostRepository';
 
 export type AddPostRequest = {
     title: string;

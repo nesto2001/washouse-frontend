@@ -24,6 +24,7 @@
         "date-fns": "^2.29.3",
         "dotenv": "^16.0.3",
         "flowbite-datepicker": "^1.2.2",
+        "html-react-parser": "^3.0.16",
         "jsonwebtoken": "^9.0.0",
         "jwt-decode": "^3.1.2",
         "leaflet": "^1.9.3",

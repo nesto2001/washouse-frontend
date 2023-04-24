@@ -53,7 +53,7 @@ const AdminCreatePostContainer = () => {
                 savedFileName: data.data.savedFileName,
                 content: editorContent,
                 publishTime: values.publishTime ?? dayjs().format('DD-MM-YYYY HH:mm:ss'),
-                status: 'Scheduled',
+                status: 'Published',
             }).then(() => {
                 message.success('Đăng tin thành công');
                 navigate('/admin/posts');

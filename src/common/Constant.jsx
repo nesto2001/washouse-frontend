@@ -46,7 +46,9 @@ const API_LOCATION_DETAILS = 'api/locations/${locationId}';
 const API_ADMIN_CENTER = '/api/admin/centers';
 const API_ADMIN_CENTER_REQUEST = '/api/requests/centers';
 const API_ADMIN_POST = '/api/admin/posts';
+const API_PUBLIC_POST = '/api/posts';
 const API_ADMIN_POST_DETAIL = '/api/admin/posts/${id}';
+const API_ADMIN_POST_DETAIL_PUBLIC = '/api/posts/${id}';
 
 //CENTER REQUEST API
 const API_REQUEST = '/api/requests/centers';
@@ -137,6 +139,7 @@ export {
     API_MANAGER_CENTER,
     API_STAFF,
     API_ADMIN_CENTER_REQUEST,
+    API_PUBLIC_POST,
     API_REGISTER_PROVIDER,
     API_LOGIN_STAFF,
     API_ORDER_CREATE,
@@ -150,6 +153,7 @@ export {
     API_LOCATION_SEARCH,
     API_DISTRICT,
     API_DISTRICT_SEARCH,
+    API_ADMIN_POST_DETAIL_PUBLIC,
     API_DISTRICT_WARDS,
     API_CENTER_DETAILS,
     API_REGISTER_CUSTOMER,

@@ -9,6 +9,7 @@ export { default as LoginPage } from './LoginPage/LoginPage';
 export { default as RegisterPage } from './RegisterPage/RegisterPage';
 export { default as ResetPasswordPage } from './ResetPasswordPage/ResetPasswordPage';
 export { default as OrderDetailsPage } from './OrderPage/OrderDetailsPage';
+export { default as BlogPage } from './BlogPage/BlogPage';
 
 //customer
 export { default as OrdersPage } from './OrderPage/OrdersPage';

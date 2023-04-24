@@ -1,8 +1,10 @@
+import dayjs from 'dayjs';
+
 export interface BlogCardData {
     id: number;
-    type: number;
+    type: string;
     thumbnail: string;
     title: string;
     description: string | React.ReactNode;
-    date: Date;
+    date: dayjs.Dayjs;
 }

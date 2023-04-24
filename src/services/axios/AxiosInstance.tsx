@@ -1,5 +1,5 @@
+import axios, { AxiosResponse } from 'axios';
 import { BASE_URL } from '../../common/Constant';
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { refresh } from '../../repositories/AuthRepository';
 
 const instance = axios.create({
@@ -40,7 +40,7 @@ instance.interceptors.response.use(
 
                     return instance(originalRequest);
                 });
-            } else {    
+            } else {
                 localStorage.clear();
             }
         }

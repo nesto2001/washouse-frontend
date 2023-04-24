@@ -1,4 +1,4 @@
 export interface BlogType {
-    id: number;
-    type: string;
+    id: string;
+    name: string;
 }
