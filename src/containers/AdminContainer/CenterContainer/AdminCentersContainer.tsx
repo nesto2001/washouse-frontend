@@ -1,7 +1,7 @@
 import { Table, Tabs, TabsProps, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AdminCenterModel } from '../../../models/Admin/AdminCenterModel';
 import { getCenterList } from '../../../repositories/AdminRepository';
 import { CenterStatusMap } from '../../../mapping/CenterStatusMap';
@@ -19,6 +19,7 @@ export type SearchParamsData = {
 };
 
 const AdminCentersContainer = (props: Props) => {
+    const navigate = useNavigate();
     const location = useLocation();
     const { pathname } = location;
     const [centers, setCenters] = useState<AdminCenterModel[]>();
@@ -35,6 +36,7 @@ const AdminCentersContainer = (props: Props) => {
             title: 'STT',
             dataIndex: 'STT',
             key: 'STT',
+            align: 'center',
             render(value, record, index) {
                 return <div className="">{index + 1}</div>;
             },
@@ -43,23 +45,28 @@ const AdminCentersContainer = (props: Props) => {
             title: 'Hình ảnh',
             dataIndex: 'thumbnail',
             key: 'thumbnail',
+            width: 140,
             render(_, record) {
-                return <img className="w-40 h-24 object-cover" src={record.thumbnail}></img>;
+                return <img className="w-40 h-24 object-cover rounded-lg" src={record.thumbnail}></img>;
             },
         },
         {
             title: 'Tên',
             dataIndex: 'title',
+            width: 200,
             key: 'title',
         },
         {
             title: 'Địa chỉ',
             dataIndex: 'address',
             key: 'address',
+            width: 320,
+            render: (value) => value + ', TP. Hồ Chí Minh',
         },
         {
             title: 'Số điện thoại',
             dataIndex: 'phone',
+            width: 120,
             key: 'phone',
         },
         {
@@ -71,16 +78,8 @@ const AdminCentersContainer = (props: Props) => {
             title: 'Trạng thái',
             dataIndex: 'status',
             key: 'status',
-            render: (value) => <Tag color={CenterBadgeStatusMap[value]}>{CenterStatusMap[value]}</Tag>,
-        },
-        {
-            title: 'Thao tác',
-            dataIndex: 'action',
-            key: 'action',
-            render: (value, record) => (
-                <Link state={{ id: record.id }} to={`/admin/centers/${formatLink(record.title)}`} className="">
-                    Xem chi tiết
-                </Link>
+            render: (value: string) => (
+                <Tag color={CenterBadgeStatusMap[value.toLowerCase()]}>{CenterStatusMap[value.toLowerCase()]}</Tag>
             ),
         },
     ];
@@ -143,7 +142,19 @@ const AdminCentersContainer = (props: Props) => {
     return (
         <div>
             <Tabs activeKey={activeKey} items={centerTab} onChange={onChange} />
-            <Table dataSource={centers} columns={columns} loading={centers == null}></Table>
+            <Table
+                dataSource={centers}
+                columns={columns}
+                loading={centers == null}
+                onRow={(record, rowIndex) => {
+                    return {
+                        onClick: (event) => {
+                            navigate(`/admin/centers/${record.id}`);
+                        },
+                    };
+                }}
+                rowClassName="cursor-pointer"
+            ></Table>
         </div>
     );
 };

@@ -316,7 +316,7 @@ const publicRoutes: Array<RouteProps> = [
         component: AdminCenterPage,
     },
     {
-        path: '/admin/centers/:name',
+        path: '/admin/centers/:id',
         layout: AdminDashboardLayout,
         component: AdminCenterDetailsPage,
     },

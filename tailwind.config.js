@@ -20,6 +20,7 @@ module.exports = {
             'ws-primary-hover': '#0236d1',
             'ws-light-gray': '#f2f3f3',
             'ws-gray': '#0236d1',
+            'ws-green': '#019b45',
         },
     },
     plugins: [require('@tailwindcss/line-clamp')],

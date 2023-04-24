@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
-
-import { useLocation } from 'react-router-dom';
+import { EllipsisOutlined, StopOutlined } from '@ant-design/icons';
+import { useLocation, useParams } from 'react-router-dom';
 import { getCenter } from '../../../repositories/CenterRepository';
 import { getCenterDetails } from '../../../repositories/AdminRepository';
 import { AdminCenterDetailsModel } from '../../../models/Admin/AdminCenterDetails/AdminCenterDetailsModel';
 import OthersSpin from '../../../components/OthersSpin/OthersSpin';
-import { Button, Result, Tabs, TabsProps } from 'antd';
 import AdminCenterDetailsBasics from '../../../components/AdminCenterDetails/AdminCenterDetailsBasics';
 import AdminCenterDetailsService from '../../../components/AdminCenterDetails/AdminCenterDetailsService';
 import AdminCenterDetailsStaff from '../../../components/AdminCenterDetails/AdminCenterDetailsStaff';
 import AdminCenterDetailsFeedback from '../../../components/AdminCenterDetails/AdminCenterDetailsFeedback';
 import { Paging } from '../../../types/Common/Pagination';
+import { Button, Dropdown, MenuProps, Result, Tabs, TabsProps } from 'antd';
 
 type Props = {};
 
 const AdminCenterDetailsContainer = (props: Props) => {
-    let { state } = useLocation();
+    const { id } = useParams<{ id: string }>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isError, setIsError] = useState<boolean>(false);
     const [activeTab, setActiveTab] = useState('basics');
@@ -26,13 +26,11 @@ const AdminCenterDetailsContainer = (props: Props) => {
         pageNumber: 1,
     });
 
-    const id = parseInt(state.id ?? 0);
-
     useEffect(() => {
         setIsError(false);
         setIsLoading(true);
-        if (id && id !== 0) {
-            getCenterDetails(id)
+        if (id && parseInt(id) !== 0) {
+            getCenterDetails(parseInt(id))
                 .then((res) => {
                     setCenterDetails(res);
                     setIsLoading(false);
@@ -99,9 +97,49 @@ const AdminCenterDetailsContainer = (props: Props) => {
         },
     ];
 
+    const menuItems: MenuProps['items'] = [
+        {
+            label: (
+                <div className={`ml-1 text-left`}>
+                    {centerDetails.center.status.toLowerCase() !== 'suspended' ? 'Đình chỉ hoạt động' : 'Hủy đình chỉ'}
+                </div>
+            ),
+            key: 'suspend',
+            danger: centerDetails.center.status.toLowerCase() !== 'suspended' ? true : false,
+            icon: <StopOutlined />,
+            className: `${
+                centerDetails.center.status.toLowerCase() !== 'suspended'
+                    ? ''
+                    : 'hover:!bg-ws-green hover:!text-white !text-green'
+            }`,
+        },
+    ];
+
     return (
-        <div>
-            <Tabs items={items} activeKey={activeTab} onChange={onTabChange} />
+        <div className="bg-white basis-2/3 mx-auto rounded border border-wh-lightgray">
+            <div className="flex justify-between pt-4 px-6">
+                <div className="provider__page--title font-semibold text-2xl">Chi tiết trung tâm</div>
+                <div className="relative">
+                    <Dropdown
+                        menu={{ items: menuItems }}
+                        trigger={['click']}
+                        placement="bottomRight"
+                        getPopupContainer={(trigger) => {
+                            return trigger.parentNode as HTMLElement;
+                        }}
+                    >
+                        <Button type="default" style={{ background: 'white', padding: '0 4px' }}>
+                            <EllipsisOutlined style={{ fontSize: 24, fontWeight: 'bold' }} />
+                        </Button>
+                    </Dropdown>
+                </div>
+            </div>
+            {/* <div className="provider__page--subtitle mt-2 pl-6 text-sub-gray text-base"></div> */}
+            <div className="provider__page--content px-6 mt-8">
+                <div className="provider__services--wrapper">
+                    <Tabs items={items} activeKey={activeTab} onChange={onTabChange} />
+                </div>
+            </div>
         </div>
     );
 };

@@ -28,7 +28,7 @@ const AdminPostsContainer = (props: Props) => {
             dataIndex: 'thumbnail',
             key: 'thumbnail',
             render(_, record) {
-                return <img className="w-40 h-24 object-cover" src={record.thumbnail ?? Placeholder}></img>;
+                return <img className="w-40 h-24 object-cover rounded-xl" src={record.thumbnail ?? Placeholder}></img>;
             },
         },
         {

@@ -25,7 +25,7 @@ const AdminServicesContainer = (props: Props) => {
             dataIndex: 'image',
             key: 'image',
             render(_, record) {
-                return <img className="w-40 h-24 object-cover" src={record.image}></img>;
+                return <img className="w-40 h-24 object-cover rounded-lg" src={record.image}></img>;
             },
         },
         {
