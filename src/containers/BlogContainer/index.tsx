@@ -45,7 +45,7 @@ const BlogContainer = (props: Props) => {
                 <div className="blogs__wrapper h-full flex justify-center mb-4">
                     <div className="blogs__inner w-[70%] min-h-[1000px]">
                         <div className="font-bold text-4xl my-4">{blog?.title}</div>
-                        <div className="text-left text-lg">{blog?.content && HTMLReactParser(blog?.content)}</div>\
+                        <div className="text-left text-lg">{blog?.content && HTMLReactParser(blog?.content)}</div>
                         {blog?.createdDate && (
                             <div className="text-right text-base text-ws-black my-4">
                                 {timeSince(parse(blog?.createdDate, 'dd-MM-yyyy HH:mm:ss', new Date()))}
