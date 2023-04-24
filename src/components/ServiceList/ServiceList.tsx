@@ -8,16 +8,15 @@ import { ServiceStatusMap } from '../../mapping/OrderStatusMap';
 import { Link } from 'react-router-dom';
 type Props = {
     serviceList: ManagerServiceItem[];
-    layout: 'grid' | 'list' | 'table';
     paging?: Paging;
     updatePage: (page: number) => void;
 };
 
 const columns: ColumnsType<ManagerServiceItem> = [
     {
-        title: 'Mã',
-        dataIndex: 'id',
-        key: 'id',
+        title: 'STT',
+        dataIndex: 'stt',
+        key: 'stt',
         align: 'center',
         render: (_, text, index) => <strong>{index + 1}</strong>,
     },

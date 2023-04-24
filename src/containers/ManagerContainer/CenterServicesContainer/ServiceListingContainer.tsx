@@ -251,12 +251,7 @@ const ServiceListingContainer = (props: Props) => {
                         </Button>
                     }
                 />
-                <ServiceList
-                    layout="table"
-                    serviceList={serviceList}
-                    paging={paging}
-                    updatePage={(page) => setCurrentPage(page)}
-                />
+                <ServiceList serviceList={serviceList} paging={paging} updatePage={(page) => setCurrentPage(page)} />
             </div>
         </>
     );

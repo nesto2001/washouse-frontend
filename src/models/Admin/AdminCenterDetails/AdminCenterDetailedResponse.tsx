@@ -1,0 +1,23 @@
+export type AdminCenterDetailedReponse = {
+    id: number;
+    thumbnail: string;
+    title: string;
+    alias: string;
+    description: string;
+    locationId: number;
+    centerAddress: string;
+    managerId: number;
+    managerName: string;
+    managerPhone: string;
+    managerEmail: string;
+    centerPhone: string;
+    isAvailable: true;
+    hasDelivery: true;
+    hasOnlinePayment: true;
+    lastDeactivate: string;
+    rating: number;
+    numOfRating: number;
+    status: string;
+    taxCode: string;
+    taxRegistrationImage: string;
+};

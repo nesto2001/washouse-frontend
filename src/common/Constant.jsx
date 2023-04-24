@@ -44,6 +44,7 @@ const API_LOCATION_DETAILS = 'api/locations/${locationId}';
 
 //ADMIN API
 const API_ADMIN_CENTER = '/api/admin/centers';
+const API_ADMIN_CENTER_DETAILS = '/api/admin/centers/${centerId}';
 const API_ADMIN_CENTER_REQUEST = '/api/requests/centers';
 const API_ADMIN_POST = '/api/admin/posts';
 const API_PUBLIC_POST = '/api/posts';
@@ -106,6 +107,7 @@ const API_FEEDBACK_SERVICE_ID = '/api/feedbacks/services/${serviceId}';
 const RE_DIGIT = new RegExp(/^\d+$/);
 
 export {
+    API_ADMIN_CENTER_DETAILS,
     API_STAFF_FEEDBACKS,
     API_STAFF_UPDATE_ORDERED_SERVICE,
     API_FEEDBACK_ORDER,
