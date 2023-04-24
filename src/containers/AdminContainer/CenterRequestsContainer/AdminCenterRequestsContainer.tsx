@@ -1,4 +1,4 @@
-import { Button, Modal, message } from 'antd';
+import { Button, Empty, Modal, message } from 'antd';
 import { useEffect, useState } from 'react';
 import CenterList from '../../../components/CenterList/CenterList';
 import { AdminCenterModel } from '../../../models/Admin/AdminCenterModel';
@@ -66,7 +66,7 @@ const AdminCenterRequestsContainer = () => {
             {centerRequests?.length > 0 ? (
                 <CenterList centerRequests={centerRequests} openDetail={openDetail} />
             ) : (
-                <div>No data</div>
+                <Empty description="Không có trung tâm nào cần kiểm duyệt" className="mb-10 mt-5" />
             )}
             {center && (
                 <Modal
