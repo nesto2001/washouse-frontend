@@ -85,24 +85,12 @@ const CenterOrderDetailsGeneral = ({
                     labelStyle={{ fontSize: 16, fontWeight: 700 }}
                 >
                     {
-                        <Popconfirm
-                            title="Cập nhật"
-                            description="Xác nhận cập nhật tiến trình đơn hàng?"
-                            open={openProceedPop}
-                            onConfirm={handleOk}
-                            okButtonProps={{ loading: confirmProceedLoading }}
-                            onCancel={handleCancel}
-                            cancelButtonProps={{ style: { background: 'white' } }}
+                        <Tag
+                            style={{ fontSize: 16, width: 142, textAlign: 'center', padding: '6px 0px' }}
+                            color={BadgeStatusMap[orderInfo.status]}
                         >
-                            <Tag
-                                className="cursor-pointer"
-                                onClick={showPopconfirm}
-                                style={{ fontSize: 16, width: 142, textAlign: 'center', padding: '6px 0px' }}
-                                color={BadgeStatusMap[orderInfo.status]}
-                            >
-                                {OrderStatusMap[orderInfo.status]}
-                            </Tag>
-                        </Popconfirm>
+                            {OrderStatusMap[orderInfo.status]}
+                        </Tag>
                     }
                 </Descriptions.Item>
                 <Descriptions.Item
@@ -168,10 +156,32 @@ const CenterOrderDetailsGeneral = ({
                     {orderInfo.customerMessage ?? 'Không có'}
                 </Descriptions.Item>
             </Descriptions>
-            <div className="center__order--footer flex justify-end my-3">
-                <Button type="primary" size="large">
-                    Cập nhật tiến trình
-                </Button>
+            <div className="center__order--footer flex justify-end my-3 mb-6 gap-4">
+                {(orderInfo.status.toLowerCase() === 'confirmed' || orderInfo.status.toLowerCase() === 'pending') && (
+                    <Button
+                        type="default"
+                        size="large"
+                        className="capitalize bg-white hover:bg-ws-red hover:!text-white"
+                        danger
+                    >
+                        Hủy đơn hàng
+                    </Button>
+                )}
+                <Popconfirm
+                    title="Cập nhật"
+                    description="Xác nhận cập nhật tiến trình đơn hàng?"
+                    open={openProceedPop}
+                    onConfirm={handleOk}
+                    okButtonProps={{ loading: confirmProceedLoading }}
+                    onCancel={handleCancel}
+                    cancelButtonProps={{ style: { background: 'white' } }}
+                    okText="Xác nhận"
+                    cancelText="Hủy"
+                >
+                    <Button type="primary" size="large" className="capitalize" onClick={showPopconfirm}>
+                        Cập nhật tiến trình
+                    </Button>
+                </Popconfirm>
             </div>
         </>
     );

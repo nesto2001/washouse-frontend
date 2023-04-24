@@ -117,13 +117,21 @@ const CenterOrderDetailsContainer = (props: Props) => {
                     <div className="provider__page--content px-6 mt-6">
                         <div className="provider__services--wrapper">
                             <Row gutter={0} className="h-10 flex items-center font-medium text-base mb-2">
-                                <Col span={9} className="text-center">
+                                <Col flex={'0 0 436px'} className="text-center">
                                     Dịch vụ
                                 </Col>
-                                <Col span={2}>Định lượng</Col>
-                                <Col span={5}>Đơn giá</Col>
-                                <Col span={3}>Thành tiền</Col>
-                                <Col span={2}>Trạng thái</Col>
+                                <Col flex={'0 0 100px'} className="text-center">
+                                    Định lượng
+                                </Col>
+                                <Col flex={'0 0 150px'} className="text-center">
+                                    Đơn giá
+                                </Col>
+                                <Col flex={'0 0 150px'} className="text-center">
+                                    Thành tiền
+                                </Col>
+                                <Col flex={'0 0 200px'} className="text-center">
+                                    Trạng thái
+                                </Col>
                             </Row>
                             <CenterOrderedDetailsContainer
                                 forceUpdate={forceUpdate}

@@ -2,12 +2,12 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import Placeholder from '../../../assets/images/placeholder.png';
 import { formatCurrency } from '../../../utils/FormatUtils';
-import { Button, Form, Input, InputNumber, Modal, Tag, message } from 'antd';
+import { Button, Form, Input, InputNumber, Modal, Tag, Tooltip, message } from 'antd';
 import { CenterOrderedServiceModel } from '../../../models/Staff/CenterOrderedServiceModel';
 import { proceedOrderDetails, updateOrderDetails } from '../../../repositories/StaffRepository';
 import { OrderStatusMap } from '../../../mapping/OrderStatusMap';
 import { BadgeStatusMap } from '../../../mapping/BadgeStatusMap';
-import { EditOutlined } from '@ant-design/icons';
+import { EditOutlined, SyncOutlined } from '@ant-design/icons';
 import TextArea from 'antd/es/input/TextArea';
 import { UpdateOrderDetailsRequest } from '../../../models/Staff/StaffOrder/UpdateOrderDetailsRequest';
 
@@ -97,24 +97,23 @@ const CenterOrderedDetailsContainer = ({ details, orderId, orderStatus, forceUpd
                             {/* Ghi chú: {det.customerNote.length > 0 ? det.customerNote : 'không có'} */}
                         </div>
                     </div>
-                    <div className="ordered__item--weight w-[100px] text-base font-bold">
+                    <div className="ordered__item--weight w-[100px] text-base font-bold text-center">
                         {det.measurement} <span className="text-sub-gray">{det.unit}</span>
                     </div>
-                    <div className="ordered__item--unitprice font-bold text-lg w-[200px]">
+                    <div className="ordered__item--unitprice font-bold text-lg w-[150px] text-center">
                         {formatCurrency(det.unitPrice)}
                     </div>
-                    <div className="ordered__item--price font-bold text-xl w-[100px] text-right">
+                    <div className="ordered__item--price font-bold text-xl w-[150px] text-center">
                         {formatCurrency(det.price)}
                     </div>
-                    <div className="ordered__item--price font-bold text-xl w-[284px] text-right">
+                    <div className="ordered__item--price font-bold text-xl w-[220px] text-center">
                         <Tag
-                            className="flex w-1/2 justify-center items-center mx-auto h-8 cursor-pointer"
+                            className="text-sm py-1 px-4"
                             color={
                                 BadgeStatusMap[
                                     det.orderDetailTrackings[det.orderDetailTrackings.length - 1]?.status ?? 'None'
                                 ]
                             }
-                            onClick={() => handleProceed(orderId, det.id)}
                         >
                             {
                                 OrderStatusMap[
@@ -123,28 +122,41 @@ const CenterOrderedDetailsContainer = ({ details, orderId, orderStatus, forceUpd
                             }
                         </Tag>
                     </div>
-                    {(orderStatus.toLowerCase() === 'confirmed' || orderStatus.toLowerCase() === 'ready') && (
-                        <div className="ordered__item--update font-bold text-xl text-right">
+                    <div className="ordered__item--update font-bold text-xl text-right flex gap-6">
+                        {(orderStatus.toLowerCase() === 'confirmed' || orderStatus.toLowerCase() === 'ready') && (
+                            <Tooltip title="Chỉnh sửa">
+                                <Button
+                                    type="default"
+                                    shape="default"
+                                    style={{ background: 'white', padding: '0 8px' }}
+                                    onClick={() => {
+                                        setSelectedItem({
+                                            id: det.id,
+                                            title: det.name,
+                                            category: det.category,
+                                            image: det.image,
+                                            measurement: det.measurement,
+                                            unit: det.unit,
+                                            note: det.staffNote ?? undefined,
+                                        });
+                                        setOpen(true);
+                                    }}
+                                >
+                                    <EditOutlined className="align-middle" />
+                                </Button>
+                            </Tooltip>
+                        )}
+                        <Tooltip title="Cập nhật tiến trình">
                             <Button
-                                icon={<EditOutlined />}
                                 type="primary"
                                 shape="default"
-                                style={{ background: '#396afc' }}
-                                onClick={() => {
-                                    setSelectedItem({
-                                        id: det.id,
-                                        title: det.name,
-                                        category: det.category,
-                                        image: det.image,
-                                        measurement: det.measurement,
-                                        unit: det.unit,
-                                        note: det.staffNote ?? undefined,
-                                    });
-                                    setOpen(true);
-                                }}
-                            />
-                        </div>
-                    )}
+                                style={{ background: '#396afc', padding: '0 8px' }}
+                                onClick={() => handleProceed(orderId, det.id)}
+                            >
+                                <SyncOutlined className="align-middle" />
+                            </Button>
+                        </Tooltip>
+                    </div>
                 </div>
             ))}
             {open && selectedItem && (
