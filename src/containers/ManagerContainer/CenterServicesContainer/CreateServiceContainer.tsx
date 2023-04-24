@@ -95,10 +95,7 @@ const CreateServiceContainer = () => {
     };
 
     useEffect(() => {
-        const fetchData = async () => {
-            return await getCategoryOptions();
-        };
-        fetchData().then((res) => {
+        getCategoryOptions().then((res) => {
             setCategoryOptions((prev) => [...prev, ...res]);
         });
     }, [form]);

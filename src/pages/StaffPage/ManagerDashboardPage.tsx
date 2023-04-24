@@ -1,20 +1,7 @@
-import { Card, Col, Row, Space } from 'antd';
-import React, { PureComponent } from 'react';
+import { Card, Space } from 'antd';
 import { BsClipboard2DataFill } from 'react-icons/bs';
 import { FaMoneyBillWave, FaUserFriends } from 'react-icons/fa';
-import {
-    BarChart,
-    Bar,
-    Cell,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    Legend,
-    ResponsiveContainer,
-    LineChart,
-    Line,
-} from 'recharts';
+import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
 import { formatCurrency } from '../../utils/FormatUtils';
 
 type Props = {};

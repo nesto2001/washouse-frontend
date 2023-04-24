@@ -1,4 +1,3 @@
-import { stat } from 'fs';
 import { API_ADMIN_POST, API_ADMIN_POST_DETAIL } from '../common/Constant';
 import { AddPostRequest } from '../containers/AdminContainer/PostContainer/AdminCreatePostContainer';
 import { PaginationResponse, Response } from '../models/CommonModel';
@@ -43,9 +42,7 @@ export const getAdminPosts = async ({
 };
 
 export const createPost = async (request: AddPostRequest) => {
-    const { status } = await instance.post(API_ADMIN_POST, {
-        request,
-    });
+    const { status } = await instance.post(API_ADMIN_POST, request);
     if (status !== 200) {
         return Promise.reject();
     }

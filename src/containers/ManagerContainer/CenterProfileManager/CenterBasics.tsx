@@ -57,14 +57,10 @@ const CenterBasics = ({ center }: Props) => {
     const onFinish = (values: any) => {
         const file = fileList[0]?.originFileObj;
         if (file) {
-            const uploadFile = async () => {
-                return await uploadSingle(file);
-            };
-            uploadFile().then((res) => {
+            uploadSingle(file).then((res) => {
                 setFormData({ ...formData, savedImage: res.data.data.savedFileName, image: res.data.data.signedUrl });
             });
         }
-        console.log('Success:', values);
     };
 
     const onFinishFailed = (errorInfo: any) => {

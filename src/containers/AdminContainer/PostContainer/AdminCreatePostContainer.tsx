@@ -1,27 +1,67 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Form, Input, Switch, Upload, UploadFile, message } from 'antd';
+import { Button, DatePicker, Form, Input, Select, Switch, Upload, UploadFile, message } from 'antd';
 import { UploadChangeParam } from 'antd/es/upload';
-import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import dayjs from 'dayjs';
+import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import TextEditor from '../../../components/Editor/TextEditor';
+import { uploadSingle } from '../../../repositories/MediaRepository';
+import { createPost } from '../../../repositories/PostRepository';
+import TextArea from 'antd/es/input/TextArea';
 
 export type AddPostRequest = {
-    title: string;
-    content: string;
-    savedFileName: string;
-    type: string;
-    status: string;
-    publishTime: string;
+    title?: string;
+    content?: string;
+    description?: string;
+    savedFileName?: string;
+    type?: string;
+    status?: string;
+    publishTime?: string;
 };
+
+export const postType = [
+    {
+        id: 'System',
+        name: 'Hệ thống',
+    },
+    {
+        id: 'Lifestyle',
+        name: 'Đời sống',
+    },
+    {
+        id: 'Promotions',
+        name: 'Khuyến mãi',
+    },
+];
 
 const AdminCreatePostContainer = () => {
     const location = useLocation();
     const [form] = Form.useForm();
+    const navigate = useNavigate();
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [toggle, setToggle] = useState(false);
+    const [formData, setFormData] = useState<AddPostRequest>();
     const [editorContent, setEditorContent] = useState<string>('');
-    const onFinish = () => {};
     const onFinishFailed = () => {};
+
+    const onFinish = async (values: AddPostRequest) => {
+        const file = fileList[0]?.originFileObj;
+        if (file && editorContent) {
+            const { data } = await uploadSingle(file);
+            createPost({
+                ...values,
+                savedFileName: data.data.savedFileName,
+                content: editorContent,
+                publishTime: values.publishTime ?? dayjs().format('DD-MM-YYYY HH:mm:ss'),
+                status: 'Scheduled',
+            }).then(() => {
+                message.success('Đăng tin thành công');
+                navigate('/admin/posts');
+            });
+        } else {
+            message.error('Vui lòng nhập đầy đủ nội dung');
+        }
+    };
     const handleChange = (info: UploadChangeParam) => {
         const { status } = info.file;
 
@@ -41,10 +81,6 @@ const AdminCreatePostContainer = () => {
         setFileList(fileList);
     };
 
-    useEffect(() => {
-        console.log(editorContent);
-    }, [editorContent]);
-
     return (
         <div className="text-sub text-base pb-4">
             <Form
@@ -63,6 +99,7 @@ const AdminCreatePostContainer = () => {
                         fileList={[...fileList]}
                         onChange={handleChange}
                         multiple={false}
+                        accept={'.jpg, .jpeg, .png'}
                     >
                         <div>
                             <PlusOutlined />
@@ -79,23 +116,35 @@ const AdminCreatePostContainer = () => {
                     >
                         <Input placeholder="Nhập tiêu đề bài đăng" />
                     </Form.Item>
+
                     <Form.Item
                         className="basis-2/5"
                         label="Loại bài đăng"
                         name="type"
+                        initialValue={'System'}
                         rules={[{ required: true, message: 'Vui lòng nhập loại bài đăng' }]}
                     >
-                        <Input placeholder="Nhập loại bài đăng" />
+                        <Select
+                            id=""
+                            options={postType.map((type) => {
+                                return {
+                                    value: type.id,
+                                    label: type.name,
+                                };
+                            })}
+                        />
                     </Form.Item>
                 </div>
-                {/* <Form.Item
-                    label="Nội dung bài đăng"
-                    name="content"
-                    rules={[{ required: true, message: 'Vui lòng nhập nội dung bài đăng' }]}
+                <Form.Item
+                    label="Mô tả bài đăng"
+                    name="description"
+                    rules={[{ required: true, message: 'Vui lòng nhập mô tả bài đăng' }]}
                 >
-                    <TextArea rows={4} placeholder="Nhập nội dung bài đăng" />
-                </Form.Item> */}
-                <TextEditor content={editorContent} onChange={(content) => setEditorContent(content)} />
+                    <TextArea rows={4} placeholder="Nhập mô tả bài đăng" />
+                </Form.Item>
+                <Form.Item label="Nội dung bài đăng" required>
+                    <TextEditor content={editorContent} onChange={(content) => setEditorContent(content)} />
+                </Form.Item>
                 <div className="flex w-full gap-10 my-4">
                     <div className="flex gap-4">
                         <div className="">Hẹn giờ đăng</div>
