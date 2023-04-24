@@ -8,5 +8,7 @@ export type AdminCenterFeedbackModel = {
     createdDate: dayjs.Dayjs;
     replyMessage: string;
     replyBy: string;
+    orderId: string;
+    services: [{ id: string; name: string }];
     replyDate: dayjs.Dayjs;
 };

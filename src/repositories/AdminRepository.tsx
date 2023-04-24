@@ -133,6 +133,8 @@ export const getCenterDetails = async (id: number): Promise<AdminCenterDetailsMo
                 createdBy: item.createdBy,
                 createdDate: dayjs(item.createdDate, 'DD-MM-YYYY HH:mm:ss'),
                 replyBy: item.replyBy,
+                orderId: item.orderId,
+                services: item.services,
                 replyMessage: item.replyMessage,
                 replyDate: dayjs(item.replyDate, 'DD-MM-YYYY HH:mm:ss'),
             };
