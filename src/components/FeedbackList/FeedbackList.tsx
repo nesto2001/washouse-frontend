@@ -1,10 +1,9 @@
-import React from 'react';
-import { CenterFeedbackModel } from '../../models/Staff/StaffFeedback/CenterFeedbackModel';
-import Table, { ColumnsType } from 'antd/es/table';
-import RatingStars from '../RatingStars/RatingStars';
-import { Button } from 'antd';
 import { EllipsisOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
+import Table, { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
+import { CenterFeedbackModel } from '../../models/Staff/StaffFeedback/CenterFeedbackModel';
+import StarFull from '../Star/StarFull';
 
 type Props = {
     feedbacks: CenterFeedbackModel[];
@@ -14,6 +13,13 @@ const FeedbackList = ({ feedbacks }: Props) => {
     const navigate = useNavigate();
 
     const columns: ColumnsType<CenterFeedbackModel> = [
+        {
+            title: 'STT',
+            dataIndex: 'stt',
+            key: 'stt',
+            align: 'center',
+            render: (_, text, index) => <strong>{index + 1}</strong>,
+        },
         {
             title: 'Nhận xét',
             dataIndex: 'feedback',
@@ -50,9 +56,9 @@ const FeedbackList = ({ feedbacks }: Props) => {
             align: 'center',
             width: 204,
             render: (rating: number) => (
-                <div className="flex justify-center">
+                <div className="flex justify-center gap-2">
+                    <StarFull numOfStar={1} />
                     <span className="mr-3 text-xl font-bold">{rating.toFixed(1)}</span>
-                    <RatingStars rating={rating} />
                 </div>
             ),
         },
@@ -72,8 +78,9 @@ const FeedbackList = ({ feedbacks }: Props) => {
     return (
         <div>
             <Table
+                rowClassName="cursor-pointer"
                 columns={columns}
-                dataSource={feedbacks}  
+                dataSource={feedbacks}
                 onRow={(record, rowIndex) => {
                     return {
                         onClick: (event) => {

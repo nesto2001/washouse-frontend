@@ -4,7 +4,7 @@ export type AccountResponse = {
     email: string;
     fullName: string;
     gender: number;
-    dob: string;
+    dob?: string;
     status: boolean;
     isAdmin: boolean;
     profilePic: string;

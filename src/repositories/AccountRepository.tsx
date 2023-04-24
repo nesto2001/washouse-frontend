@@ -14,11 +14,10 @@ import { PaginationResponse, Response } from '../models/CommonModel';
 import { UpdateAddressRequest } from '../models/Customer/UpdateAddressRequest';
 import { UpdateAvatarRequest } from '../models/Customer/UpdateAvatarRequest';
 import { UpdateProfileRequest } from '../models/Customer/UpdateCustomerRequest';
-import { UserModel } from '../models/User/UserModel';
-import { UserResponse } from '../models/User/UserResponse';
 import { WalletModel } from '../models/Wallet/WalletModel';
 import { WalletResponse } from '../models/Wallet/WalletResponse';
 import instance from '../services/axios/AxiosInstance';
+import dayjs from 'dayjs';
 
 export const getUserProfile = async (id: number): Promise<CustomerAccountModel> => {
     const { data } = await instance.get<Response<CustomerAccountResponse>>(
@@ -66,7 +65,7 @@ export const getAllAccounts = async (): Promise<AccountModel[]> => {
             gender: item.gender,
             isAdmin: item.isAdmin,
             fullName: item.fullName,
-            dob: item.dob,
+            dob: item.dob ? dayjs(item.dob, 'YYYY-MM-DDTHH:mm:ss') : undefined,
             phone: item.phone,
             status: item.status,
         };

@@ -5,7 +5,7 @@ import { formatCurrency } from '../../utils/FormatUtils';
 import { PaginationProps } from 'rc-pagination';
 import { Paging } from '../../types/Common/Pagination';
 import { ServiceStatusMap } from '../../mapping/OrderStatusMap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 type Props = {
     serviceList: ManagerServiceItem[];
     paging?: Paging;
@@ -28,6 +28,7 @@ const columns: ColumnsType<ManagerServiceItem> = [
     },
     {
         title: 'Phân loại',
+        align: 'center',
         dataIndex: 'categoryName',
         key: 'categoryName',
     },
@@ -35,6 +36,7 @@ const columns: ColumnsType<ManagerServiceItem> = [
         title: 'Định lượng',
         dataIndex: 'pricetype',
         key: 'pricetype',
+        align: 'center',
         render: (value) => (value ? 'Khối lượng' : 'Số lượng'),
     },
     {
@@ -47,6 +49,7 @@ const columns: ColumnsType<ManagerServiceItem> = [
     {
         title: 'Đánh giá',
         dataIndex: 'rating',
+        align: 'center',
         key: 'rating',
         render: (_, record) =>
             record.rating && record.numOfRating > 0 ? record.rating + '/' + record.numOfRating : 'Chưa có',
@@ -58,19 +61,9 @@ const columns: ColumnsType<ManagerServiceItem> = [
         align: 'center',
         render: (value) => <Tag color="success">{ServiceStatusMap[value.toLowerCase()]}</Tag>,
     },
-    {
-        title: 'Thao tác',
-        key: 'action',
-        align: 'center',
-
-        render: (_, record) => (
-            <Link to={`/provider/services/${record.id}`}>
-                <div className="text-primary cursor-pointer font-bold">Xem chi tiết</div>
-            </Link>
-        ),
-    },
 ];
 const ServiceList = ({ serviceList, paging, updatePage }: Props) => {
+    const navigate = useNavigate();
     return (
         <div className="service__list--wrapper my-5 mt-2">
             <div className="service__list">
@@ -79,6 +72,14 @@ const ServiceList = ({ serviceList, paging, updatePage }: Props) => {
                     dataSource={serviceList}
                     loading={serviceList.length <= 0}
                     pagination={false}
+                    onRow={(record, rowIndex) => {
+                        return {
+                            onClick: (event) => {
+                                navigate(`/provider/services/${record.id}`);
+                            },
+                        };
+                    }}
+                    rowClassName="cursor-pointer"
                 />
                 <Pagination
                     className="float-right mt-4"

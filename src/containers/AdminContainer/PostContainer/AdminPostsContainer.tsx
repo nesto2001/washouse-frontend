@@ -1,7 +1,7 @@
 import { Button, Table, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Placeholder from '../../../assets/images/placeholder.png';
 import { PostBadgeStatusMap, PostStatusMap } from '../../../mapping/PostStatusMap';
 import { PostModel } from '../../../models/Post/PostModel';
@@ -11,6 +11,7 @@ type Props = {};
 
 const AdminPostsContainer = (props: Props) => {
     const location = useLocation();
+    const navigate = useNavigate();
     const [posts, setPosts] = useState<PostModel[]>();
     const [activeKey, setActiveKey] = useState<string>(location.state?.keyTab ?? '1');
     const columns: ColumnsType<PostModel> = [
@@ -27,8 +28,12 @@ const AdminPostsContainer = (props: Props) => {
             title: 'Hình ảnh',
             dataIndex: 'thumbnail',
             key: 'thumbnail',
+            align: 'center',
+            width: 180,
             render(_, record) {
-                return <img className="w-40 h-24 object-cover rounded-xl" src={record.thumbnail ?? Placeholder}></img>;
+                return (
+                    <img className="w-full h-24 object-cover rounded-xl" src={record.thumbnail ?? Placeholder}></img>
+                );
             },
         },
         {
@@ -62,20 +67,8 @@ const AdminPostsContainer = (props: Props) => {
         {
             title: 'Giờ tạo',
             dataIndex: 'createdDate',
+            align: 'center',
             key: 'createdDate',
-        },
-
-        {
-            title: 'Thao tác',
-            render(_, record) {
-                return (
-                    <>
-                        <Link to={`/admin/posts/${record.id}`}>
-                            <div className="cursor-pointer text-primary">Xem chi tiết</div>
-                        </Link>
-                    </>
-                );
-            },
         },
     ];
 
@@ -97,7 +90,19 @@ const AdminPostsContainer = (props: Props) => {
                     Tạo bài đăng
                 </Button>
             </Link>
-            <Table dataSource={posts} columns={columns} loading={posts == null}></Table>
+            <Table
+                rowClassName="cursor-pointer"
+                dataSource={posts}
+                columns={columns}
+                loading={posts == null}
+                onRow={(record, rowIndex) => {
+                    return {
+                        onClick: (event) => {
+                            navigate(`/admin/posts/${record.id}`);
+                        },
+                    };
+                }}
+            ></Table>
         </div>
     );
 };

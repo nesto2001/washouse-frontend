@@ -291,6 +291,7 @@ const OrderDetailsContainer = (props: Props) => {
                         </h2>
                         <div className="orderdetails--list w-full mt-3">
                             <Table
+                                rowClassName="cursor-pointer"
                                 dataSource={orderDetails.orderedDetails}
                                 columns={columns}
                                 loading={orderDetails == null}

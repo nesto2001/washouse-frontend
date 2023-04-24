@@ -59,7 +59,9 @@ const Stafflist = ({ centerStaff, forceUpdate }: Props) => {
             align: 'center',
             dataIndex: 'isManager',
             key: 'isManager',
-            render: (isManager: boolean) => <div className="font-bold">{isManager ? 'Quản lý' : 'Nhân viên'}</div>,
+            render: (isManager: boolean) => (
+                <div>{isManager ? <div className="font-bold">Quản lý</div> : 'Nhân viên'}</div>
+            ),
         },
         {
             title: 'Trạng thái',
@@ -68,47 +70,6 @@ const Stafflist = ({ centerStaff, forceUpdate }: Props) => {
             key: 'status',
             render: (status: boolean) =>
                 status ? <Tag color="green">Hoạt động</Tag> : <Tag color="red">Tạm nghỉ</Tag>,
-        },
-        {
-            title: 'Thao tác',
-            dataIndex: '',
-            key: 'action',
-            align: 'center',
-            // render: (_, record) =>
-            //     record.isManager ? (
-            //         ''
-            //     ) : !record.status ? (
-            //         <div
-            //             className="text-ws-red cursor-pointer"
-            //             onClick={() =>
-            //                 activateStaff(record.id).then((res) => {
-            //                     forceUpdate();
-            //                     message.success('Cập nhật trạng thái nhân viên thành công.');
-            //                 })
-            //             }
-            //         >
-            //             Activate
-            //         </div>
-            //     ) : (
-            //         <div
-            //             className="text-ws-red cursor-pointer"
-            //             onClick={() =>
-            //                 deactivateStaff(record.id).then((res) => {
-            //                     forceUpdate();
-            //                     message.success('Cập nhật trạng thái nhân viên thành công.');
-            //                 })
-            //             }
-            //         >
-            //             Deactivate
-            //         </div>
-            //     ),
-            render(_, record) {
-                return (
-                    <div className="text-primary cursor-pointer" onClick={() => setStaffDetail(record)}>
-                        Xem chi tiết
-                    </div>
-                );
-            },
         },
     ];
 
@@ -131,7 +92,19 @@ const Stafflist = ({ centerStaff, forceUpdate }: Props) => {
                     <Button className="float-right mb-4" type="primary" onClick={() => setModalVisibility(true)}>
                         Thêm nhân viên
                     </Button>
-                    <Table columns={columns} dataSource={centerStaff} loading={centerStaff == null} />
+                    <Table
+                        onRow={(record, rowIndex) => {
+                            return {
+                                onClick: (event) => {
+                                    setStaffDetail(record);
+                                },
+                            };
+                        }}
+                        rowClassName="cursor-pointer"
+                        columns={columns}
+                        dataSource={centerStaff}
+                        loading={centerStaff == null}
+                    />
                 </div>
             </div>
             <Modal
@@ -227,7 +200,7 @@ const Stafflist = ({ centerStaff, forceUpdate }: Props) => {
                                         })
                                     }
                                 >
-                                    Activate
+                                    Hủy đình chỉ
                                 </Button>
                             ) : (
                                 <Button
@@ -241,7 +214,7 @@ const Stafflist = ({ centerStaff, forceUpdate }: Props) => {
                                         })
                                     }
                                 >
-                                    <div className="text-white">Deactivate</div>
+                                    <div className="text-white">Đình chỉ</div>
                                 </Button>
                             ))}
                     </>

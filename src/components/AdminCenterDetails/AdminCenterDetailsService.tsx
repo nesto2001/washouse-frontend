@@ -66,6 +66,7 @@ const AdminCenterDetailsService = ({ centerServices, paging, updatePage }: Props
     return (
         <div className="pt-3">
             <Table
+                rowClassName="cursor-pointer"
                 columns={columns}
                 dataSource={centerServices}
                 loading={centerServices.length <= 0}

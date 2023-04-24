@@ -51,7 +51,7 @@ const AdminCenterDetailsStaff = ({ centerStaffs }: Props) => {
     ];
     return (
         <div className="pt-3">
-            <Table columns={columns} dataSource={centerStaffs} />
+            <Table columns={columns} rowClassName="cursor-pointer" dataSource={centerStaffs} />
         </div>
     );
 };

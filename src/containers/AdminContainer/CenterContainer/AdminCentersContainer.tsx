@@ -1,13 +1,11 @@
 import { Table, Tabs, TabsProps, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { CenterBadgeStatusMap } from '../../../mapping/CenterBadgeStatusMap';
+import { CenterStatusMap } from '../../../mapping/CenterStatusMap';
 import { AdminCenterModel } from '../../../models/Admin/AdminCenterModel';
 import { getCenterList } from '../../../repositories/AdminRepository';
-import { CenterStatusMap } from '../../../mapping/CenterStatusMap';
-import { BadgeStatusMap } from '../../../mapping/BadgeStatusMap';
-import { CenterBadgeStatusMap } from '../../../mapping/CenterBadgeStatusMap';
-import { formatLink } from '../../../utils/FormatUtils';
 
 type Props = {};
 
@@ -24,6 +22,7 @@ const AdminCentersContainer = (props: Props) => {
     const { pathname } = location;
     const [centers, setCenters] = useState<AdminCenterModel[]>();
     const [activeKey, setActiveKey] = useState<string>('All');
+    const [loading, setLoading] = useState<boolean>(true);
 
     const [searchParams, setSearchParams] = useState<SearchParamsData>({
         searchString: null,
@@ -38,7 +37,7 @@ const AdminCentersContainer = (props: Props) => {
             key: 'STT',
             align: 'center',
             render(value, record, index) {
-                return <div className="">{index + 1}</div>;
+                return <div className="font-bold">{index + 1}</div>;
             },
         },
         {
@@ -55,6 +54,9 @@ const AdminCentersContainer = (props: Props) => {
             dataIndex: 'title',
             width: 200,
             key: 'title',
+            render(_, record) {
+                return <div className="font-bold">{record.title}</div>;
+            },
         },
         {
             title: 'Địa chỉ',
@@ -85,18 +87,15 @@ const AdminCentersContainer = (props: Props) => {
     ];
 
     useEffect(() => {
-        console.log(activeKey);
-
-        const fetchData = async () => {
-            return await getCenterList(searchParams);
-        };
-        fetchData()
+        setLoading(true);
+        getCenterList(searchParams)
             .then((res) => {
                 setCenters(res);
             })
             .catch(() => {
                 setCenters([]);
-            });
+            })
+            .finally(() => setLoading(false));
     }, [activeKey]);
 
     const centerTab: TabsProps['items'] = [
@@ -145,7 +144,7 @@ const AdminCentersContainer = (props: Props) => {
             <Table
                 dataSource={centers}
                 columns={columns}
-                loading={centers == null}
+                loading={loading}
                 onRow={(record, rowIndex) => {
                     return {
                         onClick: (event) => {

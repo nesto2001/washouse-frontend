@@ -34,9 +34,6 @@ const CenterStaffListingContainer = (props: Props) => {
         });
     }, [searchParams, state]);
 
-    const onChange = (key: string) => {
-        console.log(key);
-    };
     return (
         <>
             <div className="provider__services--filter">

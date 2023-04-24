@@ -35,6 +35,9 @@ const columns: ColumnsType<AccountModel> = [
         dataIndex: 'dob',
         key: 'dob',
         width: 120,
+        render: (_, record) => {
+            return <div className="">{record.dob?.format('DD-MM-YYYY')}</div>;
+        },
     },
     {
         title: 'Vai trò',
@@ -42,7 +45,7 @@ const columns: ColumnsType<AccountModel> = [
         key: 'role',
         align: 'center',
         render: (value) => {
-            return <div className="">{value ? 'Quản trị viên' : 'Người dùng'}</div>;
+            return <div className="">{value ? <div className="font-bold">Quản trị viên</div> : 'Người dùng'}</div>;
         },
     },
     {
@@ -60,14 +63,18 @@ const columns: ColumnsType<AccountModel> = [
         key: 'action',
         align: 'center',
         render: (_, record) => {
-            return record.status ? (
-                <Tooltip title="Hủy kích hoạt" className="text-red hover:opacity-70 cursor-pointer text-center">
-                    <FaPowerOff className="inline-block" />
-                </Tooltip>
+            return !record.isAdmin ? (
+                record.status ? (
+                    <Tooltip title="Hủy kích hoạt" className="text-red hover:opacity-70 cursor-pointer text-center">
+                        <FaPowerOff className="inline-block" />
+                    </Tooltip>
+                ) : (
+                    <Tooltip title="Kích hoạt" className="text-green hover:opacity-70 cursor-pointer text-center">
+                        <FaPowerOff className="inline-block" />
+                    </Tooltip>
+                )
             ) : (
-                <Tooltip title="Kích hoạt" className="text-green hover:opacity-70 cursor-pointer text-center">
-                    <FaPowerOff className="inline-block" />
-                </Tooltip>
+                <></>
             );
         },
     },

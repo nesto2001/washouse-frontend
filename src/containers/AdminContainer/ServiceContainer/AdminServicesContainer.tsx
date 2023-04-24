@@ -24,17 +24,23 @@ const AdminServicesContainer = (props: Props) => {
             title: 'Hình ảnh',
             dataIndex: 'image',
             key: 'image',
+            align: 'center',
+            width: 200,
             render(_, record) {
-                return <img className="w-40 h-24 object-cover rounded-lg" src={record.image}></img>;
+                return <img className="w-full h-24 object-cover rounded-lg" src={record.image}></img>;
             },
         },
         {
             title: 'Tên',
             dataIndex: 'categoryName',
             key: 'categoryName',
+            render(_, record) {
+                return <div className=""> {record.categoryName}</div>;
+            },
         },
         {
             title: 'Thao tác',
+            align: 'center',
             render(_, record) {
                 return record.homeFlag ? (
                     <div className="cursor-pointer text-red">Hủy ghim dịch vụ</div>
@@ -59,10 +65,6 @@ const AdminServicesContainer = (props: Props) => {
         const keyTab = pathname === '/admin/centers/' ? '1' : '3';
         setActiveKey(keyTab);
     }, [pathname]);
-
-    const onChange = (key: string) => {
-        setActiveKey(key);
-    };
 
     return (
         <div className="provider__services--filter">

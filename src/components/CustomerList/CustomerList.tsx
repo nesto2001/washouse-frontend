@@ -93,7 +93,7 @@ const CustomerList = ({ customers }: Props) => {
     return (
         <div className="customer__list--wrapper my-5 mt-2">
             <div className="customer__list">
-                <Table columns={columns} dataSource={customers} />
+                <Table columns={columns} dataSource={customers} rowClassName="cursor-pointer" />
             </div>
         </div>
     );

@@ -91,6 +91,7 @@ const AdminCenterDetailsFeedback = ({ centerFeedbacks }: Props) => {
     return (
         <div>
             <Table
+                rowClassName="cursor-pointer"
                 columns={columns}
                 dataSource={centerFeedbacks.sort((a, b) => (b.createdDate.isAfter(a.createdDate) ? 1 : -1))}
                 pagination={{ pageSize: 5 }}
