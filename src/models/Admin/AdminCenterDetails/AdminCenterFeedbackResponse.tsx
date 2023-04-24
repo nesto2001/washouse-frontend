@@ -6,5 +6,7 @@ export type AdminCenterFeedbackResponse = {
     createdDate: string;
     replyMessage: string;
     replyBy: string;
+    orderId: string;
+    services: [{ id: string; name: string }];
     replyDate: string;
 };
