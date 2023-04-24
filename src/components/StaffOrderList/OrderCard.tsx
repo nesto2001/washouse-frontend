@@ -2,8 +2,7 @@ import { CenterOrderModel } from '../../models/Staff/CenterOrderModel';
 import { formatCurrency, formatPercentage } from '../../utils/FormatUtils';
 import OrderListItem from './OrderListItem';
 
-import { Popconfirm, Tag } from 'antd';
-import TextArea from 'antd/es/input/TextArea';
+import { Tag } from 'antd';
 import { Link } from 'react-router-dom';
 import { BadgeStatusMap } from '../../mapping/BadgeStatusMap';
 import { OrderStatusMap } from '../../mapping/OrderStatusMap';
@@ -20,29 +19,30 @@ const OrderCard = ({ order }: Props) => {
             <div className="order__item--id w-full text-left py-2 bg-primary text-white font-bold pl-4">
                 Mã đơn hàng: {order.id}
             </div>
-            <div className="order__item--content flex justify-between pt-3">
-                <div className="order__item--services w-[400px] pl-4">
-                    <OrderListItem orderedService={order.orderedServices} />
-                </div>
-                <div className="order__item--value mx-1 text-base font-bold w-[110px]">
-                    {formatCurrency(order.totalValue)}
-                </div>
-                <div className="order__item--discount mx-1 text-base w-[86px]">
-                    {order.discount > 0 ? (
-                        <CouponTag content={`Giảm ${formatPercentage(order.discount)}`} />
-                    ) : (
-                        'Không có'
-                    )}
-                </div>
-                <div className="order__item--payment mx-1 text-base font-bold w-[100px]">
-                    {formatCurrency(order.totalPayment)}
-                </div>{' '}
-                {/* insert tooltip here */}
-                <div className="order__item--date text-base mx-1 w-[100px]">{order.orderedDate}</div>
-                <div className="order__item--status text-base mx-1 w-[88px]">
-                    <Tag color={BadgeStatusMap[order.status.toLowerCase()]}>{OrderStatusMap[order.status]}</Tag>
-                </div>
-                <div className="order__item--status text-base mx-1 w-[200px] flex gap-4">
+            <Link to={`/provider/orders/${order.id}`}>
+                <div className="order__item--content flex justify-between pt-3">
+                    <div className="order__item--services w-[400px] pl-4">
+                        <OrderListItem orderedService={order.orderedServices} />
+                    </div>
+                    <div className="order__item--value mx-1 text-base font-bold w-[110px]">
+                        {formatCurrency(order.totalValue)}
+                    </div>
+                    <div className="order__item--discount mx-1 text-base w-[86px]">
+                        {order.discount > 0 ? (
+                            <CouponTag content={`Giảm ${formatPercentage(order.discount)}`} />
+                        ) : (
+                            'Không có'
+                        )}
+                    </div>
+                    <div className="order__item--payment mx-1 text-base font-bold w-[100px]">
+                        {formatCurrency(order.totalPayment)}
+                    </div>{' '}
+                    {/* insert tooltip here */}
+                    <div className="order__item--date text-base mx-1 w-[100px]">{order.orderedDate}</div>
+                    <div className="order__item--status text-base mx-1 w-[88px]">
+                        <Tag color={BadgeStatusMap[order.status.toLowerCase()]}>{OrderStatusMap[order.status]}</Tag>
+                    </div>
+                    {/* <div className="order__item--status text-base mx-1 w-[200px] flex gap-4">
                     <div className="font-medium text-primary">
                         <Link to={`/provider/orders/${order.id}`}>Xem chi tiết</Link>
                     </div>
@@ -71,8 +71,9 @@ const OrderCard = ({ order }: Props) => {
                                 </div>
                             </Popconfirm>
                         ))}
+                </div> */}
                 </div>
-            </div>
+            </Link>
         </div>
     );
 };

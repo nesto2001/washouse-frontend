@@ -3,6 +3,7 @@ import { BsClipboard2DataFill } from 'react-icons/bs';
 import { FaMoneyBillWave, FaUserFriends } from 'react-icons/fa';
 import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
 import { formatCurrency } from '../../utils/FormatUtils';
+import { Link } from 'react-router-dom';
 
 type Props = {};
 const data = [
@@ -54,30 +55,43 @@ const ManagerDashboardPage = () => {
                                 <Card className="col-span-3 row-span-3">
                                     <div className="font-extrabold text-2xl mb-8">Tổng quan đơn hàng</div>
                                     <div className="grid grid-cols-3 gap-4 gap-y-4">
-                                        <div className="col-span-1 text-center hover:bg-gray-500 hover:bg-opacity-20 cursor-pointer transition-colors ease-in-out py-4 rounded-md">
-                                            <div className="font-medium text-base text-primary">0</div>
-                                            <div className="">Chờ xác nhận</div>
-                                        </div>
-                                        <div className="col-span-1 text-center border-x hover:bg-gray-500 hover:bg-opacity-20 cursor-pointer transition-colors ease-in-out py-4 rounded-md">
-                                            <div className="font-medium text-base text-primary">0</div>
-                                            <div className="">Đang xử lý</div>
-                                        </div>
-                                        <div className="col-span-1 text-center hover:bg-gray-500 hover:bg-opacity-20 cursor-pointer transition-colors ease-in-out py-4 rounded-md">
-                                            <div className="font-medium text-base text-primary">0</div>
-                                            <div className="">Sẵn sàng</div>
-                                        </div>
-                                        <div className="col-span-1 text-center hover:bg-gray-500 hover:bg-opacity-20 cursor-pointer transition-colors ease-in-out py-4 rounded-md">
-                                            <div className="font-medium text-base text-primary">0</div>
-                                            <div className="">Đã hủy</div>
-                                        </div>
-                                        <div className="col-span-1 text-center border-x hover:bg-gray-500 hover:bg-opacity-20 cursor-pointer transition-colors ease-in-out py-4 rounded-md">
-                                            <div className="font-medium text-base text-primary">0</div>
-                                            <div className="">Chờ vận chuyển</div>
-                                        </div>
-                                        <div className="col-span-1 text-center hover:bg-gray-500 hover:bg-opacity-20 cursor-pointer transition-colors ease-in-out py-4 rounded-md">
-                                            <div className="font-medium text-base text-primary">0</div>
-                                            <div className="">Hoàn tất</div>
-                                        </div>
+                                        <Link to={'/provider/orders'}>
+                                            <div className="col-span-1 text-center hover:bg-gray-500 hover:bg-opacity-20 cursor-pointer transition-colors ease-in-out py-4 rounded-md">
+                                                <div className="font-medium text-base text-primary">0</div>
+                                                <div className="">Chờ xác nhận</div>
+                                            </div>
+                                        </Link>
+                                        <Link to={'/provider/orders'}>
+                                            <div className="col-span-1 text-center border-x hover:bg-gray-500 hover:bg-opacity-20 cursor-pointer transition-colors ease-in-out py-4 rounded-md">
+                                                <div className="font-medium text-base text-primary">0</div>
+                                                <div className="">Đang xử lý</div>
+                                            </div>
+                                        </Link>
+
+                                        <Link to={'/provider/orders'}>
+                                            <div className="col-span-1 text-center hover:bg-gray-500 hover:bg-opacity-20 cursor-pointer transition-colors ease-in-out py-4 rounded-md">
+                                                <div className="font-medium text-base text-primary">0</div>
+                                                <div className="">Sẵn sàng</div>
+                                            </div>
+                                        </Link>
+                                        <Link to={'/provider/orders'}>
+                                            <div className="col-span-1 text-center hover:bg-gray-500 hover:bg-opacity-20 cursor-pointer transition-colors ease-in-out py-4 rounded-md">
+                                                <div className="font-medium text-base text-primary">0</div>
+                                                <div className="">Đã hủy</div>
+                                            </div>
+                                        </Link>
+                                        <Link to={'/provider/orders'}>
+                                            <div className="col-span-1 text-center border-x hover:bg-gray-500 hover:bg-opacity-20 cursor-pointer transition-colors ease-in-out py-4 rounded-md">
+                                                <div className="font-medium text-base text-primary">0</div>
+                                                <div className="">Chờ vận chuyển</div>
+                                            </div>
+                                        </Link>
+                                        <Link to={'/provider/orders'}>
+                                            <div className="col-span-1 text-center hover:bg-gray-500 hover:bg-opacity-20 cursor-pointer transition-colors ease-in-out py-4 rounded-md">
+                                                <div className="font-medium text-base text-primary">0</div>
+                                                <div className="">Hoàn tất</div>
+                                            </div>
+                                        </Link>
                                     </div>
                                 </Card>
                             </div>

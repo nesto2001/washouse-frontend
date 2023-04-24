@@ -1,15 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import { CenterOrderModel } from '../../../models/Staff/CenterOrderModel';
-import { Button, Empty, Form, Input, Select, Space, Spin, Tabs, TabsProps, message } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
-import { getManagerCenterOrders } from '../../../repositories/StaffRepository';
+import { Button, Form, Input, Select, Space, Tabs, TabsProps, message } from 'antd';
+import { Link } from 'react-router-dom';
 import OrderList from '../../../components/StaffOrderList/OrderList';
-import { OrderStatusMap } from '../../../mapping/OrderStatusMap';
+import { CenterOrderModel } from '../../../models/Staff/CenterOrderModel';
+import { getManagerCenterOrders } from '../../../repositories/StaffRepository';
 import { Paging } from '../../../types/Common/Pagination';
-import ErrorScreen from '../../../components/ErrorScreen/ErrorScreen';
-import React from 'react';
-import OthersSpin from '../../../components/OthersSpin/OthersSpin';
 
 type Props = {};
 
