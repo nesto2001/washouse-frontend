@@ -1,7 +1,9 @@
+import { FeedbackOrderResponse } from '../Feedback/FeedbackOrderResponse';
 import { CenterOrderDeliveryResponse } from '../Staff/CenterOrderDeliveryResponse';
 import { CenterOrderPaymentResponse } from '../Staff/CenterOrderPaymentResponse';
 import { CenterOrderTrackingResponse } from '../Staff/CenterOrderTrackingResponse';
 import { CenterOrderedServiceResponse } from '../Staff/CenterOrderedServiceResponse';
+import { CenterFeedbackResponse } from '../Staff/StaffFeedback/CenterFeedbackResponse';
 
 export type CustomerOrderDetailsReponse = {
     id: string;
@@ -21,6 +23,7 @@ export type CustomerOrderDetailsReponse = {
     orderTrackings: CenterOrderTrackingResponse[];
     orderDeliveries: CenterOrderDeliveryResponse[];
     orderPayment: CenterOrderPaymentResponse;
+    feedback: FeedbackOrderResponse | null;
     center: {
         centerId: number;
         centerName: string;

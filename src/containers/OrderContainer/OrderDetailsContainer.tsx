@@ -27,6 +27,9 @@ import { getOrderDetails } from '../../repositories/OrderRepository';
 import { TrackingState } from '../../types/Tracking/TrackingState';
 import { formatCurrency, formatPercentage } from '../../utils/FormatUtils';
 import WHButton from '../../components/Button';
+import RatingStars from '../../components/RatingStars/RatingStars';
+import { BsReplyFill } from 'react-icons/bs';
+import StarFull from '../../components/Star/StarFull';
 
 type Props = {};
 
@@ -45,12 +48,8 @@ const OrderDetailsContainer = (props: Props) => {
 
     useEffect(() => {
         setIsLoading(true);
-        console.log(id, p);
         if (id && p) {
-            const fetchOrder = async () => {
-                return await getOrderDetails(id, p);
-            };
-            fetchOrder()
+            getOrderDetails(id, p)
                 .then((res) => {
                     setOrderDetails(res);
                     getLocation(res.locationId).then((loc) => {
@@ -323,6 +322,44 @@ const OrderDetailsContainer = (props: Props) => {
                                         </h3>
                                     </div>
                                 </div>
+                                {orderDetails.feedback && (
+                                    <div className="orderdetails__order--summary p-6 border border-wh-gray rounded-2xl mt-6">
+                                        <div className="flex justify-between">
+                                            <h2 className="font-bold text-xl text-left">Đánh giá</h2>
+                                            <div className="flex items-center gap-1">
+                                                <div className="">
+                                                    <StarFull numOfStar={1} />
+                                                </div>
+                                                <h2 className="font-bold text-xl">
+                                                    {orderDetails.feedback.rating.toFixed(1)}
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <hr className="mt-3 mb-6" />
+                                        <div className="orderdetails__order--payment gap-x-10 items-baseline flex flex-col">
+                                            <div className="flex justify-between w-full items-end">
+                                                <div className="font-bold flex-1 text-left overflow-hidden">
+                                                    {orderDetails.feedback.createdBy}
+                                                </div>
+                                                <div className="text-sm text-ws-gray">
+                                                    {orderDetails.feedback.createdDate.format('DD-MM-YYYY')}
+                                                </div>
+                                            </div>
+                                            <div className="">{orderDetails.feedback.content}</div>
+                                        </div>
+                                        {orderDetails.feedback.replyMessage && (
+                                            <div className="flex w-full justify-between bg-ws-light-gray rounded-lg p-2 pr-4 mt-2">
+                                                <div className="flex gap-3">
+                                                    <BsReplyFill className="text-lg" />
+                                                    <div className="text-left">
+                                                        <div className="font-semibold">{'Trung tâm'}</div>
+                                                        <div>{orderDetails.feedback.replyMessage}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
                         <div className="orderdetails basis-3/4 mt-8 mb-16 pr-8">

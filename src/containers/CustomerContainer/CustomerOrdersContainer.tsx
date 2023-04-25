@@ -47,7 +47,7 @@ const items: TabsProps['items'] = [
     },
     {
         key: 'Delivering',
-        label: `Vận chuyển`,
+        label: `Sẵn sàng`,
     },
     {
         key: 'Completed',

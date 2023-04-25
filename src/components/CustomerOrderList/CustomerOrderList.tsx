@@ -133,7 +133,7 @@ const CustomerOrderList = ({ customerOrders, customerPhone }: Props) => {
                 {customerOrders.map((order, index) => (
                     <div
                         key={`order-${index}-${order.id}`}
-                        className="customer__order--item w-full mb-6 border border-wh-gray rounded-lg"
+                        className="customer__order--item w-full mb-6 border border-wh-gray rounded-lg cursor-pointer"
                     >
                         <div className="customer__order--center flex justify-between px-4 py-3 border-b border-wh-gray">
                             <div className="">
