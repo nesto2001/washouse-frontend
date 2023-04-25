@@ -1,7 +1,7 @@
-import { Table } from 'antd';
+import { Button, Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ServiceCategoryDetailModel } from '../../../models/Category/ServiceCategoryDetailModel';
 import { getServiceCategories } from '../../../repositories/ServiceCategoryRepository';
 
@@ -68,6 +68,11 @@ const AdminServicesContainer = (props: Props) => {
 
     return (
         <div className="provider__services--filter">
+            <Link to={'/admin/posts/create'}>
+                <Button className="float-right mb-4" type="primary">
+                    Thêm phân loại
+                </Button>
+            </Link>
             <Table dataSource={services} columns={columns} loading={services == null}></Table>
         </div>
     );
