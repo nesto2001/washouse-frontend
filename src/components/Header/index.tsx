@@ -2,27 +2,26 @@ import { Badge, MenuProps } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { BiPowerOff, BiSearch } from 'react-icons/bi';
 import { FaRegBell, FaSearch, FaShoppingCart } from 'react-icons/fa';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import Order from '../../assets/images/order-pf.png';
 import Placeholder from '../../assets/images/placeholder.png';
 import User from '../../assets/images/user-pf.png';
 import Logo from '../../assets/images/washouse-tagline.png';
+import ChatboxContainer from '../../containers/ChatboxContainer';
 import { LocationPlaceModel } from '../../models/LocationPlaceModel';
 import { UserModel } from '../../models/User/UserModel';
+import { getMe } from '../../repositories/AuthRepository';
 import { getDistricts, getUserDistrict } from '../../repositories/LocationRepository';
 import { RootState } from '../../store/CartStore';
 import { Option } from '../../types/Options';
 import { getCurrentLocation } from '../../utils/CommonUtils';
 import Button from '../Button';
 import DropdownMenu from '../Dropdown/DropdownMenu';
+import NotificationDropdown from '../NotificationDropdown/NotificationDropdown';
+import OrderDropdown from '../OrderDropdown/OrderDropdown';
 import Selectbox from '../Selectbox';
 import './Navbar.scss';
-import { getMe } from '../../repositories/AuthRepository';
-import NotificationDropdown from '../NotificationDropdown/NotificationDropdown';
-import { NotificationModel } from '../../models/Notification/NotificationModel';
-import { getNotifications } from '../../repositories/NotificationRepository';
-import OrderDropdown from '../OrderDropdown/OrderDropdown';
 
 const Navbar = () => {
     const [latitude, setLatitude] = useState<number>();
@@ -37,7 +36,6 @@ const Navbar = () => {
     const location = useLocation();
     const [searchValue] = useSearchParams();
     const [searchString, setSearchString] = useState<string>();
-    const [notificationList, setNotificationList] = useState<NotificationModel[]>();
 
     const handleSearch = (e: { preventDefault: () => void }) => {
         e.preventDefault();
@@ -57,6 +55,7 @@ const Navbar = () => {
     useEffect(() => {
         setSearchString(searchValue.get('search') ?? '');
     }, [location]);
+
     const locationError = (error: any) => {
         console.log(`Gặp lỗi khi lấy vị trí hoặc quyền sử dụng vị trí chưa được cấp: ${error.message}`);
     };
@@ -98,10 +97,7 @@ const Navbar = () => {
     };
 
     useEffect(() => {
-        const fetchData = async () => {
-            return await getDistricts();
-        };
-        fetchData().then((res) => {
+        getDistricts().then((res) => {
             setDistricts(res);
         });
     }, []);
@@ -189,6 +185,7 @@ const Navbar = () => {
                     </div>
                 </div>
             </div>
+            {user && <ChatboxContainer />}
             <div className="mx-auto flex gap-8 justify-between items-center px-4 container w-full">
                 <Link to={user ? '/trung-tam' : '/'}>
                     <div className="w-[200px] h-[75px]">

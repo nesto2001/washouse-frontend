@@ -1,18 +1,16 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { CenterMap } from '../../types/CenterMap';
-import Target from '../../assets/images/target.png';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import React, { useState } from 'react';
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import { Link } from 'react-router-dom';
 import CenterMarker from '../../assets/images/center-marker.png';
 import Placeholder from '../../assets/images/placeholder.png';
-import { MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl, useMapEvents } from 'react-leaflet';
-import L, { LatLngTuple, LeafletEvent } from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import './Map.scss';
-import RatingStars from '../RatingStars/RatingStars';
-import { Link } from 'react-router-dom';
-import { getCurrentLocation } from '../../utils/CommonUtils';
-import { LocationType } from '../../types/LocationType';
-import MapZoom from './MapZoom';
+import Target from '../../assets/images/target.png';
+import { CenterMap } from '../../types/CenterMap';
 import { formatLink } from '../../utils/FormatUtils';
+import RatingStars from '../RatingStars/RatingStars';
+import './Map.scss';
+import MapZoom from './MapZoom';
 
 type Props = {
     selectedCenter?: CenterMap;
