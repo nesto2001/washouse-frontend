@@ -1,11 +1,12 @@
 export const OrderStatusMap: { [key: string]: string } = {
     None: 'Chưa có',
-    Received: 'Đang chờ',
     Pending: 'Đang chờ',
     pending: 'Đang chờ',
     Confirmed: 'Xác nhận',
     confirm: 'Xác nhận',
     confirmed: 'Xác nhận',
+    received: 'Nhận hàng',
+    Received: 'Nhận hàng',
     Processing: 'Xử lý',
     processing: 'Xử lý',
     Ready: 'Sẵn sàng',

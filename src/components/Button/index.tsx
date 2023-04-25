@@ -38,16 +38,39 @@ const WHButton = ({
     const btnStyle = { ...(style ?? ''), minWidth: minWidth || '164px', fontSize: fontSize || '16px' };
     return (
         <>
-            <button
-                className={clsx('btn', type ? type : '', uppercase && 'uppercase', className ?? '')}
-                type={isSubmit ? 'submit' : 'button'}
-                style={btnStyle}
-                form={form ?? ''}
-                onClick={onClick}
-                disabled={disable}
-            >
-                {/* {link ? ( */}
-                <Link to={link ?? ''}>
+            {link ? (
+                <button
+                    className={clsx('btn', type ? type : '', uppercase && 'uppercase', className ?? '')}
+                    type={isSubmit ? 'submit' : 'button'}
+                    style={btnStyle}
+                    form={form ?? ''}
+                    onClick={onClick}
+                    disabled={disable}
+                >
+                    {/* {link ? ( */}
+                    <Link to={link ?? ''}>
+                        <div className={size === 'small' ? 'px-3 py-2' : size === 'large' ? 'px-8 py-4' : 'px-6 py-3'}>
+                            {fetching ? (
+                                <div
+                                    className={fetching ? 'flex justify-center my-[7px] text-center dot-flashing' : ''}
+                                ></div>
+                            ) : (
+                                children
+                            )}
+                        </div>
+                    </Link>
+                </button>
+            ) : (
+                <button
+                    className={clsx('btn', type ? type : '', uppercase && 'uppercase', className ?? '')}
+                    type={isSubmit ? 'submit' : 'button'}
+                    style={btnStyle}
+                    form={form ?? ''}
+                    onClick={onClick}
+                    disabled={disable}
+                >
+                    {/* {link ? ( */}
+
                     <div className={size === 'small' ? 'px-3 py-2' : size === 'large' ? 'px-8 py-4' : 'px-6 py-3'}>
                         {fetching ? (
                             <div
@@ -57,8 +80,8 @@ const WHButton = ({
                             children
                         )}
                     </div>
-                </Link>
-            </button>
+                </button>
+            )}
         </>
     );
 };

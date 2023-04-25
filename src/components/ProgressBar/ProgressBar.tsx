@@ -32,6 +32,10 @@ const ProgressBar = ({ orderState }: Props) => {
             id: 5,
             order: 5,
         },
+        {
+            id: 6,
+            order: 6,
+        },
     ];
     // const orderStates: TrackingState[] = [
     //     {
@@ -83,6 +87,7 @@ const ProgressBar = ({ orderState }: Props) => {
                         className={clsx(
                             style.progressbar_milestone,
                             currentState?.order === state.order && style.active,
+                            index === 0 && style.first,
                             orderState.find((e) => e.order === state.order)?.completed ? style.completed : '',
                         )}
                     ></div>

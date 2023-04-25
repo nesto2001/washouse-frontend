@@ -18,6 +18,9 @@ const CenterOrderDetailsTracking = ({ trackings }: Props) => {
             case 'confirmed':
                 setPending('Chờ nhận hàng');
                 break;
+            case 'received':
+                setPending('Chờ xử lý');
+                break;
             case 'processing':
                 setPending('Đang xử lý');
                 break;

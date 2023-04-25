@@ -33,11 +33,12 @@
         }
         &.completed {
             border-color: var(--washouse-primary-blue);
+            transform: translateX(calc(100% + 4px)) translateY(-50%);
         }
     }
 }
 .progressbar_tracking {
-    width: 115%;
+    width: 108%;
     .tracking_details {
     }
 }
