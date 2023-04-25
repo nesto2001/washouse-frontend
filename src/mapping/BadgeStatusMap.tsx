@@ -40,3 +40,13 @@ export const DeliveryBadgeStatusMap: { [key: string]: string } = {
     Completed: 'success',
     completed: 'success',
 };
+
+export const PaymentBadgeStatusMap: { [key: string]: string } = {
+    '': 'default',
+    Pending: 'default',
+    pending: 'default',
+    Paid: 'success',
+    paid: 'success',
+    DonePaid: 'success',
+    donepaid: 'success',
+};

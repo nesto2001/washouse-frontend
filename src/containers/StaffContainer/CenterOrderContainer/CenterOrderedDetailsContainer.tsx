@@ -146,16 +146,18 @@ const CenterOrderedDetailsContainer = ({ details, orderId, orderStatus, forceUpd
                                 </Button>
                             </Tooltip>
                         )}
-                        <Tooltip title="Cập nhật tiến trình">
-                            <Button
-                                type="primary"
-                                shape="default"
-                                style={{ background: '#396afc', padding: '0 8px' }}
-                                onClick={() => handleProceed(orderId, det.id)}
-                            >
-                                <SyncOutlined className="align-middle" />
-                            </Button>
-                        </Tooltip>
+                        {orderStatus.toLowerCase() === 'processing' && (
+                            <Tooltip title="Cập nhật tiến trình">
+                                <Button
+                                    type="primary"
+                                    shape="default"
+                                    style={{ background: '#396afc', padding: '0 8px' }}
+                                    onClick={() => handleProceed(orderId, det.id)}
+                                >
+                                    <SyncOutlined className="align-middle" />
+                                </Button>
+                            </Tooltip>
+                        )}
                     </div>
                 </div>
             ))}

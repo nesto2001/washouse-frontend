@@ -1,4 +1,5 @@
 export type CenterOrderDeliveryResponse = {
+    addressString: string;
     shipperName: string;
     shipperPhone: string;
     locationId: number;

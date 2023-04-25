@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import CenterOrderDetailsGeneral from '../CenterOrderContainer/CenterOrderDetailsGeneral';
 import { Button, Col, Descriptions, Form, Input, Modal, Row, Tag, message } from 'antd';
 import CenterOrderedDetailsContainer from '../CenterOrderContainer/CenterOrderedDetailsContainer';
@@ -31,7 +31,8 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
     const [form] = Form.useForm();
     const [isLarge, setIsLarge] = useState(false);
     const stickyDivRef = useRef<HTMLDivElement>(null);
-
+    const [state, updateState] = useState({});
+    const forceUpdate = useCallback(() => updateState({}), []);
     const trackings = orderDetails.orderDeliveries;
 
     useEffect(() => {
@@ -159,7 +160,9 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                                                     <div className="font-medium text-lg">
                                                         <RiUserLocationFill className="inline" /> Địa chỉ lấy đơn
                                                     </div>
-                                                    <div className="text-sub text-base">{tracking.locationId}</div>
+                                                    <div className="text-sub text-base">
+                                                        {tracking.addressString ?? '-'}
+                                                    </div>
                                                 </div>
                                                 <div className="self-center">
                                                     <FaDirections
@@ -168,12 +171,22 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                                                     />
                                                 </div>
                                             </div>
+                                            {tracking.status.toLowerCase() !== 'completed' && (
+                                                <div
+                                                    className="float-right mt-3 ml-3"
+                                                    onClick={() => message.success('Cập nhật vận chuyển thành công!')}
+                                                >
+                                                    <Button type="primary">Cập nhật vận chuyển</Button>
+                                                </div>
+                                            )}
                                             {orderDetails.status.toLowerCase() === 'confirmed' && (
                                                 <div
                                                     className="float-right mt-3"
                                                     onClick={() => handleAssign(tracking.type ? 'deliver' : 'dropoff')}
                                                 >
-                                                    <Button type="primary">Vận chuyển</Button>
+                                                    <Button type="default" style={{ background: 'white' }}>
+                                                        Chọn nhân viên
+                                                    </Button>
                                                 </div>
                                             )}
                                         </div>
@@ -210,7 +223,9 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                                                     <div className="font-medium text-lg">
                                                         <RiUserLocationFill className="inline" /> Địa chỉ lấy đơn
                                                     </div>
-                                                    <div className="text-sub text-base">{tracking.locationId}</div>
+                                                    <div className="text-sub text-base">
+                                                        {tracking.addressString ?? '-'}
+                                                    </div>
                                                 </div>
                                                 <div className="self-center">
                                                     <FaDirections
@@ -220,6 +235,17 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                                                 </div>
                                             </div>
                                             {orderDetails.status.toLowerCase() === 'ready' &&
+                                                tracking.status.toLowerCase() !== 'completed' && (
+                                                    <div
+                                                        className="float-right mt-3 ml-3"
+                                                        onClick={() =>
+                                                            message.success('Cập nhật vận chuyển thành công!')
+                                                        }
+                                                    >
+                                                        <Button type="primary">Cập nhật vận chuyển</Button>
+                                                    </div>
+                                                )}
+                                            {orderDetails.status.toLowerCase() === 'ready' &&
                                                 tracking.status.toLowerCase() === 'pending' && (
                                                     <div
                                                         className="float-right mt-3"
@@ -227,7 +253,9 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                                                             handleAssign(tracking.type ? 'deliver' : 'dropoff')
                                                         }
                                                     >
-                                                        <Button type="primary">Vận chuyển</Button>
+                                                        <Button type="default" style={{ background: 'white' }}>
+                                                            Chọn nhân viên
+                                                        </Button>
                                                     </div>
                                                 )}
                                         </div>
@@ -267,7 +295,9 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                                                     <div className="font-medium text-lg">
                                                         <RiUserLocationFill className="inline" /> Địa chỉ lấy đơn
                                                     </div>
-                                                    <div className="text-sub text-base">{tracking.locationId}</div>
+                                                    <div className="text-sub text-base">
+                                                        {tracking.addressString ?? '-'}
+                                                    </div>
                                                 </div>
                                                 <div className="self-center">
                                                     <FaDirections
@@ -276,12 +306,22 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                                                     />
                                                 </div>
                                             </div>
+                                            {tracking.status.toLowerCase() !== 'completed' && (
+                                                <div
+                                                    className="float-right mt-3 ml-3"
+                                                    onClick={() => message.success('Cập nhật vận chuyển thành công!')}
+                                                >
+                                                    <Button type="primary">Cập nhật vận chuyển</Button>
+                                                </div>
+                                            )}
                                             {orderDetails.status.toLowerCase() === 'confirmed' && (
                                                 <div
                                                     className="float-right mt-3"
                                                     onClick={() => handleAssign(tracking.type ? 'deliver' : 'dropoff')}
                                                 >
-                                                    <Button type="primary">Vận chuyển</Button>
+                                                    <Button type="default" style={{ background: 'white' }}>
+                                                        Chọn nhân viên
+                                                    </Button>
                                                 </div>
                                             )}
                                         </div>
@@ -323,7 +363,9 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                                                         <div className="font-medium text-lg">
                                                             <RiUserLocationFill className="inline" /> Địa chỉ trả đơn
                                                         </div>
-                                                        <div className="text-sub text-base">{tracking.locationId}</div>
+                                                        <div className="text-sub text-base">
+                                                            {tracking.addressString ?? '-'}
+                                                        </div>
                                                     </div>
                                                     <div className="self-center">
                                                         <FaDirections
@@ -333,6 +375,17 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                                                     </div>
                                                 </div>
                                                 {orderDetails.status.toLowerCase() === 'ready' &&
+                                                    tracking.status.toLowerCase() !== 'completed' && (
+                                                        <div
+                                                            className="float-right mt-3 ml-3"
+                                                            onClick={() =>
+                                                                message.success('Cập nhật vận chuyển thành công!')
+                                                            }
+                                                        >
+                                                            <Button type="primary">Cập nhật vận chuyển</Button>
+                                                        </div>
+                                                    )}
+                                                {orderDetails.status.toLowerCase() === 'ready' &&
                                                     tracking.status.toLowerCase() === 'pending' && (
                                                         <div
                                                             className="float-right mt-3"
@@ -340,7 +393,9 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                                                                 handleAssign(tracking.type ? 'deliver' : 'dropoff')
                                                             }
                                                         >
-                                                            <Button type="primary">Vận chuyển</Button>
+                                                            <Button type="default" style={{ background: 'white' }}>
+                                                                Chọn nhân viên
+                                                            </Button>
                                                         </div>
                                                     )}
                                             </div>
@@ -400,6 +455,8 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                         <div className="provider__page--content px-6 mt-6">
                             <div className="provider__services--wrapper">
                                 <CenterOrderDetailsPayment
+                                    forceUpdate={forceUpdate}
+                                    orderStatus={orderDetails.status}
                                     orderPayment={{
                                         payment: orderDetails.orderPayment,
                                         orderDeliveryPrice: orderDetails.deliveryPrice,

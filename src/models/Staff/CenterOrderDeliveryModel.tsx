@@ -1,4 +1,5 @@
 export type CenterOrderDeliveryModel = {
+    addressString: string;
     shipperName: string;
     shipperPhone: string;
     locationId: number;

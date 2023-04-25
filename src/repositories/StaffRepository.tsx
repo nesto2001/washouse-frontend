@@ -203,6 +203,7 @@ export const getManagerCenterOrderDetails = async (id: string): Promise<CenterOr
         status: data.data.status,
         orderDeliveries: data.data.orderDeliveries.map((delivery): CenterOrderDeliveryModel => {
             return {
+                addressString: delivery.addressString,
                 shipperName: delivery.shipperName,
                 shipperPhone: delivery.shipperPhone,
                 date: delivery.deliveryDate,

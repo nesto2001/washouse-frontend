@@ -154,6 +154,8 @@ const CenterOrderDetailsContainer = (props: Props) => {
                     <div className="provider__page--content px-6 mt-6">
                         <div className="provider__services--wrapper">
                             <CenterOrderDetailsPayment
+                                orderStatus={orderDetails.status}
+                                forceUpdate={forceUpdate}
                                 orderPayment={{
                                     payment: orderDetails.orderPayment,
                                     orderDeliveryPrice: orderDetails.deliveryPrice,

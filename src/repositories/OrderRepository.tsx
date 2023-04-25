@@ -67,6 +67,7 @@ export const getOrderDetails = async (orderId: string, phone: string): Promise<C
         status: data.data.status,
         orderDeliveries: data.data.orderDeliveries.map((delivery): CenterOrderDeliveryModel => {
             return {
+                addressString: delivery.addressString,
                 shipperName: delivery.shipperName,
                 shipperPhone: delivery.shipperPhone,
                 date: delivery.deliveryDate,
