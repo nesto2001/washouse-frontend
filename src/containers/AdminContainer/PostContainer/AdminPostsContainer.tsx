@@ -1,19 +1,25 @@
-import { Button, Table, Tag } from 'antd';
+import { Button, Pagination, PaginationProps, Table, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Placeholder from '../../../assets/images/placeholder.png';
-import { PostBadgeStatusMap, PostStatusMap } from '../../../mapping/PostStatusMap';
+import { PostBadgeStatusMap, PostStatusMap, PostTypeMap } from '../../../mapping/PostStatusMap';
 import { PostModel } from '../../../models/Post/PostModel';
 import { getAdminPosts } from '../../../repositories/PostRepository';
+import { Paging } from '../../../types/Common/Pagination';
 
 type Props = {};
 
 const AdminPostsContainer = (props: Props) => {
-    const location = useLocation();
     const navigate = useNavigate();
     const [posts, setPosts] = useState<PostModel[]>();
-    const [activeKey, setActiveKey] = useState<string>(location.state?.keyTab ?? '1');
+    const [paging, setPaging] = useState<Paging>({
+        itemsPerPage: 10,
+        pageNumber: 1,
+    });
+    const [pageNum, setPageNum] = useState<number>(1);
+    const [loading, setLoading] = useState<boolean>(true);
+
     const columns: ColumnsType<PostModel> = [
         {
             title: 'STT',
@@ -52,6 +58,14 @@ const AdminPostsContainer = (props: Props) => {
             },
         },
         {
+            title: 'Thể loại',
+            dataIndex: 'type',
+            key: 'type',
+            render(value) {
+                return <div className="line-clamp-1">{PostTypeMap[value]}</div>;
+            },
+        },
+        {
             title: 'Trạng thái',
             dataIndex: 'status',
             key: 'status',
@@ -69,19 +83,26 @@ const AdminPostsContainer = (props: Props) => {
             dataIndex: 'createdDate',
             align: 'center',
             key: 'createdDate',
+            render(_, record) {
+                return <>{record.createdDate.format('DD-MM-YYYY HH:mm:ss')}</>;
+            },
         },
     ];
 
     useEffect(() => {
-        console.log(activeKey);
-        getAdminPosts({}).then((res) => {
-            setPosts(res);
-        });
-    }, [activeKey]);
-
-    const onChange = (key: string) => {
-        setActiveKey(key);
-    };
+        setLoading(true);
+        getAdminPosts({ page: pageNum })
+            .then((res) => {
+                setPosts(res.items);
+                setPaging({
+                    itemsPerPage: res.itemsPerPage,
+                    pageNumber: res.pageNumber,
+                    totalItems: res.totalItems,
+                    totalPages: res.totalPages,
+                });
+            })
+            .finally(() => setLoading(false));
+    }, [pageNum]);
 
     return (
         <div className="provider__services--filter">
@@ -94,7 +115,8 @@ const AdminPostsContainer = (props: Props) => {
                 rowClassName="cursor-pointer"
                 dataSource={posts}
                 columns={columns}
-                loading={posts == null}
+                pagination={false}
+                loading={loading}
                 onRow={(record, rowIndex) => {
                     return {
                         onClick: (event) => {
@@ -103,6 +125,17 @@ const AdminPostsContainer = (props: Props) => {
                     };
                 }}
             ></Table>
+            <Pagination
+                className="float-right mt-4"
+                showTotal={((total) => `Có tất cả ${total} bài đăng`) as PaginationProps['showTotal']}
+                defaultCurrent={paging?.pageNumber}
+                total={paging?.totalItems}
+                onChange={(page) => {
+                    setPageNum(page);
+                }}
+                pageSize={paging?.itemsPerPage}
+                showSizeChanger={false}
+            />
         </div>
     );
 };

@@ -42,11 +42,6 @@ const CenterDeliveryContainer = ({ setSelectedOrder, openPanel, selectedOrder }:
     const [msg, contextHolder] = message.useMessage();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isError, setIsError] = useState<boolean>(false);
-    // const [currentPage, setCurrentPage] = useState<number>(1);
-    // const [paging, setPaging] = useState<Paging>({
-    //     itemsPerPage: 10,
-    //     pageNumber: 1,
-    // });
     const [searchParams, setSearchParams] = useState<SearchParamsData>({
         searchType: 'id',
         deliveryType: true,

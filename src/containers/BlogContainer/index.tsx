@@ -48,7 +48,7 @@ const BlogContainer = (props: Props) => {
                         <div className="text-left text-lg">{blog?.content && HTMLReactParser(blog?.content)}</div>
                         {blog?.createdDate && (
                             <div className="text-right text-base text-ws-black my-4">
-                                {timeSince(parse(blog?.createdDate, 'dd-MM-yyyy HH:mm:ss', new Date()))}
+                                {timeSince(new Date(blog?.createdDate.format('YYYY-MM-DDTHH:mm:ssZ[Z]')))}
                             </div>
                         )}
                     </div>

@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export type PostModel = {
     id: number;
     title: string;
@@ -6,6 +8,6 @@ export type PostModel = {
     thumbnail: string;
     type: string;
     status: string;
-    createdDate: string;
-    updatedDate: string;
+    createdDate: dayjs.Dayjs;
+    updatedDate: dayjs.Dayjs;
 };

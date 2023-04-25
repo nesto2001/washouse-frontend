@@ -5,10 +5,11 @@ import {
     API_PUBLIC_POST,
 } from '../common/Constant';
 import { AddPostRequest } from '../containers/AdminContainer/PostContainer/AdminCreatePostContainer';
-import { PaginationResponse, Response } from '../models/CommonModel';
+import { PaginationModel, PaginationResponse, Response } from '../models/CommonModel';
 import { PostModel } from '../models/Post/PostModel';
 import { PostResponse } from '../models/Post/PostResponse';
 import instance from '../services/axios/AxiosInstance';
+import dayjs from 'dayjs';
 
 export const getAdminPosts = async ({
     page,
@@ -20,7 +21,7 @@ export const getAdminPosts = async ({
     pageSize?: number;
     type?: string;
     status?: string;
-}): Promise<PostModel[]> => {
+}): Promise<PaginationModel<PostModel>> => {
     const { data } = await instance.get<PaginationResponse<PostResponse>>(API_ADMIN_POST, {
         params: {
             page: page,
@@ -32,19 +33,25 @@ export const getAdminPosts = async ({
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
     });
-    return data.data.items.map((item): PostModel => {
-        return {
-            id: item.id,
-            type: item.type,
-            description: item.description,
-            thumbnail: item.thumbnail,
-            title: item.title,
-            content: item.content,
-            status: item.status,
-            createdDate: item.createdDate,
-            updatedDate: item.updatedDate,
-        };
-    });
+    return {
+        itemsPerPage: data.data.itemsPerPage,
+        pageNumber: data.data.pageNumber,
+        totalItems: data.data.totalItems,
+        totalPages: data.data.totalPages,
+        items: data.data.items.map((item): PostModel => {
+            return {
+                id: item.id,
+                type: item.type,
+                description: item.description,
+                thumbnail: item.thumbnail,
+                title: item.title,
+                content: item.content,
+                status: item.status,
+                createdDate: dayjs(item.createdDate, 'DD-MM-YY HH:hh:ss'),
+                updatedDate: dayjs(item.updatedDate, 'DD-MM-YY HH:hh:ss'),
+            };
+        }),
+    };
 };
 
 export const createPost = async (request: AddPostRequest) => {
@@ -68,8 +75,8 @@ export const getPostDetail = async (id: number): Promise<PostModel> => {
         title: data.data.title,
         content: data.data.content,
         status: data.data.status,
-        createdDate: data.data.createdDate,
-        updatedDate: data.data.updatedDate,
+        createdDate: dayjs(data.data.createdDate, 'DD-MM-YY HH:hh:ss'),
+        updatedDate: dayjs(data.data.updatedDate, 'DD-MM-YY HH:hh:ss'),
     };
 };
 
@@ -84,8 +91,8 @@ export const getPublicPosts = async (): Promise<PostModel[]> => {
             title: item.title,
             content: item.content,
             status: item.status,
-            createdDate: item.createdDate,
-            updatedDate: item.updatedDate,
+            createdDate: dayjs(item.createdDate, 'DD-MM-YY HH:hh:ss'),
+            updatedDate: dayjs(item.updatedDate, 'DD-MM-YY HH:hh:ss'),
         };
     });
 };
@@ -102,7 +109,7 @@ export const getPostDetailPublic = async (id: number): Promise<PostModel> => {
         title: data.data.title,
         content: data.data.content,
         status: data.data.status,
-        createdDate: data.data.createdDate,
-        updatedDate: data.data.updatedDate,
+        createdDate: dayjs(data.data.createdDate, 'DD-MM-YY HH:hh:ss'),
+        updatedDate: dayjs(data.data.updatedDate, 'DD-MM-YY HH:hh:ss'),
     };
 };
