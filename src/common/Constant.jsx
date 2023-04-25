@@ -17,6 +17,8 @@ const API_ACCOUNT_PROFILE = '/api/accounts/profile'; //PUT
 const API_ACCOUNT_PROFILE_PIC = '/api/accounts/profile-picture'; //PUT
 const API_ACCOUNT_PROFILE_ADDRESS = '/api/accounts/address';
 const API_ACCOUNT_WALLET = '/api/accounts/my-wallet';
+const API_ACCOUNT_DEACTIVATE = '/api/accounts/${id}/deactivate';
+const API_ACCOUNT_ACTIVATE = '/api/accounts/${id}/activate';
 
 //UPLOAD API
 const API_MEDIA = '/api/medias';
@@ -135,6 +137,8 @@ export {
     API_MANAGER_CENTER_SERVICE,
     API_CHANGE_PASSWORD,
     API_MANAGER_CENTER_ORDER,
+    API_ACCOUNT_DEACTIVATE,
+    API_ACCOUNT_ACTIVATE,
     API_FEEDBACK_SERVICE_ID,
     API_LOCATION_DETAILS,
     API_LOGIN_GOOGLE,

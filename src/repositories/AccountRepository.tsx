@@ -1,5 +1,7 @@
 import {
     API_ACCOUNT,
+    API_ACCOUNT_ACTIVATE,
+    API_ACCOUNT_DEACTIVATE,
     API_ACCOUNT_DETAILS,
     API_ACCOUNT_PROFILE,
     API_ACCOUNT_PROFILE_ADDRESS,
@@ -70,6 +72,24 @@ export const getAllAccounts = async (): Promise<AccountModel[]> => {
             status: item.status,
         };
     });
+};
+
+export const deactivateAccount = async (id: number) => {
+    const { status } = await instance.put(API_ACCOUNT_DEACTIVATE.replace('${id}', id.toString()), undefined, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+    });
+    if (status !== 200) {
+        return Promise.reject();
+    }
+};
+
+export const activateAccount = async (id: number) => {
+    const { status } = await instance.put(API_ACCOUNT_ACTIVATE.replace('${id}', id.toString()), undefined, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+    });
+    if (status !== 200) {
+        return Promise.reject();
+    }
 };
 
 export const updateAccountProfile = async (request: UpdateProfileRequest) => {
