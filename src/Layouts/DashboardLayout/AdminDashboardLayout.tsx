@@ -20,6 +20,8 @@ import DropdownMenu from '../../components/Dropdown/DropdownMenu';
 import style from './DashboardLayout.module.scss';
 import { BiPowerOff } from 'react-icons/bi';
 import { UserModel } from '../../models/User/UserModel';
+import NotificationDropdown from '../../components/NotificationDropdown/NotificationDropdown';
+import { FaBell } from 'react-icons/fa';
 
 type Props = {
     children?: JSX.Element;
@@ -200,23 +202,26 @@ const AdminDashboardLayout = ({ children }: Props) => {
                         className: 'trigger',
                         onClick: () => setCollapsed(!collapsed),
                     })}
-                    <div className={style.active__staff}>
-                        <DropdownMenu
-                            items={userDropdown}
-                            content={
-                                <div className="flex items-center justify-center">
-                                    <div
-                                        className={clsx(
-                                            'w-[40px] h-[40px] rounded-full overflow-hidden',
-                                            style.active__staff_avatar,
-                                        )}
-                                    >
-                                        <img className="w-full h-full object-cover" src={UserPlaceholder} alt="" />
+                    <div className="flex justify-center items-center gap-9 h-full">
+                        <NotificationDropdown child={<FaBell />} showBadge />
+                        <div className={style.active__staff}>
+                            <DropdownMenu
+                                items={userDropdown}
+                                content={
+                                    <div className="flex items-center justify-center">
+                                        <div
+                                            className={clsx(
+                                                'w-[40px] h-[40px] rounded-full overflow-hidden',
+                                                style.active__staff_avatar,
+                                            )}
+                                        >
+                                            <img className="w-full h-full object-cover" src={UserPlaceholder} alt="" />
+                                        </div>
+                                        {user?.name}
                                     </div>
-                                    {user?.name}
-                                </div>
-                            }
-                        />
+                                }
+                            />
+                        </div>
                     </div>
                 </Header>
                 <Content style={{ margin: '24px 16px 24px', overflow: 'initial', minHeight: `calc(100vh - 88px)` }}>
