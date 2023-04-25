@@ -18,6 +18,7 @@ export interface CenterDetailsModel {
     monthOff?: boolean;
     hasDelivery: boolean;
     centerDeliveryPrices?: [];
+    ratings: number[];
     centerLocation: {
         latitude: number;
         longitude: number;

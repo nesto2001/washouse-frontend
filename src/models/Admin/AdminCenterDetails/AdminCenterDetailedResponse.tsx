@@ -17,6 +17,7 @@ export type AdminCenterDetailedReponse = {
     lastDeactivate: string;
     rating: number;
     numOfRating: number;
+    ratings: number[];
     status: string;
     taxCode: string;
     taxRegistrationImage: string;

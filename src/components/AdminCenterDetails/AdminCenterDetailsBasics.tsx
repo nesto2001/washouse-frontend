@@ -1,10 +1,9 @@
-import React from 'react';
+import { Card, Col, Row } from 'antd';
 import { AdminCenterDetailedModel } from '../../models/Admin/AdminCenterDetails/AdminCenterDetailedModel';
-import { Card, Col, Progress, Row } from 'antd';
-import Tags from '../Tag';
 import { getRating } from '../../utils/CommonUtils';
+import RatingDistribution from '../RatingDistribution/RatingDistribution';
 import RatingStars from '../RatingStars/RatingStars';
-import StarFull from '../Star/StarFull';
+import Tags from '../Tag';
 
 type Props = {
     centerDetails: AdminCenterDetailedModel;
@@ -77,31 +76,10 @@ const AdminCenterDetailsBasics = ({ centerDetails }: Props) => {
                             </div>
                             <div className="border-l border-[#B3B3B3] mx-4"></div>
                             <div className="center__rating--distribution basis-4/12">
-                                <div className="flex items-center gap-1">
-                                    <StarFull numOfStar={1} />{' '}
-                                    <span className="text-base font-medium pt-0.5 mr-2">1</span>
-                                    <Progress percent={0} status="normal" style={{ margin: 0 }} showInfo={false} />
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <StarFull numOfStar={1} />{' '}
-                                    <span className="text-base font-medium pt-0.5 mr-2">2</span>
-                                    <Progress percent={0} status="normal" style={{ margin: 0 }} showInfo={false} />
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <StarFull numOfStar={1} />{' '}
-                                    <span className="text-base font-medium pt-0.5 mr-2">3</span>
-                                    <Progress percent={5} status="normal" style={{ margin: 0 }} showInfo={false} />
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <StarFull numOfStar={1} />{' '}
-                                    <span className="text-base font-medium pt-0.5 mr-2">4</span>
-                                    <Progress percent={80} status="normal" style={{ margin: 0 }} showInfo={false} />
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <StarFull numOfStar={1} />{' '}
-                                    <span className="text-base font-medium pt-0.5 mr-2">5</span>
-                                    <Progress percent={10} status="normal" style={{ margin: 0 }} showInfo={false} />
-                                </div>
+                                <RatingDistribution
+                                    ratings={centerDetails.ratings}
+                                    numOfRating={centerDetails.numOfRating}
+                                />
                             </div>
                         </div>
                     </Col>

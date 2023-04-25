@@ -27,6 +27,7 @@ import { compareTime, getToday } from '../../utils/TimeUtils';
 import { getFeedbacks } from '../../repositories/FeedbackRepository';
 import { FeedbackModel } from '../../models/Feedback/FeedbackModel';
 import { BsReplyFill } from 'react-icons/bs';
+import RatingDistribution from '../../components/RatingDistribution/RatingDistribution';
 
 type Props = {};
 
@@ -523,6 +524,7 @@ const CenterServiceContainer = (props: Props) => {
                                                                             starSize={20}
                                                                         ></RatingStars>
                                                                     </div>
+                                                                    {/* <RatingDistribution ratings={item.ratings} /> */}
                                                                 </div>
                                                             </div>
                                                             <div>{item.createDate.format('DD/MM/YYYY')}</div>
@@ -579,7 +581,9 @@ const CenterServiceContainer = (props: Props) => {
                                 </div>
                             </div>
                             <div className="border-l border-[#B3B3B3]" />
-                            <div className="service--distribution basis-2/5 flex-grow"></div>
+                            <div className="service--distribution basis-2/5 flex-grow">
+                                <RatingDistribution ratings={service.ratings} numOfRating={service.numOfRating} />
+                            </div>
                         </div>
                     </div>
                     <div className="service__sideinfo--center mt-6 p-6 border border-[#B3B3B3] rounded-2xl">

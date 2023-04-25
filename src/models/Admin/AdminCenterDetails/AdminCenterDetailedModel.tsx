@@ -19,5 +19,6 @@ export type AdminCenterDetailedModel = {
     numOfRating: number;
     status: string;
     taxCode: string;
+    ratings: number[];
     taxRegistrationImage: string;
 };

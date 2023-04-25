@@ -112,6 +112,7 @@ export const getCenter = async (id: number): Promise<CenterDetailsModel> => {
             };
         }),
         rating: data.data.rating,
+        ratings: data.data.ratings,
         numOfRating: data.data.numOfRating,
         phone: data.data.phone,
         centerAddress: data.data.centerAddress,

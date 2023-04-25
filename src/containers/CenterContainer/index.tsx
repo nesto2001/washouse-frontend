@@ -14,15 +14,14 @@ import { getCenter } from '../../repositories/CenterRepository';
 import { getRating, getURLId } from '../../utils/CommonUtils';
 import { compareTime, getToday } from '../../utils/TimeUtils';
 
-import { TabsProps } from 'antd';
-import { Tabs } from 'antd';
+import { Tabs, TabsProps } from 'antd';
 
-import './CenterContainer.scss';
-import { CenterMap } from '../../types/CenterMap';
-import { getPromotionsCenter } from '../../repositories/PromotionRepository';
-import { PromotionModel } from '../../models/Promotion/PromotionModel';
 import CouponTag from '../../components/CouponTag/CouponTag';
-import Slider from 'react-slick';
+import RatingDistribution from '../../components/RatingDistribution/RatingDistribution';
+import { PromotionModel } from '../../models/Promotion/PromotionModel';
+import { getPromotionsCenter } from '../../repositories/PromotionRepository';
+import { CenterMap } from '../../types/CenterMap';
+import './CenterContainer.scss';
 
 type Props = {};
 
@@ -219,7 +218,9 @@ const CenterContainer = (props: Props) => {
                                 </div>
                             </div>
                             <div className="border-l border-[#B3B3B3]"></div>
-                            <div className="center__rating--distribution basis-2/5 flex-grow"></div>
+                            <div className="center__rating--distribution basis-2/5 flex-grow">
+                                <RatingDistribution ratings={center.ratings} />
+                            </div>
                         </div>
                     </div>
                     <div className="center__sideinfo--map mt-6 p-6 border border-[#B3B3B3] rounded-2xl">

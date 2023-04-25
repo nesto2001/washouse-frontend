@@ -12,6 +12,7 @@ export type ServiceDetailsResponse = {
     unit: string;
     rate: number;
     prices: ServicePricesResponse[];
+    ratings: number[];
     timeEstimate: number;
     rating: number | null;
     numOfRating: number;

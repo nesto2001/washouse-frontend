@@ -124,6 +124,7 @@ export const getCenterDetails = async (id: number): Promise<AdminCenterDetailsMo
             managerName: data.data.center.managerName,
             managerEmail: data.data.center.managerEmail,
             managerPhone: data.data.center.managerPhone,
+            ratings: data.data.center.ratings,
         },
         feedbacks: data.data.feedbacks.map((item): AdminCenterFeedbackModel => {
             return {

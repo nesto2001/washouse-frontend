@@ -31,6 +31,7 @@ export const getService = async (centerId: number, id: number): Promise<ServiceD
         minPrice: data.data.minPrice,
         unit: data.data.unit,
         rate: data.data.rate,
+        ratings: data.data.ratings,
         prices: data.data.prices.map((price): ServicePricesModel => {
             return {
                 maxValue: price.maxValue,
@@ -59,6 +60,7 @@ export const getServices = async (centerId: number): Promise<ServiceDetailsModel
             minPrice: service.minPrice,
             unit: service.unit,
             rate: service.rate,
+            ratings: service.ratings,
             prices: service.prices.map((price): ServicePricesModel => {
                 return {
                     maxValue: price.maxValue,
@@ -97,6 +99,7 @@ export const getServiceDetail = async (id: number): Promise<ServiceDetailsModel>
         minPrice: data.data.minPrice,
         unit: data.data.unit,
         rate: data.data.rate,
+        ratings: data.data.ratings,
         prices: data.data.prices.map((price): ServicePricesModel => {
             return {
                 maxValue: price.maxValue,

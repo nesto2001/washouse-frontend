@@ -17,6 +17,7 @@ export type CenterDetailsResponse = {
     minPrice: number;
     maxPrice: number;
     monthOff: boolean;
+    ratings: number[];
     hasDelivery: boolean;
     centerDeliveryPrices: [];
     centerLocation: {

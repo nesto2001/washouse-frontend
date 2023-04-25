@@ -13,6 +13,7 @@ export type ServiceDetailsModel = {
     rate: number;
     prices: ServicePricesModel[];
     timeEstimate: number;
+    ratings: number[];
     rating: number | null;
     numOfRating: number;
 };
