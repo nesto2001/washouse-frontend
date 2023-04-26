@@ -1,22 +1,26 @@
-import { Button, Table } from 'antd';
+import { Button, Checkbox, Form, Input, Modal, Table, Upload } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ServiceCategoryDetailModel } from '../../../models/Category/ServiceCategoryDetailModel';
 import { getServiceCategories } from '../../../repositories/ServiceCategoryRepository';
+import { UploadOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 
 type Props = {};
 
 const AdminServicesContainer = (props: Props) => {
     const location = useLocation();
     const { pathname } = location;
+    const [imageUrl, setImageUrl] = useState<string>();
+    const [loading, setLoading] = useState(false);
     const [services, setServices] = useState<ServiceCategoryDetailModel[]>();
+    const [openCreate, setOpenCreate] = useState(false);
     const [activeKey, setActiveKey] = useState<string>(location.state?.keyTab ?? '1');
     const columns: ColumnsType<ServiceCategoryDetailModel> = [
         {
-            title: 'Mã',
-            dataIndex: 'categoryId',
-            key: 'categoryId',
+            title: 'STT',
+            dataIndex: 'stt',
+            key: 'stt',
             align: 'center',
             render: (_, text, index) => <strong>{index + 1}</strong>,
         },
@@ -66,15 +70,57 @@ const AdminServicesContainer = (props: Props) => {
         setActiveKey(keyTab);
     }, [pathname]);
 
+    const uploadButton = (
+        <div>
+            {loading ? <LoadingOutlined /> : <PlusOutlined />}
+            <div style={{ marginTop: 8 }}>Chọn hình ảnh</div>
+        </div>
+    );
+
     return (
-        <div className="provider__services--filter">
-            <Link to={'/admin/posts/create'}>
-                <Button className="float-right mb-4" type="primary">
+        <>
+            <div className="provider__services--filter">
+                <Button
+                    className="float-right mb-4"
+                    type="primary"
+                    onClick={() => {
+                        setOpenCreate(true);
+                    }}
+                >
                     Thêm phân loại
                 </Button>
-            </Link>
-            <Table dataSource={services} columns={columns} loading={services == null}></Table>
-        </div>
+                <Table dataSource={services} columns={columns} loading={services == null}></Table>
+            </div>
+            <Modal
+                open={openCreate}
+                closable
+                maskClosable
+                destroyOnClose
+                okText="Tạo phân loại"
+                cancelText="Hủy"
+                onCancel={() => {
+                    setOpenCreate(false);
+                }}
+                cancelButtonProps={{ style: { background: 'white' } }}
+                title="Tạo mới phân loại"
+                width={400}
+                centered
+            >
+                <Form wrapperCol={{ span: 16 }} labelCol={{ span: 8 }} layout="horizontal" labelWrap>
+                    <Form.Item label="Hình ảnh">
+                        <Upload type="select" listType="picture-card">
+                            {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                        </Upload>
+                    </Form.Item>
+                    <Form.Item label="Tên phân loại">
+                        <Input style={{ width: 200 }} />
+                    </Form.Item>
+                    <Form.Item label="Ghim trang chủ">
+                        <Checkbox />
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </>
     );
 };
 
