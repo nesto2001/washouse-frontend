@@ -100,7 +100,7 @@ const CenterBasicForm = ({ setFormData, setIsValidated, formData, formInstance }
     };
 
     useEffect(() => {
-        setIsValidated(false);
+        setIsValidated(true);
     }, []);
 
     return (
@@ -124,31 +124,6 @@ const CenterBasicForm = ({ setFormData, setIsValidated, formData, formInstance }
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"
             >
-                <Form.Item
-                    label="Tên trung tâm"
-                    name="centerName"
-                    rules={[{ required: true, message: 'Vui lòng nhập tên trung tâm của bạn' }]}
-                >
-                    <Input
-                        onChange={(e) => {
-                            setFormData((prevFormData) => ({ ...prevFormData, name: e.target.value }));
-                        }}
-                    />
-                </Form.Item>
-                <Form.Item
-                    label="Số điện thoại"
-                    name="centerPhone"
-                    rules={[
-                        { required: true, message: 'Vui lòng nhập số điện thoại trung tâm của bạn' },
-                        { len: 10, max: 10, message: 'Số điện thoại thông thường có 10 số' },
-                    ]}
-                >
-                    <Input
-                        onChange={(e) => {
-                            setFormData((prevFormData) => ({ ...prevFormData, phone: e.target.value }));
-                        }}
-                    />
-                </Form.Item>
                 <Form.Item label="Hình ảnh trung tâm" valuePropName="fileList">
                     <Upload
                         // action={`${process.env.REACT_APP_API_URL}/api/homeTest/uploadImage`}
@@ -177,6 +152,31 @@ const CenterBasicForm = ({ setFormData, setIsValidated, formData, formInstance }
                             <div style={{ marginTop: 8 }}>Tải hình ảnh</div>
                         </div>
                     </Upload>
+                </Form.Item>
+                <Form.Item
+                    label="Tên trung tâm"
+                    name="centerName"
+                    rules={[{ required: true, message: 'Vui lòng nhập tên trung tâm của bạn' }]}
+                >
+                    <Input
+                        onChange={(e) => {
+                            setFormData((prevFormData) => ({ ...prevFormData, name: e.target.value }));
+                        }}
+                    />
+                </Form.Item>
+                <Form.Item
+                    label="Số điện thoại"
+                    name="centerPhone"
+                    rules={[
+                        { required: true, message: 'Vui lòng nhập số điện thoại trung tâm của bạn' },
+                        { len: 10, max: 10, message: 'Số điện thoại thông thường có 10 số' },
+                    ]}
+                >
+                    <Input
+                        onChange={(e) => {
+                            setFormData((prevFormData) => ({ ...prevFormData, phone: e.target.value }));
+                        }}
+                    />
                 </Form.Item>
 
                 <Form.Item

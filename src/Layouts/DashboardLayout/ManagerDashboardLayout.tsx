@@ -39,6 +39,7 @@ const ManagerDashboardLayout = ({ children }: Props) => {
     const userJson = localStorage.getItem('currentUser');
     const [collapsed, setCollapsed] = useState(false);
     const [user, setUser] = useState<UserModel | null>(userJson && JSON.parse(userJson));
+    const [userRole, setUserRole] = useState(user?.roleType ?? '');
     const navigate = useNavigate();
 
     useMemo(() => {
@@ -62,7 +63,16 @@ const ManagerDashboardLayout = ({ children }: Props) => {
         {
             key: '1',
             icon: <LineChartOutlined />,
-            label: <Link to="/provider/dashboard">Bảng chính</Link>,
+            label: (
+                <Link
+                    to={`${
+                        (userRole.toLowerCase() === 'manager' && '/provider/dashboard') ||
+                        (userRole.toLowerCase() === 'staff' && '/provider/staff/dashboard')
+                    }`}
+                >
+                    Bảng chính
+                </Link>
+            ),
         },
         {
             key: '2',

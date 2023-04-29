@@ -13,10 +13,14 @@ import {
     API_STAFF_FEEDBACKS,
     API_STAFF_PROCEED_ORDER,
     API_STAFF_PROCEED_ORDERED_SERVICE,
+    API_STAFF_STATS,
     API_STAFF_UPDATE_ORDERED_SERVICE,
 } from '../common/Constant';
 import { ServiceSearchParamsData } from '../containers/ManagerContainer/CenterServicesContainer/ServiceListingContainer';
 import { ListResponse, PaginationModel, PaginationResponse, Response } from '../models/CommonModel';
+import { CenterStatisticsModel } from '../models/Dashboard/CenterStatisticsModel';
+import { CenterStatisticsResponse } from '../models/Dashboard/CenterStatisticsResponse';
+import { DailyStatisticsModel } from '../models/Dashboard/DailyStatisticsModel';
 import { CenterDeliveryPriceModel } from '../models/DeliveryPrice/DeliveryPriceModel';
 import { ManagerCenterModel } from '../models/Manager/ManagerCenterModel';
 import { ManagerCenterResponse } from '../models/Manager/ManagerCenterResponse';
@@ -524,4 +528,22 @@ export const getCenterFeedbacks = async (): Promise<CenterFeedbackModel[]> => {
             replyDate: item.replyDate,
         };
     });
+};
+
+export const getCenterStatistics = async (): Promise<CenterStatisticsModel> => {
+    const { data } = await instance.get<Response<CenterStatisticsResponse>>(API_STAFF_STATS, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    return {
+        orderOverview: data.data.orderOverview,
+        dailystatistics: data.data.dailystatistics.map((stat): DailyStatisticsModel => {
+            return {
+                day: stat.day,
+                cancelled: stat.cancelledOrder,
+                success: stat.successfulOrder,
+            };
+        }),
+    };
 };

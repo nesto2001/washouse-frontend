@@ -48,8 +48,10 @@ const StaffLoginContainer = () => {
                             navigate('/admin/dashboard');
                         } else if (res.roleType.toLowerCase() === 'manager') {
                             navigate('/provider/dashboard');
-                        } else {
+                        } else if (res.roleType.toLowerCase() === 'staff') {
                             navigate('/provider/staff/dashboard');
+                        } else {
+                            navigate('/provider/role');
                         }
                     });
                 } else {

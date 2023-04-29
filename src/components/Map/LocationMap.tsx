@@ -1,19 +1,24 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import CenterMarker from '../../assets/images/center-marker.png';
 import Target from '../../assets/images/target.png';
 import { LocationType } from '../../types/LocationType';
 import './Map.scss';
+import { getLocation, searchAddress } from '../../repositories/LocationRepository';
+import { AddressModel } from '../../models/Location/AddressModel';
 
 type Props = {
     addressLocation: LocationType;
     iconSize?: L.PointExpression;
     iconAnchor?: L.PointExpression;
     setLocation: React.Dispatch<React.SetStateAction<LocationType>>;
+    setFullAddress: React.Dispatch<React.SetStateAction<string>>;
+    location: LocationType;
+    setCenterAddress: React.Dispatch<React.SetStateAction<AddressModel | undefined>>;
 };
 
-const LocationMap = ({ addressLocation, iconSize, iconAnchor, setLocation }: Props) => {
+const LocationMap = ({ addressLocation, iconSize, iconAnchor, setLocation, location, setCenterAddress }: Props) => {
     const center: L.LatLngExpression = addressLocation ? [addressLocation.latitude, addressLocation.longitude] : [0, 0];
     const mapContainer = useRef(null);
 
@@ -39,6 +44,13 @@ const LocationMap = ({ addressLocation, iconSize, iconAnchor, setLocation }: Pro
     const defaultCenter = {
         center,
     };
+
+    useEffect(() => {
+        console.log(location);
+        searchAddress({ lat: location.latitude, long: location.longitude }).then((res) => {
+            setCenterAddress(res);
+        });
+    }, [location]);
 
     // const handleMarkerClick = (center: CenterMap) => {
     //     setCenter({ lat: center.location.latitude, lng: center.location.longitude });

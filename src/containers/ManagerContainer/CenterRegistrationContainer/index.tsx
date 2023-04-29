@@ -34,7 +34,7 @@ type Props = {};
 
 const CenterRegistrationContainer = (props: Props) => {
     const { token } = theme.useToken();
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [form] = Form.useForm();
     const [current, setCurrent] = useState(0);
     const [isValidated, setIsValidated] = useState(false);
@@ -63,21 +63,21 @@ const CenterRegistrationContainer = (props: Props) => {
         hasDelivery: false,
     });
 
-    useEffect(() => {
-        setIsLoading(true);
-        const fetchData = async () => {
-            return await getManagerCenter();
-        };
-        fetchData()
-            .then((res) => {
-                if (res) {
-                    navigate('/provider/dashboard');
-                } else setIsLoading(false);
-            })
-            .catch((error) => {
-                setIsLoading(false);
-            });
-    }, []);
+    // useEffect(() => {
+    //     setIsLoading(true);
+    //     const fetchData = async () => {
+    //         return await getManagerCenter();
+    //     };
+    //     fetchData()
+    //         .then((res) => {
+    //             if (res) {
+    //                 navigate('/provider/dashboard');
+    //             } else setIsLoading(false);
+    //         })
+    //         .catch((error) => {
+    //             setIsLoading(false);
+    //         });
+    // }, []); uncommn
 
     const steps = [
         {
@@ -105,7 +105,7 @@ const CenterRegistrationContainer = (props: Props) => {
             icon: <EnvironmentOutlined style={{ verticalAlign: '-0.1rem' }} />,
         },
         {
-            title: 'Vận chuyển & Thanh toán',
+            title: 'Vận chuyển',
             content: (
                 <CenterDeliveryForm
                     formInstance={form}

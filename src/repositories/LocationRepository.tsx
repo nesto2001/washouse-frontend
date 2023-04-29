@@ -12,9 +12,12 @@ import {
     API_DISTRICT_WARDS,
     API_LOCATION_DETAILS,
     API_LOCATION_SEARCH,
+    API_SEARCH_ADDRESS,
 } from '../common/Constant';
 import { LocationDetailsResponse } from '../models/Location/LocationDetailsResponse';
 import { LocationDetailsModel } from '../models/Location/LocationDetailsModel';
+import { AddressModel } from '../models/Location/AddressModel';
+import { AddressResponse } from '../models/Location/AddressResponse';
 
 export const getDistricts = async (): Promise<LocationPlaceModel[]> => {
     const { data } = await instance.get<Response<List<DistrictReponse>>>(API_DISTRICT, {});
@@ -82,5 +85,22 @@ export const getLocation = async (id: number): Promise<LocationDetailsModel> => 
         },
         latitude: data.data.latitude,
         longitude: data.data.longitude,
+    };
+};
+
+export const searchAddress = async ({ lat, long }: { lat: number; long: number }): Promise<AddressModel> => {
+    const { data } = await instance.get<Response<AddressResponse>>(API_SEARCH_ADDRESS, {
+        params: {
+            latitude: lat,
+            longitude: long,
+        },
+    });
+    return {
+        districtId: data.data.districtId,
+        displayName: data.data.displayName,
+        wardId: data.data.wardId,
+        wardName: data.data.wardName,
+        addressName: data.data.addressName,
+        districtName: data.data.districtName,
     };
 };

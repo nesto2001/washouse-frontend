@@ -43,6 +43,7 @@ const API_DISTRICT_SEARCH = '/api/districts/search';
 const API_DISTRICT_WARDS = '/api/districts/${id}/wards';
 const API_LOCATION_SEARCH = '/api/locations/search';
 const API_LOCATION_DETAILS = 'api/locations/${locationId}';
+const API_SEARCH_ADDRESS = '/api/maps/location';
 
 //ADMIN API
 const API_ADMIN_CENTER = '/api/admin/centers';
@@ -80,6 +81,7 @@ const API_STAFF_UPDATE_ORDERED_SERVICE = '/api/manager/my-center/orders/${orderI
 const API_STAFF_CANCEL_ORDER = '/api/tracking/orders/${orderId}/cancelled';
 const API_STAFF_ASSIGN_DELIVERY = '';
 const API_STAFF_FEEDBACKS = '/api/manager/my-center/feedbacks';
+const API_STAFF_STATS = '/api/manager/my-center/staff_statistic';
 
 //STAFF APT
 const API_STAFF = '/api/staffs';
@@ -109,6 +111,8 @@ const API_FEEDBACK_SERVICE_ID = '/api/feedbacks/services/${serviceId}';
 const RE_DIGIT = new RegExp(/^\d+$/);
 
 export {
+    API_SEARCH_ADDRESS,
+    API_STAFF_STATS,
     API_ADMIN_CENTER_DETAILS,
     API_STAFF_FEEDBACKS,
     API_STAFF_UPDATE_ORDERED_SERVICE,

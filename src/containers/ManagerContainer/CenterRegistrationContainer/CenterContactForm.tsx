@@ -7,6 +7,8 @@ import { getDistricts, getWards, searchLocation } from '../../../repositories/Lo
 import { CreateCenterFormData } from '.';
 import { LocationType } from '../../../types/LocationType';
 import LocationMap from '../../../components/Map/LocationMap';
+import Destination from '../../../assets/images/destination.png';
+import { AddressModel } from '../../../models/Location/AddressModel';
 
 const { Option } = Select;
 
@@ -24,6 +26,9 @@ const CenterContactForm = ({ setFormData, setIsValidated, formData, formInstance
     const [district, setDistrict] = useState<LocationPlaceModel>();
     const [openMap, setOpenMap] = useState<boolean>(false);
     const [location, setLocation] = useState<LocationType>({ latitude: 0, longitude: 0 });
+    const [addressString, setAddressString] = useState<string>('');
+    const [fullAddress, setFullAddress] = useState<string>('');
+    const [centerAddress, setCenterAddress] = useState<AddressModel>();
 
     const onFinish = (values: any) => {
         console.log('Success:', values);
@@ -37,6 +42,7 @@ const CenterContactForm = ({ setFormData, setIsValidated, formData, formInstance
                 ...prevFormData,
                 location: { latitude: res.latitude, longitude: res.longitude },
             }));
+            setLocation(res);
             setOpenMap(true);
         });
 
@@ -67,7 +73,7 @@ const CenterContactForm = ({ setFormData, setIsValidated, formData, formInstance
     };
 
     useEffect(() => {
-        setIsValidated(true);
+        setIsValidated(false);
         const fetchData = async () => {
             return await getDistricts();
         };
@@ -75,6 +81,16 @@ const CenterContactForm = ({ setFormData, setIsValidated, formData, formInstance
             setDistrictsList(res);
         });
     }, []);
+
+    useEffect(() => {
+        setFormData((prev) => ({
+            ...prev,
+            location: {
+                latitude: location.latitude,
+                longitude: location.longitude,
+            },
+        }));
+    }, [location, centerAddress]);
 
     return (
         <div className="p-6 text-sub text-base">
@@ -86,7 +102,10 @@ const CenterContactForm = ({ setFormData, setIsValidated, formData, formInstance
                 style={{ maxWidth: 900 }}
                 initialValues={{
                     centerAddress: formData.address,
-                    centerLocation: { centerDistrict: formData.districtId, centerWard: formData.wardId },
+                    centerLocation: {
+                        centerDistrict: formData.districtId !== 0 ? formData.districtId : undefined,
+                        centerWard: formData.wardId !== 0 ? formData.wardId : undefined,
+                    },
                 }}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
@@ -99,9 +118,10 @@ const CenterContactForm = ({ setFormData, setIsValidated, formData, formInstance
                     style={{ maxWidth: 700 }}
                 >
                     <Input
-                        style={{ maxWidth: 413 }}
+                        style={{ maxWidth: 700 }}
                         onChange={(e) => {
                             setFormData((prevFormData) => ({ ...prevFormData, address: e.target.value }));
+                            setAddressString(e.target.value);
                         }}
                     />
                 </Form.Item>
@@ -187,8 +207,25 @@ const CenterContactForm = ({ setFormData, setIsValidated, formData, formInstance
                 }}
                 maskClosable={true}
                 destroyOnClose={true}
+                bodyStyle={{ position: 'relative' }}
+                cancelButtonProps={{ style: { background: 'white' } }}
             >
-                <LocationMap setLocation={setLocation} addressLocation={formData.location} />
+                <LocationMap
+                    location={location}
+                    setLocation={setLocation}
+                    addressLocation={formData.location}
+                    setFullAddress={setFullAddress}
+                    setCenterAddress={setCenterAddress}
+                />
+                <div className="absolute bottom-0 w-full bg-white z-[9999] flex p-4 gap-3">
+                    <div className="w-[40px] h-[40px]">
+                        <img className="object-cover" src={Destination} alt="" />
+                    </div>
+                    <div className="">
+                        <div className="font-bold text-base">{centerAddress?.addressName || addressString}</div>
+                        <div className="">{centerAddress?.displayName}</div>
+                    </div>
+                </div>
             </Modal>
         </div>
     );
