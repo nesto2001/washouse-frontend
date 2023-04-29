@@ -1,8 +1,13 @@
-import { Button, Form, FormInstance, FormListFieldData, Input, Space, Switch } from 'antd';
+import { Button, Form, FormInstance, FormListFieldData, Input, Space, Switch, message } from 'antd';
 import { useState, useCallback } from 'react';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import '../ManagerContainer.scss';
 import { CreateCenterFormData } from '.';
+import { CenterDeliveryPriceRequest } from '../../../models/DeliveryPrice/CenterDeliveryPriceRequest';
+import { CenterRequest } from '../../../models/Center/CreateCenterRequest';
+import { generateRandomString } from '../../../utils/CommonUtils';
+import { createCenter } from '../../../repositories/CenterRepository';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
     formData: CreateCenterFormData;
@@ -12,6 +17,7 @@ type Props = {
 };
 
 const CenterDeliveryForm = ({ setFormData, setIsValidated, formData, formInstance }: Props) => {
+    const navigate = useNavigate();
     const [hasDelivery, sethasDelivery] = useState<boolean>(false);
     const [, updateState] = useState({});
     const forceUpdate = useCallback(() => updateState({}), []);
@@ -19,11 +25,66 @@ const CenterDeliveryForm = ({ setFormData, setIsValidated, formData, formInstanc
     const handleSwitchChange = (checked: boolean) => {
         sethasDelivery(checked);
         setFormData((prevFormData) => ({ ...prevFormData, hasDelivery: checked }));
+        if (!checked) {
+            setFormData((prevFormData) => ({ ...prevFormData, deliveryPrice: undefined }));
+        }
     };
-    const onFinish = (values: any) => {
+    const onFinish = (values: CenterDeliveryPriceRequest) => {
         setIsValidated(true);
-        console.log(formData);
-        console.log('Received values of form: ', values);
+        if (formData.hasDelivery || values.hasDelivery) {
+            setFormData((prevFormData) => ({ ...prevFormData, deliveryPrice: values.deliveryPrice }));
+        } else {
+            setFormData((prevFormData) => ({ ...prevFormData, deliveryPrice: undefined }));
+        }
+        const centerRequest: CenterRequest = {
+            center: {
+                centerName: formData.name,
+                description: formData.description,
+                hasDelivery: true,
+                phone: formData.phone,
+                savedFileName: formData.savedImage ?? 'step3-20230410003841.png',
+                taxCode: generateRandomString(12),
+                taxRegistrationImage: 'step3-20230410003841.png',
+            },
+            location: {
+                addressString: formData.address,
+                wardId: formData.wardId,
+                latitude: formData.location.latitude,
+                longitude: formData.location.longitude,
+            },
+            centerOperatingHours: formData.operationHours.map((operationDay) => {
+                return {
+                    day: operationDay.day,
+                    openTime: operationDay.start,
+                    closeTime: operationDay.end,
+                };
+            }),
+            centerDelivery: {
+                hasDelivery: formData.hasDelivery,
+                deliveryPrice:
+                    formData.hasDelivery && formData.deliveryPrice
+                        ? formData.deliveryPrice?.map((deliPrice) => {
+                              return {
+                                  maxWeight: deliPrice.maxWeight,
+                                  maxDistance: deliPrice.maxDistance,
+                                  price: deliPrice.price,
+                              };
+                          })
+                        : undefined,
+            },
+        };
+        console.log(JSON.stringify(centerRequest));
+        const fetchData = async () => {
+            return await createCenter(centerRequest);
+        };
+        fetchData().then((res) => {
+            if (res) {
+                message.success('Đã đăng ký trung tâm thành công, vui lòng chờ duyệt bởi quản trị viên.');
+                navigate('/provider/settings/center/profile');
+            } else {
+                message.error('Xảy ra lỗi trong hoàn tất quá trình đăng ký, vui lòng thử lại sau.');
+            }
+        });
     };
     const onFinishFailed = (errorInfo: any) => {
         setIsValidated(true);
@@ -57,7 +118,7 @@ const CenterDeliveryForm = ({ setFormData, setIsValidated, formData, formInstanc
                     <div className="flex w-full">
                         <Form.Item className="basis-1/2" label="Bảng phí ship" labelCol={{ span: 6 }}>
                             <Form.List
-                                name="weightPrices"
+                                name="deliveryPrice"
                                 rules={[
                                     {
                                         validator: async (_, weightPrices) => {
@@ -77,7 +138,7 @@ const CenterDeliveryForm = ({ setFormData, setIsValidated, formData, formInstanc
                                         <div>
                                             {fields.map((field, index) => {
                                                 return (
-                                                    <Space key={field.key} align="baseline">
+                                                    <Space key={`${field.key}-${index}`} align="baseline">
                                                         <Form.Item
                                                             {...field}
                                                             name={[field.name, 'maxWeight']}

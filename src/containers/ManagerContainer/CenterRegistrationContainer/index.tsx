@@ -13,6 +13,7 @@ import CenterDeliveryForm from './CenterDeliveryForm';
 import { getManagerCenter } from '../../../repositories/StaffRepository';
 import { generateRandomString } from '../../../utils/CommonUtils';
 import Loading from '../../../components/Loading/Loading';
+import { DeliveryPriceType } from '../../../types/Price/DeliveryPriceType';
 
 export type CreateCenterFormData = {
     name: string;
@@ -26,6 +27,7 @@ export type CreateCenterFormData = {
     wardId: number;
     location: LocationType;
     hasDelivery: boolean;
+    deliveryPrice?: DeliveryPriceType[];
     taxCode: string;
     taxRegistrationImage: string;
 };
@@ -61,6 +63,7 @@ const CenterRegistrationContainer = (props: Props) => {
         wardId: 0,
         location: { latitude: 0, longitude: 0 },
         hasDelivery: false,
+        deliveryPrice: [],
     });
 
     // useEffect(() => {
@@ -138,42 +141,7 @@ const CenterRegistrationContainer = (props: Props) => {
 
     const handleCreateCenter = () => {
         console.log(formData);
-        const centerRequest: CenterRequest = {
-            center: {
-                centerName: formData.name,
-                description: formData.description,
-                hasDelivery: true,
-                phone: formData.phone,
-                savedFileName: formData.savedImage ?? 'step3-20230410003841.png',
-                taxCode: generateRandomString(12),
-                taxRegistrationImage: 'step3-20230410003841.png',
-            },
-            location: {
-                addressString: formData.address,
-                wardId: formData.wardId,
-                latitude: formData.location.latitude,
-                longitude: formData.location.longitude,
-            },
-            centerOperatingHours: formData.operationHours.map((operationDay) => {
-                return {
-                    day: operationDay.day,
-                    openTime: operationDay.start,
-                    closeTime: operationDay.end,
-                };
-            }),
-        };
-        console.log(JSON.stringify(centerRequest));
-        const fetchData = async () => {
-            return await createCenter(centerRequest);
-        };
-        fetchData().then((res) => {
-            if (res) {
-                message.success('Đã đăng ký trung tâm thành công, vui lòng chờ duyệt bởi quản trị viên.');
-                navigate('/provider/settings/center/profile');
-            } else {
-                message.error('Xảy ra lỗi trong hoàn tất quá trình đăng ký, vui lòng thử lại sau.');
-            }
-        });
+        form.submit();
     };
 
     const items = steps.map((item) => ({

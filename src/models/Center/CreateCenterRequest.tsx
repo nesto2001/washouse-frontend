@@ -1,3 +1,5 @@
+import { DeliveryPriceType } from '../../types/Price/DeliveryPriceType';
+
 export interface CenterRequest {
     center: {
         centerName: string;
@@ -21,4 +23,8 @@ export interface CenterRequest {
         openTime: string | null;
         closeTime: string | null;
     }[];
+    centerDelivery: {
+        hasDelivery: boolean;
+        deliveryPrice?: DeliveryPriceType[];
+    };
 }
