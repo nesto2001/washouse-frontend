@@ -109,15 +109,21 @@ const OrderDetailsContainer = (props: Props) => {
                     className="text-base font-medium py-0.5"
                     color={
                         BadgeStatusMap[
-                            record.orderDetailTrackings[record.orderDetailTrackings.length - 1].status.toLowerCase() ??
-                                ''
+                            record.orderDetailTrackings[record.orderDetailTrackings.length - 1].status
+                                ? record.orderDetailTrackings[
+                                      record.orderDetailTrackings.length - 1
+                                  ].status.toLowerCase()
+                                : ''
                         ]
                     }
                 >
                     {
                         OrderStatusMap[
-                            record.orderDetailTrackings[record.orderDetailTrackings.length - 1].status.toLowerCase() ??
-                                ''
+                            record.orderDetailTrackings[record.orderDetailTrackings.length - 1].status
+                                ? record.orderDetailTrackings[
+                                      record.orderDetailTrackings.length - 1
+                                  ].status.toLowerCase()
+                                : ''
                         ]
                     }
                 </Tag>

@@ -63,7 +63,7 @@ const HomePage = () => {
                                 </div>
                                 <div className="partnership__content--action mt-9 text-left">
                                     <WHButton type="primary" fontSize="20px" link="/provider/register">
-                                        <div className="py-3 px-6">Tham gia ngay</div>
+                                        Tham gia ngay
                                     </WHButton>
                                 </div>
                             </div>
