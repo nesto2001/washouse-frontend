@@ -15,8 +15,8 @@ export const TransactionBadgeStatusMap: { [key: string]: string } = {
     '': 'default',
     Pending: 'default',
     pending: 'default',
-    success: 'success',
-    Success: 'success',
+    success: 'green',
+    Success: 'green',
     failed: 'error',
     Failed: 'Error',
 };
@@ -37,16 +37,26 @@ export const DeliveryBadgeStatusMap: { [key: string]: string } = {
     pending: 'default',
     Delivering: 'processing',
     delivering: 'processing',
-    Completed: 'success',
-    completed: 'success',
+    Completed: 'green',
+    completed: 'green',
 };
 
 export const PaymentBadgeStatusMap: { [key: string]: string } = {
     '': 'default',
     Pending: 'default',
     pending: 'default',
-    Paid: 'success',
-    paid: 'success',
-    DonePaid: 'success',
-    donepaid: 'success',
+    Paid: 'green',
+    paid: 'green',
+    DonePaid: 'green',
+    donepaid: 'green',
+};
+
+export const OrderedDetailsBadgeStatusMap: { [key: string]: string } = {
+    '': 'default',
+    Pending: 'default',
+    pending: 'default',
+    processing: 'processing',
+    Processing: 'processing',
+    completed: 'green',
+    Completed: 'green',
 };

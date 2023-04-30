@@ -5,6 +5,7 @@ import { CenterOrderDeliveryModel } from '../../../models/Staff/CenterOrderDeliv
 import { DeliveryStatusMap } from '../../../mapping/DeliveryStatusMap';
 import { Tag } from 'antd';
 import { getLocation } from '../../../repositories/LocationRepository';
+import { DeliveryBadgeStatusMap } from '../../../mapping/BadgeStatusMap';
 
 type Props = {
     deliveries: CenterOrderDeliveryModel[];
@@ -61,7 +62,12 @@ const CenterOrderDetailsDelivery = ({ deliveries, deliveryType }: Props) => {
                                 <div className="flex justify-between items-baseline mb-4">
                                     <h2 className="font-semibold text-xl">{'Lấy đơn hàng'}</h2>
                                     <h4 className="font-medium text-sm">
-                                        <Tag>{DeliveryStatusMap[delivery.status]}</Tag>
+                                        <Tag
+                                            color={DeliveryBadgeStatusMap[delivery.status ?? '']}
+                                            style={{ marginRight: 0 }}
+                                        >
+                                            {DeliveryStatusMap[delivery.status ?? '']}
+                                        </Tag>
                                     </h4>
                                 </div>
                                 <div className="grid grid-cols-2 gap-y-1 mt-2 text-sm">
@@ -92,7 +98,12 @@ const CenterOrderDetailsDelivery = ({ deliveries, deliveryType }: Props) => {
                                 <div className="flex justify-between items-baseline mb-4">
                                     <h2 className="font-semibold text-xl">Trả đơn hàng</h2>
                                     <h4 className="font-medium text-sm">
-                                        <Tag>{DeliveryStatusMap[delivery.status]}</Tag>
+                                        <Tag
+                                            color={DeliveryBadgeStatusMap[delivery.status ?? '']}
+                                            style={{ marginRight: 0 }}
+                                        >
+                                            {DeliveryStatusMap[delivery.status ?? '']}
+                                        </Tag>
                                     </h4>
                                 </div>
                                 <div className="grid grid-cols-2 gap-y-1 mt-2 text-sm">

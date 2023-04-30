@@ -1,5 +1,6 @@
 export const OrderStatusMap: { [key: string]: string } = {
     None: 'Chưa có',
+    '': 'Chưa có',
     Pending: 'Đang chờ',
     pending: 'Đang chờ',
     Confirmed: 'Xác nhận',
@@ -35,4 +36,6 @@ export const PaymentStatusMap: { [key: string]: string } = {
     paid: 'Đã thanh toán',
     DonePaid: 'Đã thanh toán',
     donepaid: 'Đã thanh toán',
+    cancelled: 'Đã hủy',
+    Cancelled: 'Đã hủy',
 };

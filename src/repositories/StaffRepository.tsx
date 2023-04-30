@@ -11,6 +11,7 @@ import {
     API_STAFF_CANCEL_ORDER,
     API_STAFF_DEACTIVATE,
     API_STAFF_FEEDBACKS,
+    API_STAFF_PAID_ORDER,
     API_STAFF_PROCEED_ORDER,
     API_STAFF_PROCEED_ORDERED_SERVICE,
     API_STAFF_STATS,
@@ -346,6 +347,19 @@ export const proceedOrder = async (orderId: string) => {
     return response;
 };
 
+export const confirmPaidOrder = async (orderId: string) => {
+    const response = await instance.put<Response<number>>(
+        API_STAFF_PAID_ORDER.replace('${id}', orderId),
+        {},
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        },
+    );
+    return response;
+};
+
 export const proceedOrderDetails = async (orderId: string, orderDetailId: number) => {
     const response = await instance.put<Response<number>>(
         API_STAFF_PROCEED_ORDERED_SERVICE.replace('${orderId}', orderId).replace(
@@ -382,10 +396,12 @@ export const updateOrderDetails = async (
     return response;
 };
 
-export const cancelOrder = async (orderId: string) => {
+export const cancelOrder = async (orderId: string, reason: string) => {
     const response = await instance.put<Response<number>>(
         API_STAFF_CANCEL_ORDER.replace('${orderId}', orderId),
-        {},
+        {
+            reason: reason,
+        },
         {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('accessToken')}`,

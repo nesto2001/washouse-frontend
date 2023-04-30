@@ -15,7 +15,8 @@ import { getLocation } from '../../../repositories/LocationRepository';
 import { AssignDeliveryRequest } from '../../../models/Staff/StaffOrder/AssignDeliveryRequest';
 import { assignOrderDelivery } from '../../../repositories/StaffRepository';
 import { DeliveryStatusMap } from '../../../mapping/DeliveryStatusMap';
-import { DeliveryBadgeStatusMap } from '../../../mapping/BadgeStatusMap';
+import { DeliveryBadgeStatusMap, PaymentBadgeStatusMap } from '../../../mapping/BadgeStatusMap';
+import { PaymentStatusMap } from '../../../mapping/OrderStatusMap';
 
 type Props = {
     orderDetails: CenterOrderDetailsModel;
@@ -446,15 +447,19 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                 </div>
                 <div className="w-[360px]">
                     <div className="order__payment w-full bg-white rounded border border-wh-lightgray mb-6">
-                        <div className="provider__page--title pt-4 pl-6 font-semibold text-2xl flex justify-between items-center">
+                        <div className="provider__page--title pt-4 px-6 font-semibold text-2xl flex justify-between items-center">
                             <div className="">Thông tin thanh toán</div>
-                            <Tag style={{ fontSize: 14, paddingTop: 2, paddingBottom: 2 }} color="default">
-                                Đang chờ
+                            <Tag
+                                style={{ fontSize: 14, paddingTop: 2, paddingBottom: 2, marginRight: 0 }}
+                                color={PaymentBadgeStatusMap[orderDetails.orderPayment.status.toLowerCase() ?? '']}
+                            >
+                                {PaymentStatusMap[orderDetails.orderPayment.status.toLowerCase() ?? '']}
                             </Tag>
                         </div>
                         <div className="provider__page--content px-6 mt-6">
                             <div className="provider__services--wrapper">
                                 <CenterOrderDetailsPayment
+                                    orderID={orderDetails.id}
                                     forceUpdate={forceUpdate}
                                     orderStatus={orderDetails.status}
                                     orderPayment={{

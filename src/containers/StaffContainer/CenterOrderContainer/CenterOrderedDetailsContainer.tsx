@@ -6,7 +6,7 @@ import { Button, Form, Input, InputNumber, Modal, Tag, Tooltip, message } from '
 import { CenterOrderedServiceModel } from '../../../models/Staff/CenterOrderedServiceModel';
 import { proceedOrderDetails, updateOrderDetails } from '../../../repositories/StaffRepository';
 import { OrderStatusMap } from '../../../mapping/OrderStatusMap';
-import { BadgeStatusMap } from '../../../mapping/BadgeStatusMap';
+import { BadgeStatusMap, OrderedDetailsBadgeStatusMap } from '../../../mapping/BadgeStatusMap';
 import { EditOutlined, SyncOutlined } from '@ant-design/icons';
 import TextArea from 'antd/es/input/TextArea';
 import { UpdateOrderDetailsRequest } from '../../../models/Staff/StaffOrder/UpdateOrderDetailsRequest';
@@ -110,20 +110,20 @@ const CenterOrderedDetailsContainer = ({ details, orderId, orderStatus, forceUpd
                         <Tag
                             className="text-sm py-1 px-4"
                             color={
-                                BadgeStatusMap[
-                                    det.orderDetailTrackings[det.orderDetailTrackings.length - 1]?.status ?? 'None'
+                                OrderedDetailsBadgeStatusMap[
+                                    det.orderDetailTrackings[det.orderDetailTrackings.length - 1]?.status ?? ''
                                 ]
                             }
                         >
                             {
                                 OrderStatusMap[
-                                    det.orderDetailTrackings[det.orderDetailTrackings.length - 1]?.status ?? 'None'
+                                    det.orderDetailTrackings[det.orderDetailTrackings.length - 1]?.status ?? ''
                                 ]
                             }
                         </Tag>
                     </div>
                     <div className="ordered__item--update font-bold text-xl text-right flex gap-6">
-                        {(orderStatus.toLowerCase() === 'confirmed' || orderStatus.toLowerCase() === 'ready') && (
+                        {(orderStatus.toLowerCase() === 'received' || orderStatus.toLowerCase() === 'ready') && (
                             <Tooltip title="Chỉnh sửa">
                                 <Button
                                     type="default"

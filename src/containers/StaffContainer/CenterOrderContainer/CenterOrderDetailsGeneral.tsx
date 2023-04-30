@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Button, Descriptions, Popconfirm, Tag, Tooltip } from 'antd';
+import { Button, Descriptions, Form, Modal, Popconfirm, Tag, Tooltip, message } from 'antd';
 import { LocationDetailsModel } from '../../../models/Location/LocationDetailsModel';
 import { getLocation } from '../../../repositories/LocationRepository';
 import { DeliveryTypeMap } from '../../../mapping/DeliveryTypeMap';
@@ -9,6 +9,8 @@ import { BadgeStatusMap } from '../../../mapping/BadgeStatusMap';
 import { OrderStatusMap } from '../../../mapping/OrderStatusMap';
 import CouponTag from '../../../components/CouponTag/CouponTag';
 import { formatPercentage } from '../../../utils/FormatUtils';
+import TextArea from 'antd/es/input/TextArea';
+import { cancelOrder } from '../../../repositories/StaffRepository';
 
 export type OrderInformation = {
     id: string;
@@ -34,6 +36,11 @@ type Props = {
     handleOk?: () => void;
     showPopconfirm?: () => void;
     orderInfo: OrderInformation;
+    forceUpdate: () => void;
+};
+
+type CancelOrderForm = {
+    reason: string;
 };
 
 const CenterOrderDetailsGeneral = ({
@@ -43,8 +50,12 @@ const CenterOrderDetailsGeneral = ({
     showPopconfirm,
     confirmProceedLoading,
     openProceedPop,
+    forceUpdate,
 }: Props) => {
     const [customerLocation, setCustomerLocation] = useState<LocationDetailsModel>();
+    const [openCancelModel, setOpenCancelModel] = useState(false);
+    const [modalLoadingConfirm, setModalLoadingConfirm] = useState(false);
+    const [form] = Form.useForm();
 
     useEffect(() => {
         const fetchLocation = async () => {
@@ -54,6 +65,24 @@ const CenterOrderDetailsGeneral = ({
             setCustomerLocation(res);
         });
     }, [orderInfo]);
+
+    const handleCancelOrder = (values: CancelOrderForm) => {
+        setModalLoadingConfirm(true);
+        if (values.reason) {
+            cancelOrder(orderInfo.id, values.reason)
+                .then((res) => {
+                    message.success('Đã hủy đơn hàng thành công!');
+                    forceUpdate();
+                })
+                .catch(() => {
+                    message.error('Đã xảy ra lỗi trong quá trình hủy đơn hàng, vui lòng thử lại');
+                })
+                .finally(() => {
+                    setModalLoadingConfirm(false);
+                    setOpenCancelModel(false);
+                });
+        }
+    };
 
     return (
         <>
@@ -163,26 +192,62 @@ const CenterOrderDetailsGeneral = ({
                         size="large"
                         className="capitalize bg-white hover:bg-ws-red hover:!text-white"
                         danger
+                        onClick={() => setOpenCancelModel(true)}
                     >
                         Hủy đơn hàng
                     </Button>
                 )}
-                <Popconfirm
-                    title="Cập nhật"
-                    description="Xác nhận cập nhật tiến trình đơn hàng?"
-                    open={openProceedPop}
-                    onConfirm={handleOk}
-                    okButtonProps={{ loading: confirmProceedLoading }}
-                    onCancel={handleCancel}
-                    cancelButtonProps={{ style: { background: 'white' } }}
-                    okText="Xác nhận"
-                    cancelText="Hủy"
-                >
-                    <Button type="primary" size="large" className="capitalize" onClick={showPopconfirm}>
-                        Cập nhật tiến trình
-                    </Button>
-                </Popconfirm>
+                {orderInfo.status.toLowerCase() !== 'completed' && orderInfo.status.toLowerCase() !== 'cancelled' && (
+                    <Popconfirm
+                        title="Cập nhật"
+                        description="Xác nhận cập nhật tiến trình đơn hàng?"
+                        open={openProceedPop}
+                        onConfirm={handleOk}
+                        okButtonProps={{ loading: confirmProceedLoading }}
+                        onCancel={handleCancel}
+                        cancelButtonProps={{ style: { background: 'white' } }}
+                        okText="Xác nhận"
+                        cancelText="Hủy"
+                    >
+                        <Button type="primary" size="large" className="capitalize" onClick={showPopconfirm}>
+                            Cập nhật tiến trình
+                        </Button>
+                    </Popconfirm>
+                )}
             </div>
+            <Modal
+                title="Hủy đơn hàng"
+                maskClosable
+                destroyOnClose
+                open={openCancelModel}
+                onCancel={() => {
+                    setOpenCancelModel(false);
+                }}
+                cancelText="Hủy"
+                okText="Xác nhận"
+                cancelButtonProps={{ style: { background: 'white' } }}
+                okButtonProps={{ danger: true }}
+                width={400}
+                onOk={() => form.submit()}
+                confirmLoading={modalLoadingConfirm}
+            >
+                Bạn xác nhận hủy đơn hàng?
+                <div className="mt-4">
+                    <Form layout="vertical" name="cancel" form={form} requiredMark={false} onFinish={handleCancelOrder}>
+                        <Form.Item
+                            name="reason"
+                            label="Lí do hủy đơn"
+                            rules={[
+                                { required: true, message: 'Vui lòng nhập lí do hủy đơn' },
+                                { min: 2, message: 'Vui lòng nhập ít nhất 2 ký tự' },
+                            ]}
+                            requiredMark={false}
+                        >
+                            <TextArea placeholder="Nhập lí do hủy đơn" />
+                        </Form.Item>
+                    </Form>
+                </div>
+            </Modal>
         </>
     );
 };

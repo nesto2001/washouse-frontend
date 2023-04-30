@@ -6,4 +6,6 @@ export const DeliveryStatusMap: { [key: string]: string } = {
     delivering: 'Đang giao',
     Completed: 'Hoàn tất',
     completed: 'Hoàn tất',
+    cancelled: 'Đã hủy',
+    Cancelled: 'Đã hủy',
 };

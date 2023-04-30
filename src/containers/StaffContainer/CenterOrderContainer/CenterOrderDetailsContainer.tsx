@@ -9,6 +9,8 @@ import CenterOrderDetailsGeneral from './CenterOrderDetailsGeneral';
 import CenterOrderDetailsPayment from './CenterOrderDetailsPayment';
 import CenterOrderDetailsTracking from './CenterOrderDetailsTracking';
 import CenterOrderedDetailsContainer from './CenterOrderedDetailsContainer';
+import { PaymentStatusMap } from '../../../mapping/OrderStatusMap';
+import { PaymentBadgeStatusMap } from '../../../mapping/BadgeStatusMap';
 
 type Props = {};
 
@@ -87,6 +89,7 @@ const CenterOrderDetailsContainer = (props: Props) => {
                     <div className="provider__page--content px-6 mt-6">
                         <div className="provider__services--wrapper mb-4">
                             <CenterOrderDetailsGeneral
+                                forceUpdate={forceUpdate}
                                 confirmProceedLoading={confirmProceedLoading}
                                 openProceedPop={openProceedPop}
                                 handleCancel={handleCancel}
@@ -145,15 +148,19 @@ const CenterOrderDetailsContainer = (props: Props) => {
             </div>
             <div className="basis-1/4 mx-auto">
                 <div className="order__payment w-full bg-white rounded border border-wh-lightgray mb-6">
-                    <div className="provider__page--title pt-4 pl-6 font-semibold text-2xl flex justify-between items-center">
+                    <div className="provider__page--title pt-4 px-6 font-semibold text-2xl flex justify-between items-center">
                         <div className="">Thông tin thanh toán</div>
-                        <Tag style={{ fontSize: 14, paddingTop: 2, paddingBottom: 2 }} color="default">
-                            Đang chờ
+                        <Tag
+                            style={{ fontSize: 14, paddingTop: 2, paddingBottom: 2, marginRight: 0 }}
+                            color={PaymentBadgeStatusMap[orderDetails.orderPayment.status.toLowerCase() ?? '']}
+                        >
+                            {PaymentStatusMap[orderDetails.orderPayment.status.toLowerCase() ?? '']}
                         </Tag>
                     </div>
                     <div className="provider__page--content px-6 mt-6">
                         <div className="provider__services--wrapper">
                             <CenterOrderDetailsPayment
+                                orderID={orderDetails.id}
                                 orderStatus={orderDetails.status}
                                 forceUpdate={forceUpdate}
                                 orderPayment={{
