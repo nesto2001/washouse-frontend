@@ -94,6 +94,7 @@ const CenterOrderDetailsPayment = ({ orderPayment, orderStatus, forceUpdate, ord
                 {formatCurrency(orderPayment.payment.total ?? 0)}
             </div>
             {orderPayment.payment.status.toLowerCase() === 'pending' &&
+                orderPayment.payment.method === 0 &&
                 !(orderStatus.toLowerCase() === 'pending' || orderStatus.toLowerCase() === 'confirmed') && (
                     <div className="center__orderpayment--footer flex justify-end my-3 mt-6 gap-4 col-span-2">
                         <Popconfirm
