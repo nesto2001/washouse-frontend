@@ -44,7 +44,20 @@ const StaffRegisterContainer = () => {
                             };
                             fetchData().then((res) => {
                                 localStorage.setItem('currentUser', JSON.stringify(res));
-                                navigate('/provider/dashboard');
+                                switch (res.roleType.toLowerCase()) {
+                                    case 'manager':
+                                        navigate('/provider/dashboard');
+                                        break;
+                                    case 'staff':
+                                        navigate('/provider/staff/dashboard');
+                                        break;
+                                    case 'user':
+                                        navigate('/provider/role');
+                                        break;
+                                    default:
+                                        navigate('/provider/role');
+                                        break;
+                                }
                             });
                         } else {
                             console.log('lỗi login'); //Message
