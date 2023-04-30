@@ -14,9 +14,9 @@ import Breadcrumb from '../../components/Breadcrumb';
 import ErrorScreen from '../../components/ErrorScreen/ErrorScreen';
 import Loading from '../../components/Loading/Loading';
 import ProgressBar from '../../components/ProgressBar/ProgressBar';
-import { BadgeStatusMap } from '../../mapping/BadgeStatusMap';
+import { BadgeStatusMap, PaymentBadgeStatusMap } from '../../mapping/BadgeStatusMap';
 import { DeliveryTypeMap } from '../../mapping/DeliveryTypeMap';
-import { OrderStatusMap } from '../../mapping/OrderStatusMap';
+import { OrderStatusMap, PaymentStatusMap } from '../../mapping/OrderStatusMap';
 import { PaymentMethodMap } from '../../mapping/PaymentMethodMap';
 import { CustomerOrderDetailsModel } from '../../models/Customer/CustomerOrderDetailsModel';
 import { LocationDetailsModel } from '../../models/Location/LocationDetailsModel';
@@ -104,9 +104,22 @@ const OrderDetailsContainer = (props: Props) => {
             title: 'Trạng thái',
             dataIndex: 'status',
             key: 'status',
-            render: (value) => (
-                <Tag className="text-base font-medium py-0.5" color={BadgeStatusMap[value ?? 'None']}>
-                    {OrderStatusMap[value ?? 'None']}
+            render: (_, record) => (
+                <Tag
+                    className="text-base font-medium py-0.5"
+                    color={
+                        BadgeStatusMap[
+                            record.orderDetailTrackings[record.orderDetailTrackings.length - 1].status.toLowerCase() ??
+                                ''
+                        ]
+                    }
+                >
+                    {
+                        OrderStatusMap[
+                            record.orderDetailTrackings[record.orderDetailTrackings.length - 1].status.toLowerCase() ??
+                                ''
+                        ]
+                    }
                 </Tag>
             ),
         },
@@ -315,9 +328,13 @@ const OrderDetailsContainer = (props: Props) => {
                                             Trạng thái
                                             <Tag
                                                 style={{ fontSize: 16, padding: '2px 4px' }}
-                                                color={BadgeStatusMap[orderDetails.orderPayment.status]}
+                                                color={
+                                                    PaymentBadgeStatusMap[
+                                                        orderDetails.orderPayment.status.toLowerCase()
+                                                    ]
+                                                }
                                             >
-                                                {OrderStatusMap[orderDetails.orderPayment.status]}
+                                                {PaymentStatusMap[orderDetails.orderPayment.status.toLowerCase()]}
                                             </Tag>
                                         </h3>
                                     </div>

@@ -100,7 +100,7 @@ const ProgressBar = ({ orderState }: Props) => {
                         className={clsx(style.tracking_details, 'min-w-[96px] max-w-[96px]')}
                     >
                         <h4 className={clsx('text-sm font-bold', state.completed ? 'text-sub' : 'text-primary')}>
-                            {state.title && OrderStatusMap[state.title]}
+                            {state.title && OrderStatusMap[state.title.toLowerCase()]}
                         </h4>
                         <h4 className="text-sm text-sub-gray">{state.time}</h4>
                     </div>
