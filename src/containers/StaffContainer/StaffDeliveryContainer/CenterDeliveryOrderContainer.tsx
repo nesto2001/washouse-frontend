@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import CenterOrderDetailsGeneral from '../CenterOrderContainer/CenterOrderDetailsGeneral';
-import { Button, Col, Descriptions, Form, Input, Modal, Row, Tag, message } from 'antd';
+import { Button, Col, Descriptions, Form, Input, Modal, Popconfirm, Row, Tag, message } from 'antd';
 import CenterOrderedDetailsContainer from '../CenterOrderContainer/CenterOrderedDetailsContainer';
 import CenterOrderDetailsPayment from '../CenterOrderContainer/CenterOrderDetailsPayment';
 import CenterOrderDetailsDelivery from '../CenterOrderContainer/CenterOrderDetailsDelivery';
@@ -13,7 +13,7 @@ import { FaDirections, FaRunning } from 'react-icons/fa';
 import { RiUserLocationFill } from 'react-icons/ri';
 import { getLocation } from '../../../repositories/LocationRepository';
 import { AssignDeliveryRequest } from '../../../models/Staff/StaffOrder/AssignDeliveryRequest';
-import { assignOrderDelivery } from '../../../repositories/StaffRepository';
+import { assignOrderDelivery, proceedOrderDelivery } from '../../../repositories/StaffRepository';
 import { DeliveryStatusMap } from '../../../mapping/DeliveryStatusMap';
 import { DeliveryBadgeStatusMap, PaymentBadgeStatusMap } from '../../../mapping/BadgeStatusMap';
 import { PaymentStatusMap } from '../../../mapping/OrderStatusMap';
@@ -31,6 +31,8 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
     const [modal, contextHolder] = Modal.useModal();
     const [form] = Form.useForm();
     const [isLarge, setIsLarge] = useState(false);
+    const [openPopConfirm, setOpenPopConfirm] = useState(false);
+    const [popConfirmLoading, setPopConfirmLoading] = useState(false);
     const stickyDivRef = useRef<HTMLDivElement>(null);
     const [state, updateState] = useState({});
     const forceUpdate = useCallback(() => updateState({}), []);
@@ -117,6 +119,41 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
         modal.info(config);
     };
 
+    const handleUpdateDelivery = (type: string) => {
+        setPopConfirmLoading(true);
+        if (type.toLowerCase() === 'dropoff') {
+            const delivery = orderDetails.orderDeliveries.find((d) => !d.type);
+            if (delivery && delivery.shipperName && delivery.shipperPhone) {
+                proceedOrderDelivery(orderDetails.id, 'dropoff')
+                    .then((res) => {
+                        message.success('Cập nhật trạng thái giao hàng thành công');
+                    })
+                    .finally(() => {
+                        setPopConfirmLoading(false);
+                    });
+            } else {
+                message.error('Vui lòng điền thông tin nhân viên giao hàng trước khi cập nhật!');
+                setPopConfirmLoading(false);
+                return;
+            }
+        } else if (type.toLowerCase() === 'deliver') {
+            const delivery = orderDetails.orderDeliveries.find((d) => d.type);
+            if (delivery && delivery.shipperName && delivery.shipperPhone) {
+                proceedOrderDelivery(orderDetails.id, 'deliver')
+                    .then((res) => {
+                        message.success('Cập nhật trạng thái giao hàng thành công');
+                    })
+                    .finally(() => {
+                        setPopConfirmLoading(false);
+                    });
+            } else {
+                message.error('Vui lòng điền thông tin nhân viên giao hàng trước khi cập nhật!');
+                setPopConfirmLoading(false);
+                return;
+            }
+        }
+    };
+
     return (
         <>
             {contextHolder}
@@ -173,11 +210,30 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                                                 </div>
                                             </div>
                                             {tracking.status.toLowerCase() !== 'completed' && (
-                                                <div
-                                                    className="float-right mt-3 ml-3"
-                                                    onClick={() => message.success('Cập nhật vận chuyển thành công!')}
-                                                >
-                                                    <Button type="primary">Cập nhật vận chuyển</Button>
+                                                <div className="float-right mt-3 ml-3">
+                                                    <Popconfirm
+                                                        title="Cập nhật vận chuyển"
+                                                        cancelText="Hủy"
+                                                        cancelButtonProps={{ style: { background: 'white' } }}
+                                                        description="Xác nhận cập nhật tiến trình    vận chuyển?"
+                                                        okText="Xác nhận"
+                                                        okButtonProps={{ loading: popConfirmLoading }}
+                                                        open={openPopConfirm}
+                                                        onCancel={() => {
+                                                            setOpenPopConfirm(false);
+                                                        }}
+                                                        destroyTooltipOnHide
+                                                        onConfirm={() =>
+                                                            handleUpdateDelivery(
+                                                                (tracking.type && 'deliver') ||
+                                                                    (!tracking.type && 'dropoff'),
+                                                            )
+                                                        }
+                                                    >
+                                                        <Button type="primary" onClick={() => setOpenPopConfirm(true)}>
+                                                            Cập nhật vận chuyển
+                                                        </Button>
+                                                    </Popconfirm>
                                                 </div>
                                             )}
                                             {orderDetails.status.toLowerCase() === 'confirmed' && (
@@ -237,13 +293,33 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                                             </div>
                                             {orderDetails.status.toLowerCase() === 'ready' &&
                                                 tracking.status.toLowerCase() !== 'completed' && (
-                                                    <div
-                                                        className="float-right mt-3 ml-3"
-                                                        onClick={() =>
-                                                            message.success('Cập nhật vận chuyển thành công!')
-                                                        }
-                                                    >
-                                                        <Button type="primary">Cập nhật vận chuyển</Button>
+                                                    <div className="float-right mt-3 ml-3">
+                                                        <Popconfirm
+                                                            title="Cập nhật vận chuyển"
+                                                            cancelText="Hủy"
+                                                            cancelButtonProps={{ style: { background: 'white' } }}
+                                                            description="Xác nhận cập nhật tiến trình    vận chuyển?"
+                                                            okText="Xác nhận"
+                                                            okButtonProps={{ loading: popConfirmLoading }}
+                                                            open={openPopConfirm}
+                                                            onCancel={() => {
+                                                                setOpenPopConfirm(false);
+                                                            }}
+                                                            destroyTooltipOnHide
+                                                            onConfirm={() =>
+                                                                handleUpdateDelivery(
+                                                                    (tracking.type && 'deliver') ||
+                                                                        (!tracking.type && 'dropoff'),
+                                                                )
+                                                            }
+                                                        >
+                                                            <Button
+                                                                type="primary"
+                                                                onClick={() => setOpenPopConfirm(true)}
+                                                            >
+                                                                Cập nhật vận chuyển
+                                                            </Button>
+                                                        </Popconfirm>
                                                     </div>
                                                 )}
                                             {orderDetails.status.toLowerCase() === 'ready' &&
@@ -308,11 +384,30 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                                                 </div>
                                             </div>
                                             {tracking.status.toLowerCase() !== 'completed' && (
-                                                <div
-                                                    className="float-right mt-3 ml-3"
-                                                    onClick={() => message.success('Cập nhật vận chuyển thành công!')}
-                                                >
-                                                    <Button type="primary">Cập nhật vận chuyển</Button>
+                                                <div className="float-right mt-3 ml-3">
+                                                    <Popconfirm
+                                                        title="Cập nhật vận chuyển"
+                                                        cancelText="Hủy"
+                                                        cancelButtonProps={{ style: { background: 'white' } }}
+                                                        description="Xác nhận cập nhật tiến trình    vận chuyển?"
+                                                        okText="Xác nhận"
+                                                        okButtonProps={{ loading: popConfirmLoading }}
+                                                        open={openPopConfirm}
+                                                        onCancel={() => {
+                                                            setOpenPopConfirm(false);
+                                                        }}
+                                                        destroyTooltipOnHide
+                                                        onConfirm={() =>
+                                                            handleUpdateDelivery(
+                                                                (tracking.type && 'deliver') ||
+                                                                    (!tracking.type && 'dropoff'),
+                                                            )
+                                                        }
+                                                    >
+                                                        <Button type="primary" onClick={() => setOpenPopConfirm(true)}>
+                                                            Cập nhật vận chuyển
+                                                        </Button>
+                                                    </Popconfirm>
                                                 </div>
                                             )}
                                             {orderDetails.status.toLowerCase() === 'confirmed' && (
@@ -377,13 +472,33 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                                                 </div>
                                                 {orderDetails.status.toLowerCase() === 'ready' &&
                                                     tracking.status.toLowerCase() !== 'completed' && (
-                                                        <div
-                                                            className="float-right mt-3 ml-3"
-                                                            onClick={() =>
-                                                                message.success('Cập nhật vận chuyển thành công!')
-                                                            }
-                                                        >
-                                                            <Button type="primary">Cập nhật vận chuyển</Button>
+                                                        <div className="float-right mt-3 ml-3">
+                                                            <Popconfirm
+                                                                title="Cập nhật vận chuyển"
+                                                                cancelText="Hủy"
+                                                                cancelButtonProps={{ style: { background: 'white' } }}
+                                                                description="Xác nhận cập nhật tiến trình    vận chuyển?"
+                                                                okText="Xác nhận"
+                                                                okButtonProps={{ loading: popConfirmLoading }}
+                                                                open={openPopConfirm}
+                                                                onCancel={() => {
+                                                                    setOpenPopConfirm(false);
+                                                                }}
+                                                                destroyTooltipOnHide
+                                                                onConfirm={() =>
+                                                                    handleUpdateDelivery(
+                                                                        (tracking.type && 'deliver') ||
+                                                                            (!tracking.type && 'dropoff'),
+                                                                    )
+                                                                }
+                                                            >
+                                                                <Button
+                                                                    type="primary"
+                                                                    onClick={() => setOpenPopConfirm(true)}
+                                                                >
+                                                                    Cập nhật vận chuyển
+                                                                </Button>
+                                                            </Popconfirm>
                                                         </div>
                                                     )}
                                                 {orderDetails.status.toLowerCase() === 'ready' &&

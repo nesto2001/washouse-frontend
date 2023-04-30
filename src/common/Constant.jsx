@@ -80,9 +80,9 @@ const API_STAFF_PAID_ORDER = '/api/manager/my-center/orders/${id}/paid';
 const API_STAFF_PROCEED_ORDERED_SERVICE = '/api/tracking/orders/${orderId}/order-details/${orderDetailId}/tracking';
 const API_STAFF_UPDATE_ORDERED_SERVICE = '/api/manager/my-center/orders/${orderId}/details/${orderDetailId}';
 const API_STAFF_CANCEL_ORDER = '/api/tracking/orders/${orderId}/cancelled';
-const API_STAFF_ASSIGN_DELIVERY = '';
+const API_STAFF_ASSIGN_DELIVERY = '/api/manager/my-center/orders/${orderId}/deliveries/${type}/change-status';
 const API_STAFF_FEEDBACKS = '/api/manager/my-center/feedbacks';
-const API_STAFF_STATS = '/api/manager/my-center/staff_statistic';
+const API_STAFF_STATS = '/api/manager/my-center/staff-statistics';
 
 //STAFF APT
 const API_STAFF = '/api/staffs';
@@ -112,6 +112,7 @@ const API_FEEDBACK_SERVICE_ID = '/api/feedbacks/services/${serviceId}';
 const RE_DIGIT = new RegExp(/^\d+$/);
 
 export {
+    API_STAFF_ASSIGN_DELIVERY,
     API_STAFF_PAID_ORDER,
     API_SEARCH_ADDRESS,
     API_STAFF_STATS,
