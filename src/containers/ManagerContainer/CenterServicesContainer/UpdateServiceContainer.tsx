@@ -203,7 +203,7 @@ const UpdateServiceContainer = () => {
                                         name="prices"
                                         initialValue={service.prices.map((price) => {
                                             return {
-                                                maxWeight: price.maxValue,
+                                                maxValue: price.maxValue,
                                                 price: price.price,
                                             };
                                         })}
@@ -215,7 +215,7 @@ const UpdateServiceContainer = () => {
                                                         <Space key={field.key} align="baseline">
                                                             <Form.Item
                                                                 {...field}
-                                                                name={[field.name, 'maxWeight']}
+                                                                name={[field.name, 'maxValue']}
                                                                 rules={[
                                                                     {
                                                                         required: true,

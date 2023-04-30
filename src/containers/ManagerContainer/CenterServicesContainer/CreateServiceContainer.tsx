@@ -199,7 +199,7 @@ const CreateServiceContainer = () => {
                                                 <Space key={field.key} align="baseline">
                                                     <Form.Item
                                                         {...field}
-                                                        name={[field.name, 'maxWeight']}
+                                                        name={[field.name, 'maxValue']}
                                                         rules={[
                                                             { required: true, message: 'Vui lòng nhập khối lượng' },
                                                         ]}
