@@ -5,6 +5,7 @@ import { formatDateTime } from '../../utils/TimeUtils';
 
 import style from './ProgressBar.module.scss';
 import { OrderStatusMap } from '../../mapping/OrderStatusMap';
+import { OrderStatusIconMap } from '../../mapping/OrderStatusIconMap';
 
 type Props = {
     orderState: TrackingState[];
@@ -73,8 +74,12 @@ const ProgressBar = ({ orderState }: Props) => {
 
     const currentState = orderState.slice(-1)[0];
     const [progress, setProgress] = useState(0);
+    const [currentStateIcon, setCurrentStateIcon] = useState<string>();
     useEffect(() => {
-        if (currentState) setProgress(((currentState.order - 1) / (states.length - 1)) * 100);
+        if (currentState) {
+            setProgress(((currentState.order - 1) / (states.length - 1)) * 100);
+            setCurrentStateIcon(OrderStatusIconMap[currentState.title ?? '']);
+        }
     }, [currentState]);
 
     return (
@@ -90,7 +95,13 @@ const ProgressBar = ({ orderState }: Props) => {
                             index === 0 && style.first,
                             orderState.find((e) => e.order === state.order)?.completed ? style.completed : '',
                         )}
-                    ></div>
+                    >
+                        {currentState?.order === state.order && (
+                            <div className="absolute flex justify-center items-center h-full w-full">
+                                <img className="w-[80%]" src={currentStateIcon} alt="" />
+                            </div>
+                        )}
+                    </div>
                 ))}
             </div>
             <div className={clsx(style.progressbar_tracking, 'mt-10 flex justify-between w-full')}>

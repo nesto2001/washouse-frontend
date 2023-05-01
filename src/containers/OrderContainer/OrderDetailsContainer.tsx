@@ -14,7 +14,7 @@ import Breadcrumb from '../../components/Breadcrumb';
 import ErrorScreen from '../../components/ErrorScreen/ErrorScreen';
 import Loading from '../../components/Loading/Loading';
 import ProgressBar from '../../components/ProgressBar/ProgressBar';
-import { BadgeStatusMap, PaymentBadgeStatusMap } from '../../mapping/BadgeStatusMap';
+import { BadgeStatusMap, DeliveryBadgeStatusMap, PaymentBadgeStatusMap } from '../../mapping/BadgeStatusMap';
 import { DeliveryTypeMap } from '../../mapping/DeliveryTypeMap';
 import { OrderStatusMap, PaymentStatusMap } from '../../mapping/OrderStatusMap';
 import { PaymentMethodMap } from '../../mapping/PaymentMethodMap';
@@ -30,6 +30,7 @@ import WHButton from '../../components/Button';
 import RatingStars from '../../components/RatingStars/RatingStars';
 import { BsReplyFill } from 'react-icons/bs';
 import StarFull from '../../components/Star/StarFull';
+import { DeliveryStatusMap } from '../../mapping/DeliveryStatusMap';
 
 type Props = {};
 
@@ -41,6 +42,7 @@ const OrderDetailsContainer = (props: Props) => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isError, setIsError] = useState<boolean>(false);
     const [customerLocation, setCustomerLocation] = useState<LocationDetailsModel>();
+    const [totalPayment, setTotalPayment] = useState<number>(0);
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const id = params.get('id');
@@ -76,7 +78,7 @@ const OrderDetailsContainer = (props: Props) => {
                         <img className="h-full w-full object-cover" src={record.image} alt="" />
                     </div>
                     <div className="ordered__service--content">
-                        <div className="ordered__item--details ml-4 w-[300px]">
+                        <div className="ordered__item--details ml-4 w-[200px]">
                             <div className="font-bold text-lg">{record.name}</div>
                             <div className="font-medium text-sub-gray text-sm">Phân loại: {record.category}</div>
                         </div>
@@ -88,6 +90,7 @@ const OrderDetailsContainer = (props: Props) => {
             title: 'Định lượng',
             dataIndex: 'measurement',
             key: 'measurement',
+            align: 'center',
             render: (value, record) => (
                 <div className="ordered__item--weight w-[100px] text-base font-bold">
                     {value} <span className="text-sub-gray">{record.unit}</span>
@@ -95,10 +98,20 @@ const OrderDetailsContainer = (props: Props) => {
             ),
         },
         {
-            title: 'Giá tiền',
+            title: 'Đơn giá',
+            dataIndex: 'unitPrice',
+            key: 'unitPrice',
+            align: 'center',
+            render: (value, record) => (
+                <div className="ordered__item--weight w-[80px] text-base font-bold">{formatCurrency(value ?? 0)}</div>
+            ),
+        },
+        {
+            title: 'Thành tiền',
             dataIndex: 'price',
             key: 'price',
-            render: (value) => <div className="font-medium text-base">{formatCurrency(value ?? 0)}</div>,
+            align: 'center',
+            render: (value) => <div className="font-bold w-[100px] text-base">{formatCurrency(value ?? 0)}</div>,
         },
         {
             title: 'Trạng thái',
@@ -134,6 +147,15 @@ const OrderDetailsContainer = (props: Props) => {
         },
     ];
 
+    useEffect(() => {
+        if (orderDetails && orderDetails.orderPayment) {
+            const delivery = orderDetails.deliveryPrice ?? 0;
+            const orderValue = orderDetails.totalOrderValue ?? 0;
+            const discount = orderDetails.orderPayment.discount ? orderValue * orderDetails.orderPayment.discount : 0;
+            setTotalPayment(orderValue + delivery - discount);
+        }
+    }, [orderDetails]);
+
     if (isLoading) {
         return <Loading screen />;
     }
@@ -153,150 +175,173 @@ const OrderDetailsContainer = (props: Props) => {
                             !user && 'pt-20 -mt-1',
                         )}
                     >
-                        <div className="orderdetails__order--main basis-full flex gap-10">
-                            <div className="orderdetails__order basis-3/4 rounded-2xl border border-wh-gray">
-                                <div className="flex justify-between px-6 pt-4">
-                                    <h2 className="orderdetails__order--header text-left text-xl font-bold">
-                                        Thông tin đơn hàng
-                                    </h2>
-                                    {orderDetails.status.toLowerCase() !== 'completed' && (
-                                        <div
-                                            className=""
-                                            onClick={() => {
-                                                setOpenQR(true);
-                                            }}
-                                        >
-                                            <QrcodeOutlined
-                                                style={{
-                                                    fontSize: 22,
-                                                    padding: 4,
-                                                    border: '1px solid #424242',
-                                                    borderRadius: 8,
+                        <div className="orderdetails__order--main basis-full flex gap-6">
+                            <div className="orderdetails__order basis-3/5">
+                                <div className="rounded-2xl border border-wh-gray">
+                                    <div className="flex justify-between px-6 pt-4">
+                                        <h2 className="orderdetails__order--header text-left text-xl font-bold">
+                                            Thông tin đơn hàng
+                                        </h2>
+                                        {orderDetails.status.toLowerCase() !== 'completed' && (
+                                            <div
+                                                className=""
+                                                onClick={() => {
+                                                    setOpenQR(true);
                                                 }}
-                                                className="hover:bg-ws-light-gray cursor-pointer"
+                                            >
+                                                <QrcodeOutlined
+                                                    style={{
+                                                        fontSize: 22,
+                                                        padding: 4,
+                                                        border: '1px solid #424242',
+                                                        borderRadius: 8,
+                                                    }}
+                                                    className="hover:bg-ws-light-gray cursor-pointer"
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <hr className="my-3 border-wh-gray" />
+                                    <div className="orderdetails__order--progress px-20 pt-9">
+                                        <div className="order--progressbar relative min-h-[56px] flex flex-col items-center">
+                                            <ProgressBar
+                                                orderState={orderDetails.orderTrackings.map(
+                                                    (tracking, index): TrackingState => {
+                                                        return {
+                                                            id: index,
+                                                            order: index + 1,
+                                                            completed:
+                                                                index < orderDetails.orderTrackings.length - 1
+                                                                    ? true
+                                                                    : false,
+                                                            time: tracking.createdDate,
+                                                            title: tracking.status,
+                                                        };
+                                                    },
+                                                )}
                                             />
                                         </div>
-                                    )}
+                                    </div>
+                                    <div className="orderdetails_order--content flex flex-wrap mt-8 px-9 text-left justify-between gap-y-8 mb-16">
+                                        <div className="orderdetails__order--id basis-1/3 max-w-[234px]">
+                                            <div className="orderdetails__order--header text-sub-gray font-bold flex gap-1 items-center">
+                                                <div className="w-[28px] h-[28px]">
+                                                    <img src={Id} alt="" />
+                                                </div>
+                                                Mã đơn hàng
+                                            </div>
+                                            <div className="orderdetails__order--info text-sub pl-8 mt-2">
+                                                <h3 className="font-medium">{orderDetails.id}</h3>
+                                            </div>
+                                        </div>
+                                        <div className="orderdetails__order--id basis-1/3 max-w-[234px]">
+                                            <div className="orderdetails__order--header text-sub-gray font-bold flex gap-1 items-center">
+                                                <div className="w-[28px] h-[28px]">
+                                                    <img src={Calendar} alt="" />
+                                                </div>
+                                                Vận chuyển
+                                            </div>
+                                            <div className="orderdetails__order--info text-sub pl-8 mt-2">
+                                                <h3 className="font-medium">
+                                                    {DeliveryTypeMap[orderDetails.deliveryType]}
+                                                </h3>
+                                            </div>
+                                        </div>
+                                        <div className="orderdetails__order--id basis-1/3 max-w-[145px]">
+                                            <div className="orderdetails__order--header text-sub-gray font-bold flex gap-1 items-center">
+                                                <div className="w-[28px] h-[28px]">
+                                                    <img src={DeliveryMan} alt="" />
+                                                </div>
+                                                Thanh toán
+                                            </div>
+                                            <div className="orderdetails__order--info text-sub pl-8 mt-2">
+                                                <h3 className="font-medium">
+                                                    {PaymentMethodMap[orderDetails.orderPayment.method]}
+                                                </h3>
+                                            </div>
+                                        </div>
+                                        <div className="orderdetails__order--id basis-1/3 max-w-[234px]">
+                                            <div className="orderdetails__order--header text-sub-gray font-bold flex gap-1 items-center">
+                                                <div className="w-[28px] h-[28px]">
+                                                    <img src={Laundromat} alt="" />
+                                                </div>
+                                                Trung tâm
+                                            </div>
+                                            <div className="orderdetails__order--info text-sub pl-8 mt-2">
+                                                <h3 className="font-medium">{orderDetails.center.centerName}</h3>
+                                                <h3 className="font-medium">
+                                                    {orderDetails.center.centerAddress}, TP. Hồ Chí Minh
+                                                </h3>
+                                                <h4 className="text-sm">{orderDetails.center.centerPhone}</h4>
+                                            </div>
+                                        </div>
+                                        <div className="orderdetails__order--id basis-1/3 max-w-[234px]">
+                                            <div className="orderdetails__order--header text-sub-gray font-bold flex gap-1 items-center">
+                                                <div className="w-[28px] h-[28px]">
+                                                    <img src={Customer} alt="" />
+                                                </div>
+                                                Khách hàng
+                                            </div>
+                                            <div className="orderdetails__order--info text-sub pl-8 mt-2">
+                                                <h3 className="font-medium">{orderDetails.customerName}</h3>
+                                                <h3 className="font-medium">{`${customerLocation?.address}, ${customerLocation?.ward.name}, ${customerLocation?.ward.district.name}, TP. Hồ Chí Minh`}</h3>
+                                                <h4 className="text-sm mt-2">{orderDetails.customerEmail}</h4>
+                                                <h4 className="text-sm">{orderDetails.customerMobile}</h4>
+                                            </div>
+                                        </div>
+                                        <div className="orderdetails__order--id basis-1/3 max-w-[145px]">
+                                            <div className="orderdetails__order--header text-sub-gray font-bold flex gap-1 items-center">
+                                                <div className="w-[28px] h-[28px]">
+                                                    <img src={Notes} alt="" />
+                                                </div>
+                                                Ghi chú
+                                            </div>
+                                            <div className="orderdetails__order--info text-sub pl-8 mt-2">
+                                                <p className="font-medium"> {orderDetails.customerMessage}</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <hr className="my-3 border-wh-gray" />
-                                <div className="orderdetails__order--progress px-20 pt-9">
-                                    <div className="order--progressbar relative min-h-[56px] flex flex-col items-center">
-                                        <ProgressBar
-                                            orderState={orderDetails.orderTrackings.map(
-                                                (tracking, index): TrackingState => {
-                                                    return {
-                                                        id: index,
-                                                        order: index + 1,
-                                                        completed:
-                                                            index < orderDetails.orderTrackings.length - 1
-                                                                ? true
-                                                                : false,
-                                                        time: tracking.createdDate,
-                                                        title: tracking.status,
-                                                    };
-                                                },
-                                            )}
+                                <div className="mt-8">
+                                    <h2 className="orderdetails--header text-left text-xl font-bold pl-6 pt-4">
+                                        Chi tiết đơn hàng
+                                    </h2>
+                                    <div className="orderdetails--list w-full mt-3">
+                                        <Table
+                                            dataSource={orderDetails.orderedDetails}
+                                            columns={columns}
+                                            loading={orderDetails == null}
+                                            pagination={false}
                                         />
                                     </div>
                                 </div>
-                                <div className="orderdetails_order--content flex flex-wrap mt-8 px-9 text-left justify-between gap-y-8 mb-16">
-                                    <div className="orderdetails__order--id basis-1/3 max-w-[234px]">
-                                        <div className="orderdetails__order--header text-sub-gray font-bold flex gap-1 items-center">
-                                            <div className="w-[28px] h-[28px]">
-                                                <img src={Id} alt="" />
-                                            </div>
-                                            Mã đơn hàng
-                                        </div>
-                                        <div className="orderdetails__order--info text-sub pl-8 mt-2">
-                                            <h3 className="font-medium">{orderDetails.id}</h3>
-                                        </div>
-                                    </div>
-                                    <div className="orderdetails__order--id basis-1/3 max-w-[234px]">
-                                        <div className="orderdetails__order--header text-sub-gray font-bold flex gap-1 items-center">
-                                            <div className="w-[28px] h-[28px]">
-                                                <img src={Calendar} alt="" />
-                                            </div>
-                                            Vận chuyển
-                                        </div>
-                                        <div className="orderdetails__order--info text-sub pl-8 mt-2">
-                                            <h3 className="font-medium">
-                                                {DeliveryTypeMap[orderDetails.deliveryType]}
-                                            </h3>
-                                        </div>
-                                    </div>
-                                    <div className="orderdetails__order--id basis-1/3 max-w-[145px]">
-                                        <div className="orderdetails__order--header text-sub-gray font-bold flex gap-1 items-center">
-                                            <div className="w-[28px] h-[28px]">
-                                                <img src={DeliveryMan} alt="" />
-                                            </div>
-                                            Thanh toán
-                                        </div>
-                                        <div className="orderdetails__order--info text-sub pl-8 mt-2">
-                                            <h3 className="font-medium">
-                                                {PaymentMethodMap[orderDetails.orderPayment.method]}
-                                            </h3>
-                                        </div>
-                                    </div>
-                                    <div className="orderdetails__order--id basis-1/3 max-w-[234px]">
-                                        <div className="orderdetails__order--header text-sub-gray font-bold flex gap-1 items-center">
-                                            <div className="w-[28px] h-[28px]">
-                                                <img src={Laundromat} alt="" />
-                                            </div>
-                                            Trung tâm
-                                        </div>
-                                        <div className="orderdetails__order--info text-sub pl-8 mt-2">
-                                            <h3 className="font-medium">{orderDetails.center.centerName}</h3>
-                                            <h3 className="font-medium">
-                                                {orderDetails.center.centerAddress}, TP. Hồ Chí Minh
-                                            </h3>
-                                            <h4 className="text-sm">{orderDetails.center.centerPhone}</h4>
-                                        </div>
-                                    </div>
-                                    <div className="orderdetails__order--id basis-1/3 max-w-[234px]">
-                                        <div className="orderdetails__order--header text-sub-gray font-bold flex gap-1 items-center">
-                                            <div className="w-[28px] h-[28px]">
-                                                <img src={Customer} alt="" />
-                                            </div>
-                                            Khách hàng
-                                        </div>
-                                        <div className="orderdetails__order--info text-sub pl-8 mt-2">
-                                            <h3 className="font-medium">{orderDetails.customerName}</h3>
-                                            <h3 className="font-medium">{`${customerLocation?.address}, ${customerLocation?.ward.name}, ${customerLocation?.ward.district.name}, TP. Hồ Chí Minh`}</h3>
-                                            <h4 className="text-sm mt-2">{orderDetails.customerEmail}</h4>
-                                            <h4 className="text-sm">{orderDetails.customerMobile}</h4>
-                                        </div>
-                                    </div>
-                                    <div className="orderdetails__order--id basis-1/3 max-w-[145px]">
-                                        <div className="orderdetails__order--header text-sub-gray font-bold flex gap-1 items-center">
-                                            <div className="w-[28px] h-[28px]">
-                                                <img src={Notes} alt="" />
-                                            </div>
-                                            Ghi chú
-                                        </div>
-                                        <div className="orderdetails__order--info text-sub pl-8 mt-2">
-                                            <p className="font-medium"> {orderDetails.customerMessage}</p>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
-                            <div className="orderdetails--sider basis-1/4 flex flex-col">
+                            <div className="orderdetails--sider basis-2/5 flex flex-col mb-16">
                                 <div className="orderdetails__order--summary p-6 pt-4 border border-wh-gray rounded-2xl">
                                     <h2 className="font-bold text-xl text-left">Thông tin thanh toán</h2>
                                     <hr className="mt-3 mb-6" />
                                     <div className="orderdetails__order--payment grid grid-cols-2 gap-y-3 items-baseline">
-                                        <h3 className="col-span-1 text-sm text-left">Tổng tiền</h3>
+                                        <h3 className="col-span-1 text-sm text-left">Tổng đơn hàng</h3>
                                         <h2 className="col-span-1 text-xl font-semibold text-primary text-right">
                                             {formatCurrency(orderDetails.totalOrderValue ?? 0)}
-                                        </h2>
-                                        <h3 className="col-span-1 text-sm text-left">Mã giảm giá</h3>
-                                        <h2 className="col-span-1 text-xl font-semibold text-primary text-right">
-                                            {orderDetails.orderPayment.discount > 0
-                                                ? formatPercentage(orderDetails.orderPayment.discount)
-                                                : '0%'}
                                         </h2>
                                         <h3 className="col-span-1 text-sm text-left">Phí vận chuyển</h3>
                                         <h2 className="col-span-1 text-xl font-semibold text-primary text-right">
                                             {formatCurrency(orderDetails.deliveryPrice ?? 0)}
+                                        </h2>
+                                        <h3 className="col-span-1 text-sm text-left">Chiết khấu</h3>
+                                        <h2 className="col-span-1 text-xl font-semibold text-primary text-right">
+                                            {'- '}
+                                            {orderDetails.orderPayment.discount > 0
+                                                ? formatCurrency(
+                                                      orderDetails.totalOrderValue * orderDetails.orderPayment.discount,
+                                                  )
+                                                : formatCurrency(0)}
+                                        </h2>
+                                        <hr className="col-span-2" />
+                                        <h3 className="col-span-1 text-base text-left font-bold">Tổng thanh toán</h3>
+                                        <h2 className="col-span-1 text-xl font-semibold text-primary text-right">
+                                            {formatCurrency(totalPayment)}
                                         </h2>
                                     </div>
                                     {orderDetails.status.toLowerCase() === 'ready' && (
@@ -304,6 +349,7 @@ const OrderDetailsContainer = (props: Props) => {
                                             <WHButton
                                                 type="primary"
                                                 className="w-full h-12"
+                                                size="small"
                                                 onClick={(e) => {
                                                     e.preventDefault();
                                                 }}
@@ -348,6 +394,126 @@ const OrderDetailsContainer = (props: Props) => {
                                         </h3>
                                     </div>
                                 </div>
+                                <div className="orderdetails__order--summary p-6 border border-wh-gray rounded-2xl mt-6">
+                                    <h2 className="font-bold text-xl text-left">Thông tin vận chuyển</h2>
+                                    <hr className="mt-3 mb-6" />
+                                    {orderDetails.orderDeliveries.map((delivery, index) => {
+                                        return (
+                                            (!delivery.type && (
+                                                <>
+                                                    <div className="text-base">
+                                                        <div className="flex justify-between items-baseline mb-4">
+                                                            <h2 className="font-semibold text-lg">Lấy đơn hàng</h2>
+                                                            <h4 className="font-medium text-sm">
+                                                                <Tag
+                                                                    color={
+                                                                        DeliveryBadgeStatusMap[delivery.status ?? '']
+                                                                    }
+                                                                    style={{ marginRight: 0 }}
+                                                                >
+                                                                    {DeliveryStatusMap[delivery.status ?? '']}
+                                                                </Tag>
+                                                            </h4>
+                                                        </div>
+                                                        <div className="grid grid-cols-2 gap-y-1 mt-2 text-sm text-left">
+                                                            <h2 className="col-span-1 text-sub-gray font-medium t">
+                                                                Nhân viên:
+                                                            </h2>
+                                                            <h2 className="col-span-1 text-right">
+                                                                {delivery.shipperName ?? '-'}
+                                                            </h2>
+                                                            <h2 className="col-span-1 text-sub-gray font-medium">
+                                                                SĐT Nhân viên:
+                                                            </h2>
+                                                            <h2 className="col-span-1 text-right">
+                                                                {delivery.shipperPhone ?? '-'}
+                                                            </h2>
+                                                            <h2 className="col-span-1 text-sub-gray font-medium">
+                                                                Ngày vận chuyển:
+                                                            </h2>
+                                                            <h2 className="col-span-1 text-right">
+                                                                {delivery.date ?? '-'}
+                                                            </h2>
+                                                            <h2 className="col-span-1 text-sub-gray font-medium">
+                                                                Địa điểm:
+                                                            </h2>
+                                                            <h2 className="col-span-1 text-right">
+                                                                {delivery.addressString}
+                                                            </h2>
+                                                            <h2 className="col-span-1 text-sub-gray font-medium">
+                                                                Ước tính
+                                                            </h2>
+                                                            <h2 className="col-span-1 text-right">
+                                                                {delivery.estimated
+                                                                    ? `${delivery.estimated} phút`
+                                                                    : '-'}
+                                                            </h2>
+                                                        </div>
+                                                    </div>
+                                                    {index === 0 && orderDetails.deliveryType === 3 && (
+                                                        <hr className="my-3 border-wh-gray" />
+                                                    )}
+                                                </>
+                                            )) ||
+                                            (delivery.type && (
+                                                <>
+                                                    <div className="text-base">
+                                                        <div className="flex justify-between items-baseline mb-4">
+                                                            <h2 className="font-semibold text-lg">Trả đơn hàng</h2>
+                                                            <h4 className="font-medium text-sm">
+                                                                <Tag
+                                                                    color={
+                                                                        DeliveryBadgeStatusMap[delivery.status ?? '']
+                                                                    }
+                                                                    style={{ marginRight: 0 }}
+                                                                >
+                                                                    {DeliveryStatusMap[delivery.status ?? '']}
+                                                                </Tag>
+                                                            </h4>
+                                                        </div>
+                                                        <div className="grid grid-cols-2 gap-y-1 mt-2 text-sm text-left">
+                                                            <h2 className="col-span-1 text-sub-gray font-medium">
+                                                                Nhân viên:
+                                                            </h2>
+                                                            <h2 className="col-span-1 text-right">
+                                                                {delivery.shipperName ?? '-'}
+                                                            </h2>
+                                                            <h2 className="col-span-1 text-sub-gray font-medium">
+                                                                SĐT Nhân viên:
+                                                            </h2>
+                                                            <h2 className="col-span-1 text-right">
+                                                                {delivery.shipperPhone ?? '-'}
+                                                            </h2>
+                                                            <h2 className="col-span-1 text-sub-gray font-medium">
+                                                                Ngày vận chuyển:
+                                                            </h2>
+                                                            <h2 className="col-span-1 text-right">
+                                                                {delivery.date ?? '-'}
+                                                            </h2>
+                                                            <h2 className="col-span-1 text-sub-gray font-medium">
+                                                                Địa điểm:
+                                                            </h2>
+                                                            <h2 className="col-span-1 text-right">
+                                                                {delivery.addressString}
+                                                            </h2>
+                                                            <h2 className="col-span-1 text-sub-gray font-medium">
+                                                                Thời gian ước tính:
+                                                            </h2>
+                                                            <h2 className="col-span-1 text-right">
+                                                                {delivery.estimated
+                                                                    ? `${delivery.estimated} phút`
+                                                                    : '-'}
+                                                            </h2>
+                                                        </div>
+                                                    </div>
+                                                    {index === 0 && orderDetails.deliveryType === 3 && (
+                                                        <hr className="my-3 border-wh-gray" />
+                                                    )}
+                                                </>
+                                            ))
+                                        );
+                                    })}
+                                </div>
                                 {orderDetails.feedback && (
                                     <div className="orderdetails__order--summary p-6 border border-wh-gray rounded-2xl mt-6">
                                         <div className="flex justify-between">
@@ -386,19 +552,6 @@ const OrderDetailsContainer = (props: Props) => {
                                         )}
                                     </div>
                                 )}
-                            </div>
-                        </div>
-                        <div className="orderdetails basis-3/4 mt-8 mb-16 pr-8">
-                            <h2 className="orderdetails--header text-left text-xl font-bold pl-6 pt-4">
-                                Chi tiết đơn hàng
-                            </h2>
-                            <div className="orderdetails--list w-full mt-3">
-                                <Table
-                                    rowClassName="cursor-pointer"
-                                    dataSource={orderDetails.orderedDetails}
-                                    columns={columns}
-                                    loading={orderDetails == null}
-                                />
                             </div>
                         </div>
                     </div>
