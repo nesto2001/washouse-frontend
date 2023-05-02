@@ -43,6 +43,7 @@ const ManagerDashboardLayout = ({ children }: Props) => {
     const navigate = useNavigate();
 
     useMemo(() => {
+        console.log('abc');
         const fetchData = async () => {
             return await getManagerCenter();
         };

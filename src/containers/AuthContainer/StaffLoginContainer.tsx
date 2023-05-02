@@ -31,6 +31,11 @@ const StaffLoginContainer = () => {
                 return await loginStaff({ phone: loginForm.phone.trim(), password: loginForm.password.trim() });
             };
             fetchData().then((res) => {
+                if (res.data.statusCode === 10) {
+                    setLoginError('Số điện thoại hoặc mật khẩu chưa chính xác!');
+                    setIsFetching(false);
+                    return;
+                }
                 if (res.status == 200) {
                     localStorage.setItem('accessToken', res.data.data.accessToken);
                     localStorage.setItem('refreshToken', res.data.data.refreshToken);
@@ -56,6 +61,7 @@ const StaffLoginContainer = () => {
                     });
                 } else {
                     setLoginError('Số điện thoại hoặc mật khẩu chưa chính xác!');
+                    setIsFetching(false);
                 }
             });
         } else {
@@ -102,7 +108,7 @@ const StaffLoginContainer = () => {
                         <span className="text-red ml-1">{loginError}</span>
                     </div>
                 )}
-                <WHButton minWidth="100%" type="primary" onClick={handleSubmit}>
+                <WHButton minWidth="100%" type="primary" onClick={handleSubmit} fetching={isFetching}>
                     {loginSMS ? 'Tiếp theo' : 'Đăng nhập'}
                 </WHButton>
                 <div className={clsx(loginSMS ? 'justify-end' : 'justify-between', 'login__form--addition flex mt-2')}>

@@ -8,6 +8,7 @@ import { CenterRequest } from '../../../models/Center/CreateCenterRequest';
 import { generateRandomString } from '../../../utils/CommonUtils';
 import { createCenter } from '../../../repositories/CenterRepository';
 import { useNavigate } from 'react-router-dom';
+import { getMe, refresh } from '../../../repositories/AuthRepository';
 
 type Props = {
     formData: CreateCenterFormData;
@@ -76,8 +77,18 @@ const CenterDeliveryForm = ({ setFormData, setIsValidated, formData, formInstanc
         console.log(JSON.stringify(centerRequest));
         createCenter(centerRequest).then((res) => {
             if (res) {
-                message.success('Đã đăng ký trung tâm thành công, vui lòng chờ duyệt bởi quản trị viên.');
-                navigate('/provider/settings/center/profile');
+                refresh({
+                    refreshToken: localStorage.getItem('refreshToken') ?? '',
+                    accessToken: localStorage.getItem('accessToken') ?? '',
+                }).then((res) => {
+                    localStorage.setItem('refreshToken', res.data.data.refreshToken);
+                    localStorage.setItem('accessToken', res.data.data.accessToken);
+                    getMe().then((res) => {
+                        localStorage.setItem('currentUser', JSON.stringify(res));
+                        navigate('/provider/settings/center/profile');
+                        message.success('Đã đăng ký trung tâm thành công, vui lòng chờ duyệt bởi quản trị viên.');
+                    });
+                });
             } else {
                 message.error('Xảy ra lỗi trong hoàn tất quá trình đăng ký, vui lòng thử lại sau.');
             }
