@@ -7,7 +7,7 @@ import { getCategoryOptions } from '../../../repositories/ServiceCategoryReposit
 import { CategoryOptionsModel } from '../../../models/Category/CategoryOptionsModel';
 import { useNavigate } from 'react-router-dom';
 import { ManagerServiceItem } from '../../../models/Manager/ManagerServiceItem';
-import { getManagerServices } from '../../../repositories/StaffRepository';
+import { getManagerCenter, getManagerServices } from '../../../repositories/StaffRepository';
 import { Paging } from '../../../types/Common/Pagination';
 
 type Props = {};
@@ -38,6 +38,8 @@ export type ServiceSearchParamsData = {
 const ServiceListingContainer = (props: Props) => {
     const navigate = useNavigate();
     const [serviceList, setServiceList] = useState<ManagerServiceItem[]>([]);
+    const [isPending, setIsPending] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [form] = Form.useForm();
     const [searchParams, setSearchParams] = useState<ServiceSearchParamsData>({
         searchString: '',
@@ -57,18 +59,23 @@ const ServiceListingContainer = (props: Props) => {
     ]);
 
     useEffect(() => {
+        setIsLoading(false);
         getManagerServices({
             ...searchParams,
             page: currentPage,
-        }).then((res) => {
-            setServiceList(res.items);
-            setPaging({
-                itemsPerPage: res.itemsPerPage,
-                pageNumber: res.pageNumber,
-                totalItems: res.totalItems,
-                totalPages: res.totalPages,
+        })
+            .then((res) => {
+                setServiceList(res.items);
+                setPaging({
+                    itemsPerPage: res.itemsPerPage,
+                    pageNumber: res.pageNumber,
+                    totalItems: res.totalItems,
+                    totalPages: res.totalPages,
+                });
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
-        });
     }, [searchParams, currentPage]);
 
     const serviceTab: TabsProps['items'] = [
@@ -141,6 +148,8 @@ const ServiceListingContainer = (props: Props) => {
             document.head.removeChild(style);
         };
     }, []);
+
+
 
     const handleAddService = () => {
         navigate('/provider/services/create');
@@ -251,7 +260,12 @@ const ServiceListingContainer = (props: Props) => {
                         </Button>
                     }
                 />
-                <ServiceList serviceList={serviceList} paging={paging} updatePage={(page) => setCurrentPage(page)} />
+                <ServiceList
+                    serviceList={serviceList}
+                    paging={paging}
+                    updatePage={(page) => setCurrentPage(page)}
+                    isLoading={isLoading}
+                />
             </div>
         </>
     );

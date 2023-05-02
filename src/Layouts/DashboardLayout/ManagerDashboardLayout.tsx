@@ -16,7 +16,7 @@ import clsx from 'clsx';
 import React, { useEffect, useMemo, useState } from 'react';
 import { BiPowerOff } from 'react-icons/bi';
 import { FaBell } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Logo from '../../assets//images/washouse-notag.png';
 import Laundromat from '../../assets/images/store.png';
 import UserPlaceholder from '../../assets/images/user-placeholder.png';
@@ -41,9 +41,9 @@ const ManagerDashboardLayout = ({ children }: Props) => {
     const [user, setUser] = useState<UserModel | null>(userJson && JSON.parse(userJson));
     const [userRole, setUserRole] = useState(user?.roleType ?? '');
     const navigate = useNavigate();
+    const { pathname } = useLocation();
 
     useMemo(() => {
-        console.log('abc');
         const fetchData = async () => {
             return await getManagerCenter();
         };
@@ -56,6 +56,31 @@ const ManagerDashboardLayout = ({ children }: Props) => {
             // }
         });
     }, [user]);
+
+    useMemo(
+        () =>
+            getManagerCenter().then((res) => {
+                console.log(
+                    !(
+                        pathname.includes('/provider/pending') ||
+                        pathname.includes('/provider/dashboard') ||
+                        pathname.includes('/provider/settings')
+                    ),
+                );
+                if (res.status.toLowerCase() === 'pending') {
+                    if (
+                        !(
+                            pathname.includes('/provider/pending') ||
+                            pathname.includes('/provider/dashboard') ||
+                            pathname.includes('/provider/settings')
+                        )
+                    ) {
+                        navigate('/provider/pending');
+                    }
+                }
+            }),
+        [pathname],
+    );
 
     const {
         token: { colorBgContainer },

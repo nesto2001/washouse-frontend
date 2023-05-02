@@ -1,5 +1,5 @@
 import { EditOutlined, PoweroffOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Form, Input, Popconfirm, Table, Tag, Tooltip, message } from 'antd';
+import { Button, DatePicker, Empty, Form, Input, Popconfirm, Table, Tag, Tooltip, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Modal from 'antd/es/modal/Modal';
 import { ColumnsType } from 'antd/es/table';
@@ -332,7 +332,7 @@ const CenterPromotionsContainer = () => {
         <div className="provider__promotions--filter">
             <Table
                 caption={
-                    <div className="flex justify-end">
+                    <div className="flex justify-end mb-4">
                         <Button type="primary" onClick={() => setModalVisibility(true)}>
                             Thêm mã khuyến mãi
                         </Button>
@@ -344,6 +344,17 @@ const CenterPromotionsContainer = () => {
                 dataSource={promotions}
                 columns={columns}
                 loading={promotions == null}
+                locale={{
+                    emptyText: (
+                        <Empty
+                            image={Empty.PRESENTED_IMAGE_DEFAULT}
+                            imageStyle={{ height: 160, width: 384, margin: '0 auto', marginBottom: 20 }}
+                            description={
+                                <span className="text-xl font-medium text-sub-gray">Bạn chưa có khuyến mãi nào</span>
+                            }
+                        ></Empty>
+                    ),
+                }}
             ></Table>
 
             <Modal

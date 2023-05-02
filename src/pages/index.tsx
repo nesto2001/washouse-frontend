@@ -53,3 +53,4 @@ export { default as AdminAccountPage } from './AdminPage/AdminAccount/AdminAccou
 //common
 export { default as ProviderRoleChoosingPage } from './CommonPage/ProviderRoleChoosingPage';
 export { default as UserInformationPage } from './CommonPage/UserInformationPage';
+export { default as CenterPendingPage } from './CommonPage/CenterPendingPage';

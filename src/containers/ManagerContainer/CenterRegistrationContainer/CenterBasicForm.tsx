@@ -181,7 +181,36 @@ const CenterBasicForm = ({ setFormData, setIsValidated, formData, formInstance }
                         }}
                     />
                 </Form.Item>
-
+                <div className="flex gap-6">
+                    <Form.Item
+                        label="Mã số thuế"
+                        name="taxCode"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập số điện thoại trung tâm của bạn' },
+                            { len: 10, max: 10, message: 'Số điện thoại thông thường có 10 số' },
+                        ]}
+                    >
+                        <Input
+                            onChange={(e) => {
+                                setFormData((prevFormData) => ({ ...prevFormData, taxCode: e.target.value }));
+                            }}
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        label="Mã số thuế"
+                        name="taxCode"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập số điện thoại trung tâm của bạn' },
+                            { len: 10, max: 10, message: 'Số điện thoại thông thường có 10 số' },
+                        ]}
+                    >
+                        <Input
+                            onChange={(e) => {
+                                setFormData((prevFormData) => ({ ...prevFormData, taxCode: e.target.value }));
+                            }}
+                        />
+                    </Form.Item>
+                </div>
                 <Form.Item
                     label="Mô tả"
                     name="centerDescription"

@@ -1,4 +1,4 @@
-import { Pagination, Space, Tag } from 'antd';
+import { Empty, Pagination, Space, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { ManagerServiceItem } from '../../models/Manager/ManagerServiceItem';
 import { formatCurrency } from '../../utils/FormatUtils';
@@ -10,6 +10,7 @@ type Props = {
     serviceList: ManagerServiceItem[];
     paging?: Paging;
     updatePage: (page: number) => void;
+    isLoading: boolean;
 };
 
 const columns: ColumnsType<ManagerServiceItem> = [
@@ -62,7 +63,7 @@ const columns: ColumnsType<ManagerServiceItem> = [
         render: (value) => <Tag color="success">{ServiceStatusMap[value.toLowerCase()]}</Tag>,
     },
 ];
-const ServiceList = ({ serviceList, paging, updatePage }: Props) => {
+const ServiceList = ({ serviceList, paging, updatePage, isLoading }: Props) => {
     const navigate = useNavigate();
     return (
         <div className="service__list--wrapper my-5 mt-2">
@@ -70,7 +71,7 @@ const ServiceList = ({ serviceList, paging, updatePage }: Props) => {
                 <Table
                     columns={columns}
                     dataSource={serviceList}
-                    loading={serviceList.length <= 0}
+                    loading={isLoading}
                     pagination={false}
                     onRow={(record, rowIndex) => {
                         return {
@@ -78,6 +79,17 @@ const ServiceList = ({ serviceList, paging, updatePage }: Props) => {
                                 navigate(`/provider/services/${record.id}`);
                             },
                         };
+                    }}
+                    locale={{
+                        emptyText: (
+                            <Empty
+                                image={Empty.PRESENTED_IMAGE_DEFAULT}
+                                imageStyle={{ height: 160, width: 384, margin: '0 auto', marginBottom: 20 }}
+                                description={
+                                    <span className="text-xl font-medium text-sub-gray">Bạn chưa có dịch vụ nào</span>
+                                }
+                            ></Empty>
+                        ),
                     }}
                     rowClassName="cursor-pointer"
                 />

@@ -57,6 +57,7 @@ import {
     StaffVerificationPage,
     UserInformationPage,
     BlogPage,
+    CenterPendingPage,
 } from '../pages/';
 import AdminCenterRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterRequestPage';
 import AdminCenterUpdateRequestPage from '../pages/AdminPage/AdminCenterRequest/AdminCenterUpdateRequestPage';
@@ -294,6 +295,11 @@ const publicRoutes: Array<RouteProps> = [
         path: '/provider/settings/center/gallery',
         layout: ManagerDashboardLayout,
         component: ManagerCenterGalleryPage,
+    },
+    {
+        path: '/provider/pending',
+        layout: ManagerDashboardLayout,
+        component: CenterPendingPage,
     },
     {
         path: '/admin/dashboard',
