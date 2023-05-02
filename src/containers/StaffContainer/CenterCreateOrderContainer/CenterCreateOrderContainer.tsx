@@ -5,6 +5,7 @@ import CreateOrderStep1 from '../../../components/CreateOrderForm/CreateOrderSte
 import CreateOrderStep2 from '../../../components/CreateOrderForm/CreateOrderStep2';
 import CreateOrderStep3 from '../../../components/CreateOrderForm/CreateOrderStep3';
 import CreateOrderStep4 from '../../../components/CreateOrderForm/CreateOrderStep4';
+import { CartState } from '../../../types/CartType/CartState';
 
 type Props = {};
 

@@ -1,16 +1,80 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, Col, Empty, Form, FormInstance, Input, Popover, Row, Select } from 'antd';
-import React, { useState, useEffect } from 'react';
-import EmptyData from '../EmptyData/EmptyData';
+import { InfoCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Empty, FormInstance, Popover, Select, Space, Tooltip, message } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { FaTrashAlt } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { CenterServicesListModel } from '../../models/Staff/StaffServices/CenterServicesListModel';
+import { addToCart, decreaseCartItem, increaseCartItem, removeItem } from '../../reducers/CartReducer';
+import { getCenterServices } from '../../repositories/StaffRepository';
+import { RootState } from '../../store/CartStore';
 import { CartItem } from '../../types/CartType/CartItem';
+import { PriceRange } from '../../types/PriceRange';
+import { calculatePrice } from '../../utils/CommonUtils';
+import { formatCurrency } from '../../utils/FormatUtils';
+import PriceTable from '../PriceTable';
 
 type Props = {
     formInstance: FormInstance;
 };
 
 const CreateOrderStep2 = ({ formInstance }: Props) => {
-    const [services, setServices] = useState<CartItem[]>([]);
-    
+    const [services, setServices] = useState<CenterServicesListModel[]>([]);
+    const cartItems = useSelector((state: RootState) => state.cart.items);
+    const cartQuantity = useSelector((state: RootState) => state.cart.totalQuantity);
+    const cartTotal = useSelector((state: RootState) => state.cart.totalPrice);
+    const cartCenterId = useSelector((state: RootState) => state.cart.centerId);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        getCenterServices().then((res) => {
+            setServices(res);
+        });
+    }, []);
+
+    const handleChange = (value: number) => {
+        const selectedCategory = services.find((c) => c.services.find((s) => s.serviceId === value));
+        const selectedService = selectedCategory?.services.find((s) => s.serviceId === value);
+        if (selectedService) {
+            const cartItem: CartItem = {
+                centerId: 2,
+                customerNote: '',
+                id: selectedService.serviceId,
+                name: selectedService.serviceName,
+                rate: selectedService.rate,
+                thumbnail: '',
+                unit: selectedService.unit,
+                unitPrice: selectedService.price,
+                minPrice: selectedService.minPrice ?? undefined,
+                price:
+                    selectedService.prices.length > 0
+                        ? calculatePrice(selectedService.prices, selectedService.minPrice, 1)
+                        : selectedService.price * 1,
+                priceChart: selectedService.prices.length > 0 ? selectedService.prices : undefined,
+                quantity: selectedService.unit.toLowerCase() === 'kg' ? undefined : 1,
+                weight: selectedService.unit.toLowerCase() === 'kg' ? 1 : undefined,
+            };
+            try {
+                dispatch(addToCart(cartItem) as any).catch((err: Error) => {
+                    message.error(err.message);
+                });
+            } catch (error) {
+                message.error(`Không thể thêm vào giỏ hàng, vui lòng thử lại sau!`);
+            }
+        }
+    };
+
+    const handleRemoveFromCart = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        const itemId = (event.target as HTMLDivElement).getAttribute('data-id');
+        if (itemId) {
+            try {
+                dispatch(removeItem(parseInt(itemId)));
+                console.log('Đã xóa khỏi giỏ hàng!');
+            } catch (error) {
+                console.error('Không thể xóa khỏi giỏ hàng:', error);
+            }
+        }
+    };
 
     return (
         <>
@@ -20,7 +84,25 @@ const CreateOrderStep2 = ({ formInstance }: Props) => {
                 destroyTooltipOnHide
                 content={
                     <>
-                        <Select style={{ width: '100%' }} />
+                        <Select
+                            onChange={handleChange}
+                            placeholder="Chọn dịch vụ"
+                            style={{ width: '100%' }}
+                            options={
+                                services &&
+                                services.map((service) => {
+                                    return {
+                                        label: service.serviceCategoryName,
+                                        options: service.services.map((item) => {
+                                            return {
+                                                label: item.serviceName,
+                                                value: item.serviceId,
+                                            };
+                                        }),
+                                    };
+                                })
+                            }
+                        />
                     </>
                 }
                 title="Thêm dịch vụ"
@@ -31,8 +113,142 @@ const CreateOrderStep2 = ({ formInstance }: Props) => {
                 </Button>
             </Popover>
             <div className="my-6">
-                {services.length > 0 ? (
-                    <div className=""></div>
+                {cartItems.length > 0 ? (
+                    cartItems.map((item, index) => {
+                        return (
+                            <div
+                                key={`cartitem-${index}`}
+                                className="sitecart--item flex flex-wrap items-center p-3 gap-4 border border-wh-gray rounded-2xl"
+                                id={item.id.toString()}
+                            >
+                                <div className="flex flex-grow flex-col h-[120px] justify-between">
+                                    <div className="flex justify-between items-center w-full flex-grow">
+                                        <div className="sitecart__item--content pt-2">
+                                            <h2 className="sitecart__item--title text-xl font-bold">{item.name}</h2>
+                                            <h1 className="">
+                                                Đơn giá: {formatCurrency(item.unitPrice ?? 0)}/
+                                                {item.unit.toLowerCase() !== 'kg' ? 'bộ' : 'kg'}
+                                                {item.unit.toLowerCase() === 'kg' && (
+                                                    <Tooltip
+                                                        className="ml-2 text-sub-gray"
+                                                        title={
+                                                            item.priceChart && (
+                                                                <>
+                                                                    <div className="mb-1">
+                                                                        {item.minPrice
+                                                                            ? `Giá tối thiểu: ${formatCurrency(
+                                                                                  item.minPrice ?? 0,
+                                                                              )}`
+                                                                            : `Giá tối thiểu: ${formatCurrency(
+                                                                                  item.unitPrice ?? 0,
+                                                                              )}`}
+                                                                    </div>
+                                                                    <PriceTable
+                                                                        isTooltip
+                                                                        priceChart={item.priceChart.map(
+                                                                            (range): PriceRange => {
+                                                                                return {
+                                                                                    maxValue: range.maxValue,
+                                                                                    price: range.price,
+                                                                                };
+                                                                            },
+                                                                        )}
+                                                                        unitType="kg"
+                                                                    />
+                                                                </>
+                                                            )
+                                                        }
+                                                    >
+                                                        <InfoCircleOutlined />
+                                                    </Tooltip>
+                                                )}
+                                            </h1>
+                                        </div>
+                                        <div className="">
+                                            <Space.Compact block>
+                                                <button
+                                                    className="px-3 pr-2.5 py-3 pt-2.5 text-base text-white flex items-center rounded-l"
+                                                    style={{ lineHeight: '0px' }}
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        if (
+                                                            (item.weight && item.weight - 0.1 <= 0) ||
+                                                            (item.quantity && item.quantity - 1 <= 0)
+                                                        ) {
+                                                            dispatch(removeItem(item.id));
+                                                        } else {
+                                                            dispatch(decreaseCartItem(item.id) as any)
+                                                                .then(() => {
+                                                                    if (
+                                                                        (item.weight && item.weight - 0.2 <= 0) ||
+                                                                        (item.quantity && item.quantity - 2 <= 0)
+                                                                    ) {
+                                                                        message.warning(
+                                                                            'Nhấn "-" lần nữa sẽ tự động xóa dịch vụ khỏi giỏ hàng',
+                                                                        );
+                                                                    }
+                                                                })
+                                                                .catch((err: Error) => {
+                                                                    message.error(err.message);
+                                                                });
+                                                        }
+                                                    }}
+                                                >
+                                                    -
+                                                </button>
+                                                <input
+                                                    className="border-y border-[#396afc] py-1 w-[50px] text-center"
+                                                    type="number"
+                                                    name="item-quantity"
+                                                    value={item.quantity || item.weight?.toFixed(1)}
+                                                    min={0}
+                                                    // onBlur={(e) => {
+                                                    //     e.preventDefault();
+                                                    //     dispatch(
+                                                    //         editCartItem({
+                                                    //             id: item.id,
+                                                    //             measurement: parseFloat(e.target.value),
+                                                    //         }) as any,
+                                                    //     ).catch((err: Error) => {
+                                                    //         messageApi.error(err.message);
+                                                    //     });
+                                                    // }}
+                                                    // onFocus={(e) => e.target.select()}
+                                                />
+                                                <button
+                                                    className="px-3 pl-2.5 py-3 pt-2.5 text-base text-white flex items-center rounded-r"
+                                                    style={{ lineHeight: '0px' }}
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        dispatch(increaseCartItem(item.id) as any).catch(
+                                                            (err: Error) => {
+                                                                message.error(err.message);
+                                                            },
+                                                        );
+                                                    }}
+                                                >
+                                                    +
+                                                </button>
+                                                <div className="py-1 ml-1 text-base">
+                                                    {item.unit === 'kg' ? item.unit : 'bộ'}
+                                                </div>
+                                            </Space.Compact>
+                                        </div>
+                                        <div className="sitecart__item--price text-2xl font-bold text-primary mt-1">
+                                            {formatCurrency(item.price ?? 0)}
+                                        </div>
+                                        <div
+                                            className="sitecart__item--action self-center text-red pr-2 cursor-pointer"
+                                            data-id={item.id.toString()}
+                                            onClick={(e) => handleRemoveFromCart(e)}
+                                        >
+                                            <FaTrashAlt className="pointer-events-none" size={24} />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })
                 ) : (
                     <Empty
                         image={Empty.PRESENTED_IMAGE_DEFAULT}

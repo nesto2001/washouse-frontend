@@ -3,7 +3,6 @@ import { Form, FormInstance, Input, TimePicker, Upload, UploadFile, message } fr
 import TextArea from 'antd/es/input/TextArea';
 import { UploadChangeParam } from 'antd/lib/upload/interface';
 import dayjs from 'dayjs';
-import moment from 'moment';
 import { RangeValue } from 'rc-picker/lib/interface';
 import React, { useEffect, useState } from 'react';
 import { CreateCenterFormData } from '.';
@@ -217,7 +216,6 @@ const CenterBasicForm = ({ setFormData, setIsValidated, formData, formInstance }
                                                     message: 'Vui lòng nhập thời gian ước tính xử lý',
                                                 },
                                             ]}
-                                            // initialValue={[moment('2023-05-02 13:00'), moment('2023-05-02 14:00')]}
                                         >
                                             <TimePicker.RangePicker
                                                 format={format}

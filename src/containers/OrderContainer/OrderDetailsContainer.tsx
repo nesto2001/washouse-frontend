@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { QrcodeOutlined } from '@ant-design/icons';
-import { Modal, QRCode, Tag } from 'antd';
+import { Modal, QRCode, Tag, message } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import clsx from 'clsx';
 import { useLocation } from 'react-router-dom';
@@ -23,7 +23,7 @@ import { LocationDetailsModel } from '../../models/Location/LocationDetailsModel
 import { CenterOrderedServiceModel } from '../../models/Staff/CenterOrderedServiceModel';
 import { UserModel } from '../../models/User/UserModel';
 import { getLocation } from '../../repositories/LocationRepository';
-import { getOrderDetails } from '../../repositories/OrderRepository';
+import { getOrderDetails, payOrder } from '../../repositories/OrderRepository';
 import { TrackingState } from '../../types/Tracking/TrackingState';
 import { formatCurrency, formatPercentage } from '../../utils/FormatUtils';
 import WHButton from '../../components/Button';
@@ -43,6 +43,8 @@ const OrderDetailsContainer = (props: Props) => {
     const [isError, setIsError] = useState<boolean>(false);
     const [customerLocation, setCustomerLocation] = useState<LocationDetailsModel>();
     const [totalPayment, setTotalPayment] = useState<number>(0);
+    const [update, updateState] = useState({});
+    const forceUpdate = useCallback(() => updateState({}), []);
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const id = params.get('id');
@@ -155,6 +157,17 @@ const OrderDetailsContainer = (props: Props) => {
             setTotalPayment(orderValue + delivery - discount);
         }
     }, [orderDetails]);
+
+    const handlePayOrder = (orderId: string) => {
+        payOrder(orderId)
+            .then(() => {
+                message.success('Thanh toán đơn hàng thành công, đã trừ số dư trong ví');
+                forceUpdate();
+            })
+            .catch(() => {
+                message.error('Thanh toán đơn hành không thành công, vui lòng thử lại sau');
+            });
+    };
 
     if (isLoading) {
         return <Loading screen />;
@@ -344,20 +357,22 @@ const OrderDetailsContainer = (props: Props) => {
                                             {formatCurrency(totalPayment)}
                                         </h2>
                                     </div>
-                                    {orderDetails.status.toLowerCase() === 'ready' && (
-                                        <div className="col-span-2 mt-4">
-                                            <WHButton
-                                                type="primary"
-                                                className="w-full h-12"
-                                                size="small"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                }}
-                                            >
-                                                Thanh toán
-                                            </WHButton>
-                                        </div>
-                                    )}
+                                    {orderDetails.status.toLowerCase() === 'ready' &&
+                                        !(orderDetails.orderPayment.status.toLowerCase() === 'paid') && (
+                                            <div className="col-span-2 mt-4">
+                                                <WHButton
+                                                    type="primary"
+                                                    className="w-full h-12"
+                                                    size="small"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        handlePayOrder(orderDetails.id);
+                                                    }}
+                                                >
+                                                    Thanh toán
+                                                </WHButton>
+                                            </div>
+                                        )}
                                 </div>
                                 <div className="orderdetails__order--summary p-6 border border-wh-gray rounded-2xl mt-6">
                                     <h2 className="font-bold text-xl text-left">Thanh toán</h2>

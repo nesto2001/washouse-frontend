@@ -66,6 +66,7 @@ const API_REQUEST_REJECT_UPDATE = '/api/requests/centers/updating/${id}/reject';
 const API_ORDER_EST = '/api/orders/estimated-time';
 const API_ORDER_DELIVERY = '/api/orders/delivery-price';
 const API_ORDER_CREATE = '/api/orders';
+const API_ORDER_PAY = '/api/orders/${orderId}/payment';
 const API_ORDER_SEARCH = '/api/orders/search';
 
 //MANAGER API
@@ -73,6 +74,7 @@ const API_MANAGER_CENTER = '/api/manager/my-center';
 const API_MANAGER_CENTER_ORDER = '/api/manager/my-center/orders';
 const API_MANAGER_CENTER_ORDER_DETAILS = '/api/manager/my-center/orders/${id}';
 const API_MANAGER_CENTER_SERVICE = '/api/manager/services';
+const API_MANAGER_CENTER_SERVICE_LIST = '/api/manager/my-center/services';
 const API_MANAGER_CENTER_CUSTOMER = '/api/manager/my-center/customers';
 const API_MANAGER_ASSIGN_STAFF = '/api/staffs/assign';
 const API_MANAGER_VERIFY_STAFF = '/api/staffs/verify';
@@ -114,6 +116,8 @@ const API_FEEDBACK_SERVICE_ID = '/api/feedbacks/services/${serviceId}';
 const RE_DIGIT = new RegExp(/^\d+$/);
 
 export {
+    API_ORDER_PAY,
+    API_MANAGER_CENTER_SERVICE_LIST,
     API_REQUEST_APPROVE_UPDATE,
     API_REQUEST_REJECT_UPDATE,
     API_STAFF_ASSIGN_DELIVERY,

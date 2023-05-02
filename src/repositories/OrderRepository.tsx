@@ -1,4 +1,10 @@
-import { API_ORDER_CREATE, API_ORDER_DELIVERY, API_ORDER_EST, API_ORDER_SEARCH } from '../common/Constant';
+import {
+    API_ORDER_CREATE,
+    API_ORDER_DELIVERY,
+    API_ORDER_EST,
+    API_ORDER_PAY,
+    API_ORDER_SEARCH,
+} from '../common/Constant';
 import { Response } from '../models/CommonModel';
 import { CustomerOrderDetailsModel } from '../models/Customer/CustomerOrderDetailsModel';
 import { CustomerOrderDetailsReponse } from '../models/Customer/CustomerOrderDetailsResponse';
@@ -115,5 +121,16 @@ export const getOrderDetails = async (orderId: string, phone: string): Promise<C
                   replyMessage: data.data.feedback.replyMessage,
               }
             : null,
+    };
+};
+
+export const payOrder = async (orderId: string): Promise<CreateOrderResponse> => {
+    const { data } = await instance.get<Response<CreateOrderResponse>>(API_ORDER_PAY.replace('${orderId}', orderId), {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    return {
+        orderId: data.data.orderId,
     };
 };

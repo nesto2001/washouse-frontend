@@ -5,6 +5,7 @@ import {
     API_MANAGER_CENTER_ORDER,
     API_MANAGER_CENTER_ORDER_DETAILS,
     API_MANAGER_CENTER_SERVICE,
+    API_MANAGER_CENTER_SERVICE_LIST,
     API_MANAGER_VERIFY_STAFF,
     API_STAFF,
     API_STAFF_ACTIVATE,
@@ -44,6 +45,9 @@ import { CenterFeedbackModel } from '../models/Staff/StaffFeedback/CenterFeedbac
 import { CenterFeedbackResponse } from '../models/Staff/StaffFeedback/CenterFeedbackResponse';
 import { AssignDeliveryRequest } from '../models/Staff/StaffOrder/AssignDeliveryRequest';
 import { UpdateOrderDetailsRequest } from '../models/Staff/StaffOrder/UpdateOrderDetailsRequest';
+import { CenterServiceModel } from '../models/Staff/StaffServices/CenterServiceModel';
+import { CenterServicesListModel } from '../models/Staff/StaffServices/CenterServicesListModel';
+import { CenterServicesListResponse } from '../models/Staff/StaffServices/CenterServicesListResponse';
 import instance from '../services/axios/AxiosInstance';
 import { OperatingDay } from '../types/OperatingDay';
 import dayjs from 'dayjs';
@@ -350,7 +354,7 @@ export const proceedOrder = async (orderId: string) => {
 
 export const proceedOrderDelivery = async (orderId: string, type: string) => {
     const response = await instance.put<Response<number>>(
-        API_STAFF_ASSIGN_DELIVERY.replace('${orderId}', orderId).replace('${type}',type),
+        API_STAFF_ASSIGN_DELIVERY.replace('${orderId}', orderId).replace('${type}', type),
         {},
         {
             headers: {
@@ -576,4 +580,35 @@ export const getCenterStatistics = async (): Promise<CenterStatisticsModel> => {
             };
         }),
     };
+};
+
+export const getCenterServices = async (): Promise<CenterServicesListModel[]> => {
+    const { data } = await instance.get<ListResponse<CenterServicesListResponse>>(API_MANAGER_CENTER_SERVICE_LIST, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    if (data === null) {
+        throw new Error();
+    }
+    return data.data.map((item) => {
+        return {
+            serviceCategoryID: item.serviceCategoryID,
+            serviceCategoryName: item.serviceCategoryName,
+            services: item.services.map((service): CenterServiceModel => {
+                return {
+                    serviceId: service.serviceId,
+                    categoryId: service.categoryId,
+                    serviceName: service.serviceName,
+                    minPrice: service.minPrice,
+                    price: service.price,
+                    prices: service.prices,
+                    priceType: service.priceType,
+                    rate: service.rate,
+                    timeEstimate: service.timeEstimate,
+                    unit: service.unit,
+                };
+            }),
+        };
+    });
 };
