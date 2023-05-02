@@ -1,19 +1,15 @@
 import { EnvironmentOutlined, InfoCircleOutlined, SendOutlined } from '@ant-design/icons';
-import { Form, message, Steps, theme } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Form, Steps, theme } from 'antd';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import WHButton from '../../../components/Button';
-import { CenterRequest } from '../../../models/Center/CreateCenterRequest';
-import { createCenter } from '../../../repositories/CenterRepository';
+import Loading from '../../../components/Loading/Loading';
 import { LocationType } from '../../../types/LocationType';
 import { OperatingDay } from '../../../types/OperatingDay';
+import { DeliveryPriceType } from '../../../types/Price/DeliveryPriceType';
 import CenterBasicForm from './CenterBasicForm';
 import CenterContactForm from './CenterContactForm';
 import CenterDeliveryForm from './CenterDeliveryForm';
-import { getManagerCenter } from '../../../repositories/StaffRepository';
-import { generateRandomString } from '../../../utils/CommonUtils';
-import Loading from '../../../components/Loading/Loading';
-import { DeliveryPriceType } from '../../../types/Price/DeliveryPriceType';
 
 export type CreateCenterFormData = {
     name: string;

@@ -3,10 +3,10 @@ import { Form, FormInstance, Input, TimePicker, Upload, UploadFile, message } fr
 import TextArea from 'antd/es/input/TextArea';
 import { UploadChangeParam } from 'antd/lib/upload/interface';
 import dayjs from 'dayjs';
+import moment from 'moment';
 import { RangeValue } from 'rc-picker/lib/interface';
 import React, { useEffect, useState } from 'react';
 import { CreateCenterFormData } from '.';
-import { DayMap } from '../../../mapping/DayMap';
 import { uploadSingle } from '../../../repositories/MediaRepository';
 
 const format = 'HH:mm';
@@ -18,6 +18,7 @@ type Props = {
     formInstance: FormInstance;
 };
 
+const days = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'];
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -81,24 +82,29 @@ const CenterBasicForm = ({ setFormData, setIsValidated, formData, formInstance }
         setIsValidated(false);
     };
 
-    const handleTimeOnChange = (day: string, times: RangeValue<dayjs.Dayjs>) => {
-        console.log(times);
-        const operationDay = DayMap[day];
-        console.log(formInstance.getFieldsValue());
+    const handleTimeOnChange = (operationDay: number, times: RangeValue<dayjs.Dayjs>) => {
         const newOperationHours = formData.operationHours.map((operationHour) => {
-            if (operationHour.day === operationDay && times) {
-                return {
-                    ...operationHour,
-                    start: times[0] ? times[0].format('HH:mm') : null,
-                    end: times[1] ? times[1].format('HH:mm') : null,
-                };
+            if (operationHour.day === operationDay) {
+                if (times) {
+                    return {
+                        ...operationHour,
+                        start: times[0] ? times[0].format('HH:mm') : null,
+                        end: times[1] ? times[1].format('HH:mm') : null,
+                    };
+                } else {
+                    return {
+                        ...operationHour,
+                        start: null,
+                        end: null,
+                    };
+                }
             } else {
                 return operationHour;
             }
         });
+        console.log(newOperationHours);
+
         setFormData({ ...formData, operationHours: newOperationHours });
-        console.log(dayjs(formData.operationHours[0].start, 'HH:mm'));
-        console.log(formData);
     };
 
     useEffect(() => {
@@ -189,56 +195,56 @@ const CenterBasicForm = ({ setFormData, setIsValidated, formData, formInstance }
                         }}
                     />
                 </Form.Item>
-                {JSON.stringify(
-                    formData.operationHours.map((operating) => {
-                        return {
-                            day: [dayjs('10:00', 'HH:mm'), dayjs('19:00 ', 'HH:mm')] as RangeValue<dayjs.Dayjs>,
-                        };
-                    }),
-                )}
                 <Form.Item label="Giờ hoạt động">
                     <Form.List name="operatingDays">
-                        {(fields, {}, { errors }) => (
-                            <>
-                                {['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'].map(
-                                    (day, index) => (
-                                        <>
-                                            <Form.Item
-                                                className="mb-3"
-                                                key={index}
-                                                name="day"
-                                                initialValue={
-                                                    [
-                                                        dayjs('10:00', 'HH:mm'),
-                                                        dayjs('19:00 ', 'HH:mm'),
-                                                    ] as RangeValue<dayjs.Dayjs>
+                        {(fields, { add }, { errors }) => {
+                            if (fields.length < 7) {
+                                add();
+                            }
+                            return (
+                                <>
+                                    {fields.map((field) => (
+                                        <Form.Item
+                                            className="mb-3"
+                                            key={`${field.key}`}
+                                            name={[field.name, 'day']}
+                                            validateTrigger={['onChange', 'onBlur']}
+                                            noStyle
+                                            {...rangeConfig}
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Vui lòng nhập thời gian ước tính xử lý',
+                                                },
+                                            ]}
+                                            // initialValue={[moment('2023-05-02 13:00'), moment('2023-05-02 14:00')]}
+                                        >
+                                            <TimePicker.RangePicker
+                                                format={format}
+                                                placeholder={['Giờ mở cửa', 'Giờ đóng cửa']}
+                                                onChange={(range) => {
+                                                    handleTimeOnChange(field.name, range);
+                                                }}
+                                                defaultValue={
+                                                    !formData.operationHours[field.key].start &&
+                                                    !formData.operationHours[field.key].end
+                                                        ? null
+                                                        : [
+                                                              dayjs(formData.operationHours[field.key].start, 'HH:mm'),
+                                                              dayjs(formData.operationHours[field.key].end, 'HH:mm'),
+                                                          ]
                                                 }
-                                                validateTrigger={['onChange', 'onBlur']}
-                                                noStyle
-                                                {...rangeConfig}
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                        message: 'Vui lòng nhập thời gian ước tính xử lý',
-                                                    },
-                                                ]}
-                                            >
-                                                <TimePicker.RangePicker
-                                                    format={format}
-                                                    placeholder={['Giờ mở cửa', 'Giờ đóng cửa']}
-                                                    onChange={(range) => handleTimeOnChange(day, range)}
-                                                    className="mb-3"
-                                                />{' '}
-                                                {day}
-                                            </Form.Item>
-                                        </>
-                                    ),
-                                )}
-                                <Form.Item>
-                                    <Form.ErrorList errors={errors} />
-                                </Form.Item>
-                            </>
-                        )}
+                                                className="mb-3"
+                                            />{' '}
+                                            {days[field.name]}
+                                        </Form.Item>
+                                    ))}
+                                    <Form.Item>
+                                        <Form.ErrorList errors={errors} />
+                                    </Form.Item>
+                                </>
+                            );
+                        }}
                     </Form.List>
                 </Form.Item>
             </Form>
