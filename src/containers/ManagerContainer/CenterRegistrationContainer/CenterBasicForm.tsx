@@ -82,8 +82,9 @@ const CenterBasicForm = ({ setFormData, setIsValidated, formData, formInstance }
     };
 
     const handleTimeOnChange = (day: string, times: RangeValue<dayjs.Dayjs>) => {
+        console.log(times);
         const operationDay = DayMap[day];
-        console.log('alo');
+        console.log(formInstance.getFieldsValue());
         const newOperationHours = formData.operationHours.map((operationHour) => {
             if (operationHour.day === operationDay && times) {
                 return {
@@ -96,6 +97,7 @@ const CenterBasicForm = ({ setFormData, setIsValidated, formData, formInstance }
             }
         });
         setFormData({ ...formData, operationHours: newOperationHours });
+        console.log(dayjs(formData.operationHours[0].start, 'HH:mm'));
         console.log(formData);
     };
 
@@ -115,10 +117,6 @@ const CenterBasicForm = ({ setFormData, setIsValidated, formData, formInstance }
                     centerName: formData.name,
                     centerPhone: formData.phone,
                     centerDescription: formData.description,
-                    operatingDays: [
-                        dayjs(formData.operationHours[0].start, 'HH:mm'),
-                        dayjs(formData.operationHours[0].end, 'HH:mm'),
-                    ],
                 }}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
@@ -191,14 +189,30 @@ const CenterBasicForm = ({ setFormData, setIsValidated, formData, formInstance }
                         }}
                     />
                 </Form.Item>
+                {JSON.stringify(
+                    formData.operationHours.map((operating) => {
+                        return {
+                            day: [dayjs('10:00', 'HH:mm'), dayjs('19:00 ', 'HH:mm')] as RangeValue<dayjs.Dayjs>,
+                        };
+                    }),
+                )}
                 <Form.Item label="Giờ hoạt động">
                     <Form.List name="operatingDays">
                         {(fields, {}, { errors }) => (
                             <>
                                 {['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'].map(
                                     (day, index) => (
-                                        <Form.Item required={true} key={index}>
+                                        <>
                                             <Form.Item
+                                                className="mb-3"
+                                                key={index}
+                                                name="day"
+                                                initialValue={
+                                                    [
+                                                        dayjs('10:00', 'HH:mm'),
+                                                        dayjs('19:00 ', 'HH:mm'),
+                                                    ] as RangeValue<dayjs.Dayjs>
+                                                }
                                                 validateTrigger={['onChange', 'onBlur']}
                                                 noStyle
                                                 {...rangeConfig}
@@ -213,10 +227,11 @@ const CenterBasicForm = ({ setFormData, setIsValidated, formData, formInstance }
                                                     format={format}
                                                     placeholder={['Giờ mở cửa', 'Giờ đóng cửa']}
                                                     onChange={(range) => handleTimeOnChange(day, range)}
+                                                    className="mb-3"
                                                 />{' '}
                                                 {day}
                                             </Form.Item>
-                                        </Form.Item>
+                                        </>
                                     ),
                                 )}
                                 <Form.Item>

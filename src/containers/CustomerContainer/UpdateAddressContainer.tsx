@@ -89,7 +89,7 @@ const UpdateAddressContainer = (props: Props) => {
         fetchData().then((res) => {
             setWardList(res);
         });
-    }, [district]);
+    }, [district, userAddress?.ward.district.districtId]);
 
     const handleOpenModal = () => {
         setModalVisibility(true);
@@ -297,7 +297,7 @@ const UpdateAddressContainer = (props: Props) => {
                                     id=""
                                     type="quận / huyện"
                                     className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                    // selectedValue={userAddress?.ward.district.districtId}
+                                    selectedValue={district || userAddress?.ward.district.districtId}
                                     options={districtList.map((district): Option => {
                                         return {
                                             value: district.id.toString(),
@@ -332,10 +332,10 @@ const UpdateAddressContainer = (props: Props) => {
                                     id=""
                                     type="phường / xã"
                                     className="border border-wh-gray py-2 pl-3 mt-3 rounded w-full"
-                                    // selectedValue={userAddress?.ward.wardId}
+                                    selectedValue={userAddress?.ward.district.districtId && userAddress?.ward.wardId}
                                     options={wardList.map((ward) => {
                                         return {
-                                            value: ward.id,
+                                            value: ward.id.toString(),
                                             label: ward.name,
                                         };
                                     })}

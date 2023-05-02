@@ -58,17 +58,17 @@ export const getCenterList = async ({
 export const getCenterRequestList = async ({
     page,
     pageSize,
-    searchString,
+    status,
 }: {
     page?: number;
     pageSize?: number;
-    searchString?: string | null;
+    status?: boolean;
 }): Promise<AdminCenterModel[]> => {
     const { data } = await instance.get<PaginationResponse<AdminCenterResponse>>(API_ADMIN_CENTER_REQUEST, {
         params: {
             Page: page,
             PageSize: pageSize,
-            SearchString: searchString,
+            Status: status,
         },
         headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,

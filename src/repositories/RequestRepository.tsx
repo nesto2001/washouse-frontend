@@ -1,8 +1,17 @@
-import { API_REQUEST, API_REQUEST_APPROVE, API_REQUEST_DETAILS, API_REQUEST_REJECT } from '../common/Constant';
+import {
+    API_REQUEST,
+    API_REQUEST_APPROVE,
+    API_REQUEST_APPROVE_UPDATE,
+    API_REQUEST_DETAILS,
+    API_REQUEST_REJECT,
+    API_REQUEST_REJECT_UPDATE,
+} from '../common/Constant';
 import { CenterDetailsModel } from '../models/Center/CenterDetailsModel';
 import { CenterDetailsResponse } from '../models/Center/CenterDetailsResponse';
 import { CenterModel } from '../models/Center/CenterModel';
 import { CenterResponse } from '../models/Center/CenterResponse';
+import { ReviewCenterModel } from '../models/Center/ReviewCenterModel';
+import { ReviewCenterResponse } from '../models/Center/ReviewCenterResponse';
 import { PaginationResponse, Response } from '../models/CommonModel';
 import { ServiceCategoryModel } from '../models/Service/ServiceCategoryModel';
 import { ServiceModel } from '../models/Service/ServiceModel';
@@ -120,8 +129,8 @@ export const getCenterRequest = async (id: number): Promise<CenterDetailsModel> 
     };
 };
 
-export const approveCenter = async (id: number): Promise<CenterDetailsModel> => {
-    const { data } = await instance.put<Response<CenterDetailsResponse>>(
+export const approveCenter = async (id: number): Promise<ReviewCenterModel> => {
+    const { data } = await instance.put<Response<ReviewCenterResponse>>(
         API_REQUEST_APPROVE.replace('${id}', id.toString()),
         {},
         {
@@ -131,50 +140,12 @@ export const approveCenter = async (id: number): Promise<CenterDetailsModel> => 
         },
     );
     return {
-        id: data.data.id,
-        thumbnail: data.data.thumbnail,
-        title: data.data.title,
-        description: data.data.description,
-        service: data.data.centerServices.map((serviceCategory): ServiceCategoryModel => {
-            return {
-                categoryID: serviceCategory.serviceCategoryID,
-                categoryName: serviceCategory.serviceCategoryName,
-                services: serviceCategory.services.map((service): ServiceModel => {
-                    return {
-                        id: service.serviceId,
-                        categoryId: service.categoryId,
-                        description: service.description,
-                        image: service.image,
-                        name: service.serviceName,
-                        numOfRating: service.numOfRating,
-                        price: service.price,
-                        rating: service.rating,
-                        timeEstimate: service.timeEstimate,
-                    };
-                }),
-            };
-        }),
-        rating: data.data.rating,
-        ratings: data.data.ratings,
-        numOfRating: data.data.numOfRating,
-        phone: data.data.phone,
-        centerAddress: data.data.centerAddress,
-        alias: data.data.alias,
-        distance: data.data.distance,
-        hasDelivery: data.data.hasDelivery,
-        centerLocation: data.data.centerLocation,
-        operatingHours: data.data.centerOperatingHours.map((day): OperatingDay => {
-            return {
-                day: day.day,
-                start: day.openTime,
-                end: day.closeTime,
-            };
-        }),
+        centerId: data.data.centerId,
     };
 };
 
-export const rejectCenter = async (id: number): Promise<CenterDetailsModel> => {
-    const { data } = await instance.put<Response<CenterDetailsResponse>>(
+export const rejectCenter = async (id: number): Promise<ReviewCenterModel> => {
+    const { data } = await instance.put<Response<ReviewCenterResponse>>(
         API_REQUEST_REJECT.replace('${id}', id.toString()),
         {},
         {
@@ -184,44 +155,36 @@ export const rejectCenter = async (id: number): Promise<CenterDetailsModel> => {
         },
     );
     return {
-        id: data.data.id,
-        thumbnail: data.data.thumbnail,
-        title: data.data.title,
-        description: data.data.description,
-        service: data.data.centerServices.map((serviceCategory): ServiceCategoryModel => {
-            return {
-                categoryID: serviceCategory.serviceCategoryID,
-                categoryName: serviceCategory.serviceCategoryName,
-                services: serviceCategory.services.map((service): ServiceModel => {
-                    return {
-                        id: service.serviceId,
-                        categoryId: service.categoryId,
-                        description: service.description,
-                        image: service.image,
-                        name: service.serviceName,
-                        numOfRating: service.numOfRating,
-                        price: service.price,
-                        rating: service.rating,
-                        timeEstimate: service.timeEstimate,
-                    };
-                }),
-            };
-        }),
-        rating: data.data.rating,
-        ratings: data.data.ratings,
-        numOfRating: data.data.numOfRating,
-        phone: data.data.phone,
-        centerAddress: data.data.centerAddress,
-        alias: data.data.alias,
-        distance: data.data.distance,
-        hasDelivery: data.data.hasDelivery,
-        centerLocation: data.data.centerLocation,
-        operatingHours: data.data.centerOperatingHours.map((day): OperatingDay => {
-            return {
-                day: day.day,
-                start: day.openTime,
-                end: day.closeTime,
-            };
-        }),
+        centerId: data.data.centerId,
+    };
+};
+
+export const approveCenterUpdate = async (id: number): Promise<ReviewCenterModel> => {
+    const { data } = await instance.put<Response<ReviewCenterResponse>>(
+        API_REQUEST_APPROVE_UPDATE.replace('${id}', id.toString()),
+        {},
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        },
+    );
+    return {
+        centerId: data.data.centerId,
+    };
+};
+
+export const rejectCenterUpdate = async (id: number): Promise<ReviewCenterModel> => {
+    const { data } = await instance.put<Response<ReviewCenterResponse>>(
+        API_REQUEST_REJECT_UPDATE.replace('${id}', id.toString()),
+        {},
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        },
+    );
+    return {
+        centerId: data.data.centerId,
     };
 };

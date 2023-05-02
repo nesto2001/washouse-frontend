@@ -24,7 +24,7 @@ const AdminCenterRequestsContainer = () => {
         approveCenter(id)
             .then((res) => {
                 if (res) {
-                    message.success(`Đã chấp thuận yêu cầu duyệt trung tâm ${res.title}`);
+                    message.success(`Đã chấp thuận yêu cầu duyệt trung tâm`);
                 }
             })
             .catch((error) => {
@@ -39,7 +39,7 @@ const AdminCenterRequestsContainer = () => {
         rejectCenter(id)
             .then((res) => {
                 if (res) {
-                    message.success(`Đã từ chối yêu cầu duyệt trung tâm ${res.title}`);
+                    message.success(`Đã từ chối yêu cầu duyệt trung tâm`);
                 }
             })
             .catch((error) => {

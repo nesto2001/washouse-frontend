@@ -48,7 +48,7 @@ const API_SEARCH_ADDRESS = '/api/maps/location';
 //ADMIN API
 const API_ADMIN_CENTER = '/api/admin/centers';
 const API_ADMIN_CENTER_DETAILS = '/api/admin/centers/${centerId}';
-const API_ADMIN_CENTER_REQUEST = '/api/requests/centers';
+const API_ADMIN_CENTER_REQUEST = '/api/requests/centers/updating';
 const API_ADMIN_POST = '/api/admin/posts';
 const API_PUBLIC_POST = '/api/posts';
 const API_ADMIN_POST_DETAIL = '/api/admin/posts/${id}';
@@ -57,8 +57,10 @@ const API_ADMIN_POST_DETAIL_PUBLIC = '/api/posts/${id}';
 //CENTER REQUEST API
 const API_REQUEST = '/api/requests/centers';
 const API_REQUEST_DETAILS = '/api/requests/centers/${id}';
-const API_REQUEST_APPROVE = '/api/requests/centers/${id}/approve';
-const API_REQUEST_REJECT = '/api/requests/centers/${id}/reject';
+const API_REQUEST_APPROVE = '/api/requests/centers/pending/${id}/approve';
+const API_REQUEST_REJECT = '/api/requests/centers/pending/${id}/reject';
+const API_REQUEST_APPROVE_UPDATE = '/api/requests/centers/updating/${id}/approve';
+const API_REQUEST_REJECT_UPDATE = '/api/requests/centers/updating/${id}/reject';
 
 //ORDER API
 const API_ORDER_EST = '/api/orders/estimated-time';
@@ -112,6 +114,8 @@ const API_FEEDBACK_SERVICE_ID = '/api/feedbacks/services/${serviceId}';
 const RE_DIGIT = new RegExp(/^\d+$/);
 
 export {
+    API_REQUEST_APPROVE_UPDATE,
+    API_REQUEST_REJECT_UPDATE,
     API_STAFF_ASSIGN_DELIVERY,
     API_STAFF_PAID_ORDER,
     API_SEARCH_ADDRESS,

@@ -302,7 +302,7 @@ const OrderDetailsContainer = (props: Props) => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="mt-8">
+                                <div className="mt-8 mb-16">
                                     <h2 className="orderdetails--header text-left text-xl font-bold pl-6 pt-4">
                                         Chi tiết đơn hàng
                                     </h2>

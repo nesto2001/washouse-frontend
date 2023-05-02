@@ -1,14 +1,21 @@
-import { Button, Empty, Modal, message } from 'antd';
+import { Button, Empty, Modal, Tabs, TabsProps, message } from 'antd';
 import { useEffect, useState } from 'react';
 import CenterList from '../../../components/CenterList/CenterList';
 import { AdminCenterModel } from '../../../models/Admin/AdminCenterModel';
 import { getCenterRequestList } from '../../../repositories/AdminRepository';
-import { approveCenter, rejectCenter } from '../../../repositories/RequestRepository';
+import {
+    approveCenter,
+    approveCenterUpdate,
+    rejectCenter,
+    rejectCenterUpdate,
+} from '../../../repositories/RequestRepository';
 
 const AdminCenterUpdateRequestsContainer = () => {
     const [centerRequests, setCenterRequests] = useState<AdminCenterModel[]>([]);
     const [center, setCenter] = useState<AdminCenterModel>();
     const [modalVisibility, setModalVisibility] = useState(false);
+    const [activeTab, setActiveTab] = useState('pending');
+    const [isLoading, setIsLoading] = useState(false);
 
     const openDetail = (center: AdminCenterModel) => {
         setCenter(center);
@@ -21,10 +28,10 @@ const AdminCenterUpdateRequestsContainer = () => {
     };
 
     const handleApprove = (id: number) => {
-        approveCenter(id)
+        approveCenterUpdate(id)
             .then((res) => {
                 if (res) {
-                    message.success(`Đã chấp thuận yêu cầu duyệt trung tâm ${res.title}`);
+                    message.success(`Đã chấp thuận yêu cầu duyệt trung tâm`);
                 }
             })
             .catch((error) => {
@@ -36,10 +43,10 @@ const AdminCenterUpdateRequestsContainer = () => {
     };
 
     const handleReject = (id: number) => {
-        rejectCenter(id)
+        rejectCenterUpdate(id)
             .then((res) => {
                 if (res) {
-                    message.success(`Đã từ chối yêu cầu duyệt trung tâm ${res.title}`);
+                    message.success(`Đã từ chối yêu cầu duyệt trung tâm`);
                 }
             })
             .catch((error) => {
@@ -51,15 +58,71 @@ const AdminCenterUpdateRequestsContainer = () => {
     };
 
     useEffect(() => {
+        setCenterRequests([]);
         if (!modalVisibility) {
-            getCenterRequestList({}).then((res) => {
-                setCenterRequests(res);
-            });
+            switch (activeTab.toLowerCase()) {
+                case 'all':
+                    getCenterRequestList({}).then((res) => {
+                        setCenterRequests(res);
+                    });
+                    break;
+                case 'pending':
+                    getCenterRequestList({ status: true }).then((res) => {
+                        setCenterRequests(res);
+                    });
+                    break;
+                case 'reviewed':
+                    getCenterRequestList({ status: false }).then((res) => {
+                        setCenterRequests(res);
+                    });
+                    break;
+            }
         }
     }, [modalVisibility]);
 
+    const items: TabsProps['items'] = [
+        {
+            key: 'all',
+            label: `Tất cả`,
+        },
+        {
+            key: 'pending',
+            label: `Đang chờ`,
+        },
+        {
+            key: 'reviewed',
+            label: `Đã duyệt`,
+        },
+    ];
+
+    useEffect(() => {
+        setCenterRequests([]);
+        switch (activeTab.toLowerCase()) {
+            case 'all':
+                getCenterRequestList({}).then((res) => {
+                    setCenterRequests(res);
+                });
+                break;
+            case 'pending':
+                getCenterRequestList({ status: true }).then((res) => {
+                    setCenterRequests(res);
+                });
+                break;
+            case 'reviewed':
+                getCenterRequestList({ status: false }).then((res) => {
+                    setCenterRequests(res);
+                });
+                break;
+        }
+    }, [activeTab]);
+
+    const onChange = (key: string) => {
+        setActiveTab(key);
+    };
+
     return (
         <div>
+            <Tabs items={items} defaultActiveKey={activeTab} onChange={onChange} />
             {centerRequests?.length > 0 ? (
                 <CenterList centerRequests={centerRequests} openDetail={openDetail} />
             ) : (

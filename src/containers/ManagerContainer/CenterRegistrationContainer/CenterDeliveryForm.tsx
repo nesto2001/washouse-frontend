@@ -74,10 +74,7 @@ const CenterDeliveryForm = ({ setFormData, setIsValidated, formData, formInstanc
             },
         };
         console.log(JSON.stringify(centerRequest));
-        const fetchData = async () => {
-            return await createCenter(centerRequest);
-        };
-        fetchData().then((res) => {
+        createCenter(centerRequest).then((res) => {
             if (res) {
                 message.success('Đã đăng ký trung tâm thành công, vui lòng chờ duyệt bởi quản trị viên.');
                 navigate('/provider/settings/center/profile');
