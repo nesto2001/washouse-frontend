@@ -1,5 +1,5 @@
 import { EnvironmentOutlined, InfoCircleOutlined, SendOutlined } from '@ant-design/icons';
-import { Form, Steps, theme } from 'antd';
+import { Form, Steps, message, theme } from 'antd';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import WHButton from '../../../components/Button';
@@ -10,6 +10,9 @@ import { DeliveryPriceType } from '../../../types/Price/DeliveryPriceType';
 import CenterBasicForm from './CenterBasicForm';
 import CenterContactForm from './CenterContactForm';
 import CenterDeliveryForm from './CenterDeliveryForm';
+import { CenterRequest } from '../../../models/Center/CreateCenterRequest';
+import { createCenter } from '../../../repositories/CenterRepository';
+import { getMe, refresh } from '../../../repositories/AuthRepository';
 
 export type CreateCenterFormData = {
     name: string;
@@ -136,8 +139,63 @@ const CenterRegistrationContainer = (props: Props) => {
     };
 
     const handleCreateCenter = () => {
-        console.log(formData);
         form.submit();
+        if (isValidated) {
+            const centerRequest: CenterRequest = {
+                center: {
+                    centerName: formData.name,
+                    description: formData.description,
+                    hasDelivery: true,
+                    phone: formData.phone,
+                    savedFileName: formData.savedImage ?? '',
+                    taxCode: formData.taxCode,
+                },
+                location: {
+                    addressString: formData.address,
+                    wardId: formData.wardId,
+                    latitude: formData.location.latitude,
+                    longitude: formData.location.longitude,
+                },
+                centerOperatingHours: formData.operationHours.map((operationDay) => {
+                    return {
+                        day: operationDay.day,
+                        openTime: operationDay.start,
+                        closeTime: operationDay.end,
+                    };
+                }),
+                centerDelivery: {
+                    hasDelivery: formData.hasDelivery,
+                    deliveryPrice:
+                        formData.hasDelivery && formData.deliveryPrice
+                            ? formData.deliveryPrice?.map((deliPrice) => {
+                                  return {
+                                      maxWeight: deliPrice.maxWeight,
+                                      maxDistance: deliPrice.maxDistance,
+                                      price: deliPrice.price,
+                                  };
+                              })
+                            : undefined,
+                },
+            };
+            createCenter(centerRequest).then((res) => {
+                if (res) {
+                    refresh({
+                        refreshToken: localStorage.getItem('refreshToken') ?? '',
+                        accessToken: localStorage.getItem('accessToken') ?? '',
+                    }).then((res) => {
+                        localStorage.setItem('refreshToken', res.data.data.refreshToken);
+                        localStorage.setItem('accessToken', res.data.data.accessToken);
+                        getMe().then((res) => {
+                            localStorage.setItem('currentUser', JSON.stringify(res));
+                            navigate('/provider/settings/center/profile');
+                            message.success('Đã đăng ký trung tâm thành công, vui lòng chờ duyệt bởi quản trị viên.');
+                        });
+                    });
+                } else {
+                    message.error('Xảy ra lỗi trong hoàn tất quá trình đăng ký, vui lòng thử lại sau.');
+                }
+            });
+        }
     };
 
     const items = steps.map((item) => ({

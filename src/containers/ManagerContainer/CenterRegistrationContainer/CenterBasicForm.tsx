@@ -4,7 +4,7 @@ import TextArea from 'antd/es/input/TextArea';
 import { UploadChangeParam } from 'antd/lib/upload/interface';
 import dayjs from 'dayjs';
 import { RangeValue } from 'rc-picker/lib/interface';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { CreateCenterFormData } from '.';
 import { uploadSingle } from '../../../repositories/MediaRepository';
 
@@ -41,8 +41,20 @@ const rangeConfig = {
 };
 
 const CenterBasicForm = ({ setFormData, setIsValidated, formData, formInstance }: Props) => {
-    const [fileList, setFileList] = useState<UploadFile[]>([]);
-
+    const [fileList, setFileList] = useState<UploadFile[]>(
+        formData.image
+            ? [
+                  {
+                      uid: '1',
+                      name: 'centerImage',
+                      status: 'done',
+                      url: formData.image,
+                  },
+              ]
+            : [],
+    );
+    const [, updateState] = useState({});
+    const forceUpdate = useCallback(() => updateState({}), []);
     const handleChange = (info: UploadChangeParam) => {
         const { status } = info.file;
 
@@ -107,8 +119,26 @@ const CenterBasicForm = ({ setFormData, setIsValidated, formData, formInstance }
     };
 
     useEffect(() => {
-        setIsValidated(true);
+        setIsValidated(false);
     }, []);
+
+    const inputOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        const { key } = e;
+        const target = e.target as HTMLInputElement;
+        const targetValue = target.value;
+        console.log(targetValue);
+        if (e.key !== 'Backspace') {
+            if (targetValue.length > 9) {
+                if (targetValue.includes('-')) {
+                    const substrings = targetValue.split('-');
+                    target.value = (substrings[0] + '-' + substrings[1]).slice(0, 13);
+                } else {
+                    const substrings = [targetValue.slice(0, 10), targetValue.slice(10)];
+                    target.value = substrings[0] + '-' + substrings[1];
+                }
+            }
+        }
+    };
 
     return (
         <div className="p-6 text-sub text-base">
@@ -181,36 +211,21 @@ const CenterBasicForm = ({ setFormData, setIsValidated, formData, formInstance }
                         }}
                     />
                 </Form.Item>
-                <div className="flex gap-6">
-                    <Form.Item
-                        label="Mã số thuế"
-                        name="taxCode"
-                        rules={[
-                            { required: true, message: 'Vui lòng nhập số điện thoại trung tâm của bạn' },
-                            { len: 10, max: 10, message: 'Số điện thoại thông thường có 10 số' },
-                        ]}
-                    >
-                        <Input
-                            onChange={(e) => {
-                                setFormData((prevFormData) => ({ ...prevFormData, taxCode: e.target.value }));
-                            }}
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        label="Mã số thuế"
-                        name="taxCode"
-                        rules={[
-                            { required: true, message: 'Vui lòng nhập số điện thoại trung tâm của bạn' },
-                            { len: 10, max: 10, message: 'Số điện thoại thông thường có 10 số' },
-                        ]}
-                    >
-                        <Input
-                            onChange={(e) => {
-                                setFormData((prevFormData) => ({ ...prevFormData, taxCode: e.target.value }));
-                            }}
-                        />
-                    </Form.Item>
-                </div>
+                <Form.Item
+                    label="Mã số thuế"
+                    name="taxCode"
+                    rules={[
+                        { required: true, message: 'Vui lòng nhập mã số thuế trung tâm của bạn' },
+                        { min: 10, max: 14, message: 'Mã số thuế thông thường có 10 đến 13 số' },
+                    ]}
+                >
+                    <Input
+                        onKeyDown={inputOnKeyDown}
+                        onChange={(e) => {
+                            setFormData((prevFormData) => ({ ...prevFormData, taxCode: e.target.value }));
+                        }}
+                    />
+                </Form.Item>
                 <Form.Item
                     label="Mô tả"
                     name="centerDescription"
@@ -228,6 +243,7 @@ const CenterBasicForm = ({ setFormData, setIsValidated, formData, formInstance }
                         {(fields, { add }, { errors }) => {
                             if (fields.length < 7) {
                                 add();
+                                forceUpdate();
                             }
                             return (
                                 <>
@@ -238,13 +254,6 @@ const CenterBasicForm = ({ setFormData, setIsValidated, formData, formInstance }
                                             name={[field.name, 'day']}
                                             validateTrigger={['onChange', 'onBlur']}
                                             noStyle
-                                            {...rangeConfig}
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: 'Vui lòng nhập thời gian ước tính xử lý',
-                                                },
-                                            ]}
                                         >
                                             <TimePicker.RangePicker
                                                 format={format}
@@ -266,9 +275,6 @@ const CenterBasicForm = ({ setFormData, setIsValidated, formData, formInstance }
                                             {days[field.name]}
                                         </Form.Item>
                                     ))}
-                                    <Form.Item>
-                                        <Form.ErrorList errors={errors} />
-                                    </Form.Item>
                                 </>
                             );
                         }}

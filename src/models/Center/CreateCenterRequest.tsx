@@ -10,7 +10,7 @@ export interface CenterRequest {
         savedFileName?: string;
         hasDelivery: boolean;
         taxCode: string;
-        taxRegistrationImage: string;
+        taxRegistrationImage?: string;
     };
     location: {
         addressString: string;

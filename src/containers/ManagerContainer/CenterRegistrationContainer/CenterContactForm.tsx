@@ -45,7 +45,6 @@ const CenterContactForm = ({ setFormData, setIsValidated, formData, formInstance
             setLocation(res);
             setOpenMap(true);
         });
-
         setIsValidated(true);
     };
 
@@ -80,6 +79,11 @@ const CenterContactForm = ({ setFormData, setIsValidated, formData, formInstance
         fetchData().then((res) => {
             setDistrictsList(res);
         });
+        if (formData.districtId) {
+            getWards(formData.districtId).then((res) => {
+                setWardsList(res);
+            });
+        }
     }, []);
 
     useEffect(() => {

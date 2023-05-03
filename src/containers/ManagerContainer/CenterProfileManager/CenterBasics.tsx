@@ -13,7 +13,14 @@ type Props = {
     center: ManagerCenterModel;
 };
 
-type CenterBasicsFormData = { name: string; phone: string; image: string; description: string; savedImage: string };
+type CenterBasicsFormData = {
+    name: string;
+    phone: string;
+    image: string;
+    description: string;
+    savedImage: string;
+    taxCode: string;
+};
 
 const CenterBasics = ({ center }: Props) => {
     const [fileList, setFileList] = useState<UploadFile[]>([
@@ -30,6 +37,7 @@ const CenterBasics = ({ center }: Props) => {
         phone: center.phone,
         image: center.thumbnail,
         description: center.description,
+        taxCode: center.taxCode,
         savedImage: '',
     });
 
@@ -67,7 +75,6 @@ const CenterBasics = ({ center }: Props) => {
         console.log('Failed:', errorInfo);
     };
 
-
     // const handleTimeOnChange = (day: string, times: RangeValue<dayjs.Dayjs>) => {
     //     const operationDay = DayMap[day];
     //     console.log('alo');
@@ -85,6 +92,23 @@ const CenterBasics = ({ center }: Props) => {
     //     setFormData({ ...formData, operationHours: newOperationHours });
     //     console.log(formData);
     // };
+    const inputOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        const { key } = e;
+        const target = e.target as HTMLInputElement;
+        const targetValue = target.value;
+        console.log(targetValue);
+        if (e.key !== 'Backspace') {
+            if (targetValue.length > 9) {
+                if (targetValue.includes('-')) {
+                    const substrings = targetValue.split('-');
+                    target.value = (substrings[0] + '-' + substrings[1]).slice(0, 13);
+                } else {
+                    const substrings = [targetValue.slice(0, 10), targetValue.slice(10)];
+                    target.value = substrings[0] + '-' + substrings[1];
+                }
+            }
+        }
+    };
 
     return (
         <div className="p-6 text-sub text-base">
@@ -98,6 +122,7 @@ const CenterBasics = ({ center }: Props) => {
                     centerName: formData.name,
                     centerPhone: formData.phone,
                     centerDescription: formData.description,
+                    centerTaxcode: formData.taxCode,
                     // operatingDays: [
                     //     dayjs(formData.operationHours[0].start, 'HH:mm'),
                     //     dayjs(formData.operationHours[0].end, 'HH:mm'),
@@ -107,6 +132,25 @@ const CenterBasics = ({ center }: Props) => {
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"
             >
+                <Form.Item label="Hình ảnh trung tâm" valuePropName="fileList">
+                    <Upload
+                        // action={`${process.env.REACT_APP_API_URL}/api/homeTest/uploadImage`}
+                        listType="picture-card"
+                        fileList={[...fileList]}
+                        onChange={handleChange}
+                        multiple={false}
+                        beforeUpload={(file) => false}
+                        showUploadList={{ showPreviewIcon: false }}
+                        accept={'.jpg, .jpeg, .png'}
+                    >
+                        {
+                            <div>
+                                <PlusOutlined />
+                                <div style={{ marginTop: 8 }}>Tải hình ảnh</div>
+                            </div>
+                        }
+                    </Upload>
+                </Form.Item>
                 <Form.Item
                     label="Tên trung tâm"
                     name="centerName"
@@ -132,26 +176,21 @@ const CenterBasics = ({ center }: Props) => {
                         }}
                     />
                 </Form.Item>
-                <Form.Item label="Hình ảnh trung tâm" valuePropName="fileList">
-                    <Upload
-                        // action={`${process.env.REACT_APP_API_URL}/api/homeTest/uploadImage`}
-                        listType="picture-card"
-                        fileList={[...fileList]}
-                        onChange={handleChange}
-                        multiple={false}
-                        beforeUpload={(file) => false}
-                        showUploadList={{ showPreviewIcon: false }}
-                        accept={'.jpg, .jpeg, .png'}
-                    >
-                        {
-                            <div>
-                                <PlusOutlined />
-                                <div style={{ marginTop: 8 }}>Tải hình ảnh</div>
-                            </div>
-                        }
-                    </Upload>
+                <Form.Item
+                    label="Mã số thuế"
+                    name="centerTaxcode"
+                    rules={[
+                        { required: true, message: 'Vui lòng nhập mã số thuế trung tâm của bạn' },
+                        { min: 10, max: 14, message: 'Mã số thuế thông thường có 10 đến 13 số' },
+                    ]}
+                >
+                    <Input
+                        onKeyDown={inputOnKeyDown}
+                        onChange={(e) => {
+                            setFormData((prevFormData) => ({ ...prevFormData, taxCode: e.target.value }));
+                        }}
+                    />
                 </Form.Item>
-
                 <Form.Item
                     label="Mô tả"
                     name="centerDescription"

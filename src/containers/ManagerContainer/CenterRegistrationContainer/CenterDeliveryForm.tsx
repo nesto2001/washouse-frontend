@@ -31,71 +31,16 @@ const CenterDeliveryForm = ({ setFormData, setIsValidated, formData, formInstanc
         }
     };
     const onFinish = (values: CenterDeliveryPriceRequest) => {
-        setIsValidated(true);
         if (formData.hasDelivery || values.hasDelivery) {
             setFormData((prevFormData) => ({ ...prevFormData, deliveryPrice: values.deliveryPrice }));
         } else {
             setFormData((prevFormData) => ({ ...prevFormData, deliveryPrice: undefined }));
         }
-        const centerRequest: CenterRequest = {
-            center: {
-                centerName: formData.name,
-                description: formData.description,
-                hasDelivery: true,
-                phone: formData.phone,
-                savedFileName: formData.savedImage ?? 'step3-20230410003841.png',
-                taxCode: generateRandomString(12),
-                taxRegistrationImage: 'step3-20230410003841.png',
-            },
-            location: {
-                addressString: formData.address,
-                wardId: formData.wardId,
-                latitude: formData.location.latitude,
-                longitude: formData.location.longitude,
-            },
-            centerOperatingHours: formData.operationHours.map((operationDay) => {
-                return {
-                    day: operationDay.day,
-                    openTime: operationDay.start,
-                    closeTime: operationDay.end,
-                };
-            }),
-            centerDelivery: {
-                hasDelivery: formData.hasDelivery,
-                deliveryPrice:
-                    formData.hasDelivery && formData.deliveryPrice
-                        ? formData.deliveryPrice?.map((deliPrice) => {
-                              return {
-                                  maxWeight: deliPrice.maxWeight,
-                                  maxDistance: deliPrice.maxDistance,
-                                  price: deliPrice.price,
-                              };
-                          })
-                        : undefined,
-            },
-        };
-        console.log(JSON.stringify(centerRequest));
-        createCenter(centerRequest).then((res) => {
-            if (res) {
-                refresh({
-                    refreshToken: localStorage.getItem('refreshToken') ?? '',
-                    accessToken: localStorage.getItem('accessToken') ?? '',
-                }).then((res) => {
-                    localStorage.setItem('refreshToken', res.data.data.refreshToken);
-                    localStorage.setItem('accessToken', res.data.data.accessToken);
-                    getMe().then((res) => {
-                        localStorage.setItem('currentUser', JSON.stringify(res));
-                        navigate('/provider/settings/center/profile');
-                        message.success('Đã đăng ký trung tâm thành công, vui lòng chờ duyệt bởi quản trị viên.');
-                    });
-                });
-            } else {
-                message.error('Xảy ra lỗi trong hoàn tất quá trình đăng ký, vui lòng thử lại sau.');
-            }
-        });
-    };
-    const onFinishFailed = (errorInfo: any) => {
         setIsValidated(true);
+    };
+
+    const onFinishFailed = (errorInfo: any) => {
+        setIsValidated(false);
         console.log(formData);
         console.log('Failed:', errorInfo);
     };
