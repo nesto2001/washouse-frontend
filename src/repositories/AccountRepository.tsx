@@ -104,11 +104,18 @@ export const updateAccountProfile = async (request: UpdateProfileRequest) => {
 };
 
 export const updateAccountProfilePic = async (request: UpdateAvatarRequest) => {
-    const { status } = await instance.put(API_ACCOUNT_PROFILE_PIC, request, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+    const { status } = await instance.put(
+        API_ACCOUNT_PROFILE_PIC,
+        {},
+        {
+            params: {
+                SavedFileName: request.savedFileName,
+            },
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
         },
-    });
+    );
     if (status !== 200) {
         throw new Error();
     }

@@ -1,4 +1,4 @@
-import { Empty, Pagination, Space, Tag } from 'antd';
+import { Empty, Pagination, Space, Tag, Tooltip } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { ManagerServiceItem } from '../../models/Manager/ManagerServiceItem';
 import { formatCurrency } from '../../utils/FormatUtils';
@@ -6,6 +6,7 @@ import { PaginationProps } from 'rc-pagination';
 import { Paging } from '../../types/Common/Pagination';
 import { ServiceStatusMap } from '../../mapping/OrderStatusMap';
 import { Link, useNavigate } from 'react-router-dom';
+import StarFull from '../Star/StarFull';
 type Props = {
     serviceList: ManagerServiceItem[];
     paging?: Paging;
@@ -35,8 +36,8 @@ const columns: ColumnsType<ManagerServiceItem> = [
     },
     {
         title: 'Định lượng',
-        dataIndex: 'pricetype',
-        key: 'pricetype',
+        dataIndex: 'priceType',
+        key: 'priceType',
         align: 'center',
         render: (value) => (value ? 'Khối lượng' : 'Số lượng'),
     },
@@ -44,8 +45,22 @@ const columns: ColumnsType<ManagerServiceItem> = [
         title: 'Đơn giá',
         dataIndex: 'price',
         key: 'price',
-        align: 'right',
-        render: (value) => formatCurrency(value ?? 0),
+        align: 'center',
+        render: (value, record) => (
+            <div className="">
+                {record.priceType ? (
+                    <Tooltip title="Giá tối thiểu">
+                        {formatCurrency(
+                            record.minPrice !== null
+                                ? record.minPrice
+                                : record.prices[0].maxValue * record.prices[0].price,
+                        )}
+                    </Tooltip>
+                ) : (
+                    value ?? 0
+                )}
+            </div>
+        ),
     },
     {
         title: 'Đánh giá',
@@ -53,7 +68,16 @@ const columns: ColumnsType<ManagerServiceItem> = [
         align: 'center',
         key: 'rating',
         render: (_, record) =>
-            record.rating && record.numOfRating > 0 ? record.rating + '/' + record.numOfRating : 'Chưa có',
+            record.rating && record.numOfRating > 0 ? (
+                <Tooltip title={`★ ${record.rating.toFixed(1)} trên ${record.numOfRating} lượt đánh giá`}>
+                    <div className="flex items-center gap-2">
+                        <StarFull numOfStar={1} />
+                        <span className="font-bold text-xl">{record.rating.toFixed(1)}</span>
+                    </div>
+                </Tooltip>
+            ) : (
+                'Chưa có'
+            ),
     },
     {
         title: 'Trạng thái',

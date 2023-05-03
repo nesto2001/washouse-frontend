@@ -130,12 +130,12 @@ const CenterServiceContainer = (props: Props) => {
                 service?.price
                     ? formatCurrency(service.price)
                     : service?.prices
-                    ? `${formatCurrency(
-                          service.minPrice ?? service.prices[0].price * service.prices[0].maxValue,
-                      )} - ${formatCurrency(
-                          service.prices[service.prices.length - 1].price *
-                              service.prices[service.prices.length - 1].maxValue,
-                      )}`
+                    ? service.minPrice
+                        ? formatCurrency(service.minPrice)
+                        : `${formatCurrency(service.prices[0].price * service.prices[0].maxValue)} - ${formatCurrency(
+                              service.prices[service.prices.length - 1].price *
+                                  service.prices[service.prices.length - 1].maxValue,
+                          )}`
                     : formatCurrency(0),
             );
         }
@@ -318,7 +318,9 @@ const CenterServiceContainer = (props: Props) => {
                                         {weightInput || (quantityInput && quantityInput > 0)
                                             ? 'Giá tiền: '
                                             : service.priceType
-                                            ? 'Giá tối thiểu: '
+                                            ? service.minPrice
+                                                ? 'Giá tối thiểu: '
+                                                : 'Giá dịch vụ'
                                             : 'Đơn giá: '}
                                         <br />
                                     </span>

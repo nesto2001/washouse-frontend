@@ -38,7 +38,6 @@ const CustomerOrderedService = ({ orderedServices }: Props) => {
                                 Phân loại: {ord.category}
                             </div>
                         </div>
-                        <div className="ordered__service--note flex-grow mt-2">Ghi chú: không có</div>
                     </div>
                     <div className="ordered__service--measurement w-[200px] self-center">
                         {ord.measurement} {ord.unit}

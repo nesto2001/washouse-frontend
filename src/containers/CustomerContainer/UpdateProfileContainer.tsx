@@ -21,7 +21,6 @@ type UpdateRequestData = {
     fullName?: string;
     dob?: string | null;
     gender?: number | null;
-    avatar?: string | null;
 };
 
 const UpdateProfileContainer = () => {
@@ -93,7 +92,6 @@ const UpdateProfileContainer = () => {
                     dob: res.dob,
                     fullName: res.fullname,
                     gender: res.gender,
-                    avatar: res.profilePic,
                 });
                 setUserProfile(res);
                 setIsLoading(false);
