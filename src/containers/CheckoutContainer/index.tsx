@@ -152,7 +152,7 @@ const CheckoutContainer = (props: Props) => {
                         customerNote: item.customerNote,
                     };
                 }),
-                paymentMethod: 0,
+                paymentMethod: formData.paymentType ?? 0,
             };
             console.log(JSON.stringify(CreateOrderData));
             const placeOrder = async () => {
