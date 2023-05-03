@@ -49,7 +49,6 @@ const CenterOrderListingContainer = (props: Props) => {
         }
     };
 
-    useEffect(() => {}, [currentPage]);
     useEffect(() => {
         setIsLoading(true);
         const fetchData = async () => {

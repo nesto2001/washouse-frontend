@@ -10,7 +10,9 @@ import { OrderStatusMap } from '../../../mapping/OrderStatusMap';
 import CouponTag from '../../../components/CouponTag/CouponTag';
 import { formatPercentage } from '../../../utils/FormatUtils';
 import TextArea from 'antd/es/input/TextArea';
-import { cancelOrder } from '../../../repositories/StaffRepository';
+import { cancelOrder, completeOrder } from '../../../repositories/StaffRepository';
+import { AxiosError } from 'axios';
+import { Response } from '../../../models/CommonModel';
 
 export type OrderInformation = {
     id: string;
@@ -55,6 +57,8 @@ const CenterOrderDetailsGeneral = ({
     const [customerLocation, setCustomerLocation] = useState<LocationDetailsModel>();
     const [openCancelModel, setOpenCancelModel] = useState(false);
     const [modalLoadingConfirm, setModalLoadingConfirm] = useState(false);
+    const [openCompletePop, setOpenCompletePop] = useState(false);
+    const [confirmCompleteLoading, setConfirmCompleteLoading] = useState(false);
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -82,6 +86,42 @@ const CenterOrderDetailsGeneral = ({
                     setOpenCancelModel(false);
                 });
         }
+    };
+
+    const handleCancelComplete = () => {
+        setOpenCompletePop(false);
+    };
+
+    const handleOkComplete = () => {
+        setConfirmCompleteLoading(true);
+        if (orderInfo) {
+            completeOrder(orderInfo.id)
+                .then((res) => {
+                    if (res.status === 200) {
+                        message.success('Hoàn tất đơn hàng thành công');
+                        setOpenCompletePop(false);
+                        setConfirmCompleteLoading(false);
+                        forceUpdate();
+                    }
+                })
+                .catch((err: AxiosError<Response<null>>) => {
+                    console.log(err);
+                    if (err.response?.status === 400 && err.response.data.message === 'Payment not paid') {
+                        message.error('Không thể hoàn tất do đơn hàng chưa được thanh toán, vui lòng thử lại sau!');
+                    }
+                })
+                .finally(() => {
+                    setConfirmCompleteLoading(false);
+                });
+        }
+    };
+
+    const showPopComplete = () => {
+        if (orderInfo.status === 'completed') {
+            message.error('Đơn hàng đã hoàn tất, không thể cập nhật tiến trình thêm');
+            return;
+        }
+        setOpenCompletePop(true);
     };
 
     return (
@@ -197,7 +237,11 @@ const CenterOrderDetailsGeneral = ({
                         Hủy đơn hàng
                     </Button>
                 )}
-                {orderInfo.status.toLowerCase() !== 'completed' && orderInfo.status.toLowerCase() !== 'cancelled' && (
+                {!(
+                    orderInfo.status.toLowerCase() === 'ready' ||
+                    orderInfo.status.toLowerCase() === 'completed' ||
+                    orderInfo.status.toLowerCase() === 'cancelled'
+                ) && (
                     <Popconfirm
                         title="Cập nhật"
                         description="Xác nhận cập nhật tiến trình đơn hàng?"
@@ -211,6 +255,23 @@ const CenterOrderDetailsGeneral = ({
                     >
                         <Button type="primary" size="large" className="capitalize" onClick={showPopconfirm}>
                             Cập nhật tiến trình
+                        </Button>
+                    </Popconfirm>
+                )}
+                {orderInfo.status.toLowerCase() === 'ready' && (
+                    <Popconfirm
+                        title="Hoàn tất"
+                        description="Xác nhận hoàn tất đơn hàng?"
+                        open={openCompletePop}
+                        onConfirm={handleOkComplete}
+                        okButtonProps={{ loading: confirmCompleteLoading }}
+                        onCancel={handleCancelComplete}
+                        cancelButtonProps={{ style: { background: 'white' } }}
+                        okText="Xác nhận"
+                        cancelText="Hủy"
+                    >
+                        <Button type="primary" size="large" className="capitalize" onClick={showPopComplete}>
+                            Hoàn tất đơn hàng
                         </Button>
                     </Popconfirm>
                 )}

@@ -14,9 +14,6 @@ type Props = {
 const OrderList = ({ orders, isLoading, paging, updatePage }: Props) => {
     const showTotal: PaginationProps['showTotal'] = (total) => `Có tất cả ${total} đơn hàng`;
 
-    if (!orders || orders.length == 0) {
-        return <Empty description="Không có đơn hàng nào" className="mb-5" />;
-    }
     return (
         <div className={`order__list--wrapper my-5 mt-2 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
             <div className="order__list--header mb-6 py-4 bg-wh-lightgray font-bold text-sub rounded-lg">
@@ -33,6 +30,12 @@ const OrderList = ({ orders, isLoading, paging, updatePage }: Props) => {
                 <div className="flex w-full justify-center">
                     <Spin />
                 </div>
+            ) : !orders || orders.length == 0 ? (
+                <Empty
+                    image={Empty.PRESENTED_IMAGE_DEFAULT}
+                    imageStyle={{ height: 160, width: 384, margin: '0 auto', marginBottom: 20 }}
+                    description={<span className="text-xl font-medium text-sub-gray">Chưa có đơn hàng nào</span>}
+                ></Empty>
             ) : (
                 <div className="order__list">
                     {orders.map((order) => order && <OrderCard key={order.id} order={order} />)}

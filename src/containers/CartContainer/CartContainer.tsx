@@ -10,7 +10,7 @@ import WHButton from '../../components/Button';
 import PriceTable from '../../components/PriceTable';
 import StatusTag from '../../components/StatusTag';
 import { CenterModel } from '../../models/Center/CenterModel';
-import { decreaseCartItem, increaseCartItem, removeItem } from '../../reducers/CartReducer';
+import { addOrderNote, decreaseCartItem, increaseCartItem, removeItem } from '../../reducers/CartReducer';
 import { getCenterBrief } from '../../repositories/CenterRepository';
 import { RootState } from '../../store/CartStore';
 import { PriceRange } from '../../types/PriceRange';
@@ -238,12 +238,12 @@ const CartContainer = () => {
                                     maxLength={100}
                                     placeholder="Nhập ghi chú về đơn hàng của bạn, VD: Không sử dụng chất tẩy mạnh, ghi chú về loại nước xả vải,..."
                                     onBlur={(e) => {
-                                        //TODO: Handle update cart (note)
+                                        dispatch(addOrderNote(e.target.value));
                                     }}
                                 />
                             </div>
                         </div>
-                        <div className="sitecart__sideinfo basis-1/3">
+                        <div className="sitecart__sideinfo basis-1/3 mb-10">
                             <div className="sitecart__sideinfo--rating p-6 border border-[#B3B3B3] rounded-2xl">
                                 <h2 className="text-left font-bold text-2xl mb-3">Thông tin đơn hàng</h2>
                                 <hr />
@@ -253,8 +253,8 @@ const CartContainer = () => {
                                 </div>
                                 <hr />
                                 <ul className="mt-4 list-disc text-xs text-left list-inside pl-2 mb-8">
-                                    <li>Phí vận chuyển sẽ được tính ở trang thanh toán.</li>
-                                    <li>Bạn cũng có thể nhập mã giảm giá ở trang thanh toán.</li>
+                                    <li>Phí vận chuyển sẽ được tính ở trang đặt dịch vụ.</li>
+                                    <li>Bạn cũng có thể nhập mã giảm giá ở trang đặt dịch vụ.</li>
                                 </ul>
                                 <WHButton type="primary" minWidth="330px" link="/cart/checkout">
                                     Đặt dịch vụ

@@ -14,6 +14,7 @@ const emptyState: CartState = {
     totalQuantity: 0,
     totalWeight: 0,
     centerId: 0,
+    orderNote: '',
 };
 
 const initialState: CartState =
@@ -25,6 +26,7 @@ const initialState: CartState =
               totalPrice: 0,
               totalWeight: 0,
               centerId: null,
+              orderNote: '',
           };
 
 const CartReducer = createSlice({
@@ -230,10 +232,20 @@ const CartReducer = createSlice({
             }
             return state;
         },
+        addOrderNote: (state, action: PayloadAction<string>) => {
+            const customerNote = action.payload;
+            if (!customerNote) {
+                return state;
+            }
+            state.orderNote = customerNote;
+            localStorage.setItem('userCart', JSON.stringify(state));
+            return state;
+        },
     },
 });
 
 export const {
+    addOrderNote,
     addItem,
     removeItem,
     clearCart,

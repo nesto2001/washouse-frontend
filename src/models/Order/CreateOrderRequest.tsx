@@ -9,7 +9,7 @@ export type CreateOrderRequest = {
         customerWardId: number;
         customerEmail: string;
         customerMobile: string;
-        customerMessage: string;
+        customerMessage?: string;
         customerId?: number;
         deliveryType: number;
         deliveryPrice: number;

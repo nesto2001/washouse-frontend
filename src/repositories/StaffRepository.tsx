@@ -11,6 +11,7 @@ import {
     API_STAFF_ACTIVATE,
     API_STAFF_ASSIGN_DELIVERY,
     API_STAFF_CANCEL_ORDER,
+    API_STAFF_COMPLETE_ORDER,
     API_STAFF_DEACTIVATE,
     API_STAFF_FEEDBACKS,
     API_STAFF_PAID_ORDER,
@@ -342,6 +343,19 @@ export const getCenterCustomer = async (): Promise<CenterCustomerModel[]> => {
 export const proceedOrder = async (orderId: string) => {
     const response = await instance.put<Response<number>>(
         API_STAFF_PROCEED_ORDER.replace('${orderId}', orderId),
+        {},
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        },
+    );
+    return response;
+};
+
+export const completeOrder = async (orderId: string) => {
+    const response = await instance.put<Response<number>>(
+        API_STAFF_COMPLETE_ORDER.replace('${orderId}', orderId),
         {},
         {
             headers: {

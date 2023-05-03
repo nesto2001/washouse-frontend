@@ -31,6 +31,7 @@ const CheckoutContainer = (props: Props) => {
     const cartTotal = useSelector((state: RootState) => state.cart.totalPrice);
     const cartItems = useSelector((state: RootState) => state.cart.items);
     const cartCenterId = useSelector((state: RootState) => state.cart.centerId);
+    const orderNote = useSelector((state: RootState) => state.cart.orderNote);
     const today = getToday();
 
     const dispatch = useDispatch();
@@ -125,12 +126,12 @@ const CheckoutContainer = (props: Props) => {
                     customerName: formData.fullname,
                     customerAddressString: formData.address,
                     customerEmail: formData.email,
-                    customerMessage: '',
+                    customerMessage: orderNote ?? undefined,
                     customerMobile: formData.phone,
                     customerWardId: formData.wardId,
                     deliveryPrice: formData.deliveryPrice,
                     deliveryType: formData.deliveryType,
-                    preferredDeliverTime: formData.preferredDeliverTime,
+                    preferredDeliverTime: formData.preferredDeliverTime ?? undefined,
                     preferredDropoffTime:
                         formData.preferredDropoffTime.length > 0
                             ? formData.preferredDropoffTime
@@ -235,7 +236,7 @@ const CheckoutContainer = (props: Props) => {
                         )}
                     </div>
                     <div className="checkout__sidebar basis-[45%] text-left px-6 pt-6 relative">
-                        <div className="checkout__center fixed">
+                        <div className="checkout__center">
                             <h2 className="font-bold text-xl">Trung tâm</h2>
                             <div className="checkout__center--details flex mt-3 mb-6">
                                 <div className="checkout__center--thumbnail md:w-[200px] md:h-[145px] rounded-2xl overflow-hidden">
@@ -273,6 +274,7 @@ const CheckoutContainer = (props: Props) => {
                             <div className="checkout__order py-6">
                                 <h2 className="font-bold text-xl">Chi tiết đơn hàng</h2>
                                 <div className="">Ước tính xử lý đơn hàng: {totalEst} phút</div>
+                                <div className="">Ghi chú đơn hàng: {orderNote ?? 'Không có'}</div>
                                 <div className="checkout__order--details mt-5">
                                     {cartItems &&
                                         cartItems.map((item, index) => (
@@ -308,9 +310,9 @@ const CheckoutContainer = (props: Props) => {
                                                     >
                                                         Chi tiết:{' '}
                                                         {item.quantity && item.quantity > 0
-                                                            ? item.quantity
-                                                            : item.weight}
-                                                        {item.unit === 'kg' ? 'kg' : ''}
+                                                            ? item.quantity.toFixed(0)
+                                                            : item.weight?.toFixed(1)}{' '}
+                                                        {item.unit === 'kg' ? 'kg' : 'cái'}
                                                     </h4>
                                                     <h4 className="text-sm flex-grow max-w-[355.94px] line-clamp-2 pt-1">
                                                         Ghi chú:{' '}
@@ -369,7 +371,6 @@ const CheckoutContainer = (props: Props) => {
                                 </div>
                             </div>
                         </div>
-                        ;
                     </div>
                 </div>
             ) : (
