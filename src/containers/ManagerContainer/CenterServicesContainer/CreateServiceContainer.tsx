@@ -7,6 +7,7 @@ import { CategoryOptionsModel } from '../../../models/Category/CategoryOptionsMo
 import { getCategoryOptions } from '../../../repositories/ServiceCategoryRepository';
 import { createService } from '../../../repositories/ServiceRepository';
 import { Link, useNavigate } from 'react-router-dom';
+import { uploadSingle } from '../../../repositories/MediaRepository';
 
 const rangeConfig = {
     rules: [{ type: 'array' as const, required: true, message: 'Please select time!' }],
@@ -42,61 +43,80 @@ type CreateServiceFormData = {
 const CreateServiceContainer = () => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [priceType, setPriceType] = useState(true);
+    const [serviceImgName, setServiceImgName] = useState<string>();
+    const [serviceUrl, setServiceUrl] = useState();
     const navigate = useNavigate();
 
-    const [categoryOptions, setCategoryOptions] = useState<CategoryOptionsModel[]>([
-        { id: 0, name: 'Chọn loại dịch vụ' },
-    ]);
+    const [categoryOptions, setCategoryOptions] = useState<CategoryOptionsModel[]>([]);
     const [form] = Form.useForm();
     const onFinish = (values: CreateServiceFormData) => {
-        createService({
-            serviceName: values.serviceName,
-            alias: values.alias ?? '',
-            serviceCategory: values.serviceCategory,
-            serviceDescription: values.serviceDescription,
-            serviceImage: values.serviceImage ?? 'step3-20230410003841.png',
-            timeEstimate: values.timeEstimate,
-            unit: values.priceType ? 'kg' : 'pcs',
-            rate: values.rate,
-            priceType: values.priceType,
-            price: values.price ?? null,
-            minPrice: values.minPrice ?? null,
-            serviceGalleries: values.serviceGalleries ?? [],
-            prices: values.prices ?? null,
-        })
-            .then((res) => {
-                if (res) {
-                    message.success('Tạo dịch vụ thành công');
-                    navigate('/provider/services');
-                }
-            })
-            .catch((err) => {
-                message.error('Tạo dịch vụ thất bại, vui lòng thử lại sau');
+        const file = fileList[0]?.originFileObj;
+        console.log(file);
+        if (file) {
+            const uploadFile = async () => {
+                return await uploadSingle(file);
+            };
+            uploadFile().then((res) => {
+                setServiceImgName(res.data.data.savedFileName);
+                createService({
+                    serviceName: values.serviceName,
+                    alias: values.alias ?? '',
+                    serviceCategory: values.serviceCategory,
+                    serviceDescription: values.serviceDescription,
+                    serviceImage: res.data.data.savedFileName ?? '',
+                    timeEstimate: values.timeEstimate,
+                    unit: values.priceType ? 'kg' : 'pcs',
+                    rate: values.rate,
+                    priceType: values.priceType,
+                    price: values.price ?? null,
+                    minPrice: values.minPrice ?? null,
+                    serviceGalleries: values.serviceGalleries ?? [],
+                    prices: values.prices ?? null,
+                })
+                    .then((res) => {
+                        if (res) {
+                            message.success('Tạo dịch vụ thành công');
+                            navigate('/provider/services');
+                        }
+                    })
+                    .catch((err) => {
+                        message.error('Tạo dịch vụ thất bại, vui lòng thử lại sau');
+                    });
             });
+        } else {
+            createService({
+                serviceName: values.serviceName,
+                alias: values.alias ?? '',
+                serviceCategory: values.serviceCategory,
+                serviceDescription: values.serviceDescription,
+                timeEstimate: values.timeEstimate,
+                unit: values.priceType ? 'kg' : 'pcs',
+                rate: values.rate,
+                priceType: values.priceType,
+                price: values.price ?? null,
+                minPrice: values.minPrice ?? null,
+                serviceGalleries: values.serviceGalleries ?? [],
+                prices: values.prices ?? null,
+            })
+                .then((res) => {
+                    if (res) {
+                        message.success('Tạo dịch vụ thành công');
+                        navigate('/provider/services');
+                    }
+                })
+                .catch((err) => {
+                    message.error('Tạo dịch vụ thất bại, vui lòng thử lại sau');
+                });
+        }
     };
 
     const handleChange = (info: UploadChangeParam) => {
-        const { status } = info.file;
-
-        if (status !== 'uploading') {
-            console.log(info.file, info.fileList);
-        }
-        if (status === 'done') {
-            message.success(`Tải hình ảnh ${info.file.name} thành công.`);
-        } else if (status === 'error') {
-            message.error(`Tải hình ảnh ${info.file.name} thất bại.`);
-        }
-        let fileList = [...info.fileList];
-
-        // 1. Limit the number of uploaded files
-        // Only to show the last recent uploaded files, and old ones will be replaced by the new
-        fileList = fileList.slice(-1);
-        setFileList(fileList);
+        setFileList([...info.fileList]);
     };
 
     useEffect(() => {
         getCategoryOptions().then((res) => {
-            setCategoryOptions((prev) => [...prev, ...res]);
+            setCategoryOptions([{ id: 0, name: 'Chọn loại dịch vụ' }, ...res]);
         });
     }, [form]);
 
@@ -117,11 +137,15 @@ const CreateServiceContainer = () => {
             >
                 <Form.Item label="Hình ảnh dịch vụ" valuePropName="fileList">
                     <Upload
-                        action={`${process.env.REACT_APP_FIREBASE_API_URL}/api/homeTest/uploadImage`}
+                        beforeUpload={() => {
+                            return false;
+                        }}
+                        showUploadList={{ showPreviewIcon: false, showRemoveIcon: false }}
                         listType="picture-card"
                         fileList={[...fileList]}
                         onChange={handleChange}
                         multiple={false}
+                        maxCount={1}
                     >
                         <div>
                             <PlusOutlined />

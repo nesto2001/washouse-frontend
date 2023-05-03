@@ -5,7 +5,7 @@ export type CreateServiceRequest = {
     alias: string;
     serviceCategory: number;
     serviceDescription: string;
-    serviceImage: string;
+    serviceImage?: string;
     timeEstimate: number;
     unit: 'kg' | 'pcs';
     rate: number;

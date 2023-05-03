@@ -79,7 +79,7 @@ const ChangePasswordContainer = () => {
                     </Form.Item>
                 </div>
                 <div className="col-span-1"></div>
-                <div className="col-span-1 text-right mr-6 mb-6 mb-6">Xác nhận mật khẩu</div>
+                <div className="col-span-1 text-right mr-6 mb-6">Xác nhận mật khẩu</div>
                 <div className="col-span-2">
                     <Form.Item
                         name="confirmedPassword"

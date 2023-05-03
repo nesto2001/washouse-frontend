@@ -6,10 +6,9 @@ import { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ServiceDetailsModel } from '../../../models/Service/ServiceDetailsModel';
 import { getServiceDetail, updateService } from '../../../repositories/ServiceRepository';
-
-const rangeConfig = {
-    rules: [{ type: 'array' as const, required: true, message: 'Please select time!' }],
-};
+import { getCategoryOptions } from '../../../repositories/ServiceCategoryRepository';
+import { CategoryOptionsModel } from '../../../models/Category/CategoryOptionsModel';
+import { uploadSingle } from '../../../repositories/MediaRepository';
 
 const priceTypeOption = [
     { value: true, label: 'Khối lượng' },
@@ -23,12 +22,13 @@ type UpdateServiceFormData = {
     serviceDescription: string;
     serviceImage: string;
     timeEstimate: number;
-    price: number;
-    minPrice: number;
-    prices: Array<{
+    price?: number;
+    minPrice?: number;
+    prices?: Array<{
         maxWeight: number;
         price: number;
     }>;
+    rate: number;
 };
 
 const UpdateServiceContainer = () => {
@@ -38,59 +38,117 @@ const UpdateServiceContainer = () => {
     const navigate = useNavigate();
     const [state, updateState] = useState({});
     const forceUpdate = useCallback(() => updateState({}), []);
+    const [categoryOptions, setCategoryOptions] = useState<CategoryOptionsModel[]>([]);
+    const [serviceImgName, setServiceImgName] = useState<string>();
 
     const { serviceId } = useParams();
 
     const [form] = Form.useForm();
     const onFinish = (values: UpdateServiceFormData) => {
-        service &&
-            updateService(service.id, {
-                description: values.serviceDescription,
-                image: values.serviceImage ?? 'step3-20230410003841.png',
-                timeEstimate: values.timeEstimate,
-                price: values.price ?? null,
-                minPrice: values.minPrice ?? null,
-                servicePrices:
-                    values.prices.map((price) => {
-                        return {
-                            maxValue: price.maxWeight,
-                            price: price.price,
-                        };
-                    }) ?? null,
-            })
-                .then((res) => {
-                    if (res) {
-                        message.success('Cập nhật dịch vụ thành công');
-                        forceUpdate();
-                    }
-                })
-                .catch((err) => {
-                    message.error('Cập nhật dịch vụ thất bại, vui lòng thử lại sau');
-                });
+        const file = fileList[0]?.originFileObj;
+        console.log(file);
+        if (file) {
+            const uploadFile = async () => {
+                return await uploadSingle(file);
+            };
+            uploadFile().then((res) => {
+                setServiceImgName(res.data.data.savedFileName);
+                service &&
+                    (values.prices
+                        ? updateService(service.id, {
+                              description: values.serviceDescription,
+                              image: res.data.data.savedFileName ?? undefined,
+                              timeEstimate: values.timeEstimate,
+                              price: values.price ?? undefined,
+                              minPrice: values.minPrice ?? undefined,
+                              rate: 1,
+                              servicePrices:
+                                  values.prices.map((price) => {
+                                      return {
+                                          maxValue: price.maxWeight,
+                                          price: price.price,
+                                      };
+                                  }) ?? null,
+                          })
+                              .then((res) => {
+                                  if (res) {
+                                      message.success('Cập nhật dịch vụ thành công');
+                                      forceUpdate();
+                                  }
+                              })
+                              .catch((err) => {
+                                  message.error('Cập nhật dịch vụ thất bại, vui lòng thử lại sau');
+                              })
+                        : updateService(service.id, {
+                              description: values.serviceDescription,
+                              image: res.data.data.savedFileName ?? undefined,
+                              timeEstimate: values.timeEstimate,
+                              price: values.price ?? service.price ?? undefined,
+                              rate: values.rate,
+                          })
+                              .then((res) => {
+                                  if (res) {
+                                      message.success('Cập nhật dịch vụ thành công');
+                                      forceUpdate();
+                                  }
+                              })
+                              .catch((err) => {
+                                  message.error('Cập nhật dịch vụ thất bại, vui lòng thử lại sau');
+                              }));
+            });
+        } else {
+            service &&
+                (values.prices
+                    ? updateService(service.id, {
+                          description: values.serviceDescription,
+                          image: serviceImgName ?? undefined,
+                          timeEstimate: values.timeEstimate,
+                          price: values.price ?? undefined,
+                          minPrice: values.minPrice ?? undefined,
+                          rate: 1,
+                          servicePrices:
+                              values.prices.map((price) => {
+                                  return {
+                                      maxValue: price.maxWeight,
+                                      price: price.price,
+                                  };
+                              }) ?? null,
+                      })
+                          .then((res) => {
+                              if (res) {
+                                  message.success('Cập nhật dịch vụ thành công');
+                                  forceUpdate();
+                              }
+                          })
+                          .catch((err) => {
+                              message.error('Cập nhật dịch vụ thất bại, vui lòng thử lại sau');
+                          })
+                    : updateService(service.id, {
+                          description: values.serviceDescription,
+                          image: serviceImgName ?? undefined,
+                          timeEstimate: values.timeEstimate,
+                          price: values.price ?? service.price ?? undefined,
+                          rate: values.rate,
+                      })
+                          .then((res) => {
+                              if (res) {
+                                  message.success('Cập nhật dịch vụ thành công');
+                                  forceUpdate();
+                              }
+                          })
+                          .catch((err) => {
+                              message.error('Cập nhật dịch vụ thất bại, vui lòng thử lại sau');
+                          }));
+        }
     };
 
     const handleChange = (info: UploadChangeParam) => {
-        const { status } = info.file;
-
-        if (status !== 'uploading') {
-            console.log(info.file, info.fileList);
-        }
-        if (status === 'done') {
-            message.success(`Tải hình ảnh ${info.file.name} thành công.`);
-        } else if (status === 'error') {
-            message.error(`Tải hình ảnh ${info.file.name} thất bại.`);
-        }
-        let fileList = [...info.fileList];
-
-        // 1. Limit the number of uploaded files
-        // Only to show the last recent uploaded files, and old ones will be replaced by the new
-        fileList = fileList.slice(-1);
-        setFileList(fileList);
+        setFileList([...info.fileList]);
     };
 
     useEffect(() => {
         serviceId &&
-            getServiceDetail(+serviceId).then((res) => {
+            getServiceDetail(parseInt(serviceId)).then((res) => {
                 setService(res);
                 setFileList([
                     {
@@ -104,9 +162,11 @@ const UpdateServiceContainer = () => {
             });
     }, [state]);
 
-    const handlePriceTypeChange = (value: boolean) => {
-        setPriceType(value);
-    };
+    useEffect(() => {
+        getCategoryOptions().then((res) => {
+            setCategoryOptions([{ id: 0, name: 'Chọn loại dịch vụ' }, ...res]);
+        });
+    }, [form]);
 
     return (
         <div className="text-sub text-base">
@@ -121,7 +181,10 @@ const UpdateServiceContainer = () => {
                 >
                     <Form.Item label="Hình ảnh dịch vụ" valuePropName="fileList" initialValue={service.image}>
                         <Upload
-                            action={`${process.env.REACT_APP_FIREBASE_API_URL}/api/homeTest/uploadImage`}
+                            beforeUpload={() => {
+                                return false;
+                            }}
+                            showUploadList={{ showPreviewIcon: false, showRemoveIcon: false }}
                             listType="picture-card"
                             fileList={[...fileList]}
                             accept="image/*"
@@ -150,7 +213,15 @@ const UpdateServiceContainer = () => {
                             name="serviceCategory"
                             initialValue={service.categoryId}
                         >
-                            <Input disabled />
+                            <Select
+                                options={categoryOptions.map((opt) => {
+                                    return {
+                                        value: opt.id,
+                                        label: opt.name,
+                                    };
+                                })}
+                                disabled
+                            />
                         </Form.Item>
                     </div>
                     <Form.Item
@@ -166,7 +237,6 @@ const UpdateServiceContainer = () => {
                         name="timeEstimate"
                         label="Ước tính xử lý"
                         initialValue={service.timeEstimate}
-                        {...rangeConfig}
                         rules={[{ required: true, message: 'Vui lòng nhập thời gian ước tính xử lý' }]}
                     >
                         <InputNumber addonAfter="phút" placeholder="Nhập thời gian ước tính xử lý" />
@@ -179,15 +249,9 @@ const UpdateServiceContainer = () => {
                             initialValue={service.priceType}
                             rules={[{ required: true, message: 'Vui lòng chọn đơn vị định lượng' }]}
                         >
-                            <Select
-                                disabled
-                                placeholder="Chọn định lượng"
-                                options={priceTypeOption}
-                                defaultValue={true}
-                                onChange={handlePriceTypeChange}
-                            ></Select>
+                            <Select disabled placeholder="Chọn định lượng" options={priceTypeOption}></Select>
                         </Form.Item>
-                        {priceType ? (
+                        {service.priceType ? (
                             <>
                                 <Form.Item
                                     className="basis-1/4"
@@ -262,24 +326,30 @@ const UpdateServiceContainer = () => {
                             </>
                         ) : (
                             <>
-                                <Form.Item
-                                    className="basis-1/3"
-                                    label="Đơn giá"
-                                    name="price"
-                                    rules={[{ required: true, message: 'Vui lòng nhập đơn giá' }]}
-                                >
-                                    <Input addonAfter="đ" placeholder="Đơn giá/số lượng" />
-                                </Form.Item>
-                                <Tooltip title="Cân nặng trung bình của 1 đơn vị">
+                                <div className="basis-1/3">
                                     <Form.Item
-                                        className="basis-1/3"
+                                        className=""
+                                        label="Đơn giá"
+                                        name="price"
+                                        initialValue={service.price}
+                                        rules={[{ required: true, message: 'Vui lòng nhập đơn giá' }]}
+                                    >
+                                        <Input addonAfter="đ" placeholder="Đơn giá/số lượng" type="number" />
+                                    </Form.Item>
+                                </div>
+
+                                <div className="basis-1/3">
+                                    <Form.Item
+                                        tooltip="Cân nặng trung bình của 1 đơn vị"
+                                        initialValue={service.rate}
+                                        className=""
                                         label="Cân nặng"
                                         name="rate"
                                         rules={[{ required: true, message: 'Vui lòng nhập cân nặng' }]}
                                     >
                                         <Input addonAfter="kg" placeholder="Cân nặng/đơn vị" type="number" />
                                     </Form.Item>
-                                </Tooltip>
+                                </div>
                             </>
                         )}
                     </div>

@@ -57,7 +57,7 @@ const columns: ColumnsType<ManagerServiceItem> = [
                         )}
                     </Tooltip>
                 ) : (
-                    value ?? 0
+                    formatCurrency(value ?? 0)
                 )}
             </div>
         ),
