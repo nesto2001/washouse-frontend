@@ -1,14 +1,12 @@
-import { Button, Form, FormInstance, Input, Modal, Select, Space, Tooltip, Upload } from 'antd';
-import DefaultOptionType from 'antd/es/select';
-import TextArea from 'antd/es/input/TextArea';
-import React, { useState, useEffect, useMemo } from 'react';
+import { Button, Form, FormInstance, Input, Modal, Select, Space, Tooltip } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { CreateCenterFormData } from '.';
+import Destination from '../../../assets/images/destination.png';
+import LocationMap from '../../../components/Map/LocationMap';
+import { AddressModel } from '../../../models/Location/AddressModel';
 import { LocationPlaceModel } from '../../../models/LocationPlaceModel';
 import { getDistricts, getWards, searchLocation } from '../../../repositories/LocationRepository';
-import { CreateCenterFormData } from '.';
 import { LocationType } from '../../../types/LocationType';
-import LocationMap from '../../../components/Map/LocationMap';
-import Destination from '../../../assets/images/destination.png';
-import { AddressModel } from '../../../models/Location/AddressModel';
 
 const { Option } = Select;
 
@@ -73,10 +71,7 @@ const CenterContactForm = ({ setFormData, setIsValidated, formData, formInstance
 
     useEffect(() => {
         setIsValidated(false);
-        const fetchData = async () => {
-            return await getDistricts();
-        };
-        fetchData().then((res) => {
+        getDistricts().then((res) => {
             setDistrictsList(res);
         });
         if (formData.districtId) {

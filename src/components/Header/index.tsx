@@ -37,10 +37,9 @@ const Navbar = () => {
     const [searchValue] = useSearchParams();
     const [searchString, setSearchString] = useState<string>();
 
-    const handleSearch = (e: { preventDefault: () => void }) => {
-        e.preventDefault();
+    const handleSearch = () => {
         if (searchString) {
-            navigate(`/trung-tam?search=${searchString}`);
+            navigate(`/trung-tam?district=${district ? district.id : ''}&search=${searchString ?? ''}`);
         }
     };
 
@@ -72,14 +71,9 @@ const Navbar = () => {
             setDistrict(userDistrict);
         } else {
             if (latitude && longitude) {
-                console.log(latitude, longitude);
-                const fetchData = async () => {
-                    return await getUserDistrict({ lat: latitude, long: longitude });
-                };
-                fetchData().then((res) => {
+                getUserDistrict({ lat: latitude, long: longitude }).then((res) => {
                     setDistrict({ id: res.id, name: res.name });
                     sessionStorage.setItem('userDistrict', JSON.stringify(res));
-                    console.log(district);
                 });
             }
         }
@@ -88,11 +82,14 @@ const Navbar = () => {
     const handleDistrictChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const value = parseInt(event.target.value);
         const label = districts.find((option) => option.id === value)?.name;
-        console.log(value, 'change');
+
         if (label) {
             const newDistrict = { id: value, name: label };
             setDistrict(newDistrict);
             sessionStorage.setItem('userDistrict', JSON.stringify(newDistrict));
+        } else {
+            setDistrict(null);
+            sessionStorage.removeItem('userDistrict');
         }
     };
 
@@ -102,6 +99,9 @@ const Navbar = () => {
         });
     }, []);
 
+    useEffect(() => {
+        navigate(`/trung-tam?district=${district ? district.id : ''}&search=${searchString ?? ''}`);
+    }, [district]);
     const items: MenuProps['items'] = [
         {
             label: (
@@ -210,12 +210,23 @@ const Navbar = () => {
                         <input
                             type="text"
                             value={searchString ?? ''}
-                            onChange={(e) => setSearchString(e.target.value)}
+                            onChange={(e) => {
+                                setSearchString(e.target.value);
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    handleSearch();
+                                }
+                            }}
                             className="w-full basis-full grow"
                             placeholder="Tìm kiếm"
                         />
                         <div
-                            onClick={handleSearch}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleSearch();
+                            }}
                             className="ml-2 px-2 w-[50px] text-sub flex justify-center items-center cursor-pointer"
                         >
                             <FaSearch size={24} />

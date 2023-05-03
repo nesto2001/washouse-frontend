@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
 import EmptyData from '../../components/EmptyData/EmptyData';
 import Loading from '../../components/Loading/Loading';
 import Sidebar from '../../components/Sidebar';
@@ -7,8 +9,6 @@ import { getAllCenter } from '../../repositories/CenterRepository';
 import { getCurrentLocation } from '../../utils/CommonUtils';
 import CenterListing from './CentersListing';
 import CentersMap from './CentersMap';
-import { useLocation, useParams } from 'react-router';
-import { useSearchParams } from 'react-router-dom';
 
 export type BudgetType = {
     min: number;
@@ -48,6 +48,7 @@ const CentersContainer = () => {
                 sort: sorting,
                 categoryServices: servicesCheck.toString(),
                 searchString: searchParams.get('search') ?? undefined,
+                districtId: searchParams.get('district') ?? undefined,
                 hasDelivery: hasDelivery,
                 hasOnlinePayment: hasOnlinePayment,
             });
