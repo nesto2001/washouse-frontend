@@ -100,7 +100,7 @@ const Navbar = () => {
     }, []);
 
     useEffect(() => {
-        if (!window.location.pathname.includes('/trung-tam/')) {
+        if (!window.location.pathname.includes('/trung-tam/') && window.location.pathname.includes('/trung-tam')) {
             navigate(`/trung-tam?district=${district ? district.id : ''}&search=${searchString ?? ''}`);
         }
     }, [district]);
