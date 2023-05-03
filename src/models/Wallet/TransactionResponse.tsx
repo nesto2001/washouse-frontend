@@ -1,4 +1,4 @@
-export type TransactionReponse = {
+export type TransactionResponse = {
     type: string;
     status: string;
     plusOrMinus: string;

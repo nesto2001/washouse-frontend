@@ -5,22 +5,24 @@ import { formatCurrency } from '../../../utils/FormatUtils';
 import { getMyWallet } from '../../../repositories/AccountRepository';
 import { WalletModel } from '../../../models/Wallet/WalletModel';
 import { TransactionModel } from '../../../models/Wallet/TransactionModel';
-import Deposit from '../../../assets/images/deposit.svg';
+import Received from '../../../assets/images/incomes.png';
 import Withdrawal from '../../../assets/images/withdrawal.svg';
 import { TransactionBadgeStatusMap } from '../../../mapping/BadgeStatusMap';
 import { TransactionStatusMap } from '../../../mapping/TransactionStatusMap';
 import { Link } from 'react-router-dom';
+import { CenterWalletModel } from '../../../models/CenterWallet/CenterWalletModel';
+import { getCenterWallet } from '../../../repositories/StaffRepository';
 
 type Props = {};
 
 const CenterFinanceWalletContainer = (props: Props) => {
-    const [myWallet, setMyWallet] = useState<WalletModel>();
+    const [myWallet, setMyWallet] = useState<CenterWalletModel>();
     const [list, setList] = useState<TransactionModel[]>([]);
     const [initLoading, setInitLoading] = useState(true);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        getMyWallet().then((res) => {
+        getCenterWallet().then((res) => {
             setMyWallet(res);
             setList(res.transactions);
             setInitLoading(false);
@@ -39,19 +41,19 @@ const CenterFinanceWalletContainer = (props: Props) => {
                             </span>
                         </div>
                         <div className="userwallet--transaction w-full mt-3">
-                            <div className="font-bold text-xl my-3">Lịch sử nạp tiền</div>
-                            {myWallet.transactions && (
+                            <div className="font-bold text-xl my-3">Lịch sử giao dịch</div>
+                            {myWallet.walletTransactions && (
                                 <List
                                     loading={initLoading}
                                     className="w-full items-center"
                                     itemLayout="vertical"
-                                    dataSource={myWallet.transactions}
+                                    dataSource={myWallet.walletTransactions}
                                     renderItem={(item, index) => (
                                         <List.Item
                                             extra={
                                                 <div
                                                     className={`text-xl font-bold ${
-                                                        item.type.toLowerCase() === 'deposit'
+                                                        item.type.toLowerCase() === 'payorder'
                                                             ? 'text-green'
                                                             : 'text-red'
                                                     }`}
@@ -67,8 +69,8 @@ const CenterFinanceWalletContainer = (props: Props) => {
                                                     avatar={
                                                         <Avatar
                                                             src={
-                                                                item.type.toLowerCase() === 'deposit'
-                                                                    ? Deposit
+                                                                item.type.toLowerCase() === 'payorder'
+                                                                    ? Received
                                                                     : Withdrawal
                                                             }
                                                             shape="circle"
@@ -76,27 +78,21 @@ const CenterFinanceWalletContainer = (props: Props) => {
                                                         />
                                                     }
                                                     title={
-                                                        item.type.toLowerCase() === 'deposit' ? (
-                                                            <div className="font-bold text-base">Nạp tiền vào ví</div>
+                                                        item.type.toLowerCase() === 'payorder' ? (
+                                                            <div className="font-bold text-base">
+                                                                Thanh toán dịch vụ
+                                                            </div>
                                                         ) : (
-                                                            <div className="font-bold text-base">Rút tiền khỏi ví</div>
+                                                            <div className="font-bold text-base"></div>
                                                         )
                                                     }
                                                     description={
                                                         <>
                                                             <div className="font-sm text-medium -mt-2">
-                                                                <Tag
-                                                                    color={
-                                                                        TransactionBadgeStatusMap[
-                                                                            item.status ?? 'default'
-                                                                        ]
-                                                                    }
-                                                                >
-                                                                    {
-                                                                        TransactionStatusMap[
-                                                                            item.status.toLocaleLowerCase() ?? ''
-                                                                        ]
-                                                                    }
+                                                                <Tag color={'success'}>
+                                                                    {(item.status.toLowerCase() === 'paid' ||
+                                                                        item.status.toLowerCase() === 'received') &&
+                                                                        'Đã nhận tiền'}
                                                                 </Tag>
                                                             </div>
                                                             <div className="mt-2">{item.timeStamp}</div>

@@ -2,11 +2,12 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ManagerCenterModel } from '../../../models/Manager/ManagerCenterModel';
-import { Avatar, ButtonProps, List, Modal, Switch } from 'antd';
+import { Avatar, ButtonProps, List, Modal, Switch, message } from 'antd';
 import { getManagerCenter } from '../../../repositories/StaffRepository';
 import OthersSpin from '../../../components/OthersSpin/OthersSpin';
 import ErrorScreen from '../../../components/ErrorScreen/ErrorScreen';
 import Wallet from '../../../assets/images/wallet.png';
+import { activateWallet } from '../../../repositories/WalletRepository';
 
 type Props = {};
 
@@ -46,7 +47,25 @@ const CenterFinanceSettingsContainer = (props: Props) => {
 
     const handleDeactivate = () => {
         setPopupLoading(true);
+        setSwitchOn(true);
+        message.error('Tồn tại số dư trong ví, không thể vô hiệu hóa thanh toán trực tuyến!');
+        setPopupLoading(false);
     };
+
+    const handleActivate = () => {
+        setPopupLoading(true);
+        setSwitchOn(true);
+        activateWallet()
+            .then((res) => {
+                console.log(res);
+                message.success('Kích hoạt thanh toán trực tuyến thành công');
+                setPopupLoading(false);
+            })
+            .catch((err) => {
+                message.error('Xảy ra lỗi trong lúc kích hoạt thanh toán trực tuyến, vui lòng thử lại sau!');
+            });
+    };
+
     const handleCancel = () => {
         setSwitchOn(switchOn);
     };
@@ -56,18 +75,22 @@ const CenterFinanceSettingsContainer = (props: Props) => {
     const handleSwitchToggle = () => {
         setSwitchOn(!switchOn);
         const content = {
-            title: '',
-            content: (
+            title: switchOn ? 'Vô hiệu hóa thanh toán trực tuyến' : 'Kích hoạt thanh toán trực tuyến',
+            content: switchOn ? (
                 <>
-                    Khách hàng sẽ không thể đặt dịch vụ trong khi trung tâm bạn tạm ngưng hoạt động. Bạn chắc chắn muốn
-                    bật tạm nghỉ chứ?
+                    Khách hàng sẽ không thể đặt thanh toán bằng ví Washouse nếu trung tâm vô hiệu hóa thanh toán trực
+                    tuyên. Bạn chắc chắn muốn vô hiệu hóa thanh toán trực tuyến chứ?
+                </>
+            ) : (
+                <>
+                    Khách hàng sẽ có thể chọn thanh toán bằng ví Washouse nếu trung tâm kích hoạt thanh toán trực tuyến.
+                    Bạn có chắc chắn muốn kích hoạt thanh toán trực tuyến chứ?
                 </>
             ),
-            icon: ' ',
-            okText: 'Tiếp tục',
+            okText: 'Xác nhận',
             cancelText: 'Hủy',
             maskClosable: true,
-            onOk: handleDeactivate,
+            onOk: switchOn ? handleDeactivate : handleActivate,
             onCancel: handleCancel,
             cancelButtonProps: cancelProps,
             confirmLoading: popupLoading,

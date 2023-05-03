@@ -107,190 +107,190 @@ const CenterPromotionsContainer = () => {
                 return value ? <Tag color="success">Đang hoạt động</Tag> : <Tag color="error">Chưa hoạt động</Tag>;
             },
         },
-        {
-            title: 'Thao tác',
-            align: 'center',
-            render(_, record) {
-                return (
-                    <div className="flex gap-6">
-                        <Popconfirm
-                            placement="topRight"
-                            title={'Vui lòng nhập thông tin mã khuyến mãi'}
-                            description={
-                                <>
-                                    <div className="columns-1 p-2 flex flex-col gap-4">
-                                        <div>
-                                            <div>Ngày bắt đầu</div>
-                                            <DatePicker
-                                                format={'DD-MM-YYYY'}
-                                                className="w-full"
-                                                placement="bottomRight"
-                                                showToday={false}
-                                                placeholder="Nhập ngày bắt đầu"
-                                                value={updateFormData.startDate}
-                                                onChange={(value) => {
-                                                    if (value) {
-                                                        setUpdateFormData((prev) => ({
-                                                            ...prev,
-                                                            startDate: value,
-                                                        }));
-                                                    }
-                                                }}
-                                            />
-                                        </div>
-                                        <div>
-                                            <div>Hạn sử dụng</div>
-                                            <DatePicker
-                                                format={'DD-MM-YYYY'}
-                                                className="w-full"
-                                                placement="bottomRight"
-                                                placeholder="Nhập hạn sử dụng"
-                                                showToday={false}
-                                                value={updateFormData.expireDate}
-                                                onChange={(value) => {
-                                                    if (value) {
-                                                        setUpdateFormData((prev) => ({
-                                                            ...prev,
-                                                            expireDate: value,
-                                                        }));
-                                                    }
-                                                }}
-                                            />
-                                        </div>
-                                        <div>
-                                            <div>Lượt sử dụng</div>
-                                            <Input
-                                                type="number"
-                                                title="Lượt sử dụng"
-                                                placeholder="Nhập lượt sử dụng"
-                                                value={updateFormData.useTimes}
-                                                onChange={(value) => {
-                                                    value.target.value &&
-                                                        setUpdateFormData((prev) => ({
-                                                            ...prev,
-                                                            useTimes: +value.target.value,
-                                                        }));
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                </>
-                            }
-                            icon={false}
-                            onOpenChange={() => setUpdateFormData({})}
-                            onConfirm={() => {
-                                if (updateFormData.expireDate || updateFormData.useTimes || updateFormData.startDate) {
-                                    updatePromotion({
-                                        ...updateFormData,
-                                        id: record.id,
-                                    })
-                                        .then(() => {
-                                            message.success(`Cập nhật thành công mã khuyến mãi.`);
-                                            forceUpdate();
-                                        })
-                                        .catch(() => message.error(`Đã xảy ra lỗi xảy ra, vui lòng thử lại sau.`));
-                                }
-                            }}
-                            okText="Cập nhật mã"
-                            showCancel={false}
-                        >
-                            <div className="text-primary cursor-pointer">
-                                <Tooltip title="Chỉnh sửa">
-                                    <EditOutlined style={{ fontSize: 18 }} />
-                                </Tooltip>
-                            </div>
-                        </Popconfirm>
-                        {record.available ? (
-                            <Popconfirm
-                                placement="topRight"
-                                title={'Bạn có chắc chắn sẽ hủy mã khuyến mãi này?'}
-                                okText={'Chắc chắn'}
-                                showCancel={false}
-                                onConfirm={() => {
-                                    deactivatePromotion(record.id).then(() => {
-                                        message.success(`Hủy thành công mã khuyến mãi.`);
-                                        forceUpdate();
-                                    });
-                                }}
-                            >
-                                <div className="text-red cursor-pointer">
-                                    <Tooltip title="Ngưng mã">
-                                        <PoweroffOutlined style={{ fontSize: 18 }} />
-                                    </Tooltip>
-                                </div>
-                            </Popconfirm>
-                        ) : (
-                            <Popconfirm
-                                placement="topRight"
-                                title={'Vui lòng nhập thông tin mã khuyến mãi'}
-                                description={
-                                    <>
-                                        <div className="columns-1 p-2 flex flex-col gap-4">
-                                            <div>
-                                                <div>Hạn sử dụng</div>
-                                                <DatePicker
-                                                    format={'DD-MM-YYYY'}
-                                                    className="w-full"
-                                                    placement="bottomRight"
-                                                    showToday={false}
-                                                    placeholder="Nhập hạn sử dụng"
-                                                    value={activateFormData.expireDate}
-                                                    onChange={(value) => {
-                                                        if (value) {
-                                                            setActivateFormData((prev) => ({
-                                                                ...prev,
-                                                                expireDate: value,
-                                                            }));
-                                                        }
-                                                    }}
-                                                />
-                                            </div>
-                                            <div>
-                                                <div>Lượt sử dụng</div>
-                                                <Input
-                                                    type="number"
-                                                    title="Lượt sử dụng"
-                                                    placeholder="Nhập lượt sử dụng"
-                                                    value={activateFormData.useTimes}
-                                                    onChange={(value) => {
-                                                        value.target.value &&
-                                                            setActivateFormData((prev) => ({
-                                                                ...prev,
-                                                                useTimes: +value.target.value,
-                                                            }));
-                                                    }}
-                                                />
-                                            </div>
-                                        </div>
-                                    </>
-                                }
-                                icon={false}
-                                onOpenChange={() => setActivateFormData({})}
-                                onConfirm={() => {
-                                    if (activateFormData.expireDate || activateFormData.useTimes) {
-                                        activatePromotion({
-                                            ...activateFormData,
-                                            id: record.id,
-                                        }).then(() => {
-                                            message.success(`Kích hoạt thành công mã khuyến mãi.`);
-                                            forceUpdate();
-                                        });
-                                    }
-                                }}
-                                okText="Kích hoạt mã"
-                                showCancel={false}
-                            >
-                                <div className="text-green cursor-pointer">
-                                    <Tooltip title="Kích hoạt mã">
-                                        <PoweroffOutlined style={{ fontSize: 18 }} />
-                                    </Tooltip>
-                                </div>
-                            </Popconfirm>
-                        )}
-                    </div>
-                );
-            },
-        },
+        // {
+        //     title: 'Thao tác',
+        //     align: 'center',
+        //     render(_, record) {
+        //         return (
+        //             <div className="flex gap-6">
+        //                 <Popconfirm
+        //                     placement="topRight"
+        //                     title={'Vui lòng nhập thông tin mã khuyến mãi'}
+        //                     description={
+        //                         <>
+        //                             <div className="columns-1 p-2 flex flex-col gap-4">
+        //                                 <div>
+        //                                     <div>Ngày bắt đầu</div>
+        //                                     <DatePicker
+        //                                         format={'DD-MM-YYYY'}
+        //                                         className="w-full"
+        //                                         placement="bottomRight"
+        //                                         showToday={false}
+        //                                         placeholder="Nhập ngày bắt đầu"
+        //                                         value={updateFormData.startDate}
+        //                                         onChange={(value) => {
+        //                                             if (value) {
+        //                                                 setUpdateFormData((prev) => ({
+        //                                                     ...prev,
+        //                                                     startDate: value,
+        //                                                 }));
+        //                                             }
+        //                                         }}
+        //                                     />
+        //                                 </div>
+        //                                 <div>
+        //                                     <div>Hạn sử dụng</div>
+        //                                     <DatePicker
+        //                                         format={'DD-MM-YYYY'}
+        //                                         className="w-full"
+        //                                         placement="bottomRight"
+        //                                         placeholder="Nhập hạn sử dụng"
+        //                                         showToday={false}
+        //                                         value={updateFormData.expireDate}
+        //                                         onChange={(value) => {
+        //                                             if (value) {
+        //                                                 setUpdateFormData((prev) => ({
+        //                                                     ...prev,
+        //                                                     expireDate: value,
+        //                                                 }));
+        //                                             }
+        //                                         }}
+        //                                     />
+        //                                 </div>
+        //                                 <div>
+        //                                     <div>Lượt sử dụng</div>
+        //                                     <Input
+        //                                         type="number"
+        //                                         title="Lượt sử dụng"
+        //                                         placeholder="Nhập lượt sử dụng"
+        //                                         value={updateFormData.useTimes}
+        //                                         onChange={(value) => {
+        //                                             value.target.value &&
+        //                                                 setUpdateFormData((prev) => ({
+        //                                                     ...prev,
+        //                                                     useTimes: +value.target.value,
+        //                                                 }));
+        //                                         }}
+        //                                     />
+        //                                 </div>
+        //                             </div>
+        //                         </>
+        //                     }
+        //                     icon={false}
+        //                     onOpenChange={() => setUpdateFormData({})}
+        //                     onConfirm={() => {
+        //                         if (updateFormData.expireDate || updateFormData.useTimes || updateFormData.startDate) {
+        //                             updatePromotion({
+        //                                 ...updateFormData,
+        //                                 id: record.id,
+        //                             })
+        //                                 .then(() => {
+        //                                     message.success(`Cập nhật thành công mã khuyến mãi.`);
+        //                                     forceUpdate();
+        //                                 })
+        //                                 .catch(() => message.error(`Đã xảy ra lỗi xảy ra, vui lòng thử lại sau.`));
+        //                         }
+        //                     }}
+        //                     okText="Cập nhật mã"
+        //                     showCancel={false}
+        //                 >
+        //                     <div className="text-primary cursor-pointer">
+        //                         <Tooltip title="Chỉnh sửa">
+        //                             <EditOutlined style={{ fontSize: 18 }} />
+        //                         </Tooltip>
+        //                     </div>
+        //                 </Popconfirm>
+        //                 {record.available ? (
+        //                     <Popconfirm
+        //                         placement="topRight"
+        //                         title={'Bạn có chắc chắn sẽ hủy mã khuyến mãi này?'}
+        //                         okText={'Chắc chắn'}
+        //                         showCancel={false}
+        //                         onConfirm={() => {
+        //                             deactivatePromotion(record.id).then(() => {
+        //                                 message.success(`Hủy thành công mã khuyến mãi.`);
+        //                                 forceUpdate();
+        //                             });
+        //                         }}
+        //                     >
+        //                         <div className="text-red cursor-pointer">
+        //                             <Tooltip title="Ngưng mã">
+        //                                 <PoweroffOutlined style={{ fontSize: 18 }} />
+        //                             </Tooltip>
+        //                         </div>
+        //                     </Popconfirm>
+        //                 ) : (
+        //                     <Popconfirm
+        //                         placement="topRight"
+        //                         title={'Vui lòng nhập thông tin mã khuyến mãi'}
+        //                         description={
+        //                             <>
+        //                                 <div className="columns-1 p-2 flex flex-col gap-4">
+        //                                     <div>
+        //                                         <div>Hạn sử dụng</div>
+        //                                         <DatePicker
+        //                                             format={'DD-MM-YYYY'}
+        //                                             className="w-full"
+        //                                             placement="bottomRight"
+        //                                             showToday={false}
+        //                                             placeholder="Nhập hạn sử dụng"
+        //                                             value={activateFormData.expireDate}
+        //                                             onChange={(value) => {
+        //                                                 if (value) {
+        //                                                     setActivateFormData((prev) => ({
+        //                                                         ...prev,
+        //                                                         expireDate: value,
+        //                                                     }));
+        //                                                 }
+        //                                             }}
+        //                                         />
+        //                                     </div>
+        //                                     <div>
+        //                                         <div>Lượt sử dụng</div>
+        //                                         <Input
+        //                                             type="number"
+        //                                             title="Lượt sử dụng"
+        //                                             placeholder="Nhập lượt sử dụng"
+        //                                             value={activateFormData.useTimes}
+        //                                             onChange={(value) => {
+        //                                                 value.target.value &&
+        //                                                     setActivateFormData((prev) => ({
+        //                                                         ...prev,
+        //                                                         useTimes: +value.target.value,
+        //                                                     }));
+        //                                             }}
+        //                                         />
+        //                                     </div>
+        //                                 </div>
+        //                             </>
+        //                         }
+        //                         icon={false}
+        //                         onOpenChange={() => setActivateFormData({})}
+        //                         onConfirm={() => {
+        //                             if (activateFormData.expireDate || activateFormData.useTimes) {
+        //                                 activatePromotion({
+        //                                     ...activateFormData,
+        //                                     id: record.id,
+        //                                 }).then(() => {
+        //                                     message.success(`Kích hoạt thành công mã khuyến mãi.`);
+        //                                     forceUpdate();
+        //                                 });
+        //                             }
+        //                         }}
+        //                         okText="Kích hoạt mã"
+        //                         showCancel={false}
+        //                     >
+        //                         <div className="text-green cursor-pointer">
+        //                             <Tooltip title="Kích hoạt mã">
+        //                                 <PoweroffOutlined style={{ fontSize: 18 }} />
+        //                             </Tooltip>
+        //                         </div>
+        //                     </Popconfirm>
+        //                 )}
+        //             </div>
+        //         );
+        //     },
+        // },
     ];
 
     useEffect(() => {

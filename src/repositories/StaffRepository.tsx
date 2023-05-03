@@ -7,6 +7,7 @@ import {
     API_MANAGER_CENTER_SERVICE,
     API_MANAGER_CENTER_SERVICE_LIST,
     API_MANAGER_VERIFY_STAFF,
+    API_MANAGER_WALLET,
     API_STAFF,
     API_STAFF_ACTIVATE,
     API_STAFF_ASSIGN_DELIVERY,
@@ -21,6 +22,8 @@ import {
     API_STAFF_UPDATE_ORDERED_SERVICE,
 } from '../common/Constant';
 import { ServiceSearchParamsData } from '../containers/ManagerContainer/CenterServicesContainer/ServiceListingContainer';
+import { CenterWalletModel } from '../models/CenterWallet/CenterWalletModel';
+import { CenterWalletResponse } from '../models/CenterWallet/CenterWalletResponse';
 import { ListResponse, PaginationModel, PaginationResponse, Response } from '../models/CommonModel';
 import { CenterStatisticsModel } from '../models/Dashboard/CenterStatisticsModel';
 import { CenterStatisticsResponse } from '../models/Dashboard/CenterStatisticsResponse';
@@ -625,4 +628,37 @@ export const getCenterServices = async (): Promise<CenterServicesListModel[]> =>
             }),
         };
     });
+};
+
+export const getCenterWallet = async (): Promise<CenterWalletModel> => {
+    const { data } = await instance.get<Response<CenterWalletResponse>>(API_MANAGER_WALLET, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    return {
+        walletId: data.data.walletId,
+        balance: data.data.balance,
+        status: data.data.status,
+        transactions: data.data.transactions.map((trans) => {
+            return {
+                status: trans.status,
+                type: trans.type,
+                amount: trans.amount,
+                plusOrMinus: trans.plusOrMinus,
+                timeStamp: trans.timeStamp,
+            };
+        }),
+        walletTransactions: data.data.walletTransactions.map((walTrans) => {
+            return {
+                amount: walTrans.amount,
+                paymentId: walTrans.paymentId,
+                plusOrMinus: walTrans.plusOrMinus,
+                status: walTrans.status,
+                timeStamp: walTrans.timeStamp,
+                type: walTrans.type,
+                updateTimeStamp: walTrans.updateTimeStamp,
+            };
+        }),
+    };
 };

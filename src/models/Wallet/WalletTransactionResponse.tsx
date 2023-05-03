@@ -1,4 +1,4 @@
-export type WalletTransactionReponse = {
+export type WalletTransactionResponse = {
     paymentId: number;
     type: string;
     status: string;

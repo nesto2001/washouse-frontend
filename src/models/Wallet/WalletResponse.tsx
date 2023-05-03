@@ -1,10 +1,10 @@
-import { TransactionReponse } from './TransactionResponse';
-import { WalletTransactionReponse } from './WalletTransactionResponse';
+import { TransactionResponse } from "./TransactionResponse";
+import { WalletTransactionResponse } from "./WalletTransactionResponse";
 
 export type WalletResponse = {
     walletId: number;
     balance: number;
     status: string;
-    transactions: TransactionReponse[];
-    walletTransactions: WalletTransactionReponse[];
+    transactions: TransactionResponse[];
+    walletTransactions: WalletTransactionResponse[];
 };

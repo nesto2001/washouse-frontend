@@ -78,6 +78,7 @@ const API_MANAGER_CENTER_SERVICE_LIST = '/api/manager/my-center/services';
 const API_MANAGER_CENTER_CUSTOMER = '/api/manager/my-center/customers';
 const API_MANAGER_ASSIGN_STAFF = '/api/staffs/assign';
 const API_MANAGER_VERIFY_STAFF = '/api/staffs/verify';
+const API_MANAGER_WALLET = '/api/manager/my-center/wallet';
 
 const API_STAFF_PROCEED_ORDER = '/api/tracking/orders/${orderId}/tracking';
 const API_STAFF_COMPLETE_ORDER = '/api/tracking/orders/${orderId}/completed';
@@ -113,10 +114,15 @@ const API_FEEDBACK_ORDER = '/api/feedbacks/orders';
 const API_FEEDBACK_SERVICE = '/api/feedbacks/services';
 const API_FEEDBACK_SERVICE_ID = '/api/feedbacks/services/${serviceId}';
 
+//WALLET API
+const API_WALLET_ACTIVATE = '/api/wallets/active'
+
 //REGEX
 const RE_DIGIT = new RegExp(/^\d+$/);
 
 export {
+    API_WALLET_ACTIVATE,
+    API_MANAGER_WALLET,
     API_STAFF_COMPLETE_ORDER,
     API_ORDER_PAY,
     API_MANAGER_CENTER_SERVICE_LIST,

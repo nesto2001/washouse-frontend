@@ -1,4 +1,4 @@
-import { Avatar, List, Modal, Switch, Tabs, TabsProps } from 'antd';
+import { Avatar, ButtonProps, List, Modal, Switch, Tabs, TabsProps } from 'antd';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sleep from '../../../assets/images/sleep.png';
@@ -61,8 +61,8 @@ const CenterSettingsContainer = (props: Props) => {
 
     const handleSwitchToggle = () => {
         setSwitchOn(!switchOn);
-        const content = {
-            title: '',
+        modal.confirm({
+            title: switchOn ? 'Tắt chế độ tạm nghỉ' : 'Bật chế độ tạm nghỉ',
             content: (
                 <>
                     Khách hàng sẽ không thể đặt dịch vụ trong khi trung tâm bạn tạm ngưng hoạt động. Bạn chắc chắn muốn
@@ -72,12 +72,11 @@ const CenterSettingsContainer = (props: Props) => {
             icon: ' ',
             okText: 'Tiếp tục',
             cancelText: 'Hủy',
+            cancelButtonProps: { style: { background: 'white' } } as ButtonProps,
             maskClosable: true,
             onOk: handleDeactivate,
             onCancel: handleCancel,
-            confirmLoading: popupLoading,
-        };
-        modal.confirm(content);
+        });
     };
 
     if (isLoading) {
