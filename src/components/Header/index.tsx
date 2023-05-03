@@ -100,8 +100,11 @@ const Navbar = () => {
     }, []);
 
     useEffect(() => {
-        navigate(`/trung-tam?district=${district ? district.id : ''}&search=${searchString ?? ''}`);
+        if (!window.location.pathname.includes('/trung-tam/')) {
+            navigate(`/trung-tam?district=${district ? district.id : ''}&search=${searchString ?? ''}`);
+        }
     }, [district]);
+
     const items: MenuProps['items'] = [
         {
             label: (
@@ -178,10 +181,6 @@ const Navbar = () => {
                                 </div>
                             }
                         ></OrderDropdown>
-                        {/* <div className="w-[1px] h-[14px] bg-wh-gray"></div>
-                        <Link className="wh-link" to="/provider/login">
-                            Tải ứng dụng
-                        </Link> */}
                     </div>
                 </div>
             </div>
