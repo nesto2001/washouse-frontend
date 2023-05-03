@@ -75,6 +75,9 @@ export const registerProvider = async ({
         confirmPass,
         email,
     });
+    if (!response.data) {
+        return Promise.reject();
+    }
     return response;
 };
 

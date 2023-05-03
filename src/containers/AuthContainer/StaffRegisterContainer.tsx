@@ -1,19 +1,18 @@
 import { Form } from 'antd';
 import { RuleObject } from 'antd/es/form';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Google from '../../assets/images/google.png';
 import WHButton from '../../components/Button';
 import Input from '../../components/Input/Input';
 import { RegisterRequest } from '../../models/Account/RegisterRequest';
-import { getMe, login, loginStaff, registerCustomer, registerProvider } from '../../repositories/AuthRepository';
-import { RegisterErrors } from '../../types/RegisterErrors';
+import { getMe, loginStaff, registerProvider } from '../../repositories/AuthRepository';
+import { BiErrorAlt } from 'react-icons/bi';
 
 type Props = {};
 
 const StaffRegisterContainer = () => {
     const [form] = Form.useForm();
-    const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
+    const [error, setError] = useState<string>('');
     const navigate = useNavigate();
 
     const [registerData, setRegisterData] = useState<RegisterRequest>({
@@ -26,45 +25,46 @@ const StaffRegisterContainer = () => {
     const onFinish = (values: any) => {
         const isAllFieldsFilled = Object.values(registerData).every((value) => value);
         if (isAllFieldsFilled) {
-            const registerPro = async () => {
-                return await registerProvider(registerData);
-            };
-            registerPro().then((res) => {
-                if (res.status == 200) {
-                    const loginProvider = async () => {
-                        return await loginStaff({ phone: registerData.phone, password: registerData.password });
-                    };
-                    loginProvider().then((res) => {
-                        console.log(res);
-                        if (res.status == 200) {
-                            localStorage.setItem('accessToken', res.data.data.accessToken);
-                            localStorage.setItem('refreshToken', res.data.data.refreshToken);
-                            const fetchData = async () => {
-                                return await getMe();
-                            };
-                            fetchData().then((res) => {
-                                localStorage.setItem('currentUser', JSON.stringify(res));
-                                switch (res.roleType.toLowerCase()) {
-                                    case 'manager':
-                                        navigate('/provider/dashboard');
-                                        break;
-                                    case 'staff':
-                                        navigate('/provider/staff/dashboard');
-                                        break;
-                                    case 'user':
-                                        navigate('/provider/role');
-                                        break;
-                                    default:
-                                        navigate('/provider/role');
-                                        break;
-                                }
-                            });
-                        } else {
-                            console.log('lỗi login'); //Message
-                        }
-                    });
-                }
-            });
+            registerProvider(registerData)
+                .then((res) => {
+                    if (res.status == 200) {
+                        const loginProvider = async () => {
+                            return await loginStaff({ phone: registerData.phone, password: registerData.password });
+                        };
+                        loginProvider().then((res) => {
+                            console.log(res);
+                            if (res.status == 200) {
+                                localStorage.setItem('accessToken', res.data.data.accessToken);
+                                localStorage.setItem('refreshToken', res.data.data.refreshToken);
+                                const fetchData = async () => {
+                                    return await getMe();
+                                };
+                                fetchData().then((res) => {
+                                    localStorage.setItem('currentUser', JSON.stringify(res));
+                                    switch (res.roleType.toLowerCase()) {
+                                        case 'manager':
+                                            navigate('/provider/dashboard');
+                                            break;
+                                        case 'staff':
+                                            navigate('/provider/staff/dashboard');
+                                            break;
+                                        case 'user':
+                                            navigate('/provider/role');
+                                            break;
+                                        default:
+                                            navigate('/provider/role');
+                                            break;
+                                    }
+                                });
+                            } else {
+                                console.log('lỗi login'); //Message
+                            }
+                        });
+                    }
+                })
+                .catch((e) => {
+                    setError('Email hoặc số điện thoại của bạn đã tồn tại.');
+                });
         }
     };
 
@@ -80,7 +80,18 @@ const StaffRegisterContainer = () => {
     };
 
     return (
-        <Form form={form} name="register" onFinish={onFinish} onFinishFailed={onFinishFailed} autoComplete="off">
+        <Form
+            form={form}
+            name="register"
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+            autoComplete="off"
+            onChange={() => {
+                if (error) {
+                    setError('');
+                }
+            }}
+        >
             <div className="register__form--phone">
                 <Form.Item
                     name="phone"
@@ -165,6 +176,12 @@ const StaffRegisterContainer = () => {
                     />
                 </Form.Item>
             </div>
+            {error && (
+                <div className="mb-2">
+                    <BiErrorAlt className="inline align-text-bottom text-red" size={20} />
+                    <span className="text-red ml-1">{error}</span>
+                </div>
+            )}
             <div className="register__form--tspp text-xs mt-3">
                 Bằng việc đăng ký, bạn đã đồng ý với Washouse về{' '}
                 <Link to="/terms" className="text-primary">
