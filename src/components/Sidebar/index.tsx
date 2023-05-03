@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BudgetType } from '../../containers/CentersContainer/CentersContainer';
 import { getCategoryOptions } from '../../repositories/ServiceCategoryRepository';
-
 import { Option } from '../../types/Options';
 import Button from '../Button';
 import Checkbox from '../Checkbox';
@@ -21,10 +20,8 @@ type Props = {
 const Sidebar = ({
     setSorting,
     setServicesCheck,
-    setBudgetRange,
     servicesCheck,
     sorting,
-    budgetRange,
     toggleOnlinePayment,
     toggleDelivery,
 }: Props) => {
@@ -53,12 +50,9 @@ const Sidebar = ({
     ];
 
     useEffect(() => {
-        const fetchData = async () => {
-            return await getCategoryOptions();
-        };
-        fetchData().then((res) => {
+        getCategoryOptions().then((res) => {
             setCheckboxes(
-                res.slice(1).map((data) => {
+                res.map((data) => {
                     return {
                         label: data.name,
                         value: data.id,
@@ -76,7 +70,6 @@ const Sidebar = ({
 
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
-
         setServicesCheck((prev) => {
             if (prev.includes(value)) {
                 // If the value is already in the list, remove it

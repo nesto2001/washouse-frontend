@@ -22,7 +22,6 @@ const CentersContainer = () => {
     const [latitude, setLatitude] = useState<number>();
     const [longitude, setLongitude] = useState<number>();
     const [sorting, setSorting] = useState<string>('location');
-    const [servicesCheck, setServicesCheck] = useState<string[]>([]);
     const [hasDelivery, setHasDelivery] = useState<boolean>(false);
     const [hasOnlinePayment, setHasOnlinePayment] = useState<boolean>(false);
     const [budgetRange, setBudgetRange] = useState<BudgetType>({
@@ -31,6 +30,15 @@ const CentersContainer = () => {
     });
     const [searchParams] = useSearchParams();
     const location = useLocation();
+
+    const cateId = location.state?.categoryId;
+    const [servicesCheck, setServicesCheck] = useState<string[]>([]);
+
+    useEffect(() => {
+        if (cateId) {
+            setServicesCheck([cateId + '']);
+        }
+    }, []);
 
     useEffect(() => {
         getCurrentLocation(setState, setStateNoLocation);

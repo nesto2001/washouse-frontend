@@ -21,7 +21,9 @@ const Checkbox = ({ optionsList, name, checked, selectedValues, onChange }: Prop
                             name={name}
                             value={option.value}
                             onChange={onChange}
-                            checked={selectedValues && selectedValues.includes(option.value.toString())}
+                            checked={
+                                selectedValues && selectedValues?.find((s) => s == option.value.toString()) != null
+                            }
                         />
                         <span className="checkbox-checkmark"></span>
                         <span className="checkbox-label">{option.label}</span>

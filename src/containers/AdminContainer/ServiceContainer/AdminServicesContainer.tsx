@@ -56,11 +56,7 @@ const AdminServicesContainer = (props: Props) => {
     ];
 
     useEffect(() => {
-        console.log(activeKey);
-        const fetchData = async () => {
-            return await getServiceCategories();
-        };
-        fetchData().then((res) => {
+        getServiceCategories().then((res) => {
             setServices(res);
         });
     }, [activeKey]);
