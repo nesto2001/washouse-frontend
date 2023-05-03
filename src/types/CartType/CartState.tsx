@@ -6,4 +6,5 @@ export interface CartState {
     totalQuantity: number;
     totalWeight: number;
     centerId: number;
+    orderNote: string;
 }

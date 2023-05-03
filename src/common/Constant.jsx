@@ -80,6 +80,7 @@ const API_MANAGER_ASSIGN_STAFF = '/api/staffs/assign';
 const API_MANAGER_VERIFY_STAFF = '/api/staffs/verify';
 
 const API_STAFF_PROCEED_ORDER = '/api/tracking/orders/${orderId}/tracking';
+const API_STAFF_COMPLETE_ORDER = '/api/tracking/orders/${orderId}/completed';
 const API_STAFF_PAID_ORDER = '/api/manager/my-center/orders/${id}/paid';
 const API_STAFF_PROCEED_ORDERED_SERVICE = '/api/tracking/orders/${orderId}/order-details/${orderDetailId}/tracking';
 const API_STAFF_UPDATE_ORDERED_SERVICE = '/api/manager/my-center/orders/${orderId}/details/${orderDetailId}';
@@ -116,6 +117,7 @@ const API_FEEDBACK_SERVICE_ID = '/api/feedbacks/services/${serviceId}';
 const RE_DIGIT = new RegExp(/^\d+$/);
 
 export {
+    API_STAFF_COMPLETE_ORDER,
     API_ORDER_PAY,
     API_MANAGER_CENTER_SERVICE_LIST,
     API_REQUEST_APPROVE_UPDATE,

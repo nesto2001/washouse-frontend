@@ -36,7 +36,11 @@ export const calcDeliveryPrice = async (deliveryInfo: DeliveryPriceRequest): Pro
 };
 
 export const createOrder = async (order: CreateOrderRequest): Promise<CreateOrderResponse> => {
-    const { data } = await instance.post<Response<CreateOrderResponse>>(API_ORDER_CREATE, order, {});
+    const { data } = await instance.post<Response<CreateOrderResponse>>(API_ORDER_CREATE, order, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
     return {
         orderId: data.data.orderId,
     };

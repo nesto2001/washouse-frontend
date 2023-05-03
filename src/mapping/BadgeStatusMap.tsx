@@ -49,6 +49,8 @@ export const PaymentBadgeStatusMap: { [key: string]: string } = {
     paid: 'green',
     DonePaid: 'green',
     donepaid: 'green',
+    received: 'green',
+    Received: 'green',
 };
 
 export const OrderedDetailsBadgeStatusMap: { [key: string]: string } = {

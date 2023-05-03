@@ -33,7 +33,7 @@ instance.interceptors.response.use(
                 fetchData().then((res) => {
                     console.log(res);
                     setAuthToken(res.data.data.accessToken as string);
-                    originalRequest.headers['Authorization'] = 'Bearer ' + res.data.data.accessToken;
+
 
                     localStorage.setItem('refreshToken', res.data.data.refreshToken);
                     localStorage.setItem('accessToken', res.data.data.accessToken);

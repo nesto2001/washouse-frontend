@@ -34,8 +34,10 @@ export const PaymentStatusMap: { [key: string]: string } = {
     pending: 'Đang chờ',
     Paid: 'Đã thanh toán',
     paid: 'Đã thanh toán',
-    DonePaid: 'Đã thanh toán',
-    donepaid: 'Đã thanh toán',
+    DonePaid: 'Hoàn tất',
+    donepaid: 'Hoàn tất',
+    received: 'Hoàn tất',
+    Received: 'Hoàn tất',
     cancelled: 'Đã hủy',
     Cancelled: 'Đã hủy',
 };
