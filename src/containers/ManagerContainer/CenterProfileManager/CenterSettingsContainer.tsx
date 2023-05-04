@@ -79,6 +79,42 @@ const CenterSettingsContainer = (props: Props) => {
         });
     };
 
+    useEffect(() => {
+        const style = document.createElement('style');
+        style.innerHTML = `
+        .ant-tabs-nav-list {
+            display: flex;
+            align-items: center;
+            justify-content: start !important;
+            width: 100%;
+        }
+        .ant-tabs-tab {
+            width: 50%;
+            justify-content: center;
+        }
+        ant-tabs-nav{
+            display: flex;
+        }    
+        .ant-tabs .ant-tabs-tab {
+            flex-grow: 0;
+            margin-right: 0px;
+            margin-left: 0px !important;
+            padding: 12px 20px;
+            width: unset;
+            text-align: center;
+            
+        }
+        .ant-tabs .ant-tabs-tab:first-of-type {
+            margin-left: 24px !important;
+        }
+        `;
+        document.head.appendChild(style);
+
+        return () => {
+            document.head.removeChild(style);
+        };
+    }, []);
+
     if (isLoading) {
         return <OthersSpin />;
     }

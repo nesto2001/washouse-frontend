@@ -13,6 +13,8 @@ import CenterDeliveryForm from './CenterDeliveryForm';
 import { CenterRequest } from '../../../models/Center/CreateCenterRequest';
 import { createCenter } from '../../../repositories/CenterRepository';
 import { getMe, refresh } from '../../../repositories/AuthRepository';
+import { AxiosError } from 'axios';
+import { Response } from '../../../models/CommonModel';
 
 export type CreateCenterFormData = {
     name: string;
@@ -177,24 +179,42 @@ const CenterRegistrationContainer = (props: Props) => {
                             : undefined,
                 },
             };
-            createCenter(centerRequest).then((res) => {
-                if (res) {
-                    refresh({
-                        refreshToken: localStorage.getItem('refreshToken') ?? '',
-                        accessToken: localStorage.getItem('accessToken') ?? '',
-                    }).then((res) => {
-                        localStorage.setItem('refreshToken', res.data.data.refreshToken);
-                        localStorage.setItem('accessToken', res.data.data.accessToken);
-                        getMe().then((res) => {
-                            localStorage.setItem('currentUser', JSON.stringify(res));
-                            navigate('/provider/settings/center/profile');
-                            message.success('Đã đăng ký trung tâm thành công, vui lòng chờ duyệt bởi quản trị viên.');
+            createCenter(centerRequest)
+                .then((res) => {
+                    if (res) {
+                        refresh({
+                            refreshToken: localStorage.getItem('refreshToken') ?? '',
+                            accessToken: localStorage.getItem('accessToken') ?? '',
+                        }).then((res) => {
+                            localStorage.setItem('refreshToken', res.data.data.refreshToken);
+                            localStorage.setItem('accessToken', res.data.data.accessToken);
+                            getMe().then((res) => {
+                                localStorage.setItem('currentUser', JSON.stringify(res));
+                                message.success(
+                                    'Đã đăng ký trung tâm thành công, vui lòng chờ duyệt bởi quản trị viên.',
+                                );
+                                navigate('/provider/settings/center/profile');
+                            });
                         });
-                    });
-                } else {
-                    message.error('Xảy ra lỗi trong hoàn tất quá trình đăng ký, vui lòng thử lại sau.');
-                }
-            });
+                    } else {
+                        message.error('Xảy ra lỗi trong hoàn tất quá trình đăng ký, vui lòng thử lại sau.');
+                    }
+                })
+                .catch((err: AxiosError<Response<null>>) => {
+                    if (err.response?.status === 400) {
+                        const messageString = err.response.data.message.toLowerCase();
+                        switch (true) {
+                            case messageString.includes('existing') && messageString.includes('location'):
+                                message.error('Đã tồn tại trung tâm ở vị trí này, vui lòng kiểm tra lại thông tin');
+                                break;
+                            default:
+                                message.error(err.response.data.message);
+                                break;
+                        }
+                    } else {
+                        console.log(err.response);
+                    }
+                });
         }
     };
 

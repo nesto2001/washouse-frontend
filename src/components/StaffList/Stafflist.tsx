@@ -74,7 +74,12 @@ const Stafflist = ({ centerStaff, forceUpdate }: Props) => {
     ];
 
     const onFinish = (values: StaffFormData) => {
-        assignStaff(values.email, values.phone).then((res) => console.log(res));
+        assignStaff(values.email, values.phone)
+            .then((res) => message.success('Đã gửi email xác nhận đến nhân viên. Mã xác nhận sẽ hết hạn sau 2 ngày.'))
+            .catch((err) => {
+                message.error('Xảy ra sự cố trong quá trình thêm nhân viên, vui lòng thử lại sau.');
+                console.log(err);
+            });
     };
 
     const handleCancel = () => {

@@ -76,7 +76,7 @@ const CenterDeliveryOrderContainer = ({ orderDetails }: Props) => {
                     })
                     .catch(() => {
                         message.error(
-                            'Có vấn đề xảy ra trong lúc cập nhật thông tin nhân viên vận chuyển, vui lòng thử lại sau.',
+                            'Có sự cố xảy ra trong lúc cập nhật thông tin nhân viên vận chuyển, vui lòng thử lại sau.',
                         );
                     });
             }

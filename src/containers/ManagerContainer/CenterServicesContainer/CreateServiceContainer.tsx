@@ -130,7 +130,7 @@ const CreateServiceContainer = () => {
                 form={form}
                 name="create"
                 layout="vertical"
-                initialValues={{ serviceCategory: 0 }}
+                initialValues={{ serviceCategory: 0, priceType: true }}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"
@@ -197,7 +197,6 @@ const CreateServiceContainer = () => {
                         name="priceType"
                         label="Đơn vị định lượng"
                         rules={[{ required: true, message: 'Vui lòng chọn đơn vị định lượng' }]}
-                        initialValue={true}
                     >
                         <Select
                             placeholder="Chọn định lượng"

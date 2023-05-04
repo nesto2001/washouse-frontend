@@ -88,7 +88,7 @@ const CenterSecuritySettingsContainer = ({}: Props) => {
                     tâm của mình trên Washouse?
                 </div>
                 <div>
-                    Để xác nhận xóa trung tâm <strong>vĩnh viễn</strong>, vui lòng nhập chính xác{' '}
+                    Để xác nhận đóng cửa trung tâm <strong>vĩnh viễn</strong>, vui lòng nhập chính xác{' '}
                     <strong>"Tôi muốn đóng cửa vĩnh viễn trung tâm của tôi"</strong> vào phía dưới.
                 </div>
                 <Input

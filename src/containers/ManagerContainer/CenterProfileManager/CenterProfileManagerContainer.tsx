@@ -1,4 +1,4 @@
-import { Spin, TabsProps } from 'antd';
+import { Spin, TabsProps, Tag } from 'antd';
 import { Tabs } from 'antd';
 import { useEffect, useState } from 'react';
 import EmptyLaundry from '../../../assets/images/empty-center.png';
@@ -12,6 +12,8 @@ import CenterAddress from './CenterAddress';
 import { getLocation } from '../../../repositories/LocationRepository';
 import { LocationDetailsModel } from '../../../models/Location/LocationDetailsModel';
 import OthersSpin from '../../../components/OthersSpin/OthersSpin';
+import { CenterStatusMap } from '../../../mapping/CenterStatusMap';
+import { CenterBadgeStatusMap } from '../../../mapping/CenterBadgeStatusMap';
 
 type Props = {};
 
@@ -94,9 +96,7 @@ const CenterProfileManagerContainer = (props: Props) => {
     ];
 
     if (isLoading) {
-        return (
-            <OthersSpin/>
-        );
+        return <OthersSpin />;
     }
 
     return (
@@ -104,8 +104,8 @@ const CenterProfileManagerContainer = (props: Props) => {
             {center ? (
                 <>
                     <div className="provider__page--title pt-4 pl-6 font-semibold text-2xl">Hồ sơ trung tâm</div>
-                    <div className="provider__page--subtitle mt-2 pl-6 text-sub-gray text-base">
-                        Kiểm tra tình trạng trung tâm và cập nhật hồ sơ trung tâm của bạn
+                    <div className="provider__page--subtitle mt-2 px-6 text-sub-gray text-base">
+                        <div className="">Kiểm tra tình trạng trung tâm và cập nhật hồ sơ trung tâm của bạn</div>
                     </div>
                     <Tabs className="mt-3" defaultActiveKey="1" items={items} onChange={onChange} />
                 </>

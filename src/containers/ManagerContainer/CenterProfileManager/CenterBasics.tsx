@@ -1,12 +1,14 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Form, Input, UploadFile, message } from 'antd';
+import { Badge, Button, Form, Input, Tag, UploadFile, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Upload, { UploadChangeParam } from 'antd/es/upload';
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { UpdateCenterRequest } from '../../../models/Center/UpdateCenterRequest';
 import { ManagerCenterModel } from '../../../models/Manager/ManagerCenterModel';
 import { uploadSingle } from '../../../repositories/MediaRepository';
 import { updateMyCenter } from '../../../repositories/CenterRepository';
+import { CenterBadgeAntStatusMap, CenterBadgeStatusMap } from '../../../mapping/CenterBadgeStatusMap';
+import { CenterStatusMap } from '../../../mapping/CenterStatusMap';
 
 type Props = {
     center: ManagerCenterModel;
@@ -41,6 +43,8 @@ const CenterBasics = ({ center }: Props) => {
     });
 
     const [form] = Form.useForm();
+    const [, updateState] = useState({});
+    const forceUpdate = useCallback(() => updateState({}), []);
 
     const handleChange = (info: UploadChangeParam) => {
         const { status } = info.file;
@@ -77,6 +81,7 @@ const CenterBasics = ({ center }: Props) => {
             });
         } catch (e) {}
         message.success('Cập nhật thông tin trung tâm thành công, vui lòng đợi admin duyệt');
+        forceUpdate();
     };
 
     const onFinishFailed = (errorInfo: any) => {
@@ -123,6 +128,7 @@ const CenterBasics = ({ center }: Props) => {
             <Form
                 form={form}
                 name="basic"
+                requiredMark={false}
                 labelCol={{ span: 6 }}
                 wrapperCol={{ span: 18 }}
                 style={{ maxWidth: 800 }}
@@ -159,6 +165,7 @@ const CenterBasics = ({ center }: Props) => {
                         }
                     </Upload>
                 </Form.Item>
+
                 <Form.Item
                     label="Tên trung tâm"
                     name="centerName"
@@ -210,6 +217,20 @@ const CenterBasics = ({ center }: Props) => {
                             setFormData((prevFormData) => ({ ...prevFormData, description: e.target.value }));
                         }}
                     />
+                </Form.Item>
+                <Form.Item label="Trạng thái">
+                    <Tag
+                        style={{
+                            fontSize: 14,
+                            minWidth: 120,
+                            textAlign: 'center',
+                            padding: '5px 0px',
+                            fontWeight: 700,
+                        }}
+                        color={CenterBadgeStatusMap[center.status ?? '']}
+                    >
+                        {CenterStatusMap[center.status ?? '']}
+                    </Tag>
                 </Form.Item>
                 <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
                     <Button type="primary" htmlType="submit">

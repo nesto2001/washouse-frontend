@@ -14,3 +14,20 @@ export const CenterBadgeStatusMap: { [key: string]: string } = {
     Rejected: 'error',
     rejected: 'error',
 };
+
+export const CenterBadgeAntStatusMap: { [key: string]: string } = {
+    Pending: 'gray',
+    pending: 'gray',
+    Active: 'green',
+    active: 'green',
+    Inactive: 'volcano',
+    inactive: 'volcano',
+    Updating: 'yellow',
+    updating: 'yellow',
+    Suspended: 'red',
+    suspended: 'red',
+    Closed: 'red',
+    closed: 'red',
+    Rejected: 'red',
+    rejected: 'red',
+};
