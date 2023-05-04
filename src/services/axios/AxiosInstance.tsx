@@ -34,11 +34,15 @@ instance.interceptors.response.use(
                     console.log(res);
                     setAuthToken(res.data.data.accessToken as string);
 
-
                     localStorage.setItem('refreshToken', res.data.data.refreshToken);
                     localStorage.setItem('accessToken', res.data.data.accessToken);
 
-                    return instance(originalRequest);
+                    return instance({
+                        ...originalRequest,
+                        headers: {
+                            Authorization: 'Bearer ' + res.data.data.accessToken,
+                        },
+                    });
                 });
             } else {
                 localStorage.clear();

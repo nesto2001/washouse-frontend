@@ -236,7 +236,7 @@ const CenterServiceContainer = (props: Props) => {
                 id: service.id,
                 name: service.name,
                 thumbnail: service.image,
-                unitPrice: service.price ?? 0,
+                unitPrice: service.price ?? (service.prices && getWeightUnitPrice(service.prices, weightInput)) ?? 0,
                 weight: weightInput ?? null,
                 quantity: quantityInput ?? null,
                 unit: quantityInput ? 'pcs' : 'kg',

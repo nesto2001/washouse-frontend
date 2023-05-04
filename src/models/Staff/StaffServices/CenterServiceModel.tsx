@@ -4,7 +4,7 @@ export type CenterServiceModel = {
     serviceId: number;
     categoryId: number;
     serviceName: string;
-    priceType: false;
+    priceType: boolean;
     price: number;
     minPrice?: number;
     unit: string;

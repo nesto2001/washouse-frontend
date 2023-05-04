@@ -14,5 +14,5 @@ export type CheckoutFormData = {
     deliveryInfo: DeliveryFormData[];
     promoCode?: string;
     preferredDropoffTime: string;
-    preferredDeliverTime: string;
+    preferredDeliverTime?: string;
 };
