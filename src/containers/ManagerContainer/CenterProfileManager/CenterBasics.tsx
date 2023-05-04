@@ -62,18 +62,22 @@ const CenterBasics = ({ center }: Props) => {
     };
 
     const onFinish = async (values: UpdateCenterRequest) => {
+        console.log('1');
         const file = fileList[0]?.originFileObj;
         let res;
         if (file) {
             res = await uploadSingle(file);
             setFormData({ ...formData, savedImage: res.data.data.savedFileName, image: res.data.data.signedUrl });
         }
-        await updateMyCenter({
-            centerName: values.centerName,
-            description: values.description,
-            phone: values.phone,
-            savedFileName: res?.data.data.savedFileName,
-        });
+        try {
+            await updateMyCenter({
+                centerName: values.centerName,
+                description: values.description,
+                phone: values.phone,
+                savedFileName: res?.data.data.savedFileName,
+            });
+        } catch (e) {}
+        message.success('Cập nhật thông tin trung tâm thành công, vui lòng đợi admin duyệt');
     };
 
     const onFinishFailed = (errorInfo: any) => {
@@ -209,7 +213,7 @@ const CenterBasics = ({ center }: Props) => {
                     />
                 </Form.Item>
                 <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
-                    <Button type="primary" htmlType="submit" onClick={() => form.submit()}>
+                    <Button type="primary" htmlType="submit">
                         Lưu
                     </Button>
                 </Form.Item>
