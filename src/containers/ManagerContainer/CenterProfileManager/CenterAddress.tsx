@@ -1,13 +1,16 @@
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Modal, Select, Tooltip } from 'antd';
+import { Button, Form, Input, Modal, Select, Tooltip, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import Map from '../../../components/Map/Map';
 import { LocationDetailsModel } from '../../../models/Location/LocationDetailsModel';
 import { LocationModel } from '../../../models/Location/LocationModel';
 import { LocationPlaceModel } from '../../../models/LocationPlaceModel';
 import { ManagerCenterModel } from '../../../models/Manager/ManagerCenterModel';
-import { getDistricts, getWards } from '../../../repositories/LocationRepository';
+import { getDistricts, getWards, searchAddress } from '../../../repositories/LocationRepository';
 import { Option } from '../../../types/Options';
+import { updateMyCenter } from '../../../repositories/CenterRepository';
+import { UpdateCenterRequest } from '../../../models/Center/UpdateCenterRequest';
+import { searchLocation } from '../../../repositories/LocationRepository';
 
 type Props = {
     center: ManagerCenterModel;
@@ -71,9 +74,23 @@ const CenterAddress = ({ center, centerAddress }: Props) => {
         console.log(form.getFieldValue(['centerLocation', 'centerWard']));
     }, [form.getFieldValue(['centerLocation', 'centerWard'])]);
 
-    const onFinish = (values: any) => {
-        console.log('Success:', values);
+    const onFinish = async (values: any) => {
+        console.log(values);
+        try {
+            const res = await searchLocation(values.address, values.centerLocation.centerWard);
+            if (res) {
+                await updateMyCenter({
+                    location: {
+                        addressString: values.address,
+                        wardId: values.centerLocation.centerWard,
+                        longitude: res.longitude,
+                        latitude: res.latitude,
+                    },
+                });
+            }
+        } catch (e) {}
         setModalVisibility(false);
+        message.success('Cập nhật thông tin trung tâm thành công, vui lòng đợi admin duyệt');
     };
 
     const onFinishFailed = (errorInfo: any) => {

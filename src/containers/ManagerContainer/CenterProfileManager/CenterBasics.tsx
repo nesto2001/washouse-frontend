@@ -62,7 +62,6 @@ const CenterBasics = ({ center }: Props) => {
     };
 
     const onFinish = async (values: UpdateCenterRequest) => {
-        console.log('1');
         const file = fileList[0]?.originFileObj;
         let res;
         if (file) {
