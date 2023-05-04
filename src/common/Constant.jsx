@@ -29,6 +29,8 @@ const API_CENTER_DETAILS = '/api/centers/${id}';
 
 //SERVICE CATEGORY API
 const API_CATEGORY = '/api/service-categories';
+const API_PIN_CATEGORY = '/api/service-categories/${id}/pin';
+const API_UNPIN_CATEGORY = '/api/service-categories/${id}/unpin';
 
 //SERVICE API
 const API_SERVICE_DETAILS = '/api/centers/${centerId}/services/${serviceId}';
@@ -125,6 +127,8 @@ const API_WALLET_ACTIVATE = '/api/wallets/active'
 const RE_DIGIT = new RegExp(/^\d+$/);
 
 export {
+    API_PIN_CATEGORY,
+    API_UNPIN_CATEGORY,
     API_MANAGER_CENTER_DEACTIVATE,
     API_MANAGER_CENTER_ACTIVATE,
     API_WALLET_ACTIVATE,

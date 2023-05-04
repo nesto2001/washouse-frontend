@@ -1,10 +1,11 @@
-import { Button, Checkbox, Form, Input, Modal, Table, Upload } from 'antd';
+import { Button, Checkbox, Form, Input, Modal, Table, Upload, message } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ServiceCategoryDetailModel } from '../../../models/Category/ServiceCategoryDetailModel';
-import { getServiceCategories } from '../../../repositories/ServiceCategoryRepository';
+import { getServiceCategories, pinCategory, unpinCategory } from '../../../repositories/ServiceCategoryRepository';
 import { UploadOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { TbPin, TbPinnedOff } from 'react-icons/tb';
 
 type Props = {};
 
@@ -16,6 +17,8 @@ const AdminServicesContainer = (props: Props) => {
     const [services, setServices] = useState<ServiceCategoryDetailModel[]>();
     const [openCreate, setOpenCreate] = useState(false);
     const [activeKey, setActiveKey] = useState<string>(location.state?.keyTab ?? '1');
+    const [state, updateState] = useState({});
+    const forceUpdate = useCallback(() => updateState({}), []);
     const columns: ColumnsType<ServiceCategoryDetailModel> = [
         {
             title: 'STT',
@@ -29,7 +32,7 @@ const AdminServicesContainer = (props: Props) => {
             dataIndex: 'image',
             key: 'image',
             align: 'center',
-            width: 200,
+            width: 180,
             render(_, record) {
                 return <img className="w-full h-24 object-cover rounded-lg" src={record.image}></img>;
             },
@@ -38,6 +41,7 @@ const AdminServicesContainer = (props: Props) => {
             title: 'Tên',
             dataIndex: 'categoryName',
             key: 'categoryName',
+            width: 150,
             render(_, record) {
                 return <div className=""> {record.categoryName}</div>;
             },
@@ -47,9 +51,24 @@ const AdminServicesContainer = (props: Props) => {
             align: 'center',
             render(_, record) {
                 return record.homeFlag ? (
-                    <div className="cursor-pointer text-red">Hủy ghim dịch vụ</div>
+                    <Button
+                        className="cursor-pointer"
+                        danger
+                        style={{ padding: '0px 8px', background: 'white' }}
+                        type="default"
+                        onClick={() => handleUnpinCategory(record.categoryId)}
+                    >
+                        <TbPinnedOff fontSize={22} />
+                    </Button>
                 ) : (
-                    <div className="cursor-pointer text-primary">Ghim dịch vụ</div>
+                    <Button
+                        className="cursor-pointer text-white"
+                        style={{ padding: '0px 8px' }}
+                        type="primary"
+                        onClick={() => handlePinCategory(record.categoryId)}
+                    >
+                        <TbPin fontSize={22} />
+                    </Button>
                 );
             },
         },
@@ -73,6 +92,28 @@ const AdminServicesContainer = (props: Props) => {
         </div>
     );
 
+    const handlePinCategory = (id: number) => {
+        pinCategory(id)
+            .then((res) => {
+                message.success('Ghim phân loại lên trang chủ thành công');
+                forceUpdate();
+            })
+            .catch(() => {
+                message.error('Gặp sự cố trong quá trình ghim phân loại, vui lòng thử lại sau');
+            });
+    };
+
+    const handleUnpinCategory = (id: number) => {
+        unpinCategory(id)
+            .then((res) => {
+                message.success('Hủy ghim phân loại khỏi trang chủ thành công');
+                forceUpdate();
+            })
+            .catch(() => {
+                message.error('Gặp sự cố trong quá trình hủy ghim phân loại, vui lòng thử lại sau');
+            });
+    };
+
     return (
         <>
             <div className="provider__services--filter">
@@ -85,7 +126,12 @@ const AdminServicesContainer = (props: Props) => {
                 >
                     Thêm phân loại
                 </Button>
-                <Table dataSource={services} columns={columns} loading={services == null}></Table>
+                <Table
+                    dataSource={services}
+                    columns={columns}
+                    loading={services == null}
+                    pagination={{ pageSize: 4 }}
+                ></Table>
             </div>
             <Modal
                 open={openCreate}
