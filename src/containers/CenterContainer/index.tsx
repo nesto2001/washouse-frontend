@@ -22,6 +22,7 @@ import { PromotionModel } from '../../models/Promotion/PromotionModel';
 import { getPromotionsCenter } from '../../repositories/PromotionRepository';
 import { CenterMap } from '../../types/CenterMap';
 import './CenterContainer.scss';
+import { formatLink } from '../../utils/FormatUtils';
 
 type Props = {};
 
@@ -101,19 +102,21 @@ const CenterContainer = (props: Props) => {
                         items={category.services.map((service) => {
                             return (
                                 <ServiceCard
-                                    key={service.id}
-                                    id={service.id}
-                                    thumbnail={service.image}
-                                    title={service.name}
-                                    description={service.description}
-                                    price={service.price}
-                                    minPrice={service.minPrice}
-                                    action={true}
-                                    actionContent="Xem dịch vụ"
-                                    actionType="primary"
-                                    minHeight="132px"
-                                    cardHeight="464px"
-                                    actionLink={`/centers/center/${center.id}/service/${service.id}`}
+                                    cardData={{
+                                        id: service.id,
+                                        thumbnail: service.image,
+                                        title: service.name,
+                                        action: true,
+                                        actionContent: 'Xem dịch vụ',
+                                        actionLink: `/trung-tam/${formatLink(center.title)}-c.${center.id}/${formatLink(service.name)}`,
+                                        actionType: 'primary',
+                                        cardHeight: '464px',
+                                        description: service.description,
+                                        minHeight: '132px',
+                                        minPrice: service.minPrice,
+                                        price: service.price,
+                                    }}
+                                    serviceData={{ centerId: center.id, serviceId: service.id }}
                                 ></ServiceCard>
                             );
                         })}
@@ -153,7 +156,7 @@ const CenterContainer = (props: Props) => {
                         </div>
                         <div className="center__details--content basis-7/12 p-6 ml-10 border border-[#B3B3B3] rounded-2xl">
                             <h1 className="text-2xl font-bold">{center.title}</h1>
-                            <h3 className="mt-2 text-base">{center.centerAddress}</h3>
+                            <h3 className="mt-2 text-base capitalize">{center.centerAddress + ', TP. Hồ Chí Minh'}</h3>
                             <h3 className="mt-4 text-base flex items-center">
                                 {center.operatingHours[today]?.start && center.operatingHours[today]?.end && (
                                     <>

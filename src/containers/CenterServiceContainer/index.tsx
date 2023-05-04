@@ -22,7 +22,7 @@ import { getService, getServices } from '../../repositories/ServiceRepository';
 import { RootState } from '../../store/CartStore';
 import { CartItem } from '../../types/CartType/CartItem';
 import { calculatePrice, getRating, getWeightUnitPrice, splitDescription } from '../../utils/CommonUtils';
-import { formatCurrency } from '../../utils/FormatUtils';
+import { formatCurrency, formatLink } from '../../utils/FormatUtils';
 import { compareTime, getToday } from '../../utils/TimeUtils';
 import { getFeedbacks } from '../../repositories/FeedbackRepository';
 import { FeedbackModel } from '../../models/Feedback/FeedbackModel';
@@ -47,14 +47,16 @@ const CenterServiceContainer = (props: Props) => {
     const [feedbacks, setFeedbacks] = useState<FeedbackModel[]>();
     const navigate = useNavigate();
     const location = useLocation();
+    const centerId = location.state?.centerId;
+    const serviceId = location.state?.serviceId;
 
-    const { centerId, id } = useParams();
     const serviceCenterId = centerId ? parseInt(centerId) : 0;
 
     useEffect(() => {
+        console.log(centerId, serviceId);
         setIsLoading(true);
         const fetchData = async () => {
-            if (id && centerId) return await getService(serviceCenterId, parseInt(id));
+            if (serviceId && centerId) return await getService(serviceCenterId, parseInt(serviceId));
         };
         fetchData()
             .then((res) => {
@@ -67,7 +69,7 @@ const CenterServiceContainer = (props: Props) => {
                     setIsLoading(false);
                     centerRes?.id &&
                         getServices(centerRes?.id).then((servicesRes) =>
-                            setServiceList(servicesRes.filter((s) => res?.id != s.id)),
+                            setServiceList(servicesRes.filter((s) => res?.id !== s.id)),
                         );
                 });
             })
@@ -75,7 +77,7 @@ const CenterServiceContainer = (props: Props) => {
                 console.error(error);
                 setIsLoading(false);
             });
-    }, [centerId, id]);
+    }, [centerId, serviceId]);
     useEffect(() => {
         service &&
             getFeedbacks(service?.id)
@@ -469,19 +471,23 @@ const CenterServiceContainer = (props: Props) => {
                                     items={serviceList.map((s) => {
                                         return (
                                             <ServiceCard
-                                                key={s.id}
-                                                id={s.id}
-                                                thumbnail={s.image}
-                                                title={s.name}
-                                                description={splitDescription(s.description, 100)}
-                                                price={s.price ?? undefined}
-                                                minPrice={s.minPrice}
-                                                action={true}
-                                                actionContent="Xem dịch vụ"
-                                                actionType="primary"
-                                                minHeight="100px"
-                                                cardHeight="432px"
-                                                actionLink={`/centers/center/${center.id}/service/${s.id}`}
+                                                cardData={{
+                                                    id: service.id,
+                                                    thumbnail: service.image,
+                                                    title: service.name,
+                                                    action: true,
+                                                    actionContent: 'Xem dịch vụ',
+                                                    actionLink: `/trung-tam/${formatLink(center.title)}-c.${
+                                                        center.id
+                                                    }/${formatLink(service.name)}`,
+                                                    actionType: 'primary',
+                                                    cardHeight: '464px',
+                                                    description: service.description,
+                                                    minHeight: '132px',
+                                                    minPrice: service.minPrice,
+                                                    price: service.price ?? 0,
+                                                }}
+                                                serviceData={{ centerId: center.id, serviceId: service.id }}
                                             ></ServiceCard>
                                         );
                                     })}

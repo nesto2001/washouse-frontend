@@ -41,10 +41,20 @@ const Breadcrumb = () => {
                             aria-current={crumb.isLast ? 'page' : undefined}
                         >
                             {crumb.isLast ? (
-                                decodeURI(crumb.label.substring(0, crumb.label.lastIndexOf('-')))
+                                crumb.label.includes('-c.') ? (
+                                    decodeURI(crumb.label.slice(0, crumb.label.lastIndexOf('-c.')))
+                                ) : (
+                                    decodeURI(crumb.label)
+                                )
                             ) : (
-                                <Link to={`${decodeURILink(crumb.path)}${id ? '-c.' : ''}${id ?? ''}`}>
-                                    {decodeURI(crumb.label)}
+                                <Link
+                                    to={`${crumb.path.includes('-c.') ? decodeURILink(crumb.path) : crumb.path}${
+                                        id ? '-c.' : ''
+                                    }${id ?? ''}`}
+                                >
+                                    {crumb.label.includes('-c.')
+                                        ? decodeURI(crumb.label.slice(0, crumb.label.lastIndexOf('-c.')))
+                                        : decodeURI(crumb.label)}
                                 </Link>
                             )}
                         </div>

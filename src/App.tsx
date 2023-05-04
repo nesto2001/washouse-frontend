@@ -8,8 +8,12 @@ import themeConfig from './antd-theme.json';
 import ScrollToTop from './components/ScrollTop/ScrollToTop';
 import { publicRoutes } from './routers/Router';
 import CartStore from './store/CartStore';
+import { useSignalRConnection } from './hubs/notificationHub';
+import Loading from './components/Loading/Loading';
 
 function App() {
+    const connected = useSignalRConnection();
+
     return (
         <React.StrictMode>
             <ConfigProvider theme={themeConfig}>

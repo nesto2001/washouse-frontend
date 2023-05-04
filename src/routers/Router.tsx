@@ -88,7 +88,7 @@ const publicRoutes: Array<RouteProps> = [
         component: CenterPage,
     },
     {
-        path: '/centers/center/:centerId/service/:id',
+        path: '/trung-tam/:centerName/:serviceName',
         layout: CenteredLayout,
         component: CenterServicePage,
     },

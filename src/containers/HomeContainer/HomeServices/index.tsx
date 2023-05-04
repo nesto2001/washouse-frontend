@@ -31,11 +31,12 @@ const HomeServices = () => {
                             items={serviceCategories.map((serviceCategory) => {
                                 return (
                                     <ServiceCard
-                                        key={serviceCategory.categoryId}
-                                        id={serviceCategory.categoryId}
-                                        description={splitDescription(serviceCategory.description, 140)}
-                                        thumbnail={serviceCategory.image}
-                                        title={serviceCategory.categoryName}
+                                        cardData={{
+                                            id: serviceCategory.categoryId,
+                                            description: splitDescription(serviceCategory.description, 140),
+                                            thumbnail: serviceCategory.image,
+                                            title: serviceCategory.categoryName,
+                                        }}
                                     ></ServiceCard>
                                 );
                             })}
