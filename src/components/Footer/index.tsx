@@ -41,7 +41,7 @@ const Footer = () => {
                                         <Link
                                             to={'/trung-tam'}
                                             state={{ categoryId: service.categoryId }}
-                                            className="list-none hover:text-primary hover:font-bold"
+                                            className="list-none hover:text-zprimary hover:font-bold"
                                         >
                                             {service.categoryName}
                                         </Link>

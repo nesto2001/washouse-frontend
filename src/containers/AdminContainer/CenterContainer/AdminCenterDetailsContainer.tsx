@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react';
 import { EllipsisOutlined, StopOutlined } from '@ant-design/icons';
-import { useLocation, useParams } from 'react-router-dom';
-import { getCenter } from '../../../repositories/CenterRepository';
-import { getCenterDetails } from '../../../repositories/AdminRepository';
-import { AdminCenterDetailsModel } from '../../../models/Admin/AdminCenterDetails/AdminCenterDetailsModel';
-import OthersSpin from '../../../components/OthersSpin/OthersSpin';
+import { Button, Dropdown, MenuProps, Result, Tabs, TabsProps } from 'antd';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import AdminCenterDetailsBasics from '../../../components/AdminCenterDetails/AdminCenterDetailsBasics';
+import AdminCenterDetailsFeedback from '../../../components/AdminCenterDetails/AdminCenterDetailsFeedback';
 import AdminCenterDetailsService from '../../../components/AdminCenterDetails/AdminCenterDetailsService';
 import AdminCenterDetailsStaff from '../../../components/AdminCenterDetails/AdminCenterDetailsStaff';
-import AdminCenterDetailsFeedback from '../../../components/AdminCenterDetails/AdminCenterDetailsFeedback';
+import OthersSpin from '../../../components/OthersSpin/OthersSpin';
+import { AdminCenterDetailsModel } from '../../../models/Admin/AdminCenterDetails/AdminCenterDetailsModel';
+import { getCenterDetails } from '../../../repositories/AdminRepository';
 import { Paging } from '../../../types/Common/Pagination';
-import { Button, Dropdown, MenuProps, Result, Tabs, TabsProps } from 'antd';
 
 type Props = {};
 

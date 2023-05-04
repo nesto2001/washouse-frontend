@@ -1,13 +1,12 @@
+import { PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Input, UploadFile, message } from 'antd';
+import TextArea from 'antd/es/input/TextArea';
 import Upload, { UploadChangeParam } from 'antd/es/upload';
 import React, { useState } from 'react';
-import { uploadSingle } from '../../../repositories/MediaRepository';
-import { DayMap } from '../../../mapping/DayMap';
-import { RangeValue } from 'rc-picker/lib/interface';
-import { PlusOutlined } from '@ant-design/icons';
-import dayjs from 'dayjs';
-import TextArea from 'antd/es/input/TextArea';
+import { UpdateCenterRequest } from '../../../models/Center/UpdateCenterRequest';
 import { ManagerCenterModel } from '../../../models/Manager/ManagerCenterModel';
+import { uploadSingle } from '../../../repositories/MediaRepository';
+import { updateMyCenter } from '../../../repositories/CenterRepository';
 
 type Props = {
     center: ManagerCenterModel;
@@ -62,13 +61,19 @@ const CenterBasics = ({ center }: Props) => {
         setFileList(fileList);
     };
 
-    const onFinish = (values: any) => {
+    const onFinish = async (values: UpdateCenterRequest) => {
         const file = fileList[0]?.originFileObj;
+        let res;
         if (file) {
-            uploadSingle(file).then((res) => {
-                setFormData({ ...formData, savedImage: res.data.data.savedFileName, image: res.data.data.signedUrl });
-            });
+            res = await uploadSingle(file);
+            setFormData({ ...formData, savedImage: res.data.data.savedFileName, image: res.data.data.signedUrl });
         }
+        await updateMyCenter({
+            centerName: values.centerName,
+            description: values.description,
+            phone: values.phone,
+            savedFileName: res?.data.data.savedFileName,
+        });
     };
 
     const onFinishFailed = (errorInfo: any) => {
@@ -120,9 +125,9 @@ const CenterBasics = ({ center }: Props) => {
                 style={{ maxWidth: 800 }}
                 initialValues={{
                     centerName: formData.name,
-                    centerPhone: formData.phone,
-                    centerDescription: formData.description,
-                    centerTaxcode: formData.taxCode,
+                    phone: formData.phone,
+                    description: formData.description,
+                    taxCode: formData.taxCode,
                     // operatingDays: [
                     //     dayjs(formData.operationHours[0].start, 'HH:mm'),
                     //     dayjs(formData.operationHours[0].end, 'HH:mm'),
@@ -164,7 +169,7 @@ const CenterBasics = ({ center }: Props) => {
                 </Form.Item>
                 <Form.Item
                     label="Số điện thoại"
-                    name="centerPhone"
+                    name="phone"
                     rules={[
                         { required: true, message: 'Vui lòng nhập số điện thoại trung tâm của bạn' },
                         { len: 10, max: 10, message: 'Số điện thoại thông thường có 10 số' },
@@ -178,7 +183,7 @@ const CenterBasics = ({ center }: Props) => {
                 </Form.Item>
                 <Form.Item
                     label="Mã số thuế"
-                    name="centerTaxcode"
+                    name="taxCode"
                     rules={[
                         { required: true, message: 'Vui lòng nhập mã số thuế trung tâm của bạn' },
                         { min: 10, max: 14, message: 'Mã số thuế thông thường có 10 đến 13 số' },
@@ -193,7 +198,7 @@ const CenterBasics = ({ center }: Props) => {
                 </Form.Item>
                 <Form.Item
                     label="Mô tả"
-                    name="centerDescription"
+                    name="description"
                     rules={[{ required: true, min: 10, message: 'Vui lòng nhập mô tả ít nhất 10 từ.' }]}
                 >
                     <TextArea
@@ -204,7 +209,7 @@ const CenterBasics = ({ center }: Props) => {
                     />
                 </Form.Item>
                 <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
-                    <Button type="primary" htmlType="submit">
+                    <Button type="primary" htmlType="submit" onClick={() => form.submit()}>
                         Lưu
                     </Button>
                 </Form.Item>

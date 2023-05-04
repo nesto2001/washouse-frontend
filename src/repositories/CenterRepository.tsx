@@ -1,18 +1,17 @@
-import { List } from 'reselect/es/types';
+import { API_CENTER, API_CENTER_DETAILS, API_MANAGER_CENTER } from '../common/Constant';
+import { CenterDetailsModel } from '../models/Center/CenterDetailsModel';
+import { CenterDetailsResponse } from '../models/Center/CenterDetailsResponse';
 import { CenterModel } from '../models/Center/CenterModel';
 import { CenterResponse } from '../models/Center/CenterResponse';
-import instance from '../services/axios/AxiosInstance';
-import { ServiceTag } from '../types/ServiceType/ServiceTag';
-import { OperatingDay } from '../types/OperatingDay';
-import { ServiceModel } from '../models/Service/ServiceModel';
-import { ServiceCategoryModel } from '../models/Service/ServiceCategoryModel';
-import { CenterDetailsModel } from '../models/Center/CenterDetailsModel';
-import { PaginationResponse, Response } from '../models/CommonModel';
-import { LoginResponse } from '../models/LoginResponse';
-import { API_CENTER, API_CENTER_DETAILS } from '../common/Constant';
 import { CenterRequest } from '../models/Center/CreateCenterRequest';
 import { CreateCenterResponse } from '../models/Center/CreateCenterResponse';
-import { CenterDetailsResponse } from '../models/Center/CenterDetailsResponse';
+import { UpdateCenterRequest } from '../models/Center/UpdateCenterRequest';
+import { PaginationResponse, Response } from '../models/CommonModel';
+import { ServiceCategoryModel } from '../models/Service/ServiceCategoryModel';
+import { ServiceModel } from '../models/Service/ServiceModel';
+import instance from '../services/axios/AxiosInstance';
+import { OperatingDay } from '../types/OperatingDay';
+import { ServiceTag } from '../types/ServiceType/ServiceTag';
 
 export const getAllCenter = async ({
     lat,
@@ -186,4 +185,15 @@ export const createCenter = async (center: CenterRequest): Promise<Response<Crea
         },
     });
     return response.data;
+};
+
+export const updateMyCenter = async (center: UpdateCenterRequest) => {
+    const { status } = await instance.put(API_MANAGER_CENTER, center, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    if (status !== 200) {
+        return Promise.reject();
+    }
 };
