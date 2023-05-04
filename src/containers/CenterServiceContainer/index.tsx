@@ -293,17 +293,7 @@ const CenterServiceContainer = (props: Props) => {
                             <div className="service__thumbnail--main">
                                 <img className="w-full" src={service.image ?? Placeholder} alt="" />
                             </div>
-                            <div className="service__thumbnail--gallery flex gap-3 mt-3">
-                                <div className="gallery__image-1">
-                                    <img src={Placeholder} alt="" />
-                                </div>
-                                <div className="gallery__image-2">
-                                    <img src={Placeholder} alt="" />
-                                </div>
-                                <div className="gallery__image-3">
-                                    <img src={Placeholder} alt="" />
-                                </div>
-                            </div>
+                            <div className="service__thumbnail--gallery flex gap-3 mt-3"></div>
                         </div>
                         <div className="service__details--content basis-7/12 p-6 pl-10 ml-10 border border-[#B3B3B3] rounded-2xl">
                             <form action="" id="addcartForm">
