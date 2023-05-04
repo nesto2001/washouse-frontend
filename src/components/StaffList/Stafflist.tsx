@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button, Form, Input, Modal, Tag, message } from 'antd';
+import { Button, Empty, Form, Input, Modal, Tag, message } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { CenterStaffModel } from '../../models/Staff/CenterStaffModel';
 import dayjs from 'dayjs';
@@ -109,6 +109,17 @@ const Stafflist = ({ centerStaff, forceUpdate }: Props) => {
                         columns={columns}
                         dataSource={centerStaff}
                         loading={centerStaff == null}
+                        locale={{
+                            emptyText: (
+                                <Empty
+                                    image={Empty.PRESENTED_IMAGE_DEFAULT}
+                                    imageStyle={{ height: 160, width: 384, margin: '0 auto', marginBottom: 20 }}
+                                    description={
+                                        <span className="text-xl font-medium text-sub-gray">Chưa có nhân viên nào</span>
+                                    }
+                                ></Empty>
+                            ),
+                        }}
                     />
                 </div>
             </div>

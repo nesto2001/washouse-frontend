@@ -1,7 +1,9 @@
 import {
     API_MANAGER_ASSIGN_STAFF,
     API_MANAGER_CENTER,
+    API_MANAGER_CENTER_ACTIVATE,
     API_MANAGER_CENTER_CUSTOMER,
+    API_MANAGER_CENTER_DEACTIVATE,
     API_MANAGER_CENTER_ORDER,
     API_MANAGER_CENTER_ORDER_DETAILS,
     API_MANAGER_CENTER_SERVICE,
@@ -543,9 +545,22 @@ export const deactivateStaff = async (id: number) => {
     return response;
 };
 
-export const deactivateMyCenter = async (id: number) => {
+export const deactivateMyCenter = async () => {
     const response = await instance.put(
-        API_STAFF_DEACTIVATE.replace('${id}', id.toString()),
+        API_MANAGER_CENTER_DEACTIVATE,
+        {},
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        },
+    );
+    return response;
+};
+
+export const activateMyCenter = async () => {
+    const response = await instance.put(
+        API_MANAGER_CENTER_ACTIVATE,
         {},
         {
             headers: {

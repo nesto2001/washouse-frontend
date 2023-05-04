@@ -110,7 +110,7 @@ const ServiceList = ({ serviceList, paging, updatePage, isLoading }: Props) => {
                                 image={Empty.PRESENTED_IMAGE_DEFAULT}
                                 imageStyle={{ height: 160, width: 384, margin: '0 auto', marginBottom: 20 }}
                                 description={
-                                    <span className="text-xl font-medium text-sub-gray">Bạn chưa có dịch vụ nào</span>
+                                    <span className="text-xl font-medium text-sub-gray">Chưa có dịch vụ nào</span>
                                 }
                             ></Empty>
                         ),

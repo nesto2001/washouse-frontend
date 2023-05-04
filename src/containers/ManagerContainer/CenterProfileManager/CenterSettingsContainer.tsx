@@ -1,13 +1,14 @@
-import { Avatar, ButtonProps, List, Modal, Switch, Tabs, TabsProps } from 'antd';
-import { useEffect, useState } from 'react';
+import { Avatar, ButtonProps, List, Modal, Switch, Tabs, TabsProps, message } from 'antd';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sleep from '../../../assets/images/sleep.png';
 import ErrorScreen from '../../../components/ErrorScreen/ErrorScreen';
 import OthersSpin from '../../../components/OthersSpin/OthersSpin';
 import { ManagerCenterModel } from '../../../models/Manager/ManagerCenterModel';
-import { getManagerCenter } from '../../../repositories/StaffRepository';
+import { activateMyCenter, deactivateMyCenter, getManagerCenter } from '../../../repositories/StaffRepository';
 import CenterDeliverySettingsContainer from './CenterDeliverySettingsContainer';
 import CenterSecuritySettingsContainer from './CenterSecuritySettingsContainer';
+import CenterOperatingSettingsContainer from './CenterOperatingSettingsContainer';
 
 type Props = {};
 
@@ -33,6 +34,8 @@ const CenterSettingsContainer = (props: Props) => {
     const [switchOn, setSwitchOn] = useState<boolean>(false);
     const [activeTab, setActiveTab] = useState(1);
     const navigate = useNavigate();
+    const [, updateState] = useState({});
+    const forceUpdate = useCallback(() => updateState({}), []);
     const [modal, contextHolder] = Modal.useModal();
 
     useEffect(() => {
@@ -42,11 +45,11 @@ const CenterSettingsContainer = (props: Props) => {
                 setMyCenter(res);
                 setIsLoading(false);
                 setSwitchOn(
-                    res.status.toLowerCase() === 'active'
-                        ? false
-                        : res.status.toLowerCase() === 'inactive'
+                    res.status.toLowerCase() === 'inactive'
                         ? true
-                        : true,
+                        : res.status.toLowerCase() === 'active'
+                        ? false
+                        : false,
                 );
             })
             .catch();
@@ -54,7 +57,72 @@ const CenterSettingsContainer = (props: Props) => {
 
     const handleDeactivate = () => {
         setPopupLoading(true);
+        if (myCenter && (myCenter.status.toLowerCase() === 'active' || myCenter.status.toLowerCase() === 'updating')) {
+            deactivateMyCenter()
+                .then(() => {
+                    message.success('Bật chế độ tạm nghỉ thành công');
+                    setPopupLoading(false);
+                    forceUpdate();
+                })
+                .catch((err) => {
+                    message.error('Xảy ra lỗi trong quá trình thiết lập, vui lòng thử lại sau');
+                    setSwitchOn(false);
+                });
+        } else {
+            switch (myCenter && myCenter.status.toLowerCase()) {
+                case 'pending':
+                    message.error('Không thể cập nhật thiết lập do trung tâm chưa được cấp phép hoạt động');
+                    break;
+                case 'suspended':
+                    message.error('Không thể cập nhật thiết lập do trung tâm đang ở trạng thái đình chỉ hoạt động');
+                    break;
+                case 'closed':
+                    message.error('Không thể cập nhật thiết lập do trung tâm đã đóng cửa vĩnh viễn');
+                    break;
+                case 'rejected':
+                    message.error('Không thể cập nhật thiết lập do trung tâm chưa được cấp phép hoạt động');
+                    break;
+            }
+        }
     };
+
+    const handleActivate = () => {
+        setPopupLoading(true);
+        if (myCenter && myCenter.status.toLowerCase() === 'inactive') {
+            activateMyCenter()
+                .then(() => {
+                    message.success('Tắt chế độ tạm nghỉ thành công');
+                    setPopupLoading(false);
+                    forceUpdate();
+                })
+                .catch((err) => {
+                    message.error('Xảy ra lỗi trong quá trình thiết lập, vui lòng thử lại sau');
+                    setSwitchOn(true);
+                });
+        } else {
+            switch (myCenter && myCenter.status.toLowerCase()) {
+                case 'pending':
+                    message.error('Không thể cập nhật thiết lập do trung tâm chưa được cấp phép hoạt động');
+                    break;
+                case 'suspended':
+                    message.error('Không thể cập nhật thiết lập do trung tâm đang ở trạng thái đình chỉ hoạt động');
+                    break;
+                case 'closed':
+                    message.error('Không thể cập nhật thiết lập do trung tâm đã đóng cửa vĩnh viễn');
+                    break;
+                case 'rejected':
+                    message.error('Không thể cập nhật thiết lập do trung tâm chưa được cấp phép hoạt động');
+                    break;
+                case 'active':
+                    message.error('Không thể cập nhật thiết lập do trung tâm đã đang không trong chế độ tạm nghỉ');
+                    break;
+                case 'updating':
+                    message.error('Không thể cập nhật thiết lập do trung tâm đã đang không trong chế độ tạm nghỉ');
+                    break;
+            }
+        }
+    };
+
     const handleCancel = () => {
         setSwitchOn(switchOn);
     };
@@ -63,18 +131,23 @@ const CenterSettingsContainer = (props: Props) => {
         setSwitchOn(!switchOn);
         modal.confirm({
             title: switchOn ? 'Tắt chế độ tạm nghỉ' : 'Bật chế độ tạm nghỉ',
-            content: (
+            content: switchOn ? (
+                <>
+                    Khi được tắt, Chế độ tạm nghỉ sẽ chỉ có thể được kích hoạt lại sau 3 giờ. Bạn có thật sự muốn tắt
+                    Chế độ tạm nghỉ?
+                </>
+            ) : (
                 <>
                     Khách hàng sẽ không thể đặt dịch vụ trong khi trung tâm bạn tạm ngưng hoạt động. Bạn chắc chắn muốn
                     bật tạm nghỉ chứ?
                 </>
             ),
-            icon: ' ',
-            okText: 'Tiếp tục',
+            okText: 'Xác nhận',
             cancelText: 'Hủy',
             cancelButtonProps: { style: { background: 'white' } } as ButtonProps,
+            okButtonProps: { loading: popupLoading } as ButtonProps,
             maskClosable: true,
-            onOk: handleDeactivate,
+            onOk: switchOn ? handleActivate : handleDeactivate,
             onCancel: handleCancel,
         });
     };
@@ -134,6 +207,10 @@ const CenterSettingsContainer = (props: Props) => {
         },
         {
             key: '2',
+            label: `Thiết lập hoạt động`,
+        },
+        {
+            key: '3',
             label: `Thiết lập vận chuyển`,
         },
         // {
@@ -166,7 +243,8 @@ const CenterSettingsContainer = (props: Props) => {
                     )}
                 />
             )}
-            {activeTab === 2 && <CenterDeliverySettingsContainer />}
+            {activeTab === 2 && <CenterOperatingSettingsContainer />}
+            {activeTab === 3 && <CenterDeliverySettingsContainer />}
             {activeTab === 4 && <CenterSecuritySettingsContainer />}
         </>
     );

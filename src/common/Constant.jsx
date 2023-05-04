@@ -80,6 +80,10 @@ const API_MANAGER_ASSIGN_STAFF = '/api/staffs/assign';
 const API_MANAGER_VERIFY_STAFF = '/api/staffs/verify';
 const API_MANAGER_WALLET = '/api/manager/my-center/wallet';
 
+const API_MANAGER_CENTER_DEACTIVATE = '/api/manager/my-center/deactivate';
+const API_MANAGER_CENTER_ACTIVATE = '/api/manager/my-center/activate';
+
+
 const API_STAFF_PROCEED_ORDER = '/api/tracking/orders/${orderId}/tracking';
 const API_STAFF_COMPLETE_ORDER = '/api/tracking/orders/${orderId}/completed';
 const API_STAFF_PAID_ORDER = '/api/manager/my-center/orders/${id}/paid';
@@ -121,6 +125,8 @@ const API_WALLET_ACTIVATE = '/api/wallets/active'
 const RE_DIGIT = new RegExp(/^\d+$/);
 
 export {
+    API_MANAGER_CENTER_DEACTIVATE,
+    API_MANAGER_CENTER_ACTIVATE,
     API_WALLET_ACTIVATE,
     API_MANAGER_WALLET,
     API_STAFF_COMPLETE_ORDER,

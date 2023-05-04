@@ -18,13 +18,14 @@ const FeedbackList = ({ feedbacks }: Props) => {
             dataIndex: 'stt',
             key: 'stt',
             align: 'center',
+            width: 60,
             render: (_, text, index) => <strong>{index + 1}</strong>,
         },
         {
             title: 'Nhận xét',
             dataIndex: 'feedback',
             key: 'feedback',
-            width: 330,
+            width: 380,
             render: (_, record) => (
                 <div className="center__feedback">
                     <div className="center__feedback--review flex gap-4">
@@ -62,17 +63,17 @@ const FeedbackList = ({ feedbacks }: Props) => {
                 </div>
             ),
         },
-        {
-            title: 'Thao tác',
-            key: 'action',
-            align: 'center',
-            width: 100,
-            render: (_, record) => (
-                <Button type="default" style={{ background: '#f2f3f3' }}>
-                    <EllipsisOutlined />
-                </Button>
-            ),
-        },
+        // {
+        //     title: 'Thao tác',
+        //     key: 'action',
+        //     align: 'center',
+        //     width: 100,
+        //     render: (_, record) => (
+        //         <Button type="default" style={{ background: '#f2f3f3' }}>
+        //             <EllipsisOutlined />
+        //         </Button>
+        //     ),
+        // },
     ];
 
     return (

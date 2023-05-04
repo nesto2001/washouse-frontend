@@ -20,6 +20,7 @@ export type SearchParamsData = {
 const CustomerListingContainer = (props: Props) => {
     const navigate = useNavigate();
     const [customers, setCustomers] = useState<CenterCustomerModel[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
     const [form] = Form.useForm();
     const [searchParams, setSearchParams] = useState<SearchParamsData>({
         searchString: '',
@@ -27,46 +28,24 @@ const CustomerListingContainer = (props: Props) => {
     });
 
     useEffect(() => {
+        setIsLoading(true);
         const fetchData = async () => {
             return await getCenterCustomer();
         };
-        fetchData().then((res) => {
-            console.log(res);
-            setCustomers(res);
-        });
+        fetchData()
+            .then((res) => {
+                console.log(res);
+                setCustomers(res);
+                setIsLoading(false);
+            })
+            .catch(() => {
+                setCustomers([]);
+                setIsLoading(false);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
     }, [searchParams]);
-
-    // const customerTab: TabsProps['items'] = [
-    //     {
-    //         key: '1',
-    //         label: `Tất cả`,
-    //         children: <ServiceList layout="table" />,
-    //     },
-    //     {
-    //         key: '2',
-    //         label: `Đang hoạt động`,
-    //         children: `Content of Tab Pane 2`,
-    //     },
-    //     {
-    //         key: '3',
-    //         label: `Tạm ngưng`,
-    //         children: `Content of Tab Pane 3`,
-    //     },
-    //     {
-    //         key: '4',
-    //         label: `Vi phạm`,
-    //         children: `Content of Tab Pane 3`,
-    //     },
-    //     {
-    //         key: '5',
-    //         label: `Đã ẩn`,
-    //         children: `Content of Tab Pane 3`,
-    //     },
-    // ];
-
-    const onChange = (key: string) => {
-        console.log(key);
-    };
 
     return (
         <>
@@ -109,7 +88,7 @@ const CustomerListingContainer = (props: Props) => {
                 </Form>
             </div>
             <div className="provider__services mt-12 mb-72">
-                <CustomerList customers={customers} />
+                <CustomerList customers={customers} isLoading={isLoading} />
             </div>
         </>
     );

@@ -3,8 +3,9 @@ import React from 'react';
 import { formatDateString } from '../../utils/TimeUtils';
 import { CenterCustomerModel } from '../../models/Staff/CenterCustomerModel';
 import dayjs from 'dayjs';
+import { Empty } from 'antd';
 
-type Props = { customers: CenterCustomerModel[] };
+type Props = { customers: CenterCustomerModel[]; isLoading: boolean };
 
 // const customers: CenterCustomerModel[] = [
 //     {
@@ -46,6 +47,7 @@ const columns: ColumnsType<CenterCustomerModel> = [
         title: 'STT',
         dataIndex: 'STT',
         key: 'STT',
+        align: 'center',
         render: (_, record, index) => {
             return index + 1;
         },
@@ -66,6 +68,7 @@ const columns: ColumnsType<CenterCustomerModel> = [
         dataIndex: 'dob',
         key: 'dob',
         align: 'center',
+        width: 120,
         render: (date: string) => (date ? dayjs(date, 'DD-MM-YYYY').format('DD-MM-YYYY') : '-'),
     },
     {
@@ -77,23 +80,40 @@ const columns: ColumnsType<CenterCustomerModel> = [
         title: 'Email',
         dataIndex: 'email',
         key: 'email',
+        width: 240,
     },
     {
         title: 'Địa chỉ',
         dataIndex: 'address',
         key: 'address',
-        width: 280,
+        width: 300,
         render: (value) => {
             return value ?? '-';
         },
     },
 ];
 
-const CustomerList = ({ customers }: Props) => {
+const CustomerList = ({ customers, isLoading }: Props) => {
     return (
         <div className="customer__list--wrapper my-5 mt-2">
             <div className="customer__list">
-                <Table columns={columns} dataSource={customers} rowClassName="cursor-pointer" />
+                <Table
+                    columns={columns}
+                    dataSource={customers}
+                    rowClassName="cursor-pointer"
+                    loading={isLoading}
+                    locale={{
+                        emptyText: (
+                            <Empty
+                                image={Empty.PRESENTED_IMAGE_DEFAULT}
+                                imageStyle={{ height: 160, width: 384, margin: '0 auto', marginBottom: 20 }}
+                                description={
+                                    <span className="text-xl font-medium text-sub-gray">Chưa có khách hàng nào</span>
+                                }
+                            ></Empty>
+                        ),
+                    }}
+                />
             </div>
         </div>
     );
