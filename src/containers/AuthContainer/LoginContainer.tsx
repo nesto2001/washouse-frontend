@@ -7,6 +7,8 @@ import clsx from 'clsx';
 import { BiErrorAlt } from 'react-icons/bi';
 import { getMe, login, loginGoogle } from '../../repositories/AuthRepository';
 import Loading from '../../components/Loading/Loading';
+import { Modal } from 'antd';
+import OtpInput from '../../components/OTPInput/OtpInput';
 
 type Props = {
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,6 +22,9 @@ const LoginContainer = ({ setLoading }: Props) => {
     const [loginSMS, setLoginSMS] = useState<boolean>(false);
     const [loginError, setLoginError] = useState<string>('');
     const [isFetching, setIsFetching] = useState<boolean>(false);
+    const [openOTPModal, setOpenOTPModal] = useState(false);
+    const [otp, setOtp] = useState('');
+    const onOTPChange = (value: string) => setOtp(value);
     const navigate = useNavigate();
 
     const handleSubmit = () => {
@@ -68,6 +73,17 @@ const LoginContainer = ({ setLoading }: Props) => {
         window.location = url as unknown as Location;
     };
 
+    const handleOTPLogin = () => {
+        setIsFetching(true);
+        if (loginForm.phone) {
+            setIsFetching(false);
+            setOpenOTPModal(true);
+        } else {
+            setLoginError('Vui lòng nhập đầy đủ thông tin đăng nhập!');
+            setIsFetching(false);
+        }
+    };
+
     return (
         <>
             <div className="login__form--phone">
@@ -109,7 +125,12 @@ const LoginContainer = ({ setLoading }: Props) => {
                         <span className="text-red ml-1">{loginError}</span>
                     </div>
                 )}
-                <WHButton minWidth="100%" type="primary" onClick={handleSubmit} fetching={isFetching}>
+                <WHButton
+                    minWidth="100%"
+                    type="primary"
+                    onClick={loginSMS ? handleOTPLogin : handleSubmit}
+                    fetching={isFetching}
+                >
                     {loginSMS ? 'Tiếp theo' : 'Đăng nhập'}
                 </WHButton>
                 <div className={clsx(loginSMS ? 'justify-end' : 'justify-between', 'login__form--addition flex mt-2')}>
@@ -159,6 +180,23 @@ const LoginContainer = ({ setLoading }: Props) => {
                     ngay!
                 </h3>
             </div>
+            <Modal
+                title="Nhập mã xác nhận OTP"
+                open={openOTPModal}
+                okText="Xác nhận"
+                onCancel={() => {
+                    setOpenOTPModal(false);
+                }}
+                destroyOnClose={true}
+                cancelText="Hủy"
+                cancelButtonProps={{ style: { background: 'white' } }}
+                width={300}
+                centered
+            >
+                <div className="my-6">
+                    <OtpInput value={otp} valueLength={4} onChange={onOTPChange} />
+                </div>
+            </Modal>
         </>
     );
 };
