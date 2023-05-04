@@ -197,11 +197,11 @@ const CreateServiceContainer = () => {
                         name="priceType"
                         label="Đơn vị định lượng"
                         rules={[{ required: true, message: 'Vui lòng chọn đơn vị định lượng' }]}
+                        initialValue={true}
                     >
                         <Select
                             placeholder="Chọn định lượng"
                             options={priceTypeOption}
-                            defaultValue={true}
                             onChange={handlePriceTypeChange}
                         ></Select>
                     </Form.Item>
