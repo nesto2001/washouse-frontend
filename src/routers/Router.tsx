@@ -67,6 +67,7 @@ import AdminPostPage from '../pages/AdminPage/AdminPost/AdminPostPage';
 import AdminServicePage from '../pages/AdminPage/AdminService/AdminServicePage';
 import ManagerPromotionsPage from '../pages/StaffPage/ManagerPromotion/ManagerPromotionsPage';
 import ManagerUpdateServicePage from '../pages/StaffPage/ManagerService/ManagerUpdateServicePage';
+import TermPage from '../pages/TermPage/TermPage';
 
 interface RouteProps {
     path: string;
@@ -95,6 +96,10 @@ const publicRoutes: Array<RouteProps> = [
     {
         path: '/blogs/:id',
         component: BlogPage,
+    },
+    {
+        path: '/terms',
+        component: TermPage,
     },
     {
         path: '/cart',

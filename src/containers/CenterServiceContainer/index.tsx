@@ -53,7 +53,6 @@ const CenterServiceContainer = (props: Props) => {
     const serviceCenterId = centerId ? parseInt(centerId) : 0;
 
     useEffect(() => {
-        console.log(centerId, serviceId);
         setIsLoading(true);
         const fetchData = async () => {
             if (serviceId && centerId) return await getService(serviceCenterId, parseInt(serviceId));
@@ -61,10 +60,7 @@ const CenterServiceContainer = (props: Props) => {
         fetchData()
             .then((res) => {
                 setService(res);
-                const fetchData = async () => {
-                    if (centerId) return await getCenterBrief(serviceCenterId);
-                };
-                fetchData().then((centerRes) => {
+                getCenterBrief(serviceCenterId).then((centerRes) => {
                     setCenter(centerRes);
                     setIsLoading(false);
                     centerRes?.id &&
@@ -455,29 +451,28 @@ const CenterServiceContainer = (props: Props) => {
                             <>
                                 <h3 className="text-xl font-bold pl-9">Dịch vụ khác</h3>
                                 <hr className="mt-2" />
-
                                 <Carousel
                                     showItem={serviceList.length < 3 ? serviceList.length : 3}
                                     items={serviceList.map((s) => {
                                         return (
                                             <ServiceCard
                                                 cardData={{
-                                                    id: service.id,
-                                                    thumbnail: service.image,
-                                                    title: service.name,
+                                                    id: s.id,
+                                                    thumbnail: s.image,
+                                                    title: s.name,
                                                     action: true,
                                                     actionContent: 'Xem dịch vụ',
                                                     actionLink: `/trung-tam/${formatLink(center.title)}-c.${
                                                         center.id
-                                                    }/${formatLink(service.name)}`,
+                                                    }/${formatLink(s.name)}`,
                                                     actionType: 'primary',
                                                     cardHeight: '464px',
-                                                    description: service.description,
+                                                    description: s.description,
                                                     minHeight: '132px',
-                                                    minPrice: service.minPrice,
-                                                    price: service.price ?? 0,
+                                                    minPrice: s.minPrice,
+                                                    price: s.price ?? undefined,
                                                 }}
-                                                serviceData={{ centerId: center.id, serviceId: service.id }}
+                                                serviceData={{ centerId: center.id, serviceId: s.id }}
                                             ></ServiceCard>
                                         );
                                     })}
@@ -587,7 +582,7 @@ const CenterServiceContainer = (props: Props) => {
                     <div className="service__sideinfo--center mt-6 p-6 border border-[#B3B3B3] rounded-2xl">
                         <h2 className="text-left font-bold text-2xl">Trung tâm</h2>
                         <div className="sideinfo__center--card mt-2">
-                            <div className="sideinfo__center--thumb rounded-lg overflow-hidden">
+                            <div className="sideinfo__center--thumb rounded-lg overflow-hidden max-h-[200px] object-cover">
                                 <img src={center.thumbnail ?? Placeholder} alt="" />
                             </div>
                             <div className="sideinfo__center-content text-left">
