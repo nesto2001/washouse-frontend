@@ -4,6 +4,7 @@ export type UserModel = {
     phone: string;
     roleType: string;
     name: string;
+    centerId?: number | null;
     avatar: string;
     dob?: string | null;
     locationId?: number | null;

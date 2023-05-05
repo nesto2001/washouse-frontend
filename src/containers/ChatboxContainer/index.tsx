@@ -9,6 +9,9 @@ import ChatItem from '../../components/Chat/ChatItem';
 import { UserModel } from '../../models/User/UserModel';
 import { db } from '../../utils/firebase';
 import { generateRandomString } from '../../utils/CommonUtils';
+import { getManagerCenter } from '../../repositories/StaffRepository';
+import { CenterModel } from '../../models/Center/CenterModel';
+import { ManagerCenterModel } from '../../models/Manager/ManagerCenterModel';
 
 interface MessageData {
     idFrom: string;
@@ -30,10 +33,11 @@ export interface MessageDetailData {
     document: string;
 }
 interface Props {
+    manager?: boolean;
     user: UserModel;
 }
 
-function ChatboxContainer({ user }: Props) {
+function ChatboxContainer({ user, manager }: Props) {
     const [open, setOpen] = useState<boolean>(false);
     const [messages, setMessages] = useState<MessageData[]>([]);
     const [messageDetails, setMessageDetails] = useState<MessageDetailData[]>([]);
@@ -44,7 +48,10 @@ function ChatboxContainer({ user }: Props) {
     useEffect(() => {
         const messageRef = collection(db, 'messages');
 
-        const q = query(messageRef, where('idFrom', '==', user.accountId.toString()));
+        const q =
+            manager && user.centerId
+                ? query(messageRef, where('idTo', '==', user.centerId.toString()))
+                : query(messageRef, where('idFrom', '==', user.accountId.toString()));
         const unsub = onSnapshot(q, { includeMetadataChanges: true }, (doc) => {
             forceUpdate();
         });
@@ -59,7 +66,10 @@ function ChatboxContainer({ user }: Props) {
     const getData = async () => {
         const messageRef = collection(db, 'messages');
 
-        const q = query(messageRef, where('idFrom', '==', user.accountId.toString()));
+        const q =
+            manager && user.centerId
+                ? query(messageRef, where('idTo', '==', user.centerId.toString()))
+                : query(messageRef, where('idFrom', '==', user.accountId.toString()));
 
         const querySnapshot = await getDocs(q);
 
@@ -148,7 +158,7 @@ function ChatboxContainer({ user }: Props) {
                 </div>
             </div>
             <div
-                className={`fixed bottom-6 right-6 h-[580px] w-[680px] transition-all ${
+                className={`fixed bottom-6 right-6 h-[580px] w-[680px] z-50 transition-all ${
                     !open ? 'scale-0 translate-x-1/2 translate-y-1/2' : 'scale-100'
                 }`}
             >

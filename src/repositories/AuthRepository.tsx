@@ -150,6 +150,7 @@ export const getMe = async (): Promise<UserModel> => {
         locationId: data.data.locationId,
         dob: data.data.dob,
         gender: data.data.gender,
+        centerId: data.data.centerManaged,
     };
 };
 

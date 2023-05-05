@@ -27,6 +27,8 @@ import { UserModel } from '../../models/User/UserModel';
 import { getMe } from '../../repositories/AuthRepository';
 import { getManagerCenter } from '../../repositories/StaffRepository';
 import style from './DashboardLayout.module.scss';
+import ChatBox from '../../components/Chat/ChatBox';
+import ChatboxContainer from '../../containers/ChatboxContainer';
 
 type Props = {
     children?: JSX.Element;
@@ -60,13 +62,6 @@ const ManagerDashboardLayout = ({ children }: Props) => {
     useMemo(
         () =>
             getManagerCenter().then((res) => {
-                console.log(
-                    !(
-                        pathname.includes('/provider/pending') ||
-                        pathname.includes('/provider/dashboard') ||
-                        pathname.includes('/provider/settings')
-                    ),
-                );
                 if (res.status.toLowerCase() === 'pending') {
                     if (
                         !(
@@ -200,6 +195,7 @@ const ManagerDashboardLayout = ({ children }: Props) => {
     return (
         <>
             {contextHolder}
+            {user && <ChatboxContainer user={user} manager />}
             <Layout hasSider className="text-left">
                 <Sider
                     trigger={null}

@@ -9,6 +9,7 @@ export type UserResponse = {
         roleType: string;
         name: string;
         avatar: string;
+        centerManaged?: number;
         locationId: number | null;
         gender: number | null;
         dob: 'string' | null;
