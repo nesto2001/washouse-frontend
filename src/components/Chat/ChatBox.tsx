@@ -46,7 +46,8 @@ function ChatBox({ name, time, messages, onSend, user }: ChatBoxProps) {
                     <ChatBubble
                         time={ms.timestamp}
                         left={ms.idFrom != user.accountId.toString()}
-                        msg={<>{ms.content}</>}
+                        msg={ms.content}
+                        type={ms.type}
                     />
                 ))}
             </div>

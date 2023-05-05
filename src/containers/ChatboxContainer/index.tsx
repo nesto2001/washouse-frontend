@@ -186,7 +186,9 @@ function ChatboxContainer({ user, manager }: Props) {
                                     name={
                                         message.idFrom == user.accountId.toString() ? message.nameTo : message.nameFrom
                                     }
-                                    lastMsg={message.lastContent}
+                                    lastMsg={
+                                        message.typeContent == 0 ? message.lastContent.substring(0, 20) : 'Hình ảnh'
+                                    }
                                     time={message.lastTimestamp}
                                     onClick={() => setCurrentBox(message)}
                                 />
