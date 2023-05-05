@@ -32,10 +32,7 @@ const CenterOrderDetailsContainer = (props: Props) => {
     useEffect(() => {
         setIsLoading(true);
         if (orderId) {
-            const fetchData = async () => {
-                return await getManagerCenterOrderDetails(orderId);
-            };
-            fetchData()
+            getManagerCenterOrderDetails(orderId)
                 .then((res) => {
                     setOrderDetails(res);
                 })

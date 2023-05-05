@@ -18,7 +18,7 @@ export type CenterOrderDetailsReponse = {
     preferredDropoffTime: string;
     preferredDeliverTime: string;
     status: string;
-    feedback: FeedbackOrderResponse;
+    feedback: FeedbackOrderResponse | null;
     orderedDetails: CenterOrderedServiceResponse[];
     orderTrackings: CenterOrderTrackingResponse[];
     orderDeliveries: CenterOrderDeliveryResponse[];
