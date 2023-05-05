@@ -1,4 +1,4 @@
-import TermContainer from '../../containers/BlogContainer';
+import TermContainer from '../../containers/TermContainer';
 
 const TermPage = () => {
     return (

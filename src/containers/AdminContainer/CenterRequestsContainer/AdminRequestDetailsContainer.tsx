@@ -67,7 +67,7 @@ const AdminRequestDetailsContainer = ({ center, type }: Props) => {
         <div className="bg-white basis-2/3 mx-auto rounded border border-wh-lightgray">
             <div className="provider__page--content px-6">
                 <div className="provider__services--wrapper">
-                    <AdminCenterDetailsBasics centerDetails={centerDetails.center} />
+                    <AdminCenterDetailsBasics centerDetails={centerDetails.center} request />
                 </div>
             </div>
         </div>

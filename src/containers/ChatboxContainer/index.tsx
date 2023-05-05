@@ -64,23 +64,25 @@ function ChatboxContainer({ user, manager }: Props) {
     }, []);
 
     useEffect(() => {
-        getCenterBrief(+centerId).then((res) => {
-            setCurrentBox(
-                messages.filter((ms) => ms.document == `${user.accountId}-${res.id}`)?.at(0) ?? {
-                    avatarFrom: user.avatar,
-                    avatarTo: res.thumbnail,
-                    idFrom: user.accountId?.toString(),
-                    idTo: res.id.toString(),
-                    lastContent: '',
-                    lastTimestamp: dayjs(),
-                    nameFrom: user.name,
-                    nameTo: res.title,
-                    typeContent: 0,
-                    document: `${user.accountId}-${res.id}`,
-                },
-            );
-            setCenter(res);
-        });
+        if (location.pathname.includes('/trung-tam/')) {
+            getCenterBrief(+centerId).then((res) => {
+                setCurrentBox(
+                    messages.filter((ms) => ms.document == `${user.accountId}-${res.id}`)?.at(0) ?? {
+                        avatarFrom: user.avatar,
+                        avatarTo: res.thumbnail,
+                        idFrom: user.accountId?.toString(),
+                        idTo: res.id.toString(),
+                        lastContent: '',
+                        lastTimestamp: dayjs(),
+                        nameFrom: user.name,
+                        nameTo: res.title,
+                        typeContent: 0,
+                        document: `${user.accountId}-${res.id}`,
+                    },
+                );
+                setCenter(res);
+            });
+        }
     }, [location.pathname]);
 
     useEffect(() => {

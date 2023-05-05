@@ -66,7 +66,7 @@ const AdminCenterDetailsFeedback = ({ centerFeedbacks }: Props) => {
                     placement="topLeft"
                 >
                     <div className="gap-2 cursor-pointer">
-                        <div>{record.services[0].name} </div>
+                        <div>{record.services?.at(0)?.name} </div>
                         <div className="font-bold">
                             {record.services.length > 1 && `và ${record.services.length - 1} dịch vụ khác`}
                         </div>

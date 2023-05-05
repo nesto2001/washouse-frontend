@@ -41,7 +41,7 @@ const ManagerDashboardLayout = ({ children }: Props) => {
     const userJson = localStorage.getItem('currentUser');
     const [collapsed, setCollapsed] = useState(false);
     const [user, setUser] = useState<UserModel | null>(userJson && JSON.parse(userJson));
-    const [userRole, setUserRole] = useState(user?.roleType ?? '');
+    const [userRole, setUserRole] = useState(user?.roleType.toLowerCase() ?? '');
     const navigate = useNavigate();
     const { pathname } = useLocation();
 
@@ -80,73 +80,131 @@ const ManagerDashboardLayout = ({ children }: Props) => {
     const {
         token: { colorBgContainer },
     } = theme.useToken();
-    const items = [
-        {
-            key: '1',
-            icon: <LineChartOutlined />,
-            label: (
-                <Link
-                    to={`${
-                        (userRole.toLowerCase() === 'manager' && '/provider/dashboard') ||
-                        (userRole.toLowerCase() === 'staff' && '/provider/staff/dashboard')
-                    }`}
-                >
-                    Bảng chính
-                </Link>
-            ),
-        },
-        {
-            key: '2',
-            icon: <SolutionOutlined />,
-            label: <Link to="/provider/orders">Đơn hàng</Link>,
-        },
-        {
-            key: '3',
-            icon: <CarOutlined />,
-            label: <Link to="/provider/delivery">Vận chuyển</Link>,
-        },
-        {
-            key: '4',
-            icon: <CalendarOutlined />,
-            label: <Link to="/provider/calendar">Đặt lịch</Link>,
-        },
-        {
-            key: '5',
-            icon: <HeartOutlined />,
-            label: <Link to="/provider/services">Dịch vụ</Link>,
-        },
-        {
-            key: '6',
-            icon: <GiftOutlined />,
-            label: <Link to="/provider/promotions">Khuyến mãi</Link>,
-        },
-        {
-            key: '7',
-            icon: <WalletOutlined />,
-            label: <Link to="/provider/promotions">Tài chính</Link>,
-            children: [
-                { key: '8', label: <Link to="/provider/finance/wallet">Số dư</Link> },
-                { key: '9', label: <Link to="/provider/finance/settings">Thiết lập thanh toán</Link> },
-            ],
-        },
-        {
-            key: '10',
-            icon: <ShopOutlined />,
-            label: 'Trung tâm',
-            children: [
-                { key: '11', label: <Link to="/provider/settings/center/profile">Hồ sơ trung tâm</Link> },
-                // { key: '12', label: <Link to="/provider/settings/center/gallery">Hình ảnh trung tâm</Link> },
-                { key: '13', label: <Link to="/provider/settings/center/rating">Đánh giá trung tâm</Link> },
-                { key: '14', label: <Link to="/provider/settings/center/">Thiết lập trung tâm</Link> },
-                { key: '15', label: <Link to="/provider/settings/center/staff">Danh sách nhân viên</Link> },
-            ],
-        },
-        {
-            key: '16',
-            icon: <UserOutlined />,
-            label: <Link to="/provider/customers">Khách hàng</Link>,
-        },
-    ];
+    const items =
+        userRole === 'manager'
+            ? [
+                  {
+                      key: '1',
+                      icon: <LineChartOutlined />,
+                      label: (
+                          <Link
+                              to={`${
+                                  (userRole.toLowerCase() === 'manager' && '/provider/dashboard') ||
+                                  (userRole.toLowerCase() === 'staff' && '/provider/staff/dashboard')
+                              }`}
+                          >
+                              Bảng chính
+                          </Link>
+                      ),
+                  },
+                  {
+                      key: '2',
+                      icon: <SolutionOutlined />,
+                      label: <Link to="/provider/orders">Đơn hàng</Link>,
+                  },
+                  {
+                      key: '3',
+                      icon: <CarOutlined />,
+                      label: <Link to="/provider/delivery">Vận chuyển</Link>,
+                  },
+                  {
+                      key: '4',
+                      icon: <CalendarOutlined />,
+                      label: <Link to="/provider/calendar">Đặt lịch</Link>,
+                  },
+                  {
+                      key: '5',
+                      icon: <HeartOutlined />,
+                      label: <Link to="/provider/services">Dịch vụ</Link>,
+                  },
+                  {
+                      key: '6',
+                      icon: <GiftOutlined />,
+                      label: <Link to="/provider/promotions">Khuyến mãi</Link>,
+                  },
+                  {
+                      key: '7',
+                      icon: <WalletOutlined />,
+                      label: <Link to="/provider/promotions">Tài chính</Link>,
+                      children: [
+                          { key: '8', label: <Link to="/provider/finance/wallet">Số dư</Link> },
+                          { key: '9', label: <Link to="/provider/finance/settings">Thiết lập thanh toán</Link> },
+                      ],
+                  },
+                  {
+                      key: '10',
+                      icon: <ShopOutlined />,
+                      label: 'Trung tâm',
+                      children: [
+                          { key: '11', label: <Link to="/provider/settings/center/profile">Hồ sơ trung tâm</Link> },
+                          // { key: '12', label: <Link to="/provider/settings/center/gallery">Hình ảnh trung tâm</Link> },
+                          { key: '13', label: <Link to="/provider/settings/center/rating">Đánh giá trung tâm</Link> },
+                          { key: '14', label: <Link to="/provider/settings/center/">Thiết lập trung tâm</Link> },
+                          { key: '15', label: <Link to="/provider/settings/center/staff">Danh sách nhân viên</Link> },
+                      ],
+                  },
+                  {
+                      key: '16',
+                      icon: <UserOutlined />,
+                      label: <Link to="/provider/customers">Khách hàng</Link>,
+                  },
+              ]
+            : [
+                  {
+                      key: '1',
+                      icon: <LineChartOutlined />,
+                      label: (
+                          <Link
+                              to={`${
+                                  (userRole.toLowerCase() === 'manager' && '/provider/dashboard') ||
+                                  (userRole.toLowerCase() === 'staff' && '/provider/staff/dashboard')
+                              }`}
+                          >
+                              Bảng chính
+                          </Link>
+                      ),
+                  },
+                  {
+                      key: '2',
+                      icon: <SolutionOutlined />,
+                      label: <Link to="/provider/orders">Đơn hàng</Link>,
+                  },
+                  {
+                      key: '3',
+                      icon: <CarOutlined />,
+                      label: <Link to="/provider/delivery">Vận chuyển</Link>,
+                  },
+                  {
+                      key: '4',
+                      icon: <CalendarOutlined />,
+                      label: <Link to="/provider/calendar">Đặt lịch</Link>,
+                  },
+                  {
+                      key: '5',
+                      icon: <HeartOutlined />,
+                      label: <Link to="/provider/services">Dịch vụ</Link>,
+                  },
+                  {
+                      key: '6',
+                      icon: <GiftOutlined />,
+                      label: <Link to="/provider/promotions">Khuyến mãi</Link>,
+                  },
+                  {
+                      key: '10',
+                      icon: <ShopOutlined />,
+                      label: 'Trung tâm',
+                      children: [
+                          { key: '11', label: <Link to="/provider/settings/center/profile">Hồ sơ trung tâm</Link> },
+                          // { key: '12', label: <Link to="/provider/settings/center/gallery">Hình ảnh trung tâm</Link> },
+                          { key: '13', label: <Link to="/provider/settings/center/rating">Đánh giá trung tâm</Link> },
+                      ],
+                  },
+                  {
+                      key: '16',
+                      icon: <UserOutlined />,
+                      label: <Link to="/provider/customers">Khách hàng</Link>,
+                  },
+              ];
 
     const userDropdown: MenuProps['items'] = [
         {
