@@ -41,6 +41,10 @@ const items: TabsProps['items'] = [
         label: `Xác nhận`,
     },
     {
+        key: 'Received',
+        label: `Đã nhận hàng`,
+    },
+    {
         key: 'Processing',
         label: `Đang xử lý`,
     },

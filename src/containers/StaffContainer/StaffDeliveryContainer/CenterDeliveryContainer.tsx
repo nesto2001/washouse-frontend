@@ -122,7 +122,29 @@ const CenterDeliveryContainer = ({ setSelectedOrder, openPanel, selectedOrder }:
     }
 
     if (isError) {
-        return <Empty description="Không có đơn hàng nào" className="mb-5" />;
+        return (
+            <Empty
+                className="mb-10"
+                image={Empty.PRESENTED_IMAGE_DEFAULT}
+                imageStyle={{ height: 160, width: 384, margin: '0 auto', marginBottom: 20 }}
+                description={
+                    <span className="text-xl font-medium text-sub-gray">Chưa có đơn hàng nào cần vận chuyển</span>
+                }
+            ></Empty>
+        );
+    }
+
+    if (!orders || orders.length < 1) {
+        return (
+            <Empty
+                className="mb-10"
+                image={Empty.PRESENTED_IMAGE_DEFAULT}
+                imageStyle={{ height: 160, width: 664, margin: '0 auto', marginBottom: 20 }}
+                description={
+                    <span className="text-xl font-medium text-sub-gray">Chưa có đơn hàng nào cần vận chuyển</span>
+                }
+            ></Empty>
+        );
     }
 
     const handleViewOrder = (id: string) => {
