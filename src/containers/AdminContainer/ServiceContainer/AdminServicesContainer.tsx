@@ -1,16 +1,16 @@
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input, Modal, Table, Upload, UploadFile, message } from 'antd';
-import { ColumnsType } from 'antd/es/table';
-import { useEffect, useState, useCallback } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { ServiceCategoryDetailModel } from '../../../models/Category/ServiceCategoryDetailModel';
-import { getServiceCategories, pinCategory, unpinCategory } from '../../../repositories/ServiceCategoryRepository';
-import { UploadOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { TbPin, TbPinnedOff } from 'react-icons/tb';
 import TextArea from 'antd/es/input/TextArea';
+import { ColumnsType } from 'antd/es/table';
 import { UploadChangeParam } from 'antd/es/upload';
-import { uploadSingle } from '../../../repositories/MediaRepository';
+import { useCallback, useEffect, useState } from 'react';
+import { TbPin, TbPinnedOff } from 'react-icons/tb';
+import { useLocation } from 'react-router-dom';
 import { CategoryRequest } from '../../../models/Category/CategoryRequest';
+import { ServiceCategoryDetailModel } from '../../../models/Category/ServiceCategoryDetailModel';
 import { createCategory } from '../../../repositories/AdminRepository';
+import { uploadSingle } from '../../../repositories/MediaRepository';
+import { getServiceCategories, pinCategory, unpinCategory } from '../../../repositories/ServiceCategoryRepository';
 
 type Props = {};
 
@@ -106,7 +106,7 @@ const AdminServicesContainer = (props: Props) => {
         getServiceCategories().then((res) => {
             setServices(res);
         });
-    }, [state]);
+    }, [state, openCreate]);
 
     const uploadButton = (
         <div>
@@ -150,6 +150,7 @@ const AdminServicesContainer = (props: Props) => {
                 };
                 createCategory(req)
                     .then((res) => {
+                        setOpenCreate(false);
                         message.success('Tạo phân loại thành công');
                     })
                     .catch((err) => {
@@ -165,6 +166,7 @@ const AdminServicesContainer = (props: Props) => {
             };
             createCategory(req)
                 .then((res) => {
+                    setOpenCreate(false);
                     message.success('Tạo phân loại thành công');
                 })
                 .catch((err) => {
@@ -198,9 +200,6 @@ const AdminServicesContainer = (props: Props) => {
             </div>
             <Modal
                 open={openCreate}
-                closable
-                maskClosable
-                destroyOnClose
                 okText="Tạo phân loại"
                 cancelText="Hủy"
                 onCancel={() => {
@@ -209,7 +208,9 @@ const AdminServicesContainer = (props: Props) => {
                 cancelButtonProps={{ style: { background: 'white' } }}
                 title="Tạo mới phân loại"
                 width={500}
-                onOk={() => form.submit()}
+                onOk={() => {
+                    form.submit();
+                }}
                 centered
             >
                 <Form

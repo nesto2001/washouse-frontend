@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
-import Placeholder from '../../../assets/images/placeholder.png';
 import LogoText from '../../../assets/images/washouse-textonly.png';
 import Carousel from '../../../components/Carousel';
 import ServiceCard from '../../../components/ServiceCard';
 import { ServiceCategoryDetailModel } from '../../../models/Category/ServiceCategoryDetailModel';
 import { getServiceCategories } from '../../../repositories/ServiceCategoryRepository';
-import { CardData } from '../../../types/CardData';
 import { splitDescription } from '../../../utils/CommonUtils';
 
 const HomeServices = () => {
@@ -28,18 +26,20 @@ const HomeServices = () => {
                 <div className="service__slider--wrapper mx-40">
                     {serviceCategories && (
                         <Carousel
-                            items={serviceCategories.map((serviceCategory) => {
-                                return (
-                                    <ServiceCard
-                                        cardData={{
-                                            id: serviceCategory.categoryId,
-                                            description: splitDescription(serviceCategory.description, 140),
-                                            thumbnail: serviceCategory.image,
-                                            title: serviceCategory.categoryName,
-                                        }}
-                                    ></ServiceCard>
-                                );
-                            })}
+                            items={serviceCategories
+                                .filter((cate) => cate.homeFlag == true)
+                                .map((serviceCategory) => {
+                                    return (
+                                        <ServiceCard
+                                            cardData={{
+                                                id: serviceCategory.categoryId,
+                                                description: splitDescription(serviceCategory.description, 140),
+                                                thumbnail: serviceCategory.image,
+                                                title: serviceCategory.categoryName,
+                                            }}
+                                        ></ServiceCard>
+                                    );
+                                })}
                         ></Carousel>
                     )}
                 </div>
