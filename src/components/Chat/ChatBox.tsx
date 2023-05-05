@@ -1,73 +1,52 @@
 import TextArea from 'antd/es/input/TextArea';
 import dayjs from 'dayjs';
-import {
-    DocumentData,
-    FieldValue,
-    QuerySnapshot,
-    collection,
-    limit,
-    onSnapshot,
-    orderBy,
-    query,
-} from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { FieldValue } from 'firebase/firestore';
+import { useEffect, useRef, useState } from 'react';
 import { IoSend } from 'react-icons/io5';
-import { db } from '../../utils/firebase';
-import { pathMessageCollection, timestamp } from '../../common/FirebaseConstant';
+import { MessageDetailData } from '../../containers/ChatboxContainer';
+import { UserModel } from '../../models/User/UserModel';
 import ChatBubble from './ChatBubble';
 
-type ChatMessage = {
-    text: string;
-    timestamp: FieldValue;
-    userId: string;
-};
-
 type ChatBoxProps = {
+    user: UserModel;
     name?: string;
     time?: dayjs.Dayjs;
+    messages: MessageDetailData[];
+    onSend: (message: MessageDetailData) => void;
 };
 
-function ChatBox({ name, time }: ChatBoxProps) {
-    const [messages, setMessages] = useState([]);
-
-    const getChatStream = (groupChatId: string, limitNum: number) => {
-        return onSnapshot(
-            query(
-                collection(db, pathMessageCollection, groupChatId, 'msglist'),
-                orderBy(timestamp, 'desc'),
-                limit(limitNum),
-            ),
-            (snapshot: QuerySnapshot<DocumentData>) => {
-                const messages = snapshot.docs.map((doc) => ({
-                    ...doc.data(),
-                    id: doc.id,
-                }));
-                console.log('Messages:', messages);
-            },
-            (error: Error) => {
-                console.log('Error fetching messages:', error);
-            },
-        );
+function ChatBox({ name, time, messages, onSend, user }: ChatBoxProps) {
+    const boxRef = useRef<HTMLDivElement>(null);
+    const [content, setContent] = useState<string>();
+    const handleSend = () => {
+        if (content) {
+            onSend({
+                content: content,
+                type: 0,
+                timestamp: dayjs(),
+                document: '',
+                idFrom: '',
+            });
+            setContent(undefined);
+        }
     };
-
     useEffect(() => {
-        const unsubscribe = getChatStream('your_group_chat_id', 10);
-        return () => {
-            unsubscribe();
-        };
-    }, []);
+        boxRef.current?.scrollTo(0, boxRef.current.scrollHeight);
+    }, [messages]);
 
     return (
         <div className={`w-full flex flex-col gap-2 items-center justify-between}`}>
             <div className="chatbox__header w-full bg-ws-light-gray border-b-2 p-2">
                 <div className="text-sm font-bold text-left">{name ?? 'Giặt sấy Dr.Clean'}</div>
             </div>
-            <div className="p-2 w-full">
-                <ChatBubble left msg={<>Oke bạn nha</>} />
-                <ChatBubble msg={<>Oke bạn nè</>} />
-                <ChatBubble left msg={<>Nhớ đánh giá cho mình 5 sao ngen. Mãi iêuuu</>} />
-                <ChatBubble msg={<>Oke bạn hí hí</>} />
-                <ChatBubble left msg={<>Ô cê con dêeeeeee</>} />
+            <div className="p-2 w-full overflow-y-scroll scroll-smooth h-96" ref={boxRef}>
+                {messages.map((ms) => (
+                    <ChatBubble
+                        time={ms.timestamp}
+                        left={ms.idFrom != user.accountId.toString()}
+                        msg={<>{ms.content}</>}
+                    />
+                ))}
             </div>
             <div className="chatbox__typing left-0 right-0 bottom-0 absolute h-16 border-t-2">
                 <TextArea
@@ -75,10 +54,18 @@ function ChatBox({ name, time }: ChatBoxProps) {
                     placeholder="Nhập nội dung tin nhắn"
                     style={{ resize: 'none' }}
                     bordered={false}
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
                     rows={1}
+                    onKeyDown={(e) => {
+                        if (e.key == 'Enter') {
+                            e.preventDefault();
+                            handleSend();
+                        }
+                    }}
                 />
                 <div className="cursor-pointer absolute right-5 bottom-1/2 translate-y-1/2">
-                    <IoSend className="text-xl" />
+                    <IoSend className="text-xl" onClick={handleSend} />
                 </div>
             </div>
         </div>
