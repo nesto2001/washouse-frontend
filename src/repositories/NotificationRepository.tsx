@@ -12,7 +12,7 @@ export const getNotifications = async (): Promise<NotificationListModel> => {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
     });
-    
+
     return {
         numOfUnread: data.data.numOfUnread,
         notifications: data.data.notifications.map((item): NotificationModel => {
@@ -36,6 +36,9 @@ export const readNotification = async (id: number) => {
         {
             params: {
                 notiId: id,
+            },
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
             },
         },
     );
