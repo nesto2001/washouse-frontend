@@ -8,6 +8,7 @@ import {
     API_OTP_LOGIN,
     API_OTP_VERIFY,
     API_OTP_VERIFY_LOGIN,
+    API_OTP_VERIFY_LOGIN_STAFF,
     API_REFRESH_TOKEN,
     API_REGISTER_CUSTOMER,
     API_REGISTER_PROVIDER,
@@ -56,6 +57,15 @@ export const verifyOTP = async (phone: string, otp: string) => {
 export const loginOTP = async (phone: string, otp: string) => {
     const response = await instance.post<Response<LoginResponse>>(
         API_OTP_VERIFY_LOGIN,
+        { phonenumber: phone, otp: otp },
+        {},
+    );
+    return response;
+};
+
+export const loginOTPStaff = async (phone: string, otp: string) => {
+    const response = await instance.post<Response<LoginResponse>>(
+        API_OTP_VERIFY_LOGIN_STAFF,
         { phonenumber: phone, otp: otp },
         {},
     );

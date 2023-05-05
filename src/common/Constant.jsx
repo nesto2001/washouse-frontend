@@ -6,6 +6,7 @@ const API_OTP = '/api/verifys/send/otp';
 const API_OTP_LOGIN = '/api/verifys/send/otp';
 const API_OTP_VERIFY = '/api/verifys/sms/check';
 const API_OTP_VERIFY_LOGIN = '/api/accounts/login/otp';
+const API_OTP_VERIFY_LOGIN_STAFF = '/api/accounts/login-staff/otp';
 const API_LOGIN_GOOGLE = '/api/accounts/login/google';
 const API_LOGIN_STAFF = '/api/accounts/login-staff';
 const API_ME = '/api/accounts/me';
@@ -137,6 +138,7 @@ const API_WALLET_ACTIVATE = '/api/wallets/active';
 const RE_DIGIT = new RegExp(/^\d+$/);
 
 export {
+    API_OTP_VERIFY_LOGIN_STAFF,
     API_OTP_LOGIN,
     API_OTP_VERIFY_LOGIN,
     API_OTP,

@@ -96,63 +96,7 @@ const LoginContainer = ({ setLoading }: Props) => {
         window.location = url as unknown as Location;
     };
 
-    const handleOTPLogin = () => {
-        setIsFetching(true);
-        if (loginForm.phone) {
-            setIsFetching(false);
-            sendOTPLogin(loginForm.phone).then((res) => {
-                message.success(`Đã gửi mã xác nhận đến SĐT ${loginForm.phone}`);
-                setOpenOTPModal(true);
-            });
-        } else {
-            setLoginError('Vui lòng nhập đầy đủ thông tin đăng nhập!');
-            setIsFetching(false);
-        }
-    };
 
-    const handleResendOTP = () => {
-        if (loginForm.phone) {
-            sendOTPLogin(loginForm.phone).then((res) => {
-                message.success(`Đã gửi lại mã xác nhận đến SĐT ${loginForm.phone}`);
-                handleStartClick();
-            });
-        } else {
-            setLoginError('Vui lòng nhập đầy đủ thông tin đăng nhập!');
-        }
-    };
-
-    const handleVerifyOTP = () => {
-        setIsOTPFetching(true);
-        loginOTP(loginForm.phone, otp)
-            .then((res) => {
-                message.success('Mã xác nhận chính xác, tiến hành đăng nhập');
-                localStorage.setItem('accessToken', res.data.data.accessToken);
-                localStorage.setItem('refreshToken', res.data.data.refreshToken);
-                getMe().then((res) => {
-                    setIsOTPFetching(false);
-                    localStorage.setItem('currentUser', JSON.stringify(res));
-                    navigate('/trung-tam');
-                });
-            })
-            .catch(() => {
-                message.error('Mã xác nhận không chính xác');
-            })
-            .finally(() => {
-                setIsOTPFetching(false);
-            });
-    };
-
-    const renderer = ({ seconds, completed }: { seconds: number; completed: boolean }) => {
-        if (completed) {
-            return (
-                <span onClick={handleResendOTP} className="font-medium text-primary hover:text-ws-primary-hover">
-                    Gửi lại mã
-                </span>
-            );
-        } else {
-            return <span className="font-medium text-ws-gray">({zeroPad(seconds)})</span>;
-        }
-    };
 
     return (
         <>
