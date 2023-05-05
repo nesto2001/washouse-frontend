@@ -44,10 +44,7 @@ function ChatboxContainer({ user }: Props) {
     useEffect(() => {
         const messageRef = collection(db, 'messages');
 
-        const q = query(
-            messageRef,
-            or(where('idFrom', '==', user.accountId.toString()), where('idTo', '==', user.accountId.toString())),
-        );
+        const q = query(messageRef, where('idFrom', '==', user.accountId.toString()));
         const unsub = onSnapshot(q, { includeMetadataChanges: true }, (doc) => {
             forceUpdate();
         });
@@ -62,17 +59,13 @@ function ChatboxContainer({ user }: Props) {
     const getData = async () => {
         const messageRef = collection(db, 'messages');
 
-        const q = query(
-            messageRef,
-            or(where('toId', '==', user.accountId.toString()), where('fromId', '==', user.accountId.toString())),
-        );
+        const q = query(messageRef, where('idFrom', '==', user.accountId.toString()));
 
-        const querySnapshot = await getDocs(messageRef);
+        const querySnapshot = await getDocs(q);
 
         const chatList: MessageData[] = [];
 
         querySnapshot.forEach((doc) => {
-            console.log(doc.data());
             chatList.push({
                 document: doc.id,
                 avatarFrom: doc.data().avatarFrom,
@@ -175,8 +168,14 @@ function ChatboxContainer({ user }: Props) {
                             {messages?.map((message) => (
                                 <ChatItem
                                     active={message.document == currentBox?.document}
-                                    avatar={message.avatarTo}
-                                    name={message.nameTo}
+                                    avatar={
+                                        message.idFrom == user.accountId.toString()
+                                            ? message.avatarTo
+                                            : message.avatarFrom
+                                    }
+                                    name={
+                                        message.idFrom == user.accountId.toString() ? message.nameTo : message.nameFrom
+                                    }
                                     lastMsg={message.lastContent}
                                     time={message.lastTimestamp}
                                     onClick={() => setCurrentBox(message)}

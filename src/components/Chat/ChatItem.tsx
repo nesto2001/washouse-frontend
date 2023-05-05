@@ -28,7 +28,6 @@ function ChatItem({ onClick, avatar, name, lastMsg, time, active, numOfUnread }:
             </div>
             <div className="flex flex-col items-end justify-between h-full">
                 <div className="text-sm">{time?.format('DD/MM')}</div>
-                <Badge count={numOfUnread ?? 1} size="small" />
             </div>
         </div>
     );

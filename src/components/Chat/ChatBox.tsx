@@ -36,9 +36,11 @@ function ChatBox({ name, time, messages, onSend, user }: ChatBoxProps) {
 
     return (
         <div className={`w-full flex flex-col gap-2 items-center justify-between}`}>
-            <div className="chatbox__header w-full bg-ws-light-gray border-b-2 p-2">
-                <div className="text-sm font-bold text-left">{name ?? 'Giặt sấy Dr.Clean'}</div>
-            </div>
+            {name && (
+                <div className="chatbox__header w-full bg-ws-light-gray border-b-2 p-2">
+                    <div className="text-sm font-bold text-left">{name}</div>
+                </div>
+            )}
             <div className="p-2 w-full overflow-y-scroll scroll-smooth h-96" ref={boxRef}>
                 {messages.map((ms) => (
                     <ChatBubble
