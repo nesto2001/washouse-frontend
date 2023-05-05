@@ -18,7 +18,7 @@ type Props = {
     formInstance: FormInstance;
     onBack: () => void;
     formData: CheckoutFormData;
-    handleSubmit: (event: React.MouseEvent<HTMLButtonElement>) => void;
+    handleSubmit: () => void;
 };
 
 const CreateOrderStep4 = ({ formInstance, onBack, formData, handleSubmit }: Props) => {
@@ -144,7 +144,7 @@ const CreateOrderStep4 = ({ formInstance, onBack, formData, handleSubmit }: Prop
                 </div>
             </div>
             <div className="my-10 h-8">
-                <Button className="float-right ml-6" type="primary" onClick={() => handleSubmit}>
+                <Button className="float-right ml-6" type="primary" onClick={handleSubmit}>
                     Tạo đơn hàng
                 </Button>
                 <Button className="float-right" type="default" style={{ background: 'white' }} onClick={handleBack}>
