@@ -1,4 +1,5 @@
 import { OperatingDay } from '../../types/OperatingDay';
+import { DeliveryPriceType } from '../../types/Price/DeliveryPriceType';
 import { ServiceCategoryModel } from '../Service/ServiceCategoryModel';
 
 export interface CenterDetailsModel {
@@ -17,7 +18,7 @@ export interface CenterDetailsModel {
     maxPrice?: number;
     monthOff?: boolean;
     hasDelivery: boolean;
-    centerDeliveryPrices?: [];
+    centerDeliveryPrices?: DeliveryPriceType[];
     ratings: number[];
     centerLocation: {
         latitude: number;

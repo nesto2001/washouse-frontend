@@ -409,126 +409,132 @@ const OrderDetailsContainer = (props: Props) => {
                                         </h3>
                                     </div>
                                 </div>
-                                <div className="orderdetails__order--summary p-6 border border-wh-gray rounded-2xl mt-6">
-                                    <h2 className="font-bold text-xl text-left">Thông tin vận chuyển</h2>
-                                    <hr className="mt-3 mb-6" />
-                                    {orderDetails.orderDeliveries.map((delivery, index) => {
-                                        return (
-                                            (!delivery.type && (
-                                                <>
-                                                    <div className="text-base">
-                                                        <div className="flex justify-between items-baseline mb-4">
-                                                            <h2 className="font-semibold text-lg">Lấy đơn hàng</h2>
-                                                            <h4 className="font-medium text-sm">
-                                                                <Tag
-                                                                    color={
-                                                                        DeliveryBadgeStatusMap[delivery.status ?? '']
-                                                                    }
-                                                                    style={{ marginRight: 0 }}
-                                                                >
-                                                                    {DeliveryStatusMap[delivery.status ?? '']}
-                                                                </Tag>
-                                                            </h4>
+                                {orderDetails.orderDeliveries.length > 0 && (
+                                    <div className="orderdetails__order--summary p-6 border border-wh-gray rounded-2xl mt-6">
+                                        <h2 className="font-bold text-xl text-left">Thông tin vận chuyển</h2>
+                                        <hr className="mt-3 mb-6" />
+                                        {orderDetails.orderDeliveries.map((delivery, index) => {
+                                            return (
+                                                (!delivery.type && (
+                                                    <>
+                                                        <div className="text-base">
+                                                            <div className="flex justify-between items-baseline mb-4">
+                                                                <h2 className="font-semibold text-lg">Lấy đơn hàng</h2>
+                                                                <h4 className="font-medium text-sm">
+                                                                    <Tag
+                                                                        color={
+                                                                            DeliveryBadgeStatusMap[
+                                                                                delivery.status ?? ''
+                                                                            ]
+                                                                        }
+                                                                        style={{ marginRight: 0 }}
+                                                                    >
+                                                                        {DeliveryStatusMap[delivery.status ?? '']}
+                                                                    </Tag>
+                                                                </h4>
+                                                            </div>
+                                                            <div className="grid grid-cols-2 gap-y-1 mt-2 text-sm text-left">
+                                                                <h2 className="col-span-1 text-sub-gray font-medium t">
+                                                                    Nhân viên:
+                                                                </h2>
+                                                                <h2 className="col-span-1 text-right">
+                                                                    {delivery.shipperName ?? '-'}
+                                                                </h2>
+                                                                <h2 className="col-span-1 text-sub-gray font-medium">
+                                                                    SĐT Nhân viên:
+                                                                </h2>
+                                                                <h2 className="col-span-1 text-right">
+                                                                    {delivery.shipperPhone ?? '-'}
+                                                                </h2>
+                                                                <h2 className="col-span-1 text-sub-gray font-medium">
+                                                                    Ngày vận chuyển:
+                                                                </h2>
+                                                                <h2 className="col-span-1 text-right">
+                                                                    {delivery.date ?? '-'}
+                                                                </h2>
+                                                                <h2 className="col-span-1 text-sub-gray font-medium">
+                                                                    Địa điểm:
+                                                                </h2>
+                                                                <h2 className="col-span-1 text-right">
+                                                                    {delivery.addressString}
+                                                                </h2>
+                                                                <h2 className="col-span-1 text-sub-gray font-medium">
+                                                                    Ước tính
+                                                                </h2>
+                                                                <h2 className="col-span-1 text-right">
+                                                                    {delivery.estimated
+                                                                        ? `${delivery.estimated} phút`
+                                                                        : '-'}
+                                                                </h2>
+                                                            </div>
                                                         </div>
-                                                        <div className="grid grid-cols-2 gap-y-1 mt-2 text-sm text-left">
-                                                            <h2 className="col-span-1 text-sub-gray font-medium t">
-                                                                Nhân viên:
-                                                            </h2>
-                                                            <h2 className="col-span-1 text-right">
-                                                                {delivery.shipperName ?? '-'}
-                                                            </h2>
-                                                            <h2 className="col-span-1 text-sub-gray font-medium">
-                                                                SĐT Nhân viên:
-                                                            </h2>
-                                                            <h2 className="col-span-1 text-right">
-                                                                {delivery.shipperPhone ?? '-'}
-                                                            </h2>
-                                                            <h2 className="col-span-1 text-sub-gray font-medium">
-                                                                Ngày vận chuyển:
-                                                            </h2>
-                                                            <h2 className="col-span-1 text-right">
-                                                                {delivery.date ?? '-'}
-                                                            </h2>
-                                                            <h2 className="col-span-1 text-sub-gray font-medium">
-                                                                Địa điểm:
-                                                            </h2>
-                                                            <h2 className="col-span-1 text-right">
-                                                                {delivery.addressString}
-                                                            </h2>
-                                                            <h2 className="col-span-1 text-sub-gray font-medium">
-                                                                Ước tính
-                                                            </h2>
-                                                            <h2 className="col-span-1 text-right">
-                                                                {delivery.estimated
-                                                                    ? `${delivery.estimated} phút`
-                                                                    : '-'}
-                                                            </h2>
+                                                        {index === 0 && orderDetails.deliveryType === 3 && (
+                                                            <hr className="my-3 border-wh-gray" />
+                                                        )}
+                                                    </>
+                                                )) ||
+                                                (delivery.type && (
+                                                    <>
+                                                        <div className="text-base">
+                                                            <div className="flex justify-between items-baseline mb-4">
+                                                                <h2 className="font-semibold text-lg">Trả đơn hàng</h2>
+                                                                <h4 className="font-medium text-sm">
+                                                                    <Tag
+                                                                        color={
+                                                                            DeliveryBadgeStatusMap[
+                                                                                delivery.status ?? ''
+                                                                            ]
+                                                                        }
+                                                                        style={{ marginRight: 0 }}
+                                                                    >
+                                                                        {DeliveryStatusMap[delivery.status ?? '']}
+                                                                    </Tag>
+                                                                </h4>
+                                                            </div>
+                                                            <div className="grid grid-cols-2 gap-y-1 mt-2 text-sm text-left">
+                                                                <h2 className="col-span-1 text-sub-gray font-medium">
+                                                                    Nhân viên:
+                                                                </h2>
+                                                                <h2 className="col-span-1 text-right">
+                                                                    {delivery.shipperName ?? '-'}
+                                                                </h2>
+                                                                <h2 className="col-span-1 text-sub-gray font-medium">
+                                                                    SĐT Nhân viên:
+                                                                </h2>
+                                                                <h2 className="col-span-1 text-right">
+                                                                    {delivery.shipperPhone ?? '-'}
+                                                                </h2>
+                                                                <h2 className="col-span-1 text-sub-gray font-medium">
+                                                                    Ngày vận chuyển:
+                                                                </h2>
+                                                                <h2 className="col-span-1 text-right">
+                                                                    {delivery.date ?? '-'}
+                                                                </h2>
+                                                                <h2 className="col-span-1 text-sub-gray font-medium">
+                                                                    Địa điểm:
+                                                                </h2>
+                                                                <h2 className="col-span-1 text-right">
+                                                                    {delivery.addressString}
+                                                                </h2>
+                                                                <h2 className="col-span-1 text-sub-gray font-medium">
+                                                                    Thời gian ước tính:
+                                                                </h2>
+                                                                <h2 className="col-span-1 text-right">
+                                                                    {delivery.estimated
+                                                                        ? `${delivery.estimated} phút`
+                                                                        : '-'}
+                                                                </h2>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    {index === 0 && orderDetails.deliveryType === 3 && (
-                                                        <hr className="my-3 border-wh-gray" />
-                                                    )}
-                                                </>
-                                            )) ||
-                                            (delivery.type && (
-                                                <>
-                                                    <div className="text-base">
-                                                        <div className="flex justify-between items-baseline mb-4">
-                                                            <h2 className="font-semibold text-lg">Trả đơn hàng</h2>
-                                                            <h4 className="font-medium text-sm">
-                                                                <Tag
-                                                                    color={
-                                                                        DeliveryBadgeStatusMap[delivery.status ?? '']
-                                                                    }
-                                                                    style={{ marginRight: 0 }}
-                                                                >
-                                                                    {DeliveryStatusMap[delivery.status ?? '']}
-                                                                </Tag>
-                                                            </h4>
-                                                        </div>
-                                                        <div className="grid grid-cols-2 gap-y-1 mt-2 text-sm text-left">
-                                                            <h2 className="col-span-1 text-sub-gray font-medium">
-                                                                Nhân viên:
-                                                            </h2>
-                                                            <h2 className="col-span-1 text-right">
-                                                                {delivery.shipperName ?? '-'}
-                                                            </h2>
-                                                            <h2 className="col-span-1 text-sub-gray font-medium">
-                                                                SĐT Nhân viên:
-                                                            </h2>
-                                                            <h2 className="col-span-1 text-right">
-                                                                {delivery.shipperPhone ?? '-'}
-                                                            </h2>
-                                                            <h2 className="col-span-1 text-sub-gray font-medium">
-                                                                Ngày vận chuyển:
-                                                            </h2>
-                                                            <h2 className="col-span-1 text-right">
-                                                                {delivery.date ?? '-'}
-                                                            </h2>
-                                                            <h2 className="col-span-1 text-sub-gray font-medium">
-                                                                Địa điểm:
-                                                            </h2>
-                                                            <h2 className="col-span-1 text-right">
-                                                                {delivery.addressString}
-                                                            </h2>
-                                                            <h2 className="col-span-1 text-sub-gray font-medium">
-                                                                Thời gian ước tính:
-                                                            </h2>
-                                                            <h2 className="col-span-1 text-right">
-                                                                {delivery.estimated
-                                                                    ? `${delivery.estimated} phút`
-                                                                    : '-'}
-                                                            </h2>
-                                                        </div>
-                                                    </div>
-                                                    {index === 0 && orderDetails.deliveryType === 3 && (
-                                                        <hr className="my-3 border-wh-gray" />
-                                                    )}
-                                                </>
-                                            ))
-                                        );
-                                    })}
-                                </div>
+                                                        {index === 0 && orderDetails.deliveryType === 3 && (
+                                                            <hr className="my-3 border-wh-gray" />
+                                                        )}
+                                                    </>
+                                                ))
+                                            );
+                                        })}
+                                    </div>
+                                )}
                                 {orderDetails.feedback && (
                                     <div className="orderdetails__order--summary p-6 border border-wh-gray rounded-2xl mt-6">
                                         <div className="flex justify-between">

@@ -20,6 +20,7 @@ import { ServiceCategoryModel } from '../models/Service/ServiceCategoryModel';
 import { ServiceModel } from '../models/Service/ServiceModel';
 import instance from '../services/axios/AxiosInstance';
 import { OperatingDay } from '../types/OperatingDay';
+import { DeliveryPriceType } from '../types/Price/DeliveryPriceType';
 import { ServiceTag } from '../types/ServiceType/ServiceTag';
 
 export const getAllCenter = async ({
@@ -132,7 +133,13 @@ export const getCenter = async (id: number): Promise<CenterDetailsModel> => {
         hasDelivery: data.data.hasDelivery,
         minPrice: data.data.minPrice,
         maxPrice: data.data.maxPrice,
-        centerDeliveryPrices: [],
+        centerDeliveryPrices: data.data.centerDeliveryPrices.map((deli): DeliveryPriceType => {
+            return {
+                maxWeight: deli.maxWeight,
+                maxDistance: deli.maxDistance,
+                price: deli.price,
+            };
+        }),
         centerLocation: data.data.centerLocation,
         operatingHours: data.data.centerOperatingHours.map((day): OperatingDay => {
             return {

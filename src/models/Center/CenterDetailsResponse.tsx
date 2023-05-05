@@ -1,4 +1,5 @@
 import { OperatingDay } from '../../types/OperatingDay';
+import { CenterDeliveryPriceResponse } from '../DeliveryPrice/DeliveryPriceResponse';
 import { OperatingHoursResponse } from '../OperatingHours/OperatingHoursResponse';
 import { ServiceCategoryResponse } from '../Service/ServiceCategoryResponse';
 
@@ -19,7 +20,7 @@ export type CenterDetailsResponse = {
     monthOff: boolean;
     ratings: number[];
     hasDelivery: boolean;
-    centerDeliveryPrices: [];
+    centerDeliveryPrices: CenterDeliveryPriceResponse[];
     centerLocation: {
         latitude: number;
         longitude: number;

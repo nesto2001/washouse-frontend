@@ -24,6 +24,7 @@ import { getPromotionsCenter } from '../../repositories/PromotionRepository';
 import { CenterMap } from '../../types/CenterMap';
 import { formatLink } from '../../utils/FormatUtils';
 import './CenterContainer.scss';
+import DeliveryPriceChart from '../../components/DeliveryPriceChart';
 
 type Props = {};
 
@@ -239,6 +240,14 @@ const CenterContainer = (props: Props) => {
                             ></Map>
                         </div>
                     </div>
+                    {center.hasDelivery && center.centerDeliveryPrices && (
+                        <div className="center__sideinfo--map mt-6 p-6 border border-[#B3B3B3] rounded-2xl">
+                            <h2 className="text-left font-bold text-2xl">Bảng giá vận chuyển</h2>
+                            <div className="center__map--wrapper w-full rounded-lg mt-6 overflow-hidden">
+                                <DeliveryPriceChart priceChart={center.centerDeliveryPrices} unitType="kg" />
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </>
