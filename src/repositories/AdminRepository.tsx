@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import {
+    API_ADMIN_CATEGORY,
     API_ADMIN_CENTER,
     API_ADMIN_CENTER_DETAILS,
     API_ADMIN_CENTER_REQUEST,
@@ -308,7 +309,7 @@ export const getAdminStatistic = async ({
 };
 
 export const createCategory = async (request: CategoryRequest) => {
-    const { data } = await instance.post<Response<number>>(API_ADMIN_STATISTICS, request, {
+    const { data } = await instance.post<Response<number>>(API_ADMIN_CATEGORY, request, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
