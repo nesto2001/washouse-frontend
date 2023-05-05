@@ -1,6 +1,5 @@
 import TextArea from 'antd/es/input/TextArea';
 import dayjs from 'dayjs';
-import { FieldValue } from 'firebase/firestore';
 import { useEffect, useRef, useState } from 'react';
 import { IoSend } from 'react-icons/io5';
 import { MessageDetailData } from '../../containers/ChatboxContainer';

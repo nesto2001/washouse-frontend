@@ -1,3 +1,4 @@
+import { FeedbackOrderModel } from '../Feedback/FeedbackOrderModel';
 import { CenterOrderDeliveryModel } from './CenterOrderDeliveryModel';
 import { CenterOrderPaymentModel } from './CenterOrderPaymentModel';
 import { CenterOrderTrackingModel } from './CenterOrderTrackingModel';
@@ -17,6 +18,7 @@ export type CenterOrderDetailsModel = {
     preferredDropoffTime: string;
     preferredDeliverTime: string;
     status: string;
+    feedback: FeedbackOrderModel | null;
     orderedDetails: CenterOrderedServiceModel[];
     orderTrackings: CenterOrderTrackingModel[];
     orderDeliveries: CenterOrderDeliveryModel[];

@@ -65,6 +65,7 @@ import instance from '../services/axios/AxiosInstance';
 import { OperatingDay } from '../types/OperatingDay';
 import { CreateOrderRequest } from '../models/Order/CreateOrderRequest';
 import { CreateOrderResponse } from '../models/Order/CreateOrderResponse';
+import { da } from 'date-fns/locale';
 
 export const getManagerCenter = async (): Promise<ManagerCenterModel> => {
     const { data } = await instance.get<Response<ManagerCenterResponse>>(API_MANAGER_CENTER, {
@@ -227,6 +228,16 @@ export const getManagerCenterOrderDetails = async (id: string): Promise<CenterOr
         preferredDeliverTime: data.data.preferredDeliverTime,
         totalOrderValue: data.data.totalOrderValue,
         status: data.data.status,
+        feedback: {
+            id: data.data.feedback.id,
+            content: data.data.feedback.content,
+            createdBy: data.data.feedback.createdBy,
+            createdDate: dayjs(data.data.feedback.createdDate, 'YYYY-MM-DDTHH:mm:ss'),
+            rating: data.data.feedback.rating,
+            replyBy: data.data.feedback.replyBy,
+            replyDate: dayjs(data.data.feedback.replyDate, 'YYYY-MM-DDTHH:mm:ss'),
+            replyMessage: data.data.feedback.replyMessage,
+        },
         orderDeliveries: data.data.orderDeliveries.map((delivery): CenterOrderDeliveryModel => {
             return {
                 addressString: delivery.addressString,

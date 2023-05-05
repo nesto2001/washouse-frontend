@@ -1,21 +1,13 @@
-import { EditOutlined, PoweroffOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Empty, Form, Input, Popconfirm, Table, Tag, Tooltip, message } from 'antd';
+import { Button, DatePicker, Empty, Form, Input, Table, Tag, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Modal from 'antd/es/modal/Modal';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import CouponTag from '../../../components/CouponTag/CouponTag';
 import { PromotionModel } from '../../../models/Promotion/PromotionModel';
-import {
-    activatePromotion,
-    createPromotion,
-    deactivatePromotion,
-    getPromotions,
-    updatePromotion,
-} from '../../../repositories/PromotionRepository';
+import { createPromotion, getPromotions } from '../../../repositories/PromotionRepository';
 import { formatPercentage } from '../../../utils/FormatUtils';
-import { FaQuestionCircle } from 'react-icons/fa';
 
 type PromotionFormData = {
     code: string;
