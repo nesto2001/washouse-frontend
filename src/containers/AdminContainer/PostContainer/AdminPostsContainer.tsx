@@ -126,9 +126,10 @@ const AdminPostsContainer = (props: Props) => {
                 }}
             ></Table>
             <Pagination
-                className="float-right mt-4"
+                className="float-right mt-4 mb-10"
                 showTotal={((total) => `Có tất cả ${total} bài đăng`) as PaginationProps['showTotal']}
-                defaultCurrent={paging?.pageNumber}
+                defaultCurrent={1}
+                current={pageNum ?? paging?.pageNumber ?? 1}
                 total={paging?.totalItems}
                 onChange={(page) => {
                     setPageNum(page);

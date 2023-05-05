@@ -1,4 +1,4 @@
-import { Table, Tabs, TabsProps, Tag } from 'antd';
+import { Empty, Pagination, PaginationProps, Table, Tabs, TabsProps, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { CenterBadgeStatusMap } from '../../../mapping/CenterBadgeStatusMap';
 import { CenterStatusMap } from '../../../mapping/CenterStatusMap';
 import { AdminCenterModel } from '../../../models/Admin/AdminCenterModel';
 import { getCenterList } from '../../../repositories/AdminRepository';
+import { Paging } from '../../../types/Common/Pagination';
 
 type Props = {};
 
@@ -22,6 +23,11 @@ const AdminCentersContainer = (props: Props) => {
     const { pathname } = location;
     const [centers, setCenters] = useState<AdminCenterModel[]>();
     const [activeKey, setActiveKey] = useState<string>('All');
+    const [paging, setPaging] = useState<Paging>({
+        itemsPerPage: 10,
+        pageNumber: 1,
+    });
+    const [pageNum, setPageNum] = useState<number>(1);
     const [loading, setLoading] = useState<boolean>(true);
 
     const [searchParams, setSearchParams] = useState<SearchParamsData>({
@@ -44,9 +50,9 @@ const AdminCentersContainer = (props: Props) => {
             title: 'Hình ảnh',
             dataIndex: 'thumbnail',
             key: 'thumbnail',
-            width: 140,
+            width: 200,
             render(_, record) {
-                return <img className="w-40 h-24 object-cover rounded-lg" src={record.thumbnail}></img>;
+                return <img className="w-40 h-24 max-w-40 object-cover rounded-lg" src={record.thumbnail}></img>;
             },
         },
         {
@@ -88,15 +94,21 @@ const AdminCentersContainer = (props: Props) => {
 
     useEffect(() => {
         setLoading(true);
-        getCenterList(searchParams)
+        getCenterList({ page: pageNum, searchString: searchParams.searchString, status: searchParams.status })
             .then((res) => {
-                setCenters(res);
+                setCenters(res.items);
+                setPaging({
+                    itemsPerPage: res.itemsPerPage,
+                    pageNumber: res.pageNumber,
+                    totalItems: res.totalItems,
+                    totalPages: res.totalPages,
+                });
             })
             .catch(() => {
                 setCenters([]);
             })
             .finally(() => setLoading(false));
-    }, [activeKey]);
+    }, [activeKey, pageNum]);
 
     const centerTab: TabsProps['items'] = [
         {
@@ -145,6 +157,18 @@ const AdminCentersContainer = (props: Props) => {
                 dataSource={centers}
                 columns={columns}
                 loading={loading}
+                pagination={false}
+                locale={{
+                    emptyText: (
+                        <Empty
+                            image={Empty.PRESENTED_IMAGE_DEFAULT}
+                            imageStyle={{ height: 160, width: 384, margin: '0 auto', marginBottom: 20 }}
+                            description={
+                                <span className="text-xl font-medium text-sub-gray">Chưa có trung tâm nào</span>
+                            }
+                        ></Empty>
+                    ),
+                }}
                 onRow={(record, rowIndex) => {
                     return {
                         onClick: (event) => {
@@ -154,6 +178,18 @@ const AdminCentersContainer = (props: Props) => {
                 }}
                 rowClassName="cursor-pointer"
             ></Table>
+            <Pagination
+                className="float-right mt-4 mb-10"
+                showTotal={((total) => `Có tất cả ${total} trung tâm`) as PaginationProps['showTotal']}
+                defaultCurrent={1}
+                current={pageNum ?? paging?.pageNumber ?? 1}
+                total={paging?.totalItems}
+                onChange={(page) => {
+                    setPageNum(page);
+                }}
+                pageSize={paging?.itemsPerPage}
+                showSizeChanger={false}
+            />
         </div>
     );
 };

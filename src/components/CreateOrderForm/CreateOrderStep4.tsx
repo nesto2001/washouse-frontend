@@ -18,9 +18,10 @@ type Props = {
     formInstance: FormInstance;
     onBack: () => void;
     formData: CheckoutFormData;
+    handleSubmit: () => void;
 };
 
-const CreateOrderStep4 = ({ formInstance, onBack, formData }: Props) => {
+const CreateOrderStep4 = ({ formInstance, onBack, formData, handleSubmit }: Props) => {
     const cartTotal = useSelector((state: RootState) => state.cart.totalPrice);
     const cartItems = useSelector((state: RootState) => state.cart.items);
     const handleBack = () => {
@@ -143,7 +144,7 @@ const CreateOrderStep4 = ({ formInstance, onBack, formData }: Props) => {
                 </div>
             </div>
             <div className="my-10 h-8">
-                <Button className="float-right ml-6" type="primary">
+                <Button className="float-right ml-6" type="primary" onClick={handleSubmit}>
                     Tạo đơn hàng
                 </Button>
                 <Button className="float-right" type="default" style={{ background: 'white' }} onClick={handleBack}>

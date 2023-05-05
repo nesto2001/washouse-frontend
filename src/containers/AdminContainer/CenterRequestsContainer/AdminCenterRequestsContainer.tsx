@@ -1,14 +1,23 @@
-import { Button, Empty, Modal, message } from 'antd';
+import { Button, Empty, Modal, Pagination, PaginationProps, message } from 'antd';
 import { useEffect, useState } from 'react';
 import CenterList from '../../../components/CenterList/CenterList';
 import { AdminCenterModel } from '../../../models/Admin/AdminCenterModel';
 import { getCenterList } from '../../../repositories/AdminRepository';
 import { approveCenter, rejectCenter } from '../../../repositories/RequestRepository';
+import { Paging } from '../../../types/Common/Pagination';
+import OthersSpin from '../../../components/OthersSpin/OthersSpin';
+import AdminRequestDetailsContainer from './AdminRequestDetailsContainer';
 
 const AdminCenterRequestsContainer = () => {
     const [centerRequests, setCenterRequests] = useState<AdminCenterModel[]>([]);
     const [center, setCenter] = useState<AdminCenterModel>();
     const [modalVisibility, setModalVisibility] = useState(false);
+    const [paging, setPaging] = useState<Paging>({
+        itemsPerPage: 10,
+        pageNumber: 1,
+    });
+    const [pageNum, setPageNum] = useState<number>(1);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const openDetail = (center: AdminCenterModel) => {
         setCenter(center);
@@ -51,26 +60,59 @@ const AdminCenterRequestsContainer = () => {
     };
 
     useEffect(() => {
+        setIsLoading(true);
         if (!modalVisibility) {
             const fetchData = async () => {
-                return await getCenterList({ status: 'Pending' });
+                return await getCenterList({ page: pageNum, status: 'Pending' });
             };
-            fetchData().then((res) => {
-                setCenterRequests(res);
-            });
+            fetchData()
+                .then((res) => {
+                    setCenterRequests(res.items);
+                    setPaging({
+                        itemsPerPage: res.itemsPerPage,
+                        pageNumber: res.pageNumber,
+                        totalItems: res.totalItems,
+                        totalPages: res.totalPages,
+                    });
+                })
+                .finally(() => {
+                    setIsLoading(false);
+                });
         }
-    }, [modalVisibility]);
+    }, [modalVisibility, pageNum]);
 
     return (
         <div>
-            {centerRequests?.length > 0 ? (
-                <CenterList centerRequests={centerRequests} openDetail={openDetail} />
+            {!isLoading && centerRequests?.length > 0 ? (
+                <>
+                    <CenterList centerRequests={centerRequests} openDetail={openDetail} />
+                    <Pagination
+                        className="float-right mt-4 mb-10"
+                        showTotal={
+                            ((total) => `Có tất cả ${total} trung tâm chờ kiểm duyệt`) as PaginationProps['showTotal']
+                        }
+                        defaultCurrent={1}
+                        current={pageNum ?? paging?.pageNumber ?? 1}
+                        total={paging?.totalItems}
+                        onChange={(page) => {
+                            setPageNum(page);
+                        }}
+                        pageSize={paging?.itemsPerPage}
+                        showSizeChanger={false}
+                    />
+                </>
+            ) : isLoading ? (
+                <OthersSpin />
             ) : (
-                <Empty description="Không có trung tâm nào cần kiểm duyệt" className="mb-10 mt-5" />
+                <Empty
+                    image={Empty.PRESENTED_IMAGE_DEFAULT}
+                    imageStyle={{ height: 160, width: 384, margin: '0 auto', marginBottom: 20 }}
+                    description={<span className="text-xl font-medium text-sub-gray">Chưa có trung tâm nào</span>}
+                ></Empty>
             )}
             {center && (
                 <Modal
-                    width={600}
+                    width={1000}
                     title="Thông tin trung tâm"
                     open={modalVisibility}
                     onCancel={closeDetail}
@@ -83,7 +125,8 @@ const AdminCenterRequestsContainer = () => {
                         </Button>,
                     ]}
                 >
-                    <img src={center.thumbnail} alt="" />
+                    <AdminRequestDetailsContainer center={center} type="create" />
+                    {/* <img src={center.thumbnail} alt="" />
                     <div className="centerrq__item--content ml-4 w-full basis-3/5 flex flex-col justify-start">
                         <div className="centerrq__item--title text-primary font-bold text-lg">{center.title}</div>
                         <div className="centerrq__item--address flex gap-2 text-base">
@@ -99,7 +142,7 @@ const AdminCenterRequestsContainer = () => {
                             </div>
                         </div>
                         <div className="centerrq__item--address flex gap-2 text-base"></div>
-                    </div>
+                    </div> */}
                 </Modal>
             )}
         </div>

@@ -1,9 +1,11 @@
-import { Card, Col, Row } from 'antd';
+import { Card, Col, Row, Tag } from 'antd';
 import { AdminCenterDetailedModel } from '../../models/Admin/AdminCenterDetails/AdminCenterDetailedModel';
 import { getRating } from '../../utils/CommonUtils';
 import RatingDistribution from '../RatingDistribution/RatingDistribution';
 import RatingStars from '../RatingStars/RatingStars';
 import Tags from '../Tag';
+import { CenterStatusMap } from '../../mapping/CenterStatusMap';
+import { CenterBadgeStatusMap } from '../../mapping/CenterBadgeStatusMap';
 
 type Props = {
     centerDetails: AdminCenterDetailedModel;
@@ -17,8 +19,12 @@ const AdminCenterDetailsBasics = ({ centerDetails }: Props) => {
             <div className="admin__center--info col-span-4 p-6">
                 <Row gutter={[32, 32]}>
                     <Col span={10}>
-                        <div className="w-full rounded-lg overflow-hidden">
-                            <img className="w-full object-cover" src={centerDetails.thumbnail} alt="" />
+                        <div className="w-full h-[168px] max-h-[168px] rounded-lg overflow-hidden">
+                            <img
+                                className="w-full h-full rounded-lg object-cover"
+                                src={centerDetails.thumbnail}
+                                alt=""
+                            />
                         </div>
                     </Col>
                     <Col span={14}>
@@ -86,6 +92,12 @@ const AdminCenterDetailsBasics = ({ centerDetails }: Props) => {
                 </Row>
             </div>
             <div className="admin__center--manager col-span-2 pt-6 pr-6">
+                <Tag
+                    className="mb-4 w-full flex justify-center items-center h-12 font-bold text-lg rounded-lg"
+                    color={CenterBadgeStatusMap[centerDetails.status ?? '']}
+                >
+                    {CenterStatusMap[centerDetails.status ?? '']}
+                </Tag>
                 <Card className="border-wh-gray">
                     <div className="font-bold text-lg">Quản lý</div>
                     <div className="mt-2">

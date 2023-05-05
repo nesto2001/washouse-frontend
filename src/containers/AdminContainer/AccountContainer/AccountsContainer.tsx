@@ -1,14 +1,21 @@
-import { Popconfirm, Table, Tag, Tooltip, message } from 'antd';
+import { Pagination, PaginationProps, Popconfirm, Table, Tag, Tooltip, message } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useCallback, useEffect, useState } from 'react';
 import { FaPowerOff } from 'react-icons/fa';
 import { AccountModel } from '../../../models/Account/AccountModel';
 import { activateAccount, deactivateAccount, getAllAccounts } from '../../../repositories/AccountRepository';
+import { Paging } from '../../../types/Common/Pagination';
 
 const AccountsContainer = () => {
     const [accounts, setAccounts] = useState<AccountModel[]>();
     const [state, updateState] = useState({});
     const forceUpdate = useCallback(() => updateState({}), []);
+    const [paging, setPaging] = useState<Paging>({
+        itemsPerPage: 10,
+        pageNumber: 1,
+    });
+    const [pageNum, setPageNum] = useState<number>(1);
+
     const columns: ColumnsType<AccountModel> = [
         {
             title: 'STT',
@@ -109,10 +116,16 @@ const AccountsContainer = () => {
         },
     ];
     useEffect(() => {
-        getAllAccounts().then((res) => {
-            setAccounts(res);
+        getAllAccounts({ page: pageNum }).then((res) => {
+            setAccounts(res.items);
+            setPaging({
+                itemsPerPage: res.itemsPerPage,
+                pageNumber: res.pageNumber,
+                totalItems: res.totalItems,
+                totalPages: res.totalPages,
+            });
         });
-    }, [state]);
+    }, [state, pageNum]);
 
     const deactivate = (id: number) => {
         deactivateAccount(id)
@@ -141,7 +154,19 @@ const AccountsContainer = () => {
     return (
         <>
             <div className="provider__services--filter">
-                <Table dataSource={accounts} columns={columns} loading={accounts == null}></Table>
+                <Table dataSource={accounts} columns={columns} loading={accounts == null} pagination={false}></Table>
+                <Pagination
+                    className="float-right mt-4 mb-10"
+                    showTotal={((total) => `Có tất cả ${total} tài khoản`) as PaginationProps['showTotal']}
+                    defaultCurrent={1}
+                    current={pageNum ?? paging?.pageNumber ?? 1}
+                    total={paging?.totalItems}
+                    onChange={(page) => {
+                        setPageNum(page);
+                    }}
+                    pageSize={paging?.itemsPerPage}
+                    showSizeChanger={false}
+                />
             </div>
         </>
     );

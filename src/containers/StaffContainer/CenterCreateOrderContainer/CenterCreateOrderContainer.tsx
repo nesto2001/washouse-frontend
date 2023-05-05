@@ -100,8 +100,7 @@ const CenterCreateOrderContainer = (props: Props) => {
         return <ErrorScreen noNav />;
     }
 
-    const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
+    const handleSubmit = () => {
         if (myCenter) {
             const CreateOrderData: CreateOrderRequest = {
                 centerId: myCenter.id,
@@ -136,10 +135,7 @@ const CenterCreateOrderContainer = (props: Props) => {
                 }),
                 paymentMethod: 0,
             };
-            const placeOrder = async () => {
-                return await createOrderStaff(CreateOrderData);
-            };
-            placeOrder()
+            createOrderStaff(CreateOrderData)
                 .then((res) => {
                     message.success('Tạo đơn hàng thành công');
                     dispatch(clearCart());
@@ -183,7 +179,14 @@ const CenterCreateOrderContainer = (props: Props) => {
                         setFormData={setFormData}
                     />
                 )}
-                {current === 3 && <CreateOrderStep4 formInstance={form} onBack={onBack} formData={formData} />}
+                {current === 3 && (
+                    <CreateOrderStep4
+                        formInstance={form}
+                        onBack={onBack}
+                        formData={formData}
+                        handleSubmit={handleSubmit}
+                    />
+                )}
             </div>
         </div>
     );

@@ -12,7 +12,7 @@ import { AccountModel } from '../models/Account/AccountModel';
 import { AccountResponse } from '../models/Account/AccountResponse';
 import { CustomerAccountModel } from '../models/Account/CustomerAccountModel';
 import { CustomerAccountResponse } from '../models/Account/CustomerAccountResponse';
-import { PaginationResponse, Response } from '../models/CommonModel';
+import { PaginationModel, PaginationResponse, Response } from '../models/CommonModel';
 import { UpdateAddressRequest } from '../models/Customer/UpdateAddressRequest';
 import { UpdateAvatarRequest } from '../models/Customer/UpdateAvatarRequest';
 import { UpdateProfileRequest } from '../models/Customer/UpdateCustomerRequest';
@@ -55,23 +55,42 @@ export const getUserProfile = async (id: number): Promise<CustomerAccountModel> 
     };
 };
 
-export const getAllAccounts = async (): Promise<AccountModel[]> => {
+export const getAllAccounts = async ({
+    page,
+    pageSize,
+    status,
+}: {
+    page?: number;
+    pageSize?: number;
+    status?: boolean;
+}): Promise<PaginationModel<AccountModel>> => {
     const { data } = await instance.get<PaginationResponse<AccountResponse>>(API_ACCOUNT, {
+        params: {
+            Page: page,
+            PageSize: pageSize,
+            Status: status,
+        },
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
     });
-    return data.data.items.map((item): AccountModel => {
-        return {
-            id: item.id,
-            profilePic: item.profilePic,
-            email: item.email,
-            gender: item.gender,
-            isAdmin: item.isAdmin,
-            fullName: item.fullName,
-            dob: item.dob ? dayjs(item.dob, 'YYYY-MM-DDTHH:mm:ss') : undefined,
-            phone: item.phone,
-            status: item.status,
-        };
-    });
+    return {
+        itemsPerPage: data.data.itemsPerPage,
+        pageNumber: data.data.pageNumber,
+        totalItems: data.data.totalItems,
+        totalPages: data.data.totalPages,
+        items: data.data.items.map((item): AccountModel => {
+            return {
+                id: item.id,
+                profilePic: item.profilePic,
+                email: item.email,
+                gender: item.gender,
+                isAdmin: item.isAdmin,
+                fullName: item.fullName,
+                dob: item.dob ? dayjs(item.dob, 'YYYY-MM-DDTHH:mm:ss') : undefined,
+                phone: item.phone,
+                status: item.status,
+            };
+        }),
+    };
 };
 
 export const deactivateAccount = async (id: number) => {
