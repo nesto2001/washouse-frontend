@@ -140,7 +140,6 @@ const CenterOperatingSettingsContainer = (props: Props) => {
                             {(fields, { add }, { errors }) => {
                                 if (fields.length < 7) {
                                     add();
-                                    forceUpdate();
                                 }
                                 return (
                                     <>
