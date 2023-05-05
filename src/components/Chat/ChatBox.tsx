@@ -2,12 +2,65 @@ import TextArea from 'antd/es/input/TextArea';
 import dayjs from 'dayjs';
 import { IoSend } from 'react-icons/io5';
 import ChatBubble from './ChatBubble';
+import { db } from '../../../firebase.js';
+import { useCollectionData } from 'react-firebase-hooks/firestore';
+import firebase from 'firebase/app';
+import {
+    DocumentData,
+    FieldValue,
+    QuerySnapshot,
+    addDoc,
+    collection,
+    limit,
+    onSnapshot,
+    orderBy,
+    query,
+    serverTimestamp,
+} from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import { pathMessageCollection, timestamp } from '../../common/FirebaseConstant';
+
+type ChatMessage = {
+    text: string;
+    timestamp: FieldValue;
+    userId: string;
+};
 
 type ChatBoxProps = {
     name?: string;
     time?: dayjs.Dayjs;
 };
+
 function ChatBox({ name, time }: ChatBoxProps) {
+    const [messages, setMessages] = useState([]);
+
+    const getChatStream = (groupChatId: string, limitNum: number) => {
+        return onSnapshot(
+            query(
+                collection(db, pathMessageCollection, groupChatId, 'msglist'),
+                orderBy(timestamp, 'desc'),
+                limit(limitNum),
+            ),
+            (snapshot: QuerySnapshot<DocumentData>) => {
+                const messages = snapshot.docs.map((doc) => ({
+                    ...doc.data(),
+                    id: doc.id,
+                }));
+                console.log('Messages:', messages);
+            },
+            (error: Error) => {
+                console.log('Error fetching messages:', error);
+            },
+        );
+    };
+
+    useEffect(() => {
+        const unsubscribe = getChatStream('your_group_chat_id', 10);
+        return () => {
+            unsubscribe();
+        };
+    }, []);
+
     return (
         <div className={`w-full flex flex-col gap-2 items-center justify-between}`}>
             <div className="chatbox__header w-full bg-ws-light-gray border-b-2 p-2">
