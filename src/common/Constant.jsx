@@ -56,11 +56,13 @@ const API_SEARCH_ADDRESS = '/api/maps/location';
 const API_ADMIN_CENTER = '/api/admin/centers';
 const API_ADMIN_CENTER_DETAILS = '/api/admin/centers/${centerId}';
 const API_ADMIN_CENTER_REQUEST = '/api/requests/centers/updating';
+const API_ADMIN_CENTER_REQUEST_DETAILS = '/api/requests/centers/${id}';
 const API_ADMIN_POST = '/api/admin/posts';
 const API_PUBLIC_POST = '/api/posts';
 const API_ADMIN_POST_DETAIL = '/api/admin/posts/${id}';
 const API_ADMIN_POST_DETAIL_PUBLIC = '/api/posts/${id}';
 const API_ADMIN_STATISTICS = '/api/admin/statistics';
+const API_ADMIN_CATEGORY = '/api/service-categories';
 
 //CENTER REQUEST API
 const API_REQUEST = '/api/requests/centers';
@@ -138,6 +140,8 @@ const API_WALLET_ACTIVATE = '/api/wallets/active';
 const RE_DIGIT = new RegExp(/^\d+$/);
 
 export {
+    API_ADMIN_CENTER_REQUEST_DETAILS,
+    API_ADMIN_CATEGORY,
     API_OTP_VERIFY_LOGIN_STAFF,
     API_OTP_LOGIN,
     API_OTP_VERIFY_LOGIN,

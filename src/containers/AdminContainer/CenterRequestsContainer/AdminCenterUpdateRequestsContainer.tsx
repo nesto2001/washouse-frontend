@@ -1,4 +1,4 @@
-import { Button, Empty, Modal, Tabs, TabsProps, message } from 'antd';
+import { Button, Empty, Modal, Pagination, PaginationProps, Tabs, TabsProps, message } from 'antd';
 import { useEffect, useState } from 'react';
 import CenterList from '../../../components/CenterList/CenterList';
 import { AdminCenterModel } from '../../../models/Admin/AdminCenterModel';
@@ -9,14 +9,21 @@ import {
     rejectCenter,
     rejectCenterUpdate,
 } from '../../../repositories/RequestRepository';
+import { Paging } from '../../../types/Common/Pagination';
+import OthersSpin from '../../../components/OthersSpin/OthersSpin';
+import AdminRequestDetailsContainer from './AdminRequestDetailsContainer';
 
 const AdminCenterUpdateRequestsContainer = () => {
     const [centerRequests, setCenterRequests] = useState<AdminCenterModel[]>([]);
     const [center, setCenter] = useState<AdminCenterModel>();
     const [modalVisibility, setModalVisibility] = useState(false);
     const [activeTab, setActiveTab] = useState('pending');
-    const [isLoading, setIsLoading] = useState(false);
-
+    const [isLoading, setIsLoading] = useState(true);
+    const [paging, setPaging] = useState<Paging>({
+        itemsPerPage: 10,
+        pageNumber: 1,
+    });
+    const [pageNum, setPageNum] = useState<number>(1);
     const openDetail = (center: AdminCenterModel) => {
         setCenter(center);
         setModalVisibility(true);
@@ -58,27 +65,59 @@ const AdminCenterUpdateRequestsContainer = () => {
     };
 
     useEffect(() => {
+        setIsLoading(true);
+        setPaging({ itemsPerPage: 10, pageNumber: 1 });
         setCenterRequests([]);
         if (!modalVisibility) {
             switch (activeTab.toLowerCase()) {
                 case 'all':
-                    getCenterRequestList({}).then((res) => {
-                        setCenterRequests(res);
-                    });
+                    getCenterRequestList({ page: pageNum })
+                        .then((res) => {
+                            setCenterRequests(res.items);
+                            setPaging({
+                                itemsPerPage: res.itemsPerPage,
+                                pageNumber: res.pageNumber,
+                                totalItems: res.totalItems,
+                                totalPages: res.totalPages,
+                            });
+                        })
+                        .finally(() => {
+                            setIsLoading(false);
+                        });
                     break;
                 case 'pending':
-                    getCenterRequestList({ status: true }).then((res) => {
-                        setCenterRequests(res);
-                    });
+                    getCenterRequestList({ page: pageNum, status: true })
+                        .then((res) => {
+                            setCenterRequests(res.items);
+                            setPaging({
+                                itemsPerPage: res.itemsPerPage,
+                                pageNumber: res.pageNumber,
+                                totalItems: res.totalItems,
+                                totalPages: res.totalPages,
+                            });
+                        })
+                        .finally(() => {
+                            setIsLoading(false);
+                        });
                     break;
                 case 'reviewed':
-                    getCenterRequestList({ status: false }).then((res) => {
-                        setCenterRequests(res);
-                    });
+                    getCenterRequestList({ page: pageNum, status: false })
+                        .then((res) => {
+                            setCenterRequests(res.items);
+                            setPaging({
+                                itemsPerPage: res.itemsPerPage,
+                                pageNumber: res.pageNumber,
+                                totalItems: res.totalItems,
+                                totalPages: res.totalPages,
+                            });
+                        })
+                        .finally(() => {
+                            setIsLoading(false);
+                        });
                     break;
             }
         }
-    }, [modalVisibility]);
+    }, [modalVisibility, pageNum]);
 
     const items: TabsProps['items'] = [
         {
@@ -96,25 +135,57 @@ const AdminCenterUpdateRequestsContainer = () => {
     ];
 
     useEffect(() => {
+        setIsLoading(true);
+        setPaging({ itemsPerPage: 10, pageNumber: 1 });
         setCenterRequests([]);
         switch (activeTab.toLowerCase()) {
             case 'all':
-                getCenterRequestList({}).then((res) => {
-                    setCenterRequests(res);
-                });
+                getCenterRequestList({ page: pageNum })
+                    .then((res) => {
+                        setCenterRequests(res.items);
+                        setPaging({
+                            itemsPerPage: res.itemsPerPage,
+                            pageNumber: res.pageNumber,
+                            totalItems: res.totalItems,
+                            totalPages: res.totalPages,
+                        });
+                    })
+                    .finally(() => {
+                        setIsLoading(false);
+                    });
                 break;
             case 'pending':
-                getCenterRequestList({ status: true }).then((res) => {
-                    setCenterRequests(res);
-                });
+                getCenterRequestList({ page: pageNum, status: true })
+                    .then((res) => {
+                        setCenterRequests(res.items);
+                        setPaging({
+                            itemsPerPage: res.itemsPerPage,
+                            pageNumber: res.pageNumber,
+                            totalItems: res.totalItems,
+                            totalPages: res.totalPages,
+                        });
+                    })
+                    .finally(() => {
+                        setIsLoading(false);
+                    });
                 break;
             case 'reviewed':
-                getCenterRequestList({ status: false }).then((res) => {
-                    setCenterRequests(res);
-                });
+                getCenterRequestList({ page: pageNum, status: false })
+                    .then((res) => {
+                        setCenterRequests(res.items);
+                        setPaging({
+                            itemsPerPage: res.itemsPerPage,
+                            pageNumber: res.pageNumber,
+                            totalItems: res.totalItems,
+                            totalPages: res.totalPages,
+                        });
+                    })
+                    .finally(() => {
+                        setIsLoading(false);
+                    });
                 break;
         }
-    }, [activeTab]);
+    }, [activeTab, pageNum]);
 
     const onChange = (key: string) => {
         setActiveTab(key);
@@ -123,10 +194,31 @@ const AdminCenterUpdateRequestsContainer = () => {
     return (
         <div>
             <Tabs items={items} defaultActiveKey={activeTab} onChange={onChange} />
-            {centerRequests?.length > 0 ? (
-                <CenterList centerRequests={centerRequests} openDetail={openDetail} />
+            {!isLoading && centerRequests?.length > 0 ? (
+                <>
+                    <CenterList centerRequests={centerRequests} openDetail={openDetail} />
+                    <Pagination
+                        className="float-right mt-4 mb-10"
+                        showTotal={((total) => `Có tất cả ${total} trung tâm`) as PaginationProps['showTotal']}
+                        defaultCurrent={1}
+                        current={pageNum ?? paging?.pageNumber ?? 1}
+                        total={paging?.totalItems}
+                        onChange={(page) => {
+                            setPageNum(page);
+                        }}
+                        pageSize={paging?.itemsPerPage}
+                        showSizeChanger={false}
+                    />
+                </>
+            ) : isLoading ? (
+                <OthersSpin />
             ) : (
-                <Empty description="Không có trung tâm nào cần kiểm duyệt" className="mb-10 mt-5" />
+                <Empty
+                    className="mb-10"
+                    image={Empty.PRESENTED_IMAGE_DEFAULT}
+                    imageStyle={{ height: 160, width: 384, margin: '0 auto', marginBottom: 20 }}
+                    description={<span className="text-xl font-medium text-sub-gray">Chưa có trung tâm nào</span>}
+                ></Empty>
             )}
             {center && (
                 <Modal
@@ -143,7 +235,8 @@ const AdminCenterUpdateRequestsContainer = () => {
                         </Button>,
                     ]}
                 >
-                    <img src={center.thumbnail} alt="" />
+                    <AdminRequestDetailsContainer center={center} type='update'/>
+                    {/* <img src={center.thumbnail} alt="" />
                     <div className="centerrq__item--content ml-4 w-full basis-3/5 flex flex-col justify-start">
                         <div className="centerrq__item--title text-primary font-bold text-lg">{center.title}</div>
                         <div className="centerrq__item--address flex gap-2 text-base">
@@ -159,7 +252,7 @@ const AdminCenterUpdateRequestsContainer = () => {
                             </div>
                         </div>
                         <div className="centerrq__item--address flex gap-2 text-base"></div>
-                    </div>
+                    </div> */}
                 </Modal>
             )}
         </div>
