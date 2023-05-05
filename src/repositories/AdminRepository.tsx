@@ -14,6 +14,7 @@ import { ServiceCategoryModel } from '../models/Service/ServiceCategoryModel';
 import { ServiceModel } from '../models/Service/ServiceModel';
 import instance from '../services/axios/AxiosInstance';
 import { OperatingDay } from '../types/OperatingDay';
+import { AdminStatisticsResponse } from '../models/Admin/AdminCenterDetails/AdminStatisticsResponse';
 
 export const getCenterList = async ({
     page,

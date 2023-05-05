@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Col, DatePicker, Empty, Form, Modal, Radio, Row, Space, Spin, Tabs } from 'antd';
 import type { TabsProps } from 'antd';
-import './CustomerContainer.scss';
-import { CenterOrderModel } from '../../models/Staff/CenterOrderModel';
-import { getCustomerOrders } from '../../repositories/CustomerRepository';
-import CustomerOrderList from '../../components/CustomerOrderList/CustomerOrderList';
-import { CustomerOrderModel } from '../../models/Customer/CustomerOrderModel';
-import { UserModel } from '../../models/User/UserModel';
-import Loading from '../../components/Loading/Loading';
-import Input from '../../components/Input/Input';
+import { Col, DatePicker, Empty, Form, Radio, Row, Tabs } from 'antd';
 import { RangePickerProps } from 'antd/es/date-picker';
 import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
+import CustomerOrderList from '../../components/CustomerOrderList/CustomerOrderList';
+import Input from '../../components/Input/Input';
+import Loading from '../../components/Loading/Loading';
+import { CustomerOrderModel } from '../../models/Customer/CustomerOrderModel';
+import { UserModel } from '../../models/User/UserModel';
+import { getCustomerOrders } from '../../repositories/CustomerRepository';
+import './CustomerContainer.scss';
 
 const { RangePicker } = DatePicker;
 

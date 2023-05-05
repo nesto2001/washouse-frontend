@@ -55,6 +55,7 @@ const API_ADMIN_POST = '/api/admin/posts';
 const API_PUBLIC_POST = '/api/posts';
 const API_ADMIN_POST_DETAIL = '/api/admin/posts/${id}';
 const API_ADMIN_POST_DETAIL_PUBLIC = '/api/posts/${id}';
+const API_ADMIN_STATISTICS = '/api/admin/statistics';
 
 //CENTER REQUEST API
 const API_REQUEST = '/api/requests/centers';
@@ -81,10 +82,10 @@ const API_MANAGER_CENTER_CUSTOMER = '/api/manager/my-center/customers';
 const API_MANAGER_ASSIGN_STAFF = '/api/staffs/assign';
 const API_MANAGER_VERIFY_STAFF = '/api/staffs/verify';
 const API_MANAGER_WALLET = '/api/manager/my-center/wallet';
+const API_MANAGER_STATISTICS = '/api/manager/my-center/manager-statistics';
 
 const API_MANAGER_CENTER_DEACTIVATE = '/api/manager/my-center/deactivate';
 const API_MANAGER_CENTER_ACTIVATE = '/api/manager/my-center/activate';
-
 
 const API_STAFF_PROCEED_ORDER = '/api/tracking/orders/${orderId}/tracking';
 const API_STAFF_COMPLETE_ORDER = '/api/tracking/orders/${orderId}/completed';
@@ -121,7 +122,7 @@ const API_FEEDBACK_SERVICE = '/api/feedbacks/services';
 const API_FEEDBACK_SERVICE_ID = '/api/feedbacks/services/${serviceId}';
 
 //WALLET API
-const API_WALLET_ACTIVATE = '/api/wallets/active'
+const API_WALLET_ACTIVATE = '/api/wallets/active';
 
 //REGEX
 const RE_DIGIT = new RegExp(/^\d+$/);
@@ -157,6 +158,7 @@ export {
     API_ACCOUNT_PROFILE_PIC,
     API_ACCOUNT_PROFILE,
     API_STAFF_CANCEL_ORDER,
+    API_MANAGER_STATISTICS,
     API_CUSTOMER_ORDER,
     API_ADMIN_CENTER,
     API_ORDER_SEARCH,

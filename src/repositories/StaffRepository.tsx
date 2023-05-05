@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import {
     API_MANAGER_ASSIGN_STAFF,
     API_MANAGER_CENTER,
@@ -8,6 +9,7 @@ import {
     API_MANAGER_CENTER_ORDER_DETAILS,
     API_MANAGER_CENTER_SERVICE,
     API_MANAGER_CENTER_SERVICE_LIST,
+    API_MANAGER_STATISTICS,
     API_MANAGER_VERIFY_STAFF,
     API_MANAGER_WALLET,
     API_STAFF,
@@ -47,6 +49,8 @@ import { CenterOrderTrackingModel } from '../models/Staff/CenterOrderTrackingMod
 import { CenterOrderedServiceModel } from '../models/Staff/CenterOrderedServiceModel';
 import { CenterStaffModel } from '../models/Staff/CenterStaffModel';
 import { CenterStaffResponse } from '../models/Staff/CenterStaffResponse';
+import { ManagerStatisticsModel } from '../models/Staff/ManagerStatisticsModel';
+import { ManagerStatisticsResponse } from '../models/Staff/ManagerStatisticsResponse';
 import { CenterFeedbackModel } from '../models/Staff/StaffFeedback/CenterFeedbackModel';
 import { CenterFeedbackResponse } from '../models/Staff/StaffFeedback/CenterFeedbackResponse';
 import { AssignDeliveryRequest } from '../models/Staff/StaffOrder/AssignDeliveryRequest';
@@ -56,7 +60,6 @@ import { CenterServicesListModel } from '../models/Staff/StaffServices/CenterSer
 import { CenterServicesListResponse } from '../models/Staff/StaffServices/CenterServicesListResponse';
 import instance from '../services/axios/AxiosInstance';
 import { OperatingDay } from '../types/OperatingDay';
-import dayjs from 'dayjs';
 
 export const getManagerCenter = async (): Promise<ManagerCenterModel> => {
     const { data } = await instance.get<Response<ManagerCenterResponse>>(API_MANAGER_CENTER, {
@@ -673,6 +676,36 @@ export const getCenterWallet = async (): Promise<CenterWalletModel> => {
                 timeStamp: walTrans.timeStamp,
                 type: walTrans.type,
                 updateTimeStamp: walTrans.updateTimeStamp,
+            };
+        }),
+    };
+};
+
+export const getManagerStatistic = async ({
+    from,
+    to,
+}: {
+    from?: dayjs.Dayjs;
+    to?: dayjs.Dayjs;
+}): Promise<ManagerStatisticsModel> => {
+    const { data } = await instance.get<Response<ManagerStatisticsResponse>>(API_MANAGER_STATISTICS, {
+        params: {
+            fromDate: from?.format('DD-MM-YYYY') ?? undefined,
+            toDate: to?.format('DD-MM-YYYY') ?? undefined,
+        },
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    return {
+        orderOverview: data.data.orderOverview,
+        dailystatistics: data.data.dailystatistics.map((daily) => {
+            return {
+                cancelledOrder: daily.cancelledOrder,
+                successfulOrder: daily.successfulOrder,
+                revenue: daily.revenue,
+                totalOrder: daily.totalOrder,
+                day: dayjs(daily.day, 'DD-MM-YYYY'),
             };
         }),
     };

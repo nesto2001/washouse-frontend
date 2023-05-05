@@ -14,6 +14,7 @@ interface SelectboxProps {
     className?: string;
     selectedValue?: number;
     type?: string;
+    noPlaceholder?: boolean;
 }
 
 const Selectbox = ({
@@ -25,6 +26,7 @@ const Selectbox = ({
     onChange,
     className,
     selectedValue,
+    noPlaceholder,
     type,
 }: SelectboxProps) => {
     return (
@@ -38,9 +40,11 @@ const Selectbox = ({
             required={isRequired}
             defaultValue={selectedValue}
         >
-            <option key="0" value="0">
-                Chọn {type ?? 'một tùy chọn'}
-            </option>
+            {!noPlaceholder && (
+                <option key="0" value="0">
+                    Chọn {type ?? 'một tùy chọn'}
+                </option>
+            )}
             {options.map((option, index) => (
                 <option selected={option.value === selectedValue} key={`option-${index}`} value={option.value}>
                     {option.label}
