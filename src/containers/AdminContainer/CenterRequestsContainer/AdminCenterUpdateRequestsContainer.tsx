@@ -222,7 +222,7 @@ const AdminCenterUpdateRequestsContainer = () => {
             )}
             {center && (
                 <Modal
-                    width={600}
+                    width={850}
                     title="Thông tin trung tâm"
                     open={modalVisibility}
                     onCancel={closeDetail}
@@ -235,7 +235,7 @@ const AdminCenterUpdateRequestsContainer = () => {
                         </Button>,
                     ]}
                 >
-                    <AdminRequestDetailsContainer center={center} type='update'/>
+                    <AdminRequestDetailsContainer center={center} type="update" />
                     {/* <img src={center.thumbnail} alt="" />
                     <div className="centerrq__item--content ml-4 w-full basis-3/5 flex flex-col justify-start">
                         <div className="centerrq__item--title text-primary font-bold text-lg">{center.title}</div>

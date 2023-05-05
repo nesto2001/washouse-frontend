@@ -11,9 +11,9 @@ export type AdminCenterDetailedModel = {
     managerPhone: string;
     managerEmail: string;
     centerPhone: string;
-    isAvailable: true;
-    hasDelivery: true;
-    hasOnlinePayment: true;
+    isAvailable: boolean;
+    hasDelivery: boolean;
+    hasOnlinePayment: boolean;
     lastDeactivate: string;
     rating: number;
     numOfRating: number;

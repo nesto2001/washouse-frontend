@@ -19,6 +19,7 @@ import { AdminCenterResponse } from '../models/Admin/AdminCenterResponse';
 import { PaginationModel, PaginationResponse, Response } from '../models/CommonModel';
 import instance from '../services/axios/AxiosInstance';
 import { CategoryRequest } from '../models/Category/CategoryRequest';
+import { AdminCenterRequestDetailsResponse } from '../models/Admin/AdminCenterDetails/AdminCenterRequestDetailsResponse';
 
 export const getCenterList = async ({
     page,
@@ -195,7 +196,7 @@ export const getCenterDetails = async (id: number): Promise<AdminCenterDetailsMo
 };
 
 export const getCenterRequestDetails = async (id: number): Promise<AdminCenterDetailsModel> => {
-    const { data } = await instance.get<Response<AdminCenterDetailsResponse>>(
+    const { data } = await instance.get<Response<AdminCenterRequestDetailsResponse>>(
         API_ADMIN_CENTER_REQUEST_DETAILS.replace('${id}', id.toString()),
         {
             headers: {
@@ -205,77 +206,32 @@ export const getCenterRequestDetails = async (id: number): Promise<AdminCenterDe
     );
     return {
         center: {
-            id: data.data.center.id,
-            title: data.data.center.title,
-            alias: data.data.center.alias,
-            thumbnail: data.data.center.thumbnail,
-            description: data.data.center.description,
-            centerAddress: data.data.center.centerAddress,
-            centerPhone: data.data.center.centerPhone,
-            locationId: data.data.center.locationId,
-            hasDelivery: data.data.center.hasDelivery,
-            hasOnlinePayment: data.data.center.hasOnlinePayment,
-            isAvailable: data.data.center.isAvailable,
-            lastDeactivate: data.data.center.lastDeactivate,
-            numOfRating: data.data.center.numOfRating,
-            rating: data.data.center.rating,
-            status: data.data.center.status,
-            taxCode: data.data.center.taxCode,
-            taxRegistrationImage: data.data.center.taxRegistrationImage,
-            managerId: data.data.center.managerId,
-            managerName: data.data.center.managerName,
-            managerEmail: data.data.center.managerEmail,
-            managerPhone: data.data.center.managerPhone,
-            ratings: data.data.center.ratings,
+            taxRegistrationImage: data.data.taxRegistrationImage,
+            lastDeactivate: data.data.lastDeactivate,
+            isAvailable: data.data.isAvailable,
+            hasOnlinePayment: data.data.hasOnlinePayment,
+            alias: data.data.alias ?? '',
+            id: data.data.id,
+            title: data.data.title,
+            thumbnail: data.data.thumbnail,
+            description: data.data.description,
+            centerAddress: data.data.centerAddress,
+            centerPhone: data.data.centerPhone,
+            locationId: data.data.locationId,
+            hasDelivery: data.data.hasDelivery,
+            numOfRating: data.data.numOfRating,
+            rating: data.data.rating,
+            status: data.data.status,
+            taxCode: data.data.taxCode,
+            managerId: data.data.managerId,
+            managerName: data.data.managerName,
+            managerEmail: data.data.managerEmail,
+            managerPhone: data.data.managerPhone,
+            ratings: data.data.ratings,
         },
-        feedbacks: data.data.feedbacks.map((item): AdminCenterFeedbackModel => {
-            return {
-                id: item.id,
-                content: item.content,
-                rating: item.rating,
-                createdBy: item.createdBy,
-                createdDate: dayjs(item.createdDate, 'DD-MM-YYYY HH:mm:ss'),
-                replyBy: item.replyBy,
-                orderId: item.orderId,
-                services: item.services,
-                replyMessage: item.replyMessage,
-                replyDate: dayjs(item.replyDate, 'DD-MM-YYYY HH:mm:ss'),
-            };
-        }),
-        services: data.data.services.map((item): AdminCenterServiceModel => {
-            return {
-                serviceId: item.serviceId,
-                serviceName: item.serviceName,
-                alias: item.alias,
-                categoryId: item.categoryId,
-                categoryName: item.categoryName,
-                isAvailable: item.isAvailable,
-                minPrice: item.minPrice,
-                numOfRating: item.numOfRating,
-                price: item.price,
-                prices: item.prices,
-                priceType: item.priceType,
-                rate: item.rate,
-                rating: item.rating,
-                status: item.status,
-                unit: item.unit,
-            };
-        }),
-        staffs: data.data.staffs.map((item): AdminCenterStaffModel => {
-            return {
-                accountId: item.accountId,
-                email: item.email,
-                fullName: item.fullName,
-                gender: item.gender,
-                id: item.id,
-                isManager: item.isManager,
-                idBackImg: item.idBackImg,
-                idFrontImg: item.idFrontImg,
-                idNumber: item.idNumber,
-                phone: item.phone,
-                status: item.status,
-            };
-        }),
+        staffs: [],
+        feedbacks: [],
+        services: [],
     };
 };
 
