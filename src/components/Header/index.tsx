@@ -184,7 +184,7 @@ const Navbar = () => {
                     </div>
                 </div>
             </div>
-            {user && <ChatboxContainer />}
+            {user && <ChatboxContainer user={user} />}
             <div className="mx-auto flex gap-8 justify-between items-center px-4 container w-full">
                 <Link to={user ? '/trung-tam' : '/'}>
                     <div className="w-[200px] h-[75px]">

@@ -40,7 +40,7 @@ instance.interceptors.response.use(
                     return instance({
                         ...originalRequest,
                         headers: {
-                            Authorization: 'Bearer ' + res.data.data.accessToken,
+                            Authorization: 'Bearer ' + res.data.data.refreshToken,
                         },
                     });
                 });

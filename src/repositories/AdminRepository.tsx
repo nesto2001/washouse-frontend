@@ -1,20 +1,21 @@
 import dayjs from 'dayjs';
-import { API_ADMIN_CENTER, API_ADMIN_CENTER_DETAILS, API_ADMIN_CENTER_REQUEST } from '../common/Constant';
+import {
+    API_ADMIN_CENTER,
+    API_ADMIN_CENTER_DETAILS,
+    API_ADMIN_CENTER_REQUEST,
+    API_ADMIN_STATISTICS,
+} from '../common/Constant';
 import { AdminCenterDetailsModel } from '../models/Admin/AdminCenterDetails/AdminCenterDetailsModel';
 import { AdminCenterDetailsResponse } from '../models/Admin/AdminCenterDetails/AdminCenterDetailsResponse';
 import { AdminCenterFeedbackModel } from '../models/Admin/AdminCenterDetails/AdminCenterFeedbackModel';
 import { AdminCenterServiceModel } from '../models/Admin/AdminCenterDetails/AdminCenterServiceModel';
 import { AdminCenterStaffModel } from '../models/Admin/AdminCenterDetails/AdminCenterStaffModel';
+import { AdminStatisticsModel } from '../models/Admin/AdminCenterDetails/AdminStatisticsModel';
+import { AdminStatisticsResponse } from '../models/Admin/AdminCenterDetails/AdminStatisticsResponse';
 import { AdminCenterModel } from '../models/Admin/AdminCenterModel';
 import { AdminCenterResponse } from '../models/Admin/AdminCenterResponse';
-import { CenterDetailsModel } from '../models/Center/CenterDetailsModel';
-import { CenterDetailsResponse } from '../models/Center/CenterDetailsResponse';
 import { PaginationResponse, Response } from '../models/CommonModel';
-import { ServiceCategoryModel } from '../models/Service/ServiceCategoryModel';
-import { ServiceModel } from '../models/Service/ServiceModel';
 import instance from '../services/axios/AxiosInstance';
-import { OperatingDay } from '../types/OperatingDay';
-import { AdminStatisticsResponse } from '../models/Admin/AdminCenterDetails/AdminStatisticsResponse';
 
 export const getCenterList = async ({
     page,
@@ -173,6 +174,34 @@ export const getCenterDetails = async (id: number): Promise<AdminCenterDetailsMo
                 idNumber: item.idNumber,
                 phone: item.phone,
                 status: item.status,
+            };
+        }),
+    };
+};
+export const getAdminStatistic = async ({
+    from,
+    to,
+}: {
+    from?: dayjs.Dayjs;
+    to?: dayjs.Dayjs;
+}): Promise<AdminStatisticsModel> => {
+    const { data } = await instance.get<Response<AdminStatisticsResponse>>(API_ADMIN_STATISTICS, {
+        params: {
+            fromDate: from?.format('DD-MM-YYYY') ?? undefined,
+            toDate: to?.format('DD-MM-YYYY') ?? undefined,
+        },
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    return {
+        centerOverview: data.data.centerOverview,
+        dailystatistics: data.data.dailystatistics.map((daily) => {
+            return {
+                numberOfNewCenters: daily.numberOfNewCenters,
+                numberOfNewPosts: daily.numberOfNewPosts,
+                numberOfNewUsers: daily.numberOfNewUsers,
+                day: dayjs(daily.day, 'DD-MM-YYYY'),
             };
         }),
     };

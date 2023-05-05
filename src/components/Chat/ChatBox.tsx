@@ -1,24 +1,20 @@
 import TextArea from 'antd/es/input/TextArea';
 import dayjs from 'dayjs';
-import { IoSend } from 'react-icons/io5';
-import ChatBubble from './ChatBubble';
-import { db } from '../../../firebase.js';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
-import firebase from 'firebase/app';
 import {
     DocumentData,
     FieldValue,
     QuerySnapshot,
-    addDoc,
     collection,
     limit,
     onSnapshot,
     orderBy,
     query,
-    serverTimestamp,
 } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
+import { IoSend } from 'react-icons/io5';
+import { db } from '../../utils/firebase';
 import { pathMessageCollection, timestamp } from '../../common/FirebaseConstant';
+import ChatBubble from './ChatBubble';
 
 type ChatMessage = {
     text: string;
