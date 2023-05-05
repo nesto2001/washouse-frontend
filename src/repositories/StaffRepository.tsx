@@ -3,8 +3,10 @@ import {
     API_MANAGER_ASSIGN_STAFF,
     API_MANAGER_CENTER,
     API_MANAGER_CENTER_ACTIVATE,
+    API_MANAGER_CENTER_CLOSE,
     API_MANAGER_CENTER_CUSTOMER,
     API_MANAGER_CENTER_DEACTIVATE,
+    API_MANAGER_CENTER_DELIVERY_DELETE,
     API_MANAGER_CENTER_ORDER,
     API_MANAGER_CENTER_ORDER_DETAILS,
     API_MANAGER_CENTER_SERVICE,
@@ -19,6 +21,7 @@ import {
     API_STAFF_COMPLETE_ORDER,
     API_STAFF_DEACTIVATE,
     API_STAFF_FEEDBACKS,
+    API_STAFF_ORDER_CREATE,
     API_STAFF_PAID_ORDER,
     API_STAFF_PROCEED_ORDER,
     API_STAFF_PROCEED_ORDERED_SERVICE,
@@ -60,6 +63,8 @@ import { CenterServicesListModel } from '../models/Staff/StaffServices/CenterSer
 import { CenterServicesListResponse } from '../models/Staff/StaffServices/CenterServicesListResponse';
 import instance from '../services/axios/AxiosInstance';
 import { OperatingDay } from '../types/OperatingDay';
+import { CreateOrderRequest } from '../models/Order/CreateOrderRequest';
+import { CreateOrderResponse } from '../models/Order/CreateOrderResponse';
 
 export const getManagerCenter = async (): Promise<ManagerCenterModel> => {
     const { data } = await instance.get<Response<ManagerCenterResponse>>(API_MANAGER_CENTER, {
@@ -77,6 +82,7 @@ export const getManagerCenter = async (): Promise<ManagerCenterModel> => {
         centerAddress: data.data.centerAddress,
         centerDeliveryPrices: data.data.centerDeliveryPrices.map((deliPrice): CenterDeliveryPriceModel => {
             return {
+                id: deliPrice.id,
                 maxDistance: deliPrice.maxDistance,
                 maxWeight: deliPrice.maxWeight,
                 price: deliPrice.price,
@@ -96,6 +102,7 @@ export const getManagerCenter = async (): Promise<ManagerCenterModel> => {
         description: data.data.description,
         hasDelivery: data.data.hasDelivery,
         hasOnlinePayment: data.data.hasOnlinePayment,
+        lastDeactivate: data.data.lastDeactivate ?? null,
         isAvailable: data.data.isAvailable,
         locationId: data.data.locationId,
         monthOff: data.data.monthOff,
@@ -708,5 +715,27 @@ export const getManagerStatistic = async ({
                 day: dayjs(daily.day, 'DD-MM-YYYY'),
             };
         }),
+    };
+};
+
+export const closeMyCenter = async () => {
+    const { status } = await instance.get(API_MANAGER_CENTER_CLOSE, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    if (status !== 200) {
+        return Promise.reject();
+    }
+};
+
+export const createOrderStaff = async (order: CreateOrderRequest): Promise<CreateOrderResponse> => {
+    const { data } = await instance.post<Response<CreateOrderResponse>>(API_STAFF_ORDER_CREATE, order, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    return {
+        orderId: data.data.orderId,
     };
 };

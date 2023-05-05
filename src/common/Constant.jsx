@@ -2,6 +2,10 @@ const BASE_URL = process.env.REACT_APP_FIREBASE_API_URL;
 
 //AUTH API
 const API_LOGIN = '/api/accounts/login';
+const API_OTP = '/api/verifys/send/otp';
+const API_OTP_LOGIN = '/api/verifys/send/otp';
+const API_OTP_VERIFY = '/api/verifys/sms/check';
+const API_OTP_VERIFY_LOGIN = '/api/accounts/login/otp';
 const API_LOGIN_GOOGLE = '/api/accounts/login/google';
 const API_LOGIN_STAFF = '/api/accounts/login-staff';
 const API_ME = '/api/accounts/me';
@@ -74,6 +78,10 @@ const API_ORDER_SEARCH = '/api/orders/search';
 
 //MANAGER API
 const API_MANAGER_CENTER = '/api/manager/my-center';
+const API_MANAGER_CENTER_OPERATINGS = '/api/manager/my-center/operating-hours';
+const API_MANAGER_CENTER_DELIVERY = '/api/manager/my-center/delivery-prices';
+const API_MANAGER_CENTER_DELIVERY_DELETE = '/api/manager/my-center/delivery-prices/delete';
+const API_MANAGER_CENTER_CLOSE = '/api/manager/my-center/closed';
 const API_MANAGER_CENTER_ORDER = '/api/manager/my-center/orders';
 const API_MANAGER_CENTER_ORDER_DETAILS = '/api/manager/my-center/orders/${id}';
 const API_MANAGER_CENTER_SERVICE = '/api/manager/services';
@@ -96,6 +104,7 @@ const API_STAFF_CANCEL_ORDER = '/api/tracking/orders/${orderId}/cancelled';
 const API_STAFF_ASSIGN_DELIVERY = '/api/manager/my-center/orders/${orderId}/deliveries/${type}/change-status';
 const API_STAFF_FEEDBACKS = '/api/manager/my-center/feedbacks';
 const API_STAFF_STATS = '/api/manager/my-center/staff-statistics';
+const API_STAFF_ORDER_CREATE = '/api/manager/my-center/orders'
 
 //STAFF APT
 const API_STAFF = '/api/staffs';
@@ -128,6 +137,15 @@ const API_WALLET_ACTIVATE = '/api/wallets/active';
 const RE_DIGIT = new RegExp(/^\d+$/);
 
 export {
+    API_OTP_LOGIN,
+    API_OTP_VERIFY_LOGIN,
+    API_OTP,
+    API_OTP_VERIFY,
+    API_STAFF_ORDER_CREATE,
+    API_MANAGER_CENTER_CLOSE,
+    API_MANAGER_CENTER_DELIVERY_DELETE,
+    API_MANAGER_CENTER_DELIVERY,
+    API_MANAGER_CENTER_OPERATINGS,
     API_PIN_CATEGORY,
     API_UNPIN_CATEGORY,
     API_MANAGER_CENTER_DEACTIVATE,

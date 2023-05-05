@@ -4,6 +4,10 @@ import {
     API_LOGIN_GOOGLE,
     API_LOGIN_STAFF,
     API_ME,
+    API_OTP,
+    API_OTP_LOGIN,
+    API_OTP_VERIFY,
+    API_OTP_VERIFY_LOGIN,
     API_REFRESH_TOKEN,
     API_REGISTER_CUSTOMER,
     API_REGISTER_PROVIDER,
@@ -19,6 +23,42 @@ export const login = async ({ phone, password }: { phone: string; password: stri
         phone,
         password,
     });
+    return response;
+};
+
+export const sendOTP = async (phone: string) => {
+    const response = await instance.post<Response<LoginResponse>>(
+        API_OTP,
+        {},
+        {
+            params: { phoneNumber: phone },
+        },
+    );
+    return response;
+};
+
+export const sendOTPLogin = async (phone: string) => {
+    const response = await instance.post<Response<LoginResponse>>(
+        API_OTP_LOGIN,
+        {},
+        {
+            params: { phoneNumber: phone },
+        },
+    );
+    return response;
+};
+
+export const verifyOTP = async (phone: string, otp: string) => {
+    const response = await instance.post<Response<LoginResponse>>(API_OTP_VERIFY, { phonenumber: phone, otp: otp }, {});
+    return response;
+};
+
+export const loginOTP = async (phone: string, otp: string) => {
+    const response = await instance.post<Response<LoginResponse>>(
+        API_OTP_VERIFY_LOGIN,
+        { phonenumber: phone, otp: otp },
+        {},
+    );
     return response;
 };
 

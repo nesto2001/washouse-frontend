@@ -5,10 +5,19 @@ import Google from '../../assets/images/google.png';
 import { Link, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { BiErrorAlt } from 'react-icons/bi';
-import { getMe, login, loginGoogle } from '../../repositories/AuthRepository';
+import {
+    getMe,
+    login,
+    loginGoogle,
+    loginOTP,
+    sendOTP,
+    sendOTPLogin,
+    verifyOTP,
+} from '../../repositories/AuthRepository';
 import Loading from '../../components/Loading/Loading';
-import { Modal } from 'antd';
+import { Button, Modal, message } from 'antd';
 import OtpInput from '../../components/OTPInput/OtpInput';
+import Countdown, { CountdownApi, zeroPad } from 'react-countdown';
 
 type Props = {
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,10 +31,24 @@ const LoginContainer = ({ setLoading }: Props) => {
     const [loginSMS, setLoginSMS] = useState<boolean>(false);
     const [loginError, setLoginError] = useState<string>('');
     const [isFetching, setIsFetching] = useState<boolean>(false);
+    const [isOTPFetching, setIsOTPFetching] = useState<boolean>(false);
     const [openOTPModal, setOpenOTPModal] = useState(false);
     const [otp, setOtp] = useState('');
     const onOTPChange = (value: string) => setOtp(value);
     const navigate = useNavigate();
+    const [countdownApi, setCountdownApi] = useState<CountdownApi | null>(null);
+
+    const handleStartClick = (): void => {
+        if (countdownApi) {
+            countdownApi.start();
+        }
+    };
+
+    const setRef = (countdown: Countdown | null): void => {
+        if (countdown) {
+            setCountdownApi(countdown.getApi());
+        }
+    };
 
     const handleSubmit = () => {
         setIsFetching(true);
@@ -77,10 +100,57 @@ const LoginContainer = ({ setLoading }: Props) => {
         setIsFetching(true);
         if (loginForm.phone) {
             setIsFetching(false);
-            setOpenOTPModal(true);
+            sendOTPLogin(loginForm.phone).then((res) => {
+                message.success(`Đã gửi mã xác nhận đến SĐT ${loginForm.phone}`);
+                setOpenOTPModal(true);
+            });
         } else {
             setLoginError('Vui lòng nhập đầy đủ thông tin đăng nhập!');
             setIsFetching(false);
+        }
+    };
+
+    const handleResendOTP = () => {
+        if (loginForm.phone) {
+            sendOTPLogin(loginForm.phone).then((res) => {
+                message.success(`Đã gửi lại mã xác nhận đến SĐT ${loginForm.phone}`);
+                handleStartClick();
+            });
+        } else {
+            setLoginError('Vui lòng nhập đầy đủ thông tin đăng nhập!');
+        }
+    };
+
+    const handleVerifyOTP = () => {
+        setIsOTPFetching(true);
+        loginOTP(loginForm.phone, otp)
+            .then((res) => {
+                message.success('Mã xác nhận chính xác, tiến hành đăng nhập');
+                localStorage.setItem('accessToken', res.data.data.accessToken);
+                localStorage.setItem('refreshToken', res.data.data.refreshToken);
+                getMe().then((res) => {
+                    setIsOTPFetching(false);
+                    localStorage.setItem('currentUser', JSON.stringify(res));
+                    navigate('/trung-tam');
+                });
+            })
+            .catch(() => {
+                message.error('Mã xác nhận không chính xác');
+            })
+            .finally(() => {
+                setIsOTPFetching(false);
+            });
+    };
+
+    const renderer = ({ seconds, completed }: { seconds: number; completed: boolean }) => {
+        if (completed) {
+            return (
+                <span onClick={handleResendOTP} className="font-medium text-primary hover:text-ws-primary-hover">
+                    Gửi lại mã
+                </span>
+            );
+        } else {
+            return <span className="font-medium text-ws-gray">({zeroPad(seconds)})</span>;
         }
     };
 
@@ -185,6 +255,7 @@ const LoginContainer = ({ setLoading }: Props) => {
                 open={openOTPModal}
                 okText="Xác nhận"
                 onCancel={() => {
+                    setOtp('');
                     setOpenOTPModal(false);
                 }}
                 destroyOnClose={true}
@@ -192,10 +263,24 @@ const LoginContainer = ({ setLoading }: Props) => {
                 cancelButtonProps={{ style: { background: 'white' } }}
                 width={300}
                 centered
+                footer={false}
             >
                 <div className="my-6">
                     <OtpInput value={otp} valueLength={4} onChange={onOTPChange} />
                 </div>
+                <div className="w-full text-right">
+                    Chưa nhận được mã? <Countdown date={Date.now() + 20000} renderer={renderer} ref={setRef} />
+                </div>
+                <WHButton
+                    type="primary"
+                    size="small"
+                    onClick={handleVerifyOTP}
+                    className="w-full mt-1"
+                    disable={otp.length < 4}
+                    fetching={isOTPFetching}
+                >
+                    Xác nhận
+                </WHButton>
             </Modal>
         </>
     );

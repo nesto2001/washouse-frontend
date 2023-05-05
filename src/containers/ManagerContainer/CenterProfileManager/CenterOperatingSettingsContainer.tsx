@@ -5,6 +5,8 @@ import { Button, Form, Input, Space, Spin, TimePicker, message } from 'antd';
 import { OperatingDay } from '../../../types/OperatingDay';
 import dayjs from 'dayjs';
 import { RangeValue } from 'rc-picker/lib/interface';
+import { ManagerOperatingHoursRequest } from '../../../models/Manager/ManagerOperatingHoursRequest';
+import { updateMyCenterOperatings } from '../../../repositories/CenterRepository';
 
 type Props = {};
 
@@ -19,7 +21,7 @@ const format = 'HH:mm';
 const CenterOperatingSettingsContainer = (props: Props) => {
     const [isLoading, setisLoading] = useState(true);
     const [myCenter, setMyCenter] = useState<ManagerCenterModel>();
-    const [, updateState] = useState({});
+    const [state, updateState] = useState({});
     const forceUpdate = useCallback(() => updateState({}), []);
     const [formData, setFormData] = useState<OperationHoursFormData>({
         operationHours: [
@@ -55,12 +57,32 @@ const CenterOperatingSettingsContainer = (props: Props) => {
             .finally(() => {
                 setisLoading(false);
             });
-    }, []);
+    }, [state]);
 
     const onFinish = (values: any) => {
         console.log('Received values of form: ', values);
         console.log(formData);
-        //TODO
+        if (formData) {
+            const req: ManagerOperatingHoursRequest = formData.operationHours.map((ope) => {
+                return {
+                    day: ope.day,
+                    openTime: ope.start ? ope.start.slice(0, 5) : null,
+                    closeTime: ope.end ? ope.end.slice(0, 5) : null,
+                };
+            });
+            if (req.length === 7) {
+                updateMyCenterOperatings(req)
+                    .then(() => {
+                        message.success('Cập nhật giờ hoạt động thành công');
+                        forceUpdate();
+                    })
+                    .catch(() => {
+                        message.error('Gặp sự cố trong quá trình cập nhật, vui lòng thử lại sau');
+                    });
+            } else {
+                message.error('Gặp sự cố trong quá trình cập nhật, vui lòng thử lại sau');
+            }
+        }
     };
 
     const handleTimeOnChange = (operationDay: number, times: RangeValue<dayjs.Dayjs>) => {

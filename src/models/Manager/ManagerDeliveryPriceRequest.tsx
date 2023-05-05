@@ -2,5 +2,5 @@ import { ManagerDeliveryPriceChartRequest } from './ManagerDeliveryPriceChartReq
 
 export type ManagerDeliveryPriceRequest = {
     hasDelivery: boolean;
-    deliveryPriceCharts: ManagerDeliveryPriceChartRequest[];
+    deliveryPriceCharts?: ManagerDeliveryPriceChartRequest[];
 };

@@ -1,4 +1,11 @@
-import { API_CENTER, API_CENTER_DETAILS, API_MANAGER_CENTER } from '../common/Constant';
+import {
+    API_CENTER,
+    API_CENTER_DETAILS,
+    API_MANAGER_CENTER,
+    API_MANAGER_CENTER_DELIVERY,
+    API_MANAGER_CENTER_DELIVERY_DELETE,
+    API_MANAGER_CENTER_OPERATINGS,
+} from '../common/Constant';
 import { CenterDetailsModel } from '../models/Center/CenterDetailsModel';
 import { CenterDetailsResponse } from '../models/Center/CenterDetailsResponse';
 import { CenterModel } from '../models/Center/CenterModel';
@@ -7,6 +14,8 @@ import { CenterRequest } from '../models/Center/CreateCenterRequest';
 import { CreateCenterResponse } from '../models/Center/CreateCenterResponse';
 import { UpdateCenterRequest } from '../models/Center/UpdateCenterRequest';
 import { PaginationResponse, Response } from '../models/CommonModel';
+import { ManagerDeliveryPriceRequest } from '../models/Manager/ManagerDeliveryPriceRequest';
+import { ManagerOperatingHoursRequest } from '../models/Manager/ManagerOperatingHoursRequest';
 import { ServiceCategoryModel } from '../models/Service/ServiceCategoryModel';
 import { ServiceModel } from '../models/Service/ServiceModel';
 import instance from '../services/axios/AxiosInstance';
@@ -193,6 +202,46 @@ export const updateMyCenter = async (center: UpdateCenterRequest) => {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
     });
+    if (status !== 200) {
+        return Promise.reject();
+    }
+};
+
+export const updateMyCenterOperatings = async (opeHours: ManagerOperatingHoursRequest) => {
+    const { status } = await instance.put(API_MANAGER_CENTER_OPERATINGS, opeHours, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    if (status !== 200) {
+        return Promise.reject();
+    }
+};
+
+export const updateMyCenterDelivery = async (deliPrice: ManagerDeliveryPriceRequest) => {
+    const { status } = await instance.put(API_MANAGER_CENTER_DELIVERY, deliPrice, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    if (status !== 200) {
+        return Promise.reject();
+    }
+};
+
+export const updateMyCenterDeliveryDelete = async (deliPriceId: number) => {
+    const { status } = await instance.put(
+        API_MANAGER_CENTER_DELIVERY_DELETE,
+        {},
+        {
+            params: {
+                DeliveryPriceId: deliPriceId,
+            },
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        },
+    );
     if (status !== 200) {
         return Promise.reject();
     }

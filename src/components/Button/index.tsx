@@ -42,7 +42,13 @@ const WHButton = ({
         <>
             {link ? (
                 <button
-                    className={clsx('btn', type ? type : '', uppercase && 'uppercase', className ?? '')}
+                    className={clsx(
+                        'btn',
+                        type ? type : '',
+                        uppercase && 'uppercase',
+                        className ?? '',
+                        disable ? 'pointer-events-none !bg-ws-gray' : '',
+                    )}
                     type={isSubmit ? 'submit' : 'button'}
                     style={btnStyle}
                     form={form ?? ''}
@@ -64,7 +70,13 @@ const WHButton = ({
                 </button>
             ) : (
                 <button
-                    className={clsx('btn', type ? type : '', uppercase && 'uppercase', className ?? '')}
+                    className={clsx(
+                        'btn',
+                        type ? type : '',
+                        uppercase && 'uppercase',
+                        className ?? '',
+                        disable ? 'pointer-events-none !bg-ws-gray' : '',
+                    )}
                     type={isSubmit ? 'submit' : 'button'}
                     style={btnStyle}
                     form={form ?? ''}

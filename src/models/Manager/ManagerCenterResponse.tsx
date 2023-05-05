@@ -19,6 +19,7 @@ export type ManagerCenterResponse = {
     monthOff: false;
     hasDelivery: boolean;
     hasOnlinePayment: boolean
+    lastDeactivate: string | null;
     locationId: number;
     centerDeliveryPrices: CenterDeliveryPriceResponse[];
     centerLocation: LocationResponse;

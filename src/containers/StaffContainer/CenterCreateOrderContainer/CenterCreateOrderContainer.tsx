@@ -8,7 +8,7 @@ import CreateOrderStep4 from '../../../components/CreateOrderForm/CreateOrderSte
 import { CartState } from '../../../types/CartType/CartState';
 import { CheckoutFormData } from '../../../types/FormData/CheckoutFormData';
 import { ManagerCenterModel } from '../../../models/Manager/ManagerCenterModel';
-import { getManagerCenter } from '../../../repositories/StaffRepository';
+import { createOrderStaff, getManagerCenter } from '../../../repositories/StaffRepository';
 import OthersSpin from '../../../components/OthersSpin/OthersSpin';
 import ErrorScreen from '../../../components/ErrorScreen/ErrorScreen';
 import { CreateOrderRequest } from '../../../models/Order/CreateOrderRequest';
@@ -134,11 +134,10 @@ const CenterCreateOrderContainer = (props: Props) => {
                         customerNote: item.customerNote,
                     };
                 }),
-                paymentMethod: formData.paymentType ?? 0,
+                paymentMethod: 0,
             };
-            console.log(JSON.stringify(CreateOrderData));
             const placeOrder = async () => {
-                return await createOrder(CreateOrderData);
+                return await createOrderStaff(CreateOrderData);
             };
             placeOrder()
                 .then((res) => {

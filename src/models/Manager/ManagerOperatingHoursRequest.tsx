@@ -1,5 +1,5 @@
 export type ManagerOperatingHoursRequest = {
     day: number;
-    openTime: string;
-    closeTime: string;
+    openTime: string | null;
+    closeTime: string | null;
 }[];

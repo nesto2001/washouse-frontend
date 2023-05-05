@@ -2,6 +2,11 @@ import { Avatar, Button, Input, InputRef, List, Modal, Switch, message } from 'a
 import { useCallback, useState, useRef } from 'react';
 import '../ManagerContainer.scss';
 import Close from '../../../assets/images/close.png';
+import { closeMyCenter } from '../../../repositories/StaffRepository';
+import { AxiosError } from 'axios';
+import { Response } from '../../../models/CommonModel';
+import { useNavigate } from 'react-router-dom';
+import { getMe, refresh } from '../../../repositories/AuthRepository';
 
 type Props = {};
 
@@ -21,8 +26,9 @@ const settings: SettingsType[] = [
 
 const CenterSecuritySettingsContainer = ({}: Props) => {
     const [openModal, setOpenModal] = useState<boolean>(false);
-    const [, updateState] = useState({});
+    const [state, updateState] = useState({});
     const forceUpdate = useCallback(() => updateState({}), []);
+    const navigate = useNavigate();
     const inputRef = useRef<InputRef>(null);
 
     const onFinish = (values: any) => {
@@ -37,9 +43,37 @@ const CenterSecuritySettingsContainer = ({}: Props) => {
         const userInput = inputRef.current?.input;
         console.log(userInput?.value);
         if (confirmText === userInput?.value.trim()) {
-            message.success('Đóng cửa vĩnh viễn trung tâm thành công');
+            closeMyCenter()
+                .then((res) => {
+                    if (res) {
+                        refresh({
+                            refreshToken: localStorage.getItem('refreshToken') ?? '',
+                            accessToken: localStorage.getItem('accessToken') ?? '',
+                        }).then((res) => {
+                            localStorage.setItem('refreshToken', res.data.data.refreshToken);
+                            localStorage.setItem('accessToken', res.data.data.accessToken);
+                            getMe().then((res) => {
+                                localStorage.setItem('currentUser', JSON.stringify(res));
+                                message.success('Đóng cửa vĩnh viễn trung tâm thành công');
+
+                                navigate('/provider/role');
+                            });
+                        });
+                    }
+                })
+                .catch((err: AxiosError<Response<null>>) => {
+                    const response = err.response;
+                    if (
+                        response?.data.message.toLowerCase().includes('order') &&
+                        response?.data.message.toLowerCase().includes('processed')
+                    ) {
+                        message.error('Trung tâm tồn tại đơn hàng đang xử lý, vui lòng hoàn tất xử lý đơn hàng ');
+                    } else {
+                        message.error('Gặp sự cố trong quá trình đóng cửa trung tâm, vui lòng thử lại sau');
+                    }
+                });
         } else {
-            message.error('Đóng cửa vĩnh viễn trung tâm thất bại');
+            message.error('Xác nhận đóng cửa chưa đúng!');
         }
     };
 

@@ -19,6 +19,7 @@ export type ManagerCenterModel = {
     monthOff: boolean;
     hasDelivery: boolean;
     hasOnlinePayment: boolean;
+    lastDeactivate: string | null;
     locationId: number;
     centerDeliveryPrices: CenterDeliveryPriceModel[];
     centerLocation: LocationModel;

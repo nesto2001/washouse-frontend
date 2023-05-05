@@ -9,6 +9,7 @@ import { activateMyCenter, deactivateMyCenter, getManagerCenter } from '../../..
 import CenterDeliverySettingsContainer from './CenterDeliverySettingsContainer';
 import CenterSecuritySettingsContainer from './CenterSecuritySettingsContainer';
 import CenterOperatingSettingsContainer from './CenterOperatingSettingsContainer';
+import dayjs from 'dayjs';
 
 type Props = {};
 
@@ -34,7 +35,7 @@ const CenterSettingsContainer = (props: Props) => {
     const [switchOn, setSwitchOn] = useState<boolean>(false);
     const [activeTab, setActiveTab] = useState(1);
     const navigate = useNavigate();
-    const [, updateState] = useState({});
+    const [state, updateState] = useState({});
     const forceUpdate = useCallback(() => updateState({}), []);
     const [modal, contextHolder] = Modal.useModal();
 
@@ -53,10 +54,21 @@ const CenterSettingsContainer = (props: Props) => {
                 );
             })
             .catch();
-    }, []);
+    }, [state]);
 
     const handleDeactivate = () => {
         setPopupLoading(true);
+        if (myCenter && myCenter.lastDeactivate) {
+            if (
+                dayjs(dayjs(), 'DD-MM-YYYY HH:mm:ss').diff(
+                    dayjs(myCenter.lastDeactivate, 'DD-MM-YYYY HH:mm:ss'),
+                    'hour',
+                ) < 3
+            ) {
+                message.error('Vui lòng đợi 3 giờ kể từ lần bật chế độ tạm nghỉ gần nhất');
+                return;
+            }
+        }
         if (myCenter && (myCenter.status.toLowerCase() === 'active' || myCenter.status.toLowerCase() === 'updating')) {
             deactivateMyCenter()
                 .then(() => {
