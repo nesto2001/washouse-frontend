@@ -1,4 +1,9 @@
-import { API_FEEDBACK_ORDER, API_FEEDBACK_SERVICE, API_FEEDBACK_SERVICE_ID } from '../common/Constant';
+import {
+    API_FEEDBACK_ORDER,
+    API_FEEDBACK_REPLY,
+    API_FEEDBACK_SERVICE,
+    API_FEEDBACK_SERVICE_ID,
+} from '../common/Constant';
 import { PaginationModel, PaginationResponse, Response } from '../models/CommonModel';
 import { FeedbackModel } from '../models/Feedback/FeedbackModel';
 import { FeedbackOrderRequest } from '../models/Feedback/FeedbackOrderRequest';
@@ -52,4 +57,21 @@ export const getFeedbacks = async (serviceId: number): Promise<PaginationModel<F
             };
         }),
     };
+};
+export const replyFeedback = async (feedbackId: number, replyMsg: string) => {
+    const response = await instance.post<Response<number>>(
+        API_FEEDBACK_REPLY,
+        {
+            replyMessage: replyMsg,
+        },
+        {
+            params: {
+                feedbackId: feedbackId,
+            },
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        },
+    );
+    return response;
 };

@@ -107,7 +107,7 @@ const API_STAFF_CANCEL_ORDER = '/api/tracking/orders/${orderId}/cancelled';
 const API_STAFF_ASSIGN_DELIVERY = '/api/manager/my-center/orders/${orderId}/deliveries/${type}/change-status';
 const API_STAFF_FEEDBACKS = '/api/manager/my-center/feedbacks';
 const API_STAFF_STATS = '/api/manager/my-center/staff-statistics';
-const API_STAFF_ORDER_CREATE = '/api/manager/my-center/orders'
+const API_STAFF_ORDER_CREATE = '/api/manager/my-center/orders';
 
 //STAFF APT
 const API_STAFF = '/api/staffs';
@@ -131,6 +131,7 @@ const API_NOTIFICATION_READ = '/api/notifications/read';
 
 const API_FEEDBACK_ORDER = '/api/feedbacks/orders';
 const API_FEEDBACK_SERVICE = '/api/feedbacks/services';
+const API_FEEDBACK_REPLY = '/api/feedbacks/reply';
 const API_FEEDBACK_SERVICE_ID = '/api/feedbacks/services/${serviceId}';
 
 //WALLET API
@@ -195,6 +196,7 @@ export {
     API_MANAGER_CENTER_CUSTOMER,
     API_MANAGER_CENTER_SERVICE,
     API_CHANGE_PASSWORD,
+    API_FEEDBACK_REPLY,
     API_MANAGER_CENTER_ORDER,
     API_ACCOUNT_DEACTIVATE,
     API_ACCOUNT_ACTIVATE,

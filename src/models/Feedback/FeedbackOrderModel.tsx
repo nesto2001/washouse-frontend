@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 
 export type FeedbackOrderModel = {
+    id?: number | null;
     content: string;
     rating: number;
     replyMessage: string;

@@ -1,7 +1,10 @@
-import { Col, Row, Tag, message } from 'antd';
-import { useEffect, useState, useCallback } from 'react';
+import { Button, Col, Modal, Row, Tag, message } from 'antd';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import OthersSpin from '../../../components/OthersSpin/OthersSpin';
+import StarFull from '../../../components/Star/StarFull';
+import { PaymentBadgeStatusMap } from '../../../mapping/BadgeStatusMap';
+import { PaymentStatusMap } from '../../../mapping/OrderStatusMap';
 import { CenterOrderDetailsModel } from '../../../models/Staff/CenterOrderDetailsModel';
 import { getManagerCenterOrderDetails, proceedOrder } from '../../../repositories/StaffRepository';
 import CenterOrderDetailsDelivery from './CenterOrderDetailsDelivery';
@@ -9,8 +12,9 @@ import CenterOrderDetailsGeneral from './CenterOrderDetailsGeneral';
 import CenterOrderDetailsPayment from './CenterOrderDetailsPayment';
 import CenterOrderDetailsTracking from './CenterOrderDetailsTracking';
 import CenterOrderedDetailsContainer from './CenterOrderedDetailsContainer';
-import { PaymentStatusMap } from '../../../mapping/OrderStatusMap';
-import { PaymentBadgeStatusMap } from '../../../mapping/BadgeStatusMap';
+import { BsReplyFill } from 'react-icons/bs';
+import TextArea from 'antd/es/input/TextArea';
+import { replyFeedback } from '../../../repositories/FeedbackRepository';
 
 type Props = {};
 
@@ -18,6 +22,8 @@ const CenterOrderDetailsContainer = (props: Props) => {
     const [orderDetails, setOrderDetails] = useState<CenterOrderDetailsModel>();
     const [openProceedPop, setOpenProceedPop] = useState(false);
     const [confirmProceedLoading, setConfirmProceedLoading] = useState(false);
+    const [modalReplyFeedback, setModalReplyFeedback] = useState(false);
+    const [replyMsg, setReplyMsg] = useState<string>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [state, updateState] = useState({});
     const forceUpdate = useCallback(() => updateState({}), []);
@@ -199,6 +205,103 @@ const CenterOrderDetailsContainer = (props: Props) => {
                         </div>
                     </div>
                 )}
+                {orderDetails.feedback && (
+                    <div className="orderdetails__order--summary bg-white rounded border border-wh-lightgray mt-6 py-4 px-6">
+                        <div className="flex justify-between">
+                            <h2 className="font-bold text-xl text-left">Đánh giá</h2>
+                            <div className="flex items-center gap-1">
+                                <div className="">
+                                    <StarFull numOfStar={1} />
+                                </div>
+                                <h2 className="font-bold text-xl">{orderDetails.feedback.rating.toFixed(1)}</h2>
+                            </div>
+                        </div>
+                        <div className="orderdetails__order--payment mt-4 gap-x-10 items-baseline flex flex-col">
+                            <div className="flex justify-between w-full items-end">
+                                <div className="font-bold flex-1 text-left overflow-hidden">
+                                    {orderDetails.feedback.createdBy}
+                                </div>
+                                <div className="text-sm text-ws-gray">
+                                    {orderDetails.feedback.createdDate.format('DD-MM-YYYY')}
+                                </div>
+                            </div>
+                            <div className="">{orderDetails.feedback.content}</div>
+                        </div>
+                        {orderDetails.feedback.replyMessage ? (
+                            <div className="flex w-full bg-ws-light-gray rounded-lg p-2 pr-4 mt-2">
+                                <div className="flex gap-3 w-full">
+                                    <BsReplyFill className="text-lg" />
+                                    <div className="w-full">
+                                        <div className="font-semibold flex justify-between w-full">
+                                            <div className="font-bold flex-1 text-left overflow-hidden">
+                                                {'Phản hồi của trung tâm'}
+                                            </div>
+                                            <div className="text-sm text-ws-gray">
+                                                {orderDetails.feedback.createdDate.format('DD-MM-YYYY')}
+                                            </div>
+                                        </div>
+                                        <div>{orderDetails.feedback.replyMessage}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <Button
+                                className="w-full text-white  my-4"
+                                type="primary"
+                                onClick={() => setModalReplyFeedback(true)}
+                            >
+                                Phản hồi đánh giá
+                            </Button>
+                        )}
+                    </div>
+                )}
+                <Modal
+                    title="Phản hồi đánh giá"
+                    open={modalReplyFeedback}
+                    onCancel={() => {
+                        setModalReplyFeedback(false);
+                    }}
+                    onOk={() => {
+                        orderDetails.feedback?.id &&
+                            replyMsg &&
+                            replyFeedback(orderDetails.feedback?.id, replyMsg).then(() => {
+                                setModalReplyFeedback(false);
+                                forceUpdate();
+                                setReplyMsg('');
+                                message.success('Phản hồi thành công');
+                            });
+                    }}
+                    okText={'Gửi'}
+                    cancelText={'Hủy'}
+                    cancelButtonProps={{ style: { background: 'white' } }}
+                >
+                    <div className="orderdetails__order--payment mt-4 gap-x-10 items-baseline flex flex-col">
+                        <div className="flex justify-between w-full items-end">
+                            <div className="font-bold flex-1 text-left overflow-hidden">
+                                {orderDetails.feedback?.createdBy}
+                            </div>
+                            <div className="text-sm text-ws-gray">
+                                {orderDetails.feedback?.createdDate.format('DD-MM-YYYY')}
+                            </div>
+                        </div>
+                        <div className="">{orderDetails.feedback?.content}</div>
+                    </div>
+                    <div className="flex w-full justify-between bg-ws-light-gray rounded-lg p-2 pr-4 mt-2">
+                        <div className="flex gap-3 w-full">
+                            <BsReplyFill className="text-lg" />
+                            <div className="w-full">
+                                <div className="font-semibold">{'Phản hồi của trung tâm'}</div>
+                                <TextArea
+                                    value={replyMsg}
+                                    onChange={(e) => setReplyMsg(e.target.value)}
+                                    className="w-full"
+                                    placeholder="Nhập phản hồi của bạn"
+                                    style={{ resize: 'none' }}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </Modal>
             </div>
         </>
     );
