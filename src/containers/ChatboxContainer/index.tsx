@@ -1,4 +1,4 @@
-import { collection, doc, getDocs, onSnapshot, or, query, setDoc, where } from '@firebase/firestore';
+import { collection, doc, getDocs, onSnapshot, query, setDoc, where } from '@firebase/firestore';
 import { Card } from 'antd';
 import dayjs from 'dayjs';
 import { useCallback, useEffect, useState } from 'react';
@@ -7,11 +7,11 @@ import { FaAngleDown } from 'react-icons/fa';
 import ChatBox from '../../components/Chat/ChatBox';
 import ChatItem from '../../components/Chat/ChatItem';
 import { UserModel } from '../../models/User/UserModel';
+import { generateRandomString, getURLId } from '../../utils/CommonUtils';
 import { db } from '../../utils/firebase';
-import { generateRandomString } from '../../utils/CommonUtils';
-import { getManagerCenter } from '../../repositories/StaffRepository';
+import { useLocation } from 'react-router';
+import { getCenter, getCenterBrief } from '../../repositories/CenterRepository';
 import { CenterModel } from '../../models/Center/CenterModel';
-import { ManagerCenterModel } from '../../models/Manager/ManagerCenterModel';
 
 interface MessageData {
     idFrom: string;
@@ -42,8 +42,12 @@ function ChatboxContainer({ user, manager }: Props) {
     const [messages, setMessages] = useState<MessageData[]>([]);
     const [messageDetails, setMessageDetails] = useState<MessageDetailData[]>([]);
     const [currentBox, setCurrentBox] = useState<MessageData>();
+    const [center, setCenter] = useState<CenterModel>();
     const [state, updateState] = useState({});
     const forceUpdate = useCallback(() => updateState({}), []);
+    const location = useLocation();
+
+    const centerId = getURLId(location.pathname);
 
     useEffect(() => {
         const messageRef = collection(db, 'messages');
@@ -58,6 +62,26 @@ function ChatboxContainer({ user, manager }: Props) {
         forceUpdate();
         return () => unsub();
     }, []);
+
+    useEffect(() => {
+        getCenterBrief(+centerId).then((res) => {
+            setCurrentBox(
+                messages.filter((ms) => ms.document == `${user.accountId}-${res.id}`)?.at(0) ?? {
+                    avatarFrom: user.avatar,
+                    avatarTo: res.thumbnail,
+                    idFrom: user.accountId?.toString(),
+                    idTo: res.id.toString(),
+                    lastContent: '',
+                    lastTimestamp: dayjs(),
+                    nameFrom: user.name,
+                    nameTo: res.title,
+                    typeContent: 0,
+                    document: `${user.accountId}-${res.id}`,
+                },
+            );
+            setCenter(res);
+        });
+    }, [location.pathname]);
 
     useEffect(() => {
         getData();
@@ -117,8 +141,6 @@ function ChatboxContainer({ user, manager }: Props) {
             });
         });
 
-        console.log(details);
-
         setMessageDetails(details);
     };
 
@@ -175,24 +197,58 @@ function ChatboxContainer({ user, manager }: Props) {
                 >
                     <div className="flex w-full h-full">
                         <div className="message_list basis-4/12 border-r-2 h-full flex flex-col">
-                            {messages?.map((message) => (
-                                <ChatItem
-                                    active={message.document == currentBox?.document}
-                                    avatar={
-                                        message.idFrom == user.accountId.toString()
-                                            ? message.avatarTo
-                                            : message.avatarFrom
-                                    }
-                                    name={
-                                        message.idFrom == user.accountId.toString() ? message.nameTo : message.nameFrom
-                                    }
-                                    lastMsg={
-                                        message.typeContent == 0 ? message.lastContent.substring(0, 20) : 'Hình ảnh'
-                                    }
-                                    time={message.lastTimestamp}
-                                    onClick={() => setCurrentBox(message)}
-                                />
-                            ))}
+                            {center &&
+                            currentBox &&
+                            !messages.filter((ms) => ms.document == `${user.accountId}-${center.id}`)?.at(0)
+                                ? [currentBox]
+                                      .concat(messages)
+                                      ?.sort((a, b) => (b.lastTimestamp.isAfter(a.lastTimestamp) ? 1 : -1))
+                                      ?.map((message) => (
+                                          <ChatItem
+                                              active={message.document == currentBox?.document}
+                                              avatar={
+                                                  message.idFrom == user.accountId.toString()
+                                                      ? message.avatarTo
+                                                      : message.avatarFrom
+                                              }
+                                              name={
+                                                  message.idFrom == user.accountId.toString()
+                                                      ? message.nameTo.substring(0, 15)
+                                                      : message.nameFrom.substring(0, 15)
+                                              }
+                                              lastMsg={
+                                                  message.typeContent == 0
+                                                      ? message.lastContent.substring(0, 20)
+                                                      : 'Hình ảnh'
+                                              }
+                                              time={message.lastTimestamp}
+                                              onClick={() => setCurrentBox(message)}
+                                          />
+                                      ))
+                                : messages
+                                      .sort((a, b) => (b.lastTimestamp.isAfter(a.lastTimestamp) ? 1 : -1))
+                                      ?.map((message) => (
+                                          <ChatItem
+                                              active={message.document == currentBox?.document}
+                                              avatar={
+                                                  message.idFrom == user.accountId.toString()
+                                                      ? message.avatarTo
+                                                      : message.avatarFrom
+                                              }
+                                              name={
+                                                  message.idFrom == user.accountId.toString()
+                                                      ? message.nameTo.substring(0, 15)
+                                                      : message.nameFrom.substring(0, 15)
+                                              }
+                                              lastMsg={
+                                                  message.typeContent == 0
+                                                      ? message.lastContent.substring(0, 20)
+                                                      : 'Hình ảnh'
+                                              }
+                                              time={message.lastTimestamp}
+                                              onClick={() => setCurrentBox(message)}
+                                          />
+                                      ))}
                         </div>
                         <div className="message_content basis-8/12 h-full relative">
                             <ChatBox

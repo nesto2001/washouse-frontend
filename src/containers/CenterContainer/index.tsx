@@ -16,13 +16,14 @@ import { compareTime, getToday } from '../../utils/TimeUtils';
 
 import { Tabs, TabsProps } from 'antd';
 
+import { BsFillChatLeftDotsFill } from 'react-icons/bs';
 import CouponTag from '../../components/CouponTag/CouponTag';
 import RatingDistribution from '../../components/RatingDistribution/RatingDistribution';
 import { PromotionModel } from '../../models/Promotion/PromotionModel';
 import { getPromotionsCenter } from '../../repositories/PromotionRepository';
 import { CenterMap } from '../../types/CenterMap';
-import './CenterContainer.scss';
 import { formatLink } from '../../utils/FormatUtils';
+import './CenterContainer.scss';
 
 type Props = {};
 
@@ -108,7 +109,9 @@ const CenterContainer = (props: Props) => {
                                         title: service.name,
                                         action: true,
                                         actionContent: 'Xem dịch vụ',
-                                        actionLink: `/trung-tam/${formatLink(center.title)}-c.${center.id}/${formatLink(service.name)}`,
+                                        actionLink: `/trung-tam/${formatLink(center.title)}-c.${center.id}/${formatLink(
+                                            service.name,
+                                        )}`,
                                         actionType: 'primary',
                                         cardHeight: '464px',
                                         description: service.description,

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import UserPlaceholder from '../../assets/images/user-placeholder.png';
-import { Badge } from 'antd';
+import { splitDescription } from '../../utils/CommonUtils';
 
 type ChatItemProps = {
     avatar?: string;
@@ -19,12 +19,14 @@ function ChatItem({ onClick, avatar, name, lastMsg, time, active, numOfUnread }:
             }`}
             onClick={onClick}
         >
-            <div>
-                <img src={avatar ?? UserPlaceholder} alt="" className="h-10 w-10 rounded-full" />
-            </div>
-            <div className="flex flex-col items-start justify-between h-full">
-                <div className="text-sm font-bold">{name}</div>
-                <div className="text-sm">{lastMsg}</div>
+            <div className="flex gap-2">
+                <div>
+                    <img src={avatar ?? UserPlaceholder} alt="" className="h-10 w-10 rounded-full" />
+                </div>
+                <div className="flex flex-col items-start justify-between h-full">
+                    <div className="text-sm font-bold">{name}</div>
+                    <div className="text-sm text-left">{splitDescription(lastMsg ?? '', 14)}</div>
+                </div>
             </div>
             <div className="flex flex-col items-end justify-between h-full">
                 <div className="text-sm">{time?.format('DD/MM')}</div>

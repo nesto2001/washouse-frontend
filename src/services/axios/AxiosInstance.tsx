@@ -31,7 +31,6 @@ instance.interceptors.response.use(
                     });
                 };
                 fetchData().then((res) => {
-                    console.log(res);
                     setAuthToken(res.data.data.accessToken as string);
 
                     localStorage.setItem('refreshToken', res.data.data.refreshToken);
