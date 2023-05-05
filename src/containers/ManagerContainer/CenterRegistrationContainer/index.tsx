@@ -41,6 +41,7 @@ const CenterRegistrationContainer = (props: Props) => {
     const [form] = Form.useForm();
     const [current, setCurrent] = useState(0);
     const [isValidated, setIsValidated] = useState(false);
+    const [isFetching, setIsFetching] = useState(false);
     const navigate = useNavigate();
     const [formData, setFormData] = useState<CreateCenterFormData>({
         name: '',
@@ -141,6 +142,7 @@ const CenterRegistrationContainer = (props: Props) => {
     };
 
     const handleCreateCenter = () => {
+        setIsFetching(true);
         form.submit();
         if (isValidated) {
             const centerRequest: CenterRequest = {
@@ -185,17 +187,22 @@ const CenterRegistrationContainer = (props: Props) => {
                         refresh({
                             refreshToken: localStorage.getItem('refreshToken') ?? '',
                             accessToken: localStorage.getItem('accessToken') ?? '',
-                        }).then((res) => {
-                            localStorage.setItem('refreshToken', res.data.data.refreshToken);
-                            localStorage.setItem('accessToken', res.data.data.accessToken);
-                            getMe().then((res) => {
-                                localStorage.setItem('currentUser', JSON.stringify(res));
-                                message.success(
-                                    'Đã đăng ký trung tâm thành công, vui lòng chờ duyệt bởi quản trị viên.',
-                                );
-                                navigate('/provider/settings/center/profile');
+                        })
+                            .then((res) => {
+                                localStorage.setItem('refreshToken', res.data.data.refreshToken);
+                                localStorage.setItem('accessToken', res.data.data.accessToken);
+                                getMe().then((res) => {
+                                    setIsFetching(false);
+                                    localStorage.setItem('currentUser', JSON.stringify(res));
+                                    message.success(
+                                        'Đã đăng ký trung tâm thành công, vui lòng chờ duyệt bởi quản trị viên.',
+                                    );
+                                    navigate('/provider/settings/center/profile');
+                                });
+                            })
+                            .finally(() => {
+                                setIsFetching(false);
                             });
-                        });
                     } else {
                         message.error('Xảy ra lỗi trong hoàn tất quá trình đăng ký, vui lòng thử lại sau.');
                     }
@@ -214,6 +221,9 @@ const CenterRegistrationContainer = (props: Props) => {
                     } else {
                         console.log(err.response);
                     }
+                })
+                .finally(() => {
+                    setIsFetching(false);
                 });
         }
     };
@@ -254,7 +264,7 @@ const CenterRegistrationContainer = (props: Props) => {
                     </WHButton>
                 )}
                 {current === steps.length - 1 && (
-                    <WHButton type="primary" onClick={handleCreateCenter}>
+                    <WHButton type="primary" onClick={handleCreateCenter} fetching={isFetching}>
                         Hoàn thành
                     </WHButton>
                 )}
