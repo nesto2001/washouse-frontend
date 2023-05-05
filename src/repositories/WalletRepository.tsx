@@ -3,10 +3,14 @@ import { Response } from '../models/CommonModel';
 import instance from '../services/axios/AxiosInstance';
 
 export const activateWallet = async (): Promise<number> => {
-    const { data } = await instance.get<Response<number>>(API_WALLET_ACTIVATE, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+    const { data } = await instance.post<Response<number>>(
+        API_WALLET_ACTIVATE,
+        {},
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
         },
-    });
+    );
     return data.data;
 };

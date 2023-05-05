@@ -1,5 +1,5 @@
 import { EllipsisOutlined } from '@ant-design/icons';
-import { Button } from 'antd';
+import { Button, Empty } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
 import { CenterFeedbackModel } from '../../models/Staff/StaffFeedback/CenterFeedbackModel';
@@ -88,6 +88,17 @@ const FeedbackList = ({ feedbacks }: Props) => {
                             navigate(`/provider/orders/${record.orderId}`);
                         },
                     };
+                }}
+                locale={{
+                    emptyText: (
+                        <Empty
+                            image={Empty.PRESENTED_IMAGE_DEFAULT}
+                            imageStyle={{ height: 160, width: 384, margin: '0 auto', marginBottom: 20 }}
+                            description={
+                                <span className="text-xl font-medium text-sub-gray">Chưa có đánh giá nào</span>
+                            }
+                        ></Empty>
+                    ),
                 }}
             />
         </div>

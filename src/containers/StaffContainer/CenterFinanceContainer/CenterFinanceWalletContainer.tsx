@@ -1,4 +1,4 @@
-import { Avatar, Empty, List, Skeleton, Tag } from 'antd';
+import { Avatar, Empty, List, Skeleton, Tag, message } from 'antd';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { formatCurrency } from '../../../utils/FormatUtils';
@@ -12,6 +12,7 @@ import { TransactionStatusMap } from '../../../mapping/TransactionStatusMap';
 import { Link } from 'react-router-dom';
 import { CenterWalletModel } from '../../../models/CenterWallet/CenterWalletModel';
 import { getCenterWallet } from '../../../repositories/StaffRepository';
+import OthersSpin from '../../../components/OthersSpin/OthersSpin';
 
 type Props = {};
 
@@ -19,15 +20,27 @@ const CenterFinanceWalletContainer = (props: Props) => {
     const [myWallet, setMyWallet] = useState<CenterWalletModel>();
     const [list, setList] = useState<TransactionModel[]>([]);
     const [initLoading, setInitLoading] = useState(true);
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        getCenterWallet().then((res) => {
-            setMyWallet(res);
-            setList(res.transactions);
-            setInitLoading(false);
-        });
+        setIsLoading(true);
+        getCenterWallet()
+            .then((res) => {
+                setMyWallet(res);
+                setList(res.transactions);
+                setInitLoading(false);
+            })
+            .catch(() => {
+                message.error('Gặp sự cố khi truy xuất dữ liệu, vui lòng thử lại sau');
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
     }, []);
+
+    if (isLoading) {
+        return <OthersSpin />;
+    }
 
     return (
         <div className="">
@@ -47,6 +60,24 @@ const CenterFinanceWalletContainer = (props: Props) => {
                                     loading={initLoading}
                                     className="w-full items-center"
                                     itemLayout="vertical"
+                                    locale={{
+                                        emptyText: (
+                                            <Empty
+                                                image={Empty.PRESENTED_IMAGE_DEFAULT}
+                                                imageStyle={{
+                                                    height: 160,
+                                                    width: 384,
+                                                    margin: '0 auto',
+                                                    marginBottom: 20,
+                                                }}
+                                                description={
+                                                    <span className="text-xl font-medium text-sub-gray">
+                                                        Chưa có giao dịch nào
+                                                    </span>
+                                                }
+                                            ></Empty>
+                                        ),
+                                    }}
                                     dataSource={myWallet.walletTransactions}
                                     renderItem={(item, index) => (
                                         <List.Item
