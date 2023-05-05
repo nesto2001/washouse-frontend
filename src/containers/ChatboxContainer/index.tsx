@@ -164,7 +164,7 @@ function ChatboxContainer({ user, manager }: Props) {
 
         await setDoc(doc(collection(messageRef, currentBox?.document, 'msglist'), generateRandomString(12)), {
             content: message.content,
-            idFrom: user.accountId,
+            idFrom: user.accountId.toString(),
             timestamp: (dayjs().unix() * 1000).toString(),
             type: message.type,
         });
