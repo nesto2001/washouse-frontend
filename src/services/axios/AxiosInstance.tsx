@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { BASE_URL } from '../../common/Constant';
 import { refresh } from '../../repositories/AuthRepository';
+import { message } from 'antd';
 
 const instance = axios.create({
     baseURL: BASE_URL,
@@ -45,6 +46,8 @@ instance.interceptors.response.use(
                 });
             } else {
                 localStorage.clear();
+                message.error('Phiên đăng nhập hết hạn, vui lòng đăng nhập lại');
+                window.location.href = '/';
             }
         }
 

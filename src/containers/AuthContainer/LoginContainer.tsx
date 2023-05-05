@@ -18,6 +18,7 @@ import Loading from '../../components/Loading/Loading';
 import { Button, Modal, message } from 'antd';
 import OtpInput from '../../components/OTPInput/OtpInput';
 import Countdown, { CountdownApi, zeroPad } from 'react-countdown';
+import { UserModel } from '../../models/User/UserModel';
 
 type Props = {
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -28,11 +29,14 @@ const LoginContainer = ({ setLoading }: Props) => {
         phone: '',
         password: '',
     });
+    const userJson = localStorage.getItem('currentUser');
     const [loginSMS, setLoginSMS] = useState<boolean>(false);
     const [loginError, setLoginError] = useState<string>('');
     const [isFetching, setIsFetching] = useState<boolean>(false);
     const [isOTPFetching, setIsOTPFetching] = useState<boolean>(false);
     const [openOTPModal, setOpenOTPModal] = useState(false);
+    const [user, setUser] = useState<UserModel | null>(userJson && JSON.parse(userJson));
+    const [userRole, setUserRole] = useState(user?.roleType.toLowerCase() ?? '');
     const [otp, setOtp] = useState('');
     const onOTPChange = (value: string) => setOtp(value);
     const navigate = useNavigate();
@@ -49,6 +53,13 @@ const LoginContainer = ({ setLoading }: Props) => {
             setCountdownApi(countdown.getApi());
         }
     };
+
+    useEffect(() => {
+        if (user && userRole) {
+            userRole === 'customer' && navigate('/trung-tam');
+            userRole === 'admin' && navigate('/admin/dashboard');
+        }
+    }, []);
 
     const handleSubmit = () => {
         setIsFetching(true);

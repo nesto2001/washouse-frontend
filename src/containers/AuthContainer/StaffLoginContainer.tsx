@@ -9,13 +9,17 @@ import { getMe, login, loginOTP, loginOTPStaff, loginStaff, sendOTPLogin } from 
 import { Form, Modal, message } from 'antd';
 import Countdown, { CountdownApi, zeroPad } from 'react-countdown';
 import OtpInput from '../../components/OTPInput/OtpInput';
+import { UserModel } from '../../models/User/UserModel';
 
 type Props = {};
 
 const StaffLoginContainer = () => {
     let { state } = useLocation();
 
+    const userJson = localStorage.getItem('currentUser');
     const backUrl = state && state.backUrl !== null ? state.backUrl : '';
+    const [user, setUser] = useState<UserModel | null>(userJson && JSON.parse(userJson));
+    const [userRole, setUserRole] = useState(user?.roleType.toLowerCase() ?? '');
 
     const [loginForm, setLoginForm] = useState({
         phone: '',
@@ -36,6 +40,15 @@ const StaffLoginContainer = () => {
             countdownApi.start();
         }
     };
+
+    useEffect(() => {
+        if (user && userRole) {
+            userRole === 'admin' && navigate('/admin/dashboard');
+            userRole === 'manager' && navigate('/provider/dashboard');
+            userRole === 'staff' && navigate('/provider/staff/dashboard');
+            userRole === 'user' && navigate('/provider/role');
+        }
+    }, []);
 
     const setRef = (countdown: Countdown | null): void => {
         if (countdown) {
