@@ -149,15 +149,13 @@ const ServiceListingContainer = (props: Props) => {
         };
     }, []);
 
-
-
     const handleAddService = () => {
         navigate('/provider/services/create');
     };
 
     return (
         <>
-            <div className="provider__services--filter">
+            {/* <div className="provider__services--filter">
                 <Form
                     form={form}
                     name="service"
@@ -248,7 +246,7 @@ const ServiceListingContainer = (props: Props) => {
                         </Form.Item>
                     </div>
                 </Form>
-            </div>
+            </div> */}
             <div className="provider__services mt-12 mb-72">
                 <Tabs
                     defaultActiveKey="1"
