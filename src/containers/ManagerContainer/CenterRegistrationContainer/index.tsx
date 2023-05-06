@@ -214,6 +214,11 @@ const CenterRegistrationContainer = (props: Props) => {
                             case messageString.includes('existing') && messageString.includes('location'):
                                 message.error('Đã tồn tại trung tâm ở vị trí này, vui lòng kiểm tra lại thông tin');
                                 break;
+                            case messageString.includes('instance'):
+                                message.success(
+                                    'Đã đăng ký trung tâm thành công, vui lòng chờ duyệt bởi quản trị viên.',
+                                );
+                                break;
                             default:
                                 message.error(err.response.data.message);
                                 break;

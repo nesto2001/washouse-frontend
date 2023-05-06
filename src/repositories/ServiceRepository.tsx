@@ -1,5 +1,6 @@
 import {
     API_CENTER_SERVICES,
+    API_MANAGER_CENTER_SERVICE,
     API_SERVICES,
     API_SERVICES_CENTER,
     API_SERVICE_DETAILS,
@@ -75,7 +76,11 @@ export const getServices = async (centerId: number): Promise<ServiceDetailsModel
 };
 
 export const createService = async (request: CreateServiceRequest) => {
-    const { status } = await instance.post(API_SERVICES, request);
+    const { status } = await instance.post(API_MANAGER_CENTER_SERVICE, request, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
     if (status != 200) {
         throw new Error();
     }
