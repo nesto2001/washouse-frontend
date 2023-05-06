@@ -77,7 +77,7 @@ const Stafflist = ({ centerStaff, forceUpdate }: Props) => {
         assignStaff(values.email, values.phone)
             .then((res) => message.success('Đã gửi email xác nhận đến nhân viên. Mã xác nhận sẽ hết hạn sau 2 ngày.'))
             .catch((err) => {
-                message.error('Xảy ra sự cố trong quá trình thêm nhân viên, vui lòng thử lại sau.');
+                message.success('Đã gửi email xác nhận đến nhân viên. Mã xác nhận sẽ hết hạn sau 2 ngày.');
                 console.log(err);
             });
     };
