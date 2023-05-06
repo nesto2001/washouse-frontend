@@ -23,7 +23,7 @@ const Footer = () => {
                             Nền tảng cung ứng giải pháp dịch vụ giặt ủi Washouse
                         </div>
                         <div className="footer__about basis-1/3 ml-1 text-left">
-                            <div className="footer__about--title font-bold text-xl">Về Washouse</div>
+                            {/* <div className="footer__about--title font-bold text-xl">Về Washouse</div>
                             <div className="footer__about--links mt-6">
                                 <ul className="list-none">
                                     <li className="list-none mt-5">Giới thiệu</li>
@@ -31,7 +31,7 @@ const Footer = () => {
                                     <li className="list-none mt-5">Điều khoản sử dụng</li>
                                     <li className="list-none mt-5">Chính sách bảo mật</li>
                                 </ul>
-                            </div>
+                            </div> */}
                         </div>
                         <div className="footer__services basis-1/3 ml-1 text-left">
                             <div className="footer__services--title font-bold text-xl">Dịch vụ</div>
