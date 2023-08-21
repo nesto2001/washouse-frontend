@@ -52,7 +52,7 @@ const FeedbackList = ({ feedbacks }: Props) => {
         },
         {
             title: 'Đánh giá',
-            key: 'rating',
+            key: 'ratingNum',
             dataIndex: 'rating',
             align: 'center',
             width: 204,
